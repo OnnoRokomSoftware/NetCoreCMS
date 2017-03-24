@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.Services
+namespace NetCoreCMS.Web.Services
 {
     public interface ISmsSender
     {

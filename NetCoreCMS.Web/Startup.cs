@@ -9,11 +9,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NetCoreCMS.Data;
-using NetCoreCMS.Models;
-using NetCoreCMS.Services;
+using NetCoreCMS.Web.Data;
+using NetCoreCMS.Web.Models;
+using NetCoreCMS.Web.Services;
 
-namespace NetCoreCMS
+namespace NetCoreCMS.Web
 {
     public class Startup
     {

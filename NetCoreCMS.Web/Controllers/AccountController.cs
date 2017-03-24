@@ -9,11 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NetCoreCMS.Models;
-using NetCoreCMS.Models.AccountViewModels;
-using NetCoreCMS.Services;
+using NetCoreCMS.Web.Models;
+using NetCoreCMS.Web.Models.AccountViewModels;
+using NetCoreCMS.Web.Services;
 
-namespace NetCoreCMS.Controllers
+namespace NetCoreCMS.Web.Controllers
 {
     [Authorize]
     public class AccountController : Controller

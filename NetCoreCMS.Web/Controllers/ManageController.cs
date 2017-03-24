@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NetCoreCMS.Models;
-using NetCoreCMS.Models.ManageViewModels;
-using NetCoreCMS.Services;
+using NetCoreCMS.Web.Models;
+using NetCoreCMS.Web.Models.ManageViewModels;
+using NetCoreCMS.Web.Services;
 
-namespace NetCoreCMS.Controllers
+namespace NetCoreCMS.Web.Controllers
 {
     [Authorize]
     public class ManageController : Controller

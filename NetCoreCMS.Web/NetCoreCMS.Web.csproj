@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <UserSecretsId>aspnet-NetCoreCMS-7bb867eb-2e0d-4ffc-a800-5f616fbf2b7c</UserSecretsId>
+    <UserSecretsId>aspnet-NetCoreCMS.Web-d794d7b5-5326-4a33-a104-3a9b1ea9ad88</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
@@ -32,9 +32,6 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
 
 </Project>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace NetCoreCMS.Models.ManageViewModels
+namespace NetCoreCMS.Web.Models.ManageViewModels
 {
     public class ConfigureTwoFactorViewModel
     {
