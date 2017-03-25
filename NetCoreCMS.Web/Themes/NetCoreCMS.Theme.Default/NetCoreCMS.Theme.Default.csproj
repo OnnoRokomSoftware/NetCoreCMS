@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp1.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Backend\Css\" />
+    <Folder Include="Backend\Images\" />
+    <Folder Include="Backend\Scripts\" />
+    <Folder Include="Backend\Shared\" />
+    <Folder Include="Backend\Views\" />
+    <Folder Include="Frontend\Css\" />
+    <Folder Include="Frontend\Images\" />
+    <Folder Include="Frontend\Scripts\" />
+    <Folder Include="Frontend\Shared\" />
+    <Folder Include="Frontend\Views\" />
+  </ItemGroup>
+
+</Project>

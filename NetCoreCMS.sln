@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Framework", "NetCoreCMS.Framework\NetCoreCMS.Framework.csproj", "{1A779826-FF33-4685-A71F-91CD05D268CB}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{BDDA4695-6AA7-4A2D-A82E-33C64576477D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{0C40B021-EF98-444C-9CCB-38B35ED10100}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{DEA68350-455B-48C4-8137-59B6F40E0FC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Frontend.Default", "NetCoreCMS.Web\Themes\Frontend.Default\Frontend.Default.csproj", "{783224F8-B75F-49EF-BCAC-CC4C5D4BA350}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Web", "NetCoreCMS.Web\NetCoreCMS.Web.csproj", "{A19A3DF3-6EE4-4DCA-BB2B-B589BC43794C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Cms", "NetCoreCMS.Web\Modules\Core\NetCoreCMS.Modules.Cms\NetCoreCMS.Modules.Cms.csproj", "{C26F9EE1-4568-4057-A3C7-B95404BDA7EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Framework", "NetCoreCMS.Framework\NetCoreCMS.Framework.csproj", "{4429474E-1E88-4E9A-8160-AFA52891E5B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Theme.Default", "NetCoreCMS.Web\Themes\NetCoreCMS.Theme.Default\NetCoreCMS.Theme.Default.csproj", "{C42F25CC-8726-4336-ACC1-CF53EBFA067F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,24 +23,29 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1A779826-FF33-4685-A71F-91CD05D268CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A779826-FF33-4685-A71F-91CD05D268CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A779826-FF33-4685-A71F-91CD05D268CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A779826-FF33-4685-A71F-91CD05D268CB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{783224F8-B75F-49EF-BCAC-CC4C5D4BA350}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{783224F8-B75F-49EF-BCAC-CC4C5D4BA350}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{783224F8-B75F-49EF-BCAC-CC4C5D4BA350}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{783224F8-B75F-49EF-BCAC-CC4C5D4BA350}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A19A3DF3-6EE4-4DCA-BB2B-B589BC43794C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A19A3DF3-6EE4-4DCA-BB2B-B589BC43794C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A19A3DF3-6EE4-4DCA-BB2B-B589BC43794C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A19A3DF3-6EE4-4DCA-BB2B-B589BC43794C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C26F9EE1-4568-4057-A3C7-B95404BDA7EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C26F9EE1-4568-4057-A3C7-B95404BDA7EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C26F9EE1-4568-4057-A3C7-B95404BDA7EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C26F9EE1-4568-4057-A3C7-B95404BDA7EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4429474E-1E88-4E9A-8160-AFA52891E5B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4429474E-1E88-4E9A-8160-AFA52891E5B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4429474E-1E88-4E9A-8160-AFA52891E5B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4429474E-1E88-4E9A-8160-AFA52891E5B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C42F25CC-8726-4336-ACC1-CF53EBFA067F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C42F25CC-8726-4336-ACC1-CF53EBFA067F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C42F25CC-8726-4336-ACC1-CF53EBFA067F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C42F25CC-8726-4336-ACC1-CF53EBFA067F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{DEA68350-455B-48C4-8137-59B6F40E0FC8} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
-		{783224F8-B75F-49EF-BCAC-CC4C5D4BA350} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
+		{C26F9EE1-4568-4057-A3C7-B95404BDA7EE} = {DEA68350-455B-48C4-8137-59B6F40E0FC8}
+		{C42F25CC-8726-4336-ACC1-CF53EBFA067F} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 	EndGlobalSection
 EndGlobal
