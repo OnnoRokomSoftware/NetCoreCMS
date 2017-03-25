@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetCoreCMS.Framework.Core.Mvc
+namespace NetCoreCMS.Framework.Core.Mvc.Models
 {
-    public class NetCoreCmsController
+    class ModelBase
     {
-
     }
 }

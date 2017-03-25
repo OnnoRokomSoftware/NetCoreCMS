@@ -1,0 +1,7 @@
+obj
+bin
+/.vs/NetCoreCMS/v15/*.suo
+config
+/NetCoreCMS.Framework/*.user
+/NetCoreCMS.Web/Modules/Core/NetCoreCMS.Modules.Cms/*.user
+/NetCoreCMS.Web/Themes/NetCoreCMS.Theme.Default/*.user
