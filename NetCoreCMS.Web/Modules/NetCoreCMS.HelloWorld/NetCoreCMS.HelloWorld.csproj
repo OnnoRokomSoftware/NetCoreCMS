@@ -3,19 +3,23 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp1.1</TargetFramework>
   </PropertyGroup>
-
+  
   <PropertyGroup>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Models\" />
     <Folder Include="Views\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
+    <ProjectReference Include="..\..\..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
 
 </Project>

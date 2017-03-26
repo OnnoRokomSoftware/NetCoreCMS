@@ -15,6 +15,21 @@
   <PropertyGroup>
     <UserSecretsId>aspnet-NetCoreCMS.Web-d794d7b5-5326-4a33-a104-3a9b1ea9ad88</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Core\**" />
+    <Compile Remove="Modules\**" />
+    <Compile Remove="Themes\**" />
+    <Content Remove="Core\**" />
+    <Content Remove="Modules\**" />
+    <Content Remove="Themes\**" />
+    <EmbeddedResource Remove="Core\**" />
+    <EmbeddedResource Remove="Modules\**" />
+    <EmbeddedResource Remove="Themes\**" />
+    <None Remove="Core\**" />
+    <None Remove="Modules\**" />
+    <None Remove="Themes\**" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />

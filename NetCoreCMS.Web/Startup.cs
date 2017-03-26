@@ -12,13 +12,21 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Web.Data;
 using NetCoreCMS.Web.Models;
 using NetCoreCMS.Web.Services;
+using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Core;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace NetCoreCMS.Web
 {
     public class Startup
     {
+        private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IList<Module> modules = new List<Module>();
+
         public Startup(IHostingEnvironment env)
         {
+            _hostingEnvironment = env;
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
@@ -39,6 +47,7 @@ namespace NetCoreCMS.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var moduleManager = new ModuleManager();
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
@@ -47,7 +56,18 @@ namespace NetCoreCMS.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
-            services.AddMvc();
+            services.Configure<RazorViewEngineOptions>(options =>
+            {
+                options.ViewLocationExpanders.Add(new ModuleViewLocationExpendar());
+            });
+
+            var mvcBuilder = services.AddMvc();
+            var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.ModuleFolder);
+            var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.CoreModuleFolder);
+
+            moduleManager.LoadModules(moduleFolder);
+            moduleManager.LoadModules(coreModuleFolder);
+            moduleManager.RegisterModules(mvcBuilder, services);
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
