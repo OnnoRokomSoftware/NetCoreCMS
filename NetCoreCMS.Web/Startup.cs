@@ -55,12 +55,7 @@ namespace NetCoreCMS.Web
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-            services.Configure<RazorViewEngineOptions>(options =>
-            {
-                options.ViewLocationExpanders.Add(new ModuleViewLocationExpendar());
-            });
-
+            
             var mvcBuilder = services.AddMvc();
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.CoreModuleFolder);

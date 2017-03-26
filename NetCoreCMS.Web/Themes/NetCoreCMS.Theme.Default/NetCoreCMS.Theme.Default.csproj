@@ -9,16 +9,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Backend\Css\" />
-    <Folder Include="Backend\Images\" />
-    <Folder Include="Backend\Scripts\" />
-    <Folder Include="Backend\Shared\" />
+    <Content Include="Backend\Shared\_BackendLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Frontend\Shared\_FrontendLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Backend\Views\" />
-    <Folder Include="Frontend\Css\" />
-    <Folder Include="Frontend\Images\" />
-    <Folder Include="Frontend\Scripts\" />
-    <Folder Include="Frontend\Shared\" />
     <Folder Include="Frontend\Views\" />
+    <Folder Include="wwwroot\css\" />
+    <Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\lib\" />
   </ItemGroup>
 
 </Project>

@@ -9,7 +9,8 @@ namespace NetCoreCMS.Framework.Modules
     public class ModuleViewLocationExpendar : IViewLocationExpander
     {
         private const string _moduleKey = "module";
-
+        private const string _activeTheme = "NetCoreCMS.Theme.Default";
+        
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
             if (context.Values.ContainsKey(_moduleKey))
@@ -19,10 +20,16 @@ namespace NetCoreCMS.Framework.Modules
                 {
                     var moduleViewLocations = new string[]
                     {
-                    "/Modules/NetCoreCMS.Modules." + module + "/Views/{1}/{0}.cshtml",
-                    "/Modules/NetCoreCMS.Modules." + module + "/Views/Shared/{0}.cshtml",
-                    "/Core/NetCoreCMS.Modules." + module + "/Views/{1}/{0}.cshtml",
-                    "/Core/NetCoreCMS.Modules." + module + "/Views/Shared/{0}.cshtml"
+                    "/Themes/" + _activeTheme + "/Frontend/Views/{1}/{0}.cshtml",
+                    "/Themes/" + _activeTheme + "/Frontend/Shared/{0}.cshtml",
+                    "/Themes/" + _activeTheme + "/Backend/Views/{1}/{0}.cshtml",
+                    "/Themes/" + _activeTheme + "/Backend/Shared/{0}.cshtml",
+                    "/Core/" + module + "/Views/{1}/{0}.cshtml",
+                    "/Core/" + module + "/Views/Shared/{0}.cshtml",
+                    "/Modules/" + module + "/Views/{1}/{0}.cshtml",
+                    "/Modules/" + module + "/Views/Shared/{0}.cshtml",
+                    "/Views/{1}/{0}.cshtml",
+                    "/Views/Shared/{0}.cshtml"
                     };
 
                     viewLocations = moduleViewLocations.Concat(viewLocations);
@@ -33,8 +40,9 @@ namespace NetCoreCMS.Framework.Modules
 
         public void PopulateValues(ViewLocationExpanderContext context)
         {
-            var controller = context.ActionContext.ActionDescriptor.DisplayName;
-            var moduleName = controller.Split('.')[2];
+            dynamic controller = context.ActionContext.ActionDescriptor;
+            string moduleName = controller.ControllerTypeInfo.Module.Name;
+            moduleName = moduleName.Remove(moduleName.Length-4);
             if (moduleName != "NetCoreCMS.Web")
             {
                 context.Values[_moduleKey] = moduleName;
