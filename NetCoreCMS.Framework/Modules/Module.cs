@@ -25,7 +25,7 @@ namespace NetCoreCMS.Framework.Modules
 
         public void Init(IServiceCollection services)
         {
-            //services.AddTransient<IAnotherTestService, AnotherTestService>();
+            //Initilize the module here
         }
     }
 }
