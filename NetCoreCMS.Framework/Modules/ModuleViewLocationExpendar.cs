@@ -9,7 +9,7 @@ namespace NetCoreCMS.Framework.Modules
     public class ModuleViewLocationExpendar : IViewLocationExpander
     {
         private const string _moduleKey = "module";
-        private const string _activeTheme = "NetCoreCMS.Theme.Default";
+        private const string _activeTheme = "Default";
         
         public IEnumerable<string> ExpandViewLocations(ViewLocationExpanderContext context, IEnumerable<string> viewLocations)
         {
@@ -20,10 +20,10 @@ namespace NetCoreCMS.Framework.Modules
                 {
                     var moduleViewLocations = new string[]
                     {
-                    "/Themes/" + _activeTheme + "/Frontend/Views/{1}/{0}.cshtml",
-                    "/Themes/" + _activeTheme + "/Frontend/Shared/{0}.cshtml",
-                    "/Themes/" + _activeTheme + "/Backend/Views/{1}/{0}.cshtml",
-                    "/Themes/" + _activeTheme + "/Backend/Shared/{0}.cshtml",
+                    "/Themes/Frontend/"+ _activeTheme +"/Views/{1}/{0}.cshtml",
+                    "/Themes/Frontend/"+ _activeTheme +"/Shared/{0}.cshtml",
+                    "/Themes/Backend/"+ _activeTheme +"/Views/{1}/{0}.cshtml",
+                    "/Themes/Backend/"+ _activeTheme +"/Shared/{0}.cshtml",
                     "/Core/" + module + "/Views/{1}/{0}.cshtml",
                     "/Core/" + module + "/Views/Shared/{0}.cshtml",
                     "/Modules/" + module + "/Views/{1}/{0}.cshtml",
