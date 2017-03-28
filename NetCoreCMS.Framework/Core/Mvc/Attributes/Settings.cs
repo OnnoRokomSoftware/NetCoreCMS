@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 {
-    public class Frontend : Attribute
+    public class Settings : Attribute
     {
     }
 }

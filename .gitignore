@@ -6,3 +6,5 @@ config
 /NetCoreCMS.Web/Modules/Core/NetCoreCMS.Modules.Cms/*.user
 /NetCoreCMS.Web/Themes/NetCoreCMS.Theme.Default/*.user
 /NetCoreCMS.Web/Core/NetCoreCMS.Modules.Cms/*.user
+/NetCoreCMS.Web/*.user
+*.user

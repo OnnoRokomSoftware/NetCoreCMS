@@ -37,7 +37,7 @@ namespace NetCoreCMS.Modules.HelloWorld
 
         public void Init(IServiceCollection services)
         {
-            //services.AddTransient<IAnotherTestService, AnotherTestService>();
+            
         }
     }
 }

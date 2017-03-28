@@ -6,7 +6,7 @@ using System.Text;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
-    public class CmsHomeController : Controller
+    public class CmsHomeController : NccController
     {
         public ActionResult Index()
         {

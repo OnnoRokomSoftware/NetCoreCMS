@@ -5,8 +5,11 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Controllers
 {
-    public class FrontendController : Controller
+    public class NccController : Controller
     {
-
+        public NccController()
+        {
+            
+        }
     }
 }
