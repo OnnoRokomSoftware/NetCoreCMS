@@ -1,0 +1,12 @@
+﻿{
+  "Id": "A5A30A40-68E3-460A-A5BB-98DDA393A4D2",
+  "ModuleName": "NetCoreCMS.Modules.Setup",
+  "Author": "Xonaki",
+  "Website": "http://xonaki.com",
+  "AntiForgery": true,
+  "Description": "CMS Setup Module",
+  "Version": "0.1.1",
+  "NetCoreCMSVersion": "0.1.1",
+  "Dependencies": [],
+  "Category": "Core"
+}

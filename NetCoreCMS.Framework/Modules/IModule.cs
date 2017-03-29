@@ -9,6 +9,7 @@ namespace NetCoreCMS.Framework.Modules
 {
     public interface IModule
     {
+        string Id { get; set; }
         string ModuleName { get; set; }        
         bool AntiForgery { get; set; }
         string Author { get; set; }
@@ -17,7 +18,7 @@ namespace NetCoreCMS.Framework.Modules
         Version NetCoreCMSVersion { get; set; }
         string Description { get; set; }
         List<string> Dependencies { get; set; }
-        List<string> Category { get; set; }
+        string Category { get; set; }
         Assembly Assembly { get; set; }
         string SortName { get; set; }
         string Path { get; set; }

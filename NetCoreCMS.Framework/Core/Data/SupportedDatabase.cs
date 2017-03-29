@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public enum Databases
+    public enum SupportedDatabase
     {
         SqLite,
         MySql,

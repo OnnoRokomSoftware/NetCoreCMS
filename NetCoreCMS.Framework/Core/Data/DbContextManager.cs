@@ -6,6 +6,6 @@ namespace NetCoreCMS.Framework.Core.Data
 {
     public class DbContextManager
     {
-
+        
     }
 }

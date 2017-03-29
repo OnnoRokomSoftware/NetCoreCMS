@@ -15,6 +15,7 @@ using NetCoreCMS.Web.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core;
 using Microsoft.AspNetCore.Mvc.Razor;
+using NetCoreCMS.Framework.Helper;
 
 namespace NetCoreCMS.Web
 {
@@ -63,6 +64,9 @@ namespace NetCoreCMS.Web
             moduleManager.LoadModules(moduleFolder);
             moduleManager.LoadModules(coreModuleFolder);
             moduleManager.RegisterModules(mvcBuilder, services);
+
+            var appSettings = Configuration.GetSection("SetupOption");
+            services.Configure<SetupOption>(appSettings);
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();

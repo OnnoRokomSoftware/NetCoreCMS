@@ -1,12 +1,19 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
+using System.Text;
+using NetCoreCMS.Framework.Modules;
 
-namespace NetCoreCMS.Framework.Modules
+namespace NetCoreCMS.Modules.Cms
 {
-    public class Module : IModule
+    public class SetupModule : IModule
     {
+        public SetupModule()
+        {
+            
+        }
+
         public string Id { get; set; }
         public string ModuleName { get; set; }
         public bool AntiForgery { get; set; }
@@ -23,7 +30,7 @@ namespace NetCoreCMS.Framework.Modules
 
         public void Init(IServiceCollection services)
         {
-            //Initilize the module here
+            
         }
     }
 }
