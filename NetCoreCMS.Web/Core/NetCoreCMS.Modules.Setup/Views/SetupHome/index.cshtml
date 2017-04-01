@@ -2,10 +2,177 @@
 @model SetupViewModel
 
 @{
-    Layout = "_FrontendLayout";
+    Layout = null;
+    //Layout = "_FrontendLayout";
 }
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - NetCoreCMS Backend</title>
 
-<link href="/NetCoreCMS.Modules.Setup/css/Style.css" rel="stylesheet" />
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+    </environment>
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
+                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-test="window.jQuery"
+                crossorigin="anonymous"
+                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
+        </script>
+        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
+                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
+                crossorigin="anonymous"
+                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
+        </script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+    <link href="/NetCoreCMS.Modules.Setup/css/Style.css" rel="stylesheet" />
+    <script src="/NetCoreCMS.Modules.Setup/js/Setup.js"></script>
+    <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <style>
+        input {
+            max-width: 800px !important;
+        }
+    </style>
+</head>
+
+
+
+<body>
+
+    <!-- Begin page content -->
+    <div class="container">
+        <div class="page-header text-center">
+            <h1>NetCoreCMS Setup</h1>
+        </div>
+        <p class="lead text-center">This is the NetCoreCMS Setup Page. Please fill the following information and press submit to complete the setup process.</p>
+        @*<hr />*@
+        <form class="form-horizontal" asp-controller="SetupHome" asp-action="Index" method="post">
+            <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="SiteName">Site Name:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" id="SiteName" name="SiteName" asp-for="SiteName" placeholder="Enter Site Name">
+                    <span asp-validation-for="SiteName" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="Database" >Database:</label>
+                <div class="col-sm-10">
+                    <select asp-for="Database" type="text" class="form-control" id="Database" name="Database">
+                        <option value="">Select your database engine</option>
+                        <option value="SQLite">SQLite</option>
+                        <option value="MsSqlLocalStorage">MsSqlLocalStorage</option>
+                        <option value="MsSql">MsSql</option>
+                        <option value="MySql">MySql</option>
+                        <option value="PgSql">PgSql</option>
+                    </select>
+                    <span asp-validation-for="Database" class="text-danger"></span>
+                </div>
+            </div>
+            <div id="databaseInfo" class="DatabaseInfo">
+                <hr />
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="DatabaseHost">Database Host:</label>
+                    <div class="col-sm-10">
+                        <input asp-for="DatabaseHost" type="text" class="form-control" id="DatabaseHost" name="DatabaseHost" placeholder="Enter Database Host">
+                        <span asp-validation-for="DatabaseHost" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="DatabasePort">Database Port:</label>
+                    <div class="col-sm-10">
+                        <input asp-for="DatabasePort" type="text" class="form-control" id="DatabasePort" name="DatabasePort" placeholder="Enter Database Port">
+                        <span asp-validation-for="DatabasePort" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="DatabaseUserName">Database UserName:</label>
+                    <div class="col-sm-10">
+                        <input asp-for="DatabaseUserName" type="text" class="form-control" id="DatabaseUserName" name="DatabaseUserName" placeholder="Enter Database UserName">
+                        <span asp-validation-for="DatabaseUserName" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="DatabasePassword">Database Password:</label>
+                    <div class="col-sm-10">
+                        <input asp-for="DatabasePassword" type="text" class="form-control" id="DatabasePassword" name="DatabasePassword" placeholder="Enter Database Password">
+                        <span asp-validation-for="DatabasePassword" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label col-sm-2" for="DatabaseName">Database Name:</label>
+                    <div class="col-sm-10">
+                        <input asp-for="DatabaseName" type="text" class="form-control" id="DatabaseName" name="DatabaseName" placeholder="Enter Database Name">
+                        <span asp-validation-for="DatabaseName" class="text-danger"></span>
+                    </div>
+                </div>   
+                <hr />
+            </div>
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="AdminUserName">Admin UserName:</label>
+                <div class="col-sm-10">
+                    <input asp-for="AdminUserName" type="text" class="form-control" id="AdminUserName" name="AdminUserName" placeholder="Enter Admin UserName">
+                    <span asp-validation-for="AdminUserName" class="text-danger"></span>
+                </div>
+            </div> 
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="AdminPassword">Admin Password:</label>
+                <div class="col-sm-10">
+                    <input asp-for="AdminPassword" type="password" class="form-control" id="AdminPassword" name="AdminPassword" placeholder="Enter Admin Password">
+                    <span asp-validation-for="AdminPassword" class="text-danger"></span>
+                </div>
+            </div> 
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="ConfirmPassword">Confirm Password:</label>
+                <div class="col-sm-10">
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Enter Confirm Password">
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+            </div> 
+            <div class="form-group">
+                <label class="control-label col-sm-2" for="Email">Email:</label>
+                <div class="col-sm-10">
+                    <input asp-for="Email" type="Email" class="form-control" id="Email" name="Email" placeholder="Enter Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>            
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="reset" class="btn btn-default">Clear</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="text-muted text-center">Developed by <a href="http://xonaki.com" title="xonaki.com" target="_blank">xonaki.com</a>.</p>
+        </div>
+    </footer>
+</body>
+</html>
+
+
+@*<link href="/NetCoreCMS.Modules.Setup/css/Style.css" rel="stylesheet" />
 <script src="/NetCoreCMS.Modules.Setup/js/Setup.js"></script>
 <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
 <h4> NetCoreCMS Setup </h4>
@@ -87,4 +254,4 @@
     </div>
 
     <button type="submit" class="btn btn-default">Submit</button>
-</form>
+</form>*@
