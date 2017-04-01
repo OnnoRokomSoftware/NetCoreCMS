@@ -8,3 +8,4 @@ config
 /NetCoreCMS.Web/Core/NetCoreCMS.Modules.Cms/*.user
 /NetCoreCMS.Web/*.user
 *.user
+/NetCoreCMS.Web/setup.json
