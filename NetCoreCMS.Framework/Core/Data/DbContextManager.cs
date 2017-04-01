@@ -1,12 +1,16 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Framework.Core.Mvc.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public class DbContextManager
+    public class DbContextManager 
     {
         private static string _sqLiteConString = "Data Source={0}\\NetCoreCMS.Web.db;Version=3;";
         private static string _sqlLocalDb = "Server=(localdb)\\mssqllocaldb;Database=NetCoreCMS.Web.db;Trusted_Connection=True;MultipleActiveResultSets=true";
@@ -47,5 +51,13 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
 
+        private static void RegisterEntities(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
+        {
+            var entityTypes = typeToRegisters.Where(x => x.GetTypeInfo().IsSubclassOf(typeof(BaseModel)) && !x.GetTypeInfo().IsAbstract);
+            foreach (var type in entityTypes)
+            {
+                modelBuilder.Entity(type);
+            }
+        }
     }
 }

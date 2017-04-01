@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.ComponentModel.DataAnnotations;
 
-namespace NetCoreCMS.Framework.Core.Mvc.Models
+namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccSettings
+    public class Settings
     {
+        [Key]
         public long Id { get; set; }
         public string Key { get; set; }
         public string Value { get; set; }

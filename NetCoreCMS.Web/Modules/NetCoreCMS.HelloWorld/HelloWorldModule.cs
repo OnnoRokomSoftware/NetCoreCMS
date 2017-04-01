@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Modules.HelloWorld
 {
-    public class HelloWorldModule : IModule
+    public class HelloWorldModule : INccModule
     {
         public HelloWorldModule()
         {
@@ -30,7 +31,7 @@ namespace NetCoreCMS.Modules.HelloWorld
         [NotMapped]
         public Assembly Assembly { get; set; }
         public string Path { get ; set ; }
-
+        public ModuleStatus Status { get; set; }
         public void Init(IServiceCollection services)
         {
             

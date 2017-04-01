@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Modules.Cms
 {
-    public class CmsModule : IModule
+    public class CmsModule : INccModule
     {
         public CmsModule()
         {
@@ -34,7 +35,7 @@ namespace NetCoreCMS.Modules.Cms
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-
+        public ModuleStatus Status { get; set; }
         public void Init(IServiceCollection services)
         {
             

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Modules
 {
-    public class Module : IModule
+    public class NccModule : INccModule
     {
         public string Id { get; set; }
         public string ModuleName { get; set; }
@@ -20,7 +21,7 @@ namespace NetCoreCMS.Framework.Modules
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-
+        public ModuleStatus Status { get; set; }
         public void Init(IServiceCollection services)
         {
             //Initilize the module here

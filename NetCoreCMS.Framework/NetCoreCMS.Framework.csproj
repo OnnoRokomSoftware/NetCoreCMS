@@ -10,6 +10,7 @@
   
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="1.1.1" />
@@ -31,7 +32,9 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Core\Mvc\Models\ViewModels\" />
+    <Folder Include="Core\Models\ViewModels\" />
+    <Folder Include="Core\Events\" />
+    <Folder Include="Core\Services\" />
   </ItemGroup>
   
 </Project>

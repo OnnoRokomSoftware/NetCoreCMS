@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
 using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Modules.Cms
 {
-    public class SetupModule : IModule
+    public class SetupModule : INccModule
     {
         public SetupModule()
         {
@@ -27,6 +28,7 @@ namespace NetCoreCMS.Modules.Cms
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
+        public ModuleStatus Status { get; set; }
 
         public void Init(IServiceCollection services)
         {

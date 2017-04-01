@@ -1,13 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using NetCoreCMS.Framework.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace NetCoreCMS.Framework.Modules
 {
-    public interface IModule
+    public interface INccModule
     {
         string Id { get; set; }
         string ModuleName { get; set; }        
@@ -22,6 +22,7 @@ namespace NetCoreCMS.Framework.Modules
         Assembly Assembly { get; set; }
         string SortName { get; set; }
         string Path { get; set; }
+        ModuleStatus Status { get; set; }
         void Init(IServiceCollection services);
     }
 }

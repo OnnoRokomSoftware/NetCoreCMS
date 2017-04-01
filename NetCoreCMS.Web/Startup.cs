@@ -24,7 +24,8 @@ namespace NetCoreCMS.Web
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         ModuleManager _moduleManager;
-        private readonly IList<Module> modules = new List<Module>();
+        NetCoreStartup _startup;
+        private readonly IList<NccModule> modules = new List<NccModule>();
 
         public Startup(IHostingEnvironment env)
         {
@@ -47,27 +48,25 @@ namespace NetCoreCMS.Web
 
             _moduleManager = new ModuleManager();
             var setupConfig = SetupHelper.LoadSetup(env);
-
+            _startup = new NetCoreStartup();
         }
 
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {   
-            
-            // Add framework services.
+        {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-            
+
             var mvcBuilder = services.AddMvc();
             
-            var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.ModuleFolder);
-            var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.CoreModuleFolder);
+            var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
+            var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
 
             _moduleManager.LoadModules(moduleFolder);
             _moduleManager.LoadModules(coreModuleFolder);
@@ -76,6 +75,8 @@ namespace NetCoreCMS.Web
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
+
+            _startup.RegisterDatabase(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
