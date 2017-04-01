@@ -1,0 +1,5 @@
+{
+  "IsComplete": false,
+  "SelectedDatabase": "MsSqlLocalStorage",
+  "ConnectionString": "Server=(localdb)\\mssqllocaldb;Database=NetCoreCMS.Web.db;Trusted_Connection=True;MultipleActiveResultSets=true"
+}

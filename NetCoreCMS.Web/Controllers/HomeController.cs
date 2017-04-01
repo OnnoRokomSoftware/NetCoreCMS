@@ -5,19 +5,20 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Helper;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Hosting;
 
 namespace NetCoreCMS.Web.Controllers
 {
     public class HomeController : Controller
     {
-        IOptions<SetupOption> _setupOption;
-        public HomeController(IOptions<SetupOption> setupOption)
+        IHostingEnvironment _env;
+        public HomeController(IHostingEnvironment env)
         {
-            _setupOption = setupOption;
+            _env = env;
         }
         public IActionResult Index()
         {
-            if (!_setupOption.Value.IsComplete)
+            if (!SetupHelper.IsComplete)
             {
                 return Redirect("/SetupHome/Index");
             }

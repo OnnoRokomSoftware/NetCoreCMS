@@ -5,13 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public enum SupportedDatabase
+    public enum DatabaseEngine
     {
         SqLite,
-        MySql,
         MsSqlLocalStorage,
+        MySql,        
         MsSql,
-        PgSql,
-        InMemory
+        PgSql
     }
 }

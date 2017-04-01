@@ -16,12 +16,14 @@ using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core;
 using Microsoft.AspNetCore.Mvc.Razor;
 using NetCoreCMS.Framework.Helper;
+using Microsoft.CodeAnalysis;
 
 namespace NetCoreCMS.Web
 {
     public class Startup
     {
         private readonly IHostingEnvironment _hostingEnvironment;
+        ModuleManager _moduleManager;
         private readonly IList<Module> modules = new List<Module>();
 
         public Startup(IHostingEnvironment env)
@@ -32,6 +34,7 @@ namespace NetCoreCMS.Web
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
+                
 
             if (env.IsDevelopment())
             {
@@ -41,33 +44,35 @@ namespace NetCoreCMS.Web
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+
+            _moduleManager = new ModuleManager();
+            var setupConfig = SetupHelper.LoadSetup(env);
+
         }
 
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
-        {
-            var moduleManager = new ModuleManager();
+        {   
+            
             // Add framework services.
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
+            
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
             
             var mvcBuilder = services.AddMvc();
+            
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(CmsInfo.CoreModuleFolder);
 
-            moduleManager.LoadModules(moduleFolder);
-            moduleManager.LoadModules(coreModuleFolder);
-            moduleManager.RegisterModules(mvcBuilder, services);
-
-            var appSettings = Configuration.GetSection("SetupOption");
-            services.Configure<SetupOption>(appSettings);
-
+            _moduleManager.LoadModules(moduleFolder);
+            _moduleManager.LoadModules(coreModuleFolder);
+            _moduleManager.RegisterModules(mvcBuilder, services);
+            
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
@@ -91,7 +96,7 @@ namespace NetCoreCMS.Web
             }
 
             app.UseStaticFiles();
-
+            _moduleManager.RegisterStaticFiles(app);
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715

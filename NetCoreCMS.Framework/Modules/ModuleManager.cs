@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
@@ -60,11 +63,35 @@ namespace NetCoreCMS.Framework.Modules
                     moduleInitializer.Init(services);
                 }
             }
-
+            
             services.Configure<RazorViewEngineOptions>(options =>
             {
                 options.ViewLocationExpanders.Add(new ModuleViewLocationExpendar());
             });
+
+            mvcBuilder.AddRazorOptions(o =>
+            {
+                foreach (var module in modules)
+                {
+                    o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Assembly.Location));
+                }
+            });
+        }
+
+        public void RegisterStaticFiles(IApplicationBuilder app)
+        {
+            foreach (var module in modules)
+            {
+                var moduleDir = new DirectoryInfo(Path.Combine(module.Path,"wwwroot"));
+                if (moduleDir.Exists)
+                {
+                    app.UseStaticFiles(new StaticFileOptions()
+                    {
+                        FileProvider = new PhysicalFileProvider(moduleDir.FullName),
+                        RequestPath = new PathString("/" + module.ModuleName)
+                    });
+                }                
+            }
         }
     }
 }

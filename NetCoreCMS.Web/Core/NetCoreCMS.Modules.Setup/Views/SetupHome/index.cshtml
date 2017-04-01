@@ -1,23 +1,90 @@
-﻿@{
+﻿@using NetCoreCMS.Modules.Setup.Models.ViewModels
+@model SetupViewModel
+
+@{
     Layout = "_FrontendLayout";
 }
 
-<h1> NetCoreCMS Setup </h1>
+<link href="/NetCoreCMS.Modules.Setup/css/Style.css" rel="stylesheet" />
+<script src="/NetCoreCMS.Modules.Setup/js/Setup.js"></script>
+<script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
+<h4> NetCoreCMS Setup </h4>
 <hr/>
-<form>
-    
+<form asp-controller="SetupHome" asp-action="Index" method="post">
+    <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
     <div class="form-group">
-        <label for="siteName">Site Name</label>
-        <input type="text" class="form-control" id="siteName">
+        <label for="SiteName">Site Name</label>
+        <input type="text" class="form-control" id="SiteName" name="SiteName" asp-for="SiteName">
+        <span asp-validation-for="SiteName" class="text-danger"></span>
     </div>
     
     <div class="form-group">
-        <label for="pwd">Password:</label>
-        <input type="password" class="form-control" id="pwd">
+        <label for="Database">Database</label>
+        <select asp-for="Database" type="text" class="form-control" id="Database" name="Database" >
+            <option value="">Select your database engine</option>
+            <option value="SQLite">SQLite</option>
+            <option value="MsSqlLocalStorage">MsSqlLocalStorage</option>
+            <option value="MySql">MySql</option>
+            <option value="MsSql">MsSql</option>
+            <option value="PgSql">PgSql</option>
+        </select>
+        <span asp-validation-for="Database" class="text-danger"></span>
     </div>
 
-    <div class="checkbox">
-        <label><input type="checkbox"> Remember me</label>
+    <div id="databaseInfo" class="DatabaseInfo">
+        <div class="form-group">
+            <label for="DatabaseHost">Database Host</label>
+            <input asp-for="DatabaseHost" type="text" class="form-control" id="DatabaseHost" name="DatabaseHost">
+            <span asp-validation-for="DatabaseHost" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="siteName">Database Port</label>
+            <input asp-for="DatabasePort" type="text" class="form-control" id="DatabasePort" name="DatabasePort">
+            <span asp-validation-for="DatabasePort" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="DatabaseUserName">DatabaseUserName</label>
+            <input asp-for="DatabaseUserName" type="text" class="form-control" id="DatabaseUserName" name="DatabaseUserName">
+            <span asp-validation-for="DatabaseUserName" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="DatabasePassword">Database Password</label>
+            <input asp-for="DatabasePassword" type="text" class="form-control" id="DatabasePassword" name="DatabasePassword">
+            <span asp-validation-for="DatabasePassword" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label for="DatabaseName">Database Name</label>
+            <input asp-for="DatabaseName" type="text" class="form-control" id="DatabaseName" name="DatabaseName">
+            <span asp-validation-for="DatabaseName" class="text-danger"></span>
+        </div>
     </div>
+    <div class="form-group">
+        <label for="AdminUserName">Admin User Name</label>
+        <input asp-for="AdminUserName" type="text" class="form-control" id="AdminUserName" name="AdminUserName">
+        <span asp-validation-for="AdminUserName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="AdminPassword">Admin Password</label>
+        <input asp-for="AdminPassword" type="password" class="form-control" id="AdminPassword" name="AdminPassword">
+        <span asp-validation-for="AdminPassword" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="ConfirmPassword">ConfirmPassword</label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword">
+        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label for="Email">Email</label>
+        <input asp-for="Email" type="Email" class="form-control" id="Email" name="Email">
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
     <button type="submit" class="btn btn-default">Submit</button>
 </form>
