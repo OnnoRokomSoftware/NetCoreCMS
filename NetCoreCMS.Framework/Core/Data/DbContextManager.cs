@@ -39,9 +39,9 @@ namespace NetCoreCMS.Framework.Core.Data
 
                 case DatabaseEngine.PgSql:
                     if (string.IsNullOrEmpty(port))
-                        return string.Format(_mySqlConString, server, "5432", database, username, password);
+                        return string.Format(_pgSqlConString, server, "5432", database, username, password);
                     else
-                        return string.Format(_mySqlConString, server, port, database, username, password);
+                        return string.Format(_pgSqlConString, server, port, database, username, password);
                 case DatabaseEngine.SqLite:
                     var path = env.ContentRootPath;
                     return string.Format(_sqLiteConString, Path.Combine(path,"Data"));

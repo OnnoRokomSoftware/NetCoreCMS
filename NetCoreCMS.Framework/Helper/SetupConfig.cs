@@ -43,7 +43,7 @@ namespace NetCoreCMS.Framework.Helper
         {
             var config = new SetupConfig();
             var rootDir = env.ContentRootPath;
-            var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate);
+            var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create);
             using (StreamWriter sw = new StreamWriter(file))
             {
                 var content = JsonConvert.SerializeObject(new SetupConfig()

@@ -22,6 +22,7 @@ namespace NetCoreCMS.Framework.Core.Models
 
     public enum ModuleStatus
     {
+        Listed,
         Installed,
         Active,
         Inactive,

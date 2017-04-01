@@ -6,5 +6,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 {
     public class Admin : Attribute
     {
+
     }
 }
