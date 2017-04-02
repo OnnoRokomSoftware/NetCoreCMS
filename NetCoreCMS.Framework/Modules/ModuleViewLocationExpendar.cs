@@ -20,10 +20,10 @@ namespace NetCoreCMS.Framework.Modules
                 {
                     var moduleViewLocations = new string[]
                     {
-                    "/Themes/Frontend/"+ _activeTheme +"/Views/{1}/{0}.cshtml",
-                    "/Themes/Frontend/"+ _activeTheme +"/Shared/{0}.cshtml",
-                    "/Themes/Backend/"+ _activeTheme +"/Views/{1}/{0}.cshtml",
-                    "/Themes/Backend/"+ _activeTheme +"/Shared/{0}.cshtml",
+                    "/Themes/Site/"+ _activeTheme +"/Views/{1}/{0}.cshtml",
+                    "/Themes/Site/"+ _activeTheme +"/Shared/{0}.cshtml",
+                    "/Themes/Admin/"+ _activeTheme +"/Views/{1}/{0}.cshtml",
+                    "/Themes/Admin/"+ _activeTheme +"/Shared/{0}.cshtml",
                     "/Core/" + module + "/Views/{1}/{0}.cshtml",
                     "/Core/" + module + "/Views/Shared/{0}.cshtml",
                     "/Modules/" + module + "/Views/{1}/{0}.cshtml",

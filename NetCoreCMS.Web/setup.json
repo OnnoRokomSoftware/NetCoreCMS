@@ -1,5 +1,0 @@
-{
-  "IsComplete": false,
-  "SelectedDatabase": "MySql",
-  "ConnectionString": "server=localhost;port=3306;database=NetCoreCMS;userid=masum;pwd=masum;sslmode=none;"
-}

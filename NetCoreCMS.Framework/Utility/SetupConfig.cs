@@ -24,7 +24,7 @@ namespace NetCoreCMS.Framework.Utility
         {
             var config = new SetupConfig();
             var rootDir = env.ContentRootPath;
-            var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Open);
+            var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate);
             using (StreamReader sr = new StreamReader(file))
             {
                 var content = sr.ReadToEnd();
