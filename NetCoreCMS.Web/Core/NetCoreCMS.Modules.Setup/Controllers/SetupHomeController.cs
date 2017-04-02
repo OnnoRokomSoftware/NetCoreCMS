@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Helper;
+using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Setup.Models.ViewModels;
 
 namespace NetCoreCMS.Modules.Cms.Controllers

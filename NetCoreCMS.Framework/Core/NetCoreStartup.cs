@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using NetCoreCMS.Framework.Helper;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core
 {

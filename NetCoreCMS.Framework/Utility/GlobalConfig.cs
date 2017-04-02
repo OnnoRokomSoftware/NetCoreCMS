@@ -1,7 +1,7 @@
 ﻿using NetCoreCMS.Framework.Modules;
 using System.Collections.Generic;
 
-namespace NetCoreCMS.Framework.Helper
+namespace NetCoreCMS.Framework.Utility
 {
     public class GlobalConfig
     {

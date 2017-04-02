@@ -8,7 +8,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Data { get; set; }
         public string Target { get; set; }
         public int Position { get; set; }
-        public ActionType ActionType { get; set; }        
+        public ActionType ActionType { get; set; }
     }
 
     public enum ActionType
@@ -20,4 +20,5 @@ namespace NetCoreCMS.Framework.Core.Models
         PostCategory,
         Module
     }
+
 }

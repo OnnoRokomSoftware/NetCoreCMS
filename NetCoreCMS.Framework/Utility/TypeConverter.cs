@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetCoreCMS.Framework.Helper
+namespace NetCoreCMS.Framework.Utility
 {
     public class TypeConverter
     {

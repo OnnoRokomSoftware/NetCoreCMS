@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace NetCoreCMS.Framework.Core.Data
+
+namespace NetCoreCMS.Modules.Cms.Models
 {
-    public class CoreModelBuilder : INccModuleBuilder
+    public class CmsModelBuilder : INccModuleBuilder
     {
         public void Build(ModelBuilder modelBuilder)
         {

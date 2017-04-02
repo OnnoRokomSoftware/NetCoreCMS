@@ -15,7 +15,7 @@ using NetCoreCMS.Web.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core;
 using Microsoft.AspNetCore.Mvc.Razor;
-using NetCoreCMS.Framework.Helper;
+using NetCoreCMS.Framework.Utility;
 using Microsoft.CodeAnalysis;
 
 namespace NetCoreCMS.Web

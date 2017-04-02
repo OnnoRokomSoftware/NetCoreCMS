@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using NetCoreCMS.Framework.Helper;
+using NetCoreCMS.Framework.Utility;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
 
