@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class Settings
+    public class NccSettings
     {
         [Key]
         public long Id { get; set; }

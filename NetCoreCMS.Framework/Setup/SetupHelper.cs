@@ -1,19 +1,10 @@
 ﻿using Microsoft.AspNetCore.Hosting;
+using NetCoreCMS.Framework.Core.Data;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
-namespace NetCoreCMS.Framework.Utility
+namespace NetCoreCMS.Framework.Setup
 {
-    public class SetupConfig
-    {
-        public bool IsComplete { get; set; }
-        public string SelectedDatabase { get; set; }
-        public string ConnectionString { get; set; }
-    }
-    
     public class SetupHelper
     {
         private static string _configFileName = "setup.json";
@@ -51,7 +42,7 @@ namespace NetCoreCMS.Framework.Utility
                     IsComplete = IsComplete,
                     SelectedDatabase = SelectedDatabase,
                     ConnectionString = ConnectionString
-                },Formatting.Indented);
+                }, Formatting.Indented);
 
                 if (!string.IsNullOrEmpty(content))
                 {
@@ -59,6 +50,29 @@ namespace NetCoreCMS.Framework.Utility
                 }
             }
             return config;
+        }
+
+        public static bool CreateDatabase(IHostingEnvironment env, DatabaseEngine database, DatabaseInfo databaseInfo)
+        {
+            switch (database)
+            {
+                case DatabaseEngine.MsSql:
+                    break;
+                case DatabaseEngine.MsSqlLocalStorage:
+                    break;
+                case DatabaseEngine.MySql:
+                    break;
+                case DatabaseEngine.PgSql:
+                    break;
+                case DatabaseEngine.SqLite:
+                    string path = env.ContentRootPath;
+                    path = Path.Combine(path, "Data");
+                    string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
+                    File.Create(dbFileName);
+                    return File.Exists(dbFileName);
+
+            }
+            return false;
         }
     }
 }

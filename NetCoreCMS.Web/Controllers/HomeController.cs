@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Utility;
-using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authorization;
+using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Web.Controllers
 {
+    [Authorize(Roles = "Administrator")]
     public class HomeController : Controller
     {
         IHostingEnvironment _env;
@@ -24,21 +22,8 @@ namespace NetCoreCMS.Web.Controllers
             }
             return View();
         }
-
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-        }
-
+        
+        [AllowAnonymous]
         public IActionResult Error()
         {
             return View();

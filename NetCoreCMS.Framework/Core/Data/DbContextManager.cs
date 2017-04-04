@@ -12,7 +12,7 @@ namespace NetCoreCMS.Framework.Core.Data
 {
     public class DbContextManager 
     {
-        private static string _sqLiteConString = "Data Source={0}\\NetCoreCMS.Web.db;Version=3;";
+        private static string _sqLiteConString = "Data Source={0}\\{1}.db";
         private static string _sqlLocalDb = "Server=(localdb)\\mssqllocaldb;Database=NetCoreCMS.Web.db;Trusted_Connection=True;MultipleActiveResultSets=true";
         private static string _mySqlConString = "server={0};port={1};database={2};userid={3};pwd={4};sslmode=none;";
         private static string _msSqlConString = "Data Source={0}; Initial Catalog={1}; User Id = {2}; Password = {3}; MultipleActiveResultSets=true";
@@ -44,7 +44,7 @@ namespace NetCoreCMS.Framework.Core.Data
                         return string.Format(_pgSqlConString, server, port, database, username, password);
                 case DatabaseEngine.SqLite:
                     var path = env.ContentRootPath;
-                    return string.Format(_sqLiteConString, Path.Combine(path,"Data"));
+                    return string.Format(_sqLiteConString, Path.Combine(path,"Data"), database);
                 default:
                     return "";
 

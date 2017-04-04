@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -14,9 +11,7 @@ using NetCoreCMS.Web.Models;
 using NetCoreCMS.Web.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core;
-using Microsoft.AspNetCore.Mvc.Razor;
-using NetCoreCMS.Framework.Utility;
-using Microsoft.CodeAnalysis;
+using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Web
 {
@@ -56,8 +51,12 @@ namespace NetCoreCMS.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlite(SetupHelper.ConnectionString)
+            );
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -106,7 +105,7 @@ namespace NetCoreCMS.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=CmsHome}/{action=Index}/{id?}");
             });
         }
     }

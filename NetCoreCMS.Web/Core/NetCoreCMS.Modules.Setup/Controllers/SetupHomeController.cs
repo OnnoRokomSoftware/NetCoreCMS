@@ -1,16 +1,14 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Modules.Setup.Models.ViewModels;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
     public class SetupHomeController : NccController
     {
-        IOptions<SetupConfig> _setupOption;
         IHostingEnvironment _env;
         public SetupHomeController(IHostingEnvironment env)
         {
@@ -29,9 +27,13 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             if (ModelState.IsValid)
             {
                 SetupHelper.ConnectionString = DbContextManager.GetConnectionString(_env, setup.Database, setup.DatabaseHost, setup.DatabasePort, setup.DatabaseName, setup.DatabaseUserName, setup.DatabasePassword);
-                SetupHelper.IsComplete = true;
                 SetupHelper.SelectedDatabase = setup.Database.ToString();
+
+                SetupHelper.CreateDatabase(_env, setup.Database, setup);
+
+                SetupHelper.IsComplete = true;
                 SetupHelper.SaveSetup(_env);
+                
                 return RedirectToAction("Success");
             }
             else

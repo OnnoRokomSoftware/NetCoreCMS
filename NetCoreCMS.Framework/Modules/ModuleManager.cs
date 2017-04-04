@@ -34,7 +34,7 @@ namespace NetCoreCMS.Framework.Modules
                     {
                         assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
                     }
-                    catch (FileLoadException ex)
+                    catch (FileLoadException)
                     { 
                         continue;
                     }
