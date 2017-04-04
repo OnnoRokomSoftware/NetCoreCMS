@@ -11,9 +11,6 @@ namespace NetCoreCMS.Framework.Setup
         PersonalProfile,
         CompanyWebsite,
         CRM,
-        ShoppingCart,
-        Accounting,
-        Inventory,
-        SchoolManagement
+        EcommarceSite
     }
 }
