@@ -38,7 +38,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             }
             else
             {
-                ModelState.AddModelError("SiteName", "Invalid Datas");
+                ModelState.AddModelError("SiteName", "Invalid Data");
             }
 
             return View();
