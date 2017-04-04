@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-
+using Microsoft.AspNetCore.Hosting;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -48,7 +48,7 @@ namespace NetCoreCMS.Framework.Modules
             return modules;
         }
         
-        public void RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services)
+        public List<INccModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services)
         {
             foreach (var module in modules)
             {
@@ -76,22 +76,9 @@ namespace NetCoreCMS.Framework.Modules
                     o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Assembly.Location));
                 }
             });
-        }
 
-        public void RegisterStaticFiles(IApplicationBuilder app)
-        {
-            foreach (var module in modules)
-            {
-                var moduleDir = new DirectoryInfo(Path.Combine(module.Path,"wwwroot"));
-                if (moduleDir.Exists)
-                {
-                    app.UseStaticFiles(new StaticFileOptions()
-                    {
-                        FileProvider = new PhysicalFileProvider(moduleDir.FullName),
-                        RequestPath = new PathString("/" + module.ModuleName)
-                    });
-                }                
-            }
+            return modules;
         }
+        
     }
 }

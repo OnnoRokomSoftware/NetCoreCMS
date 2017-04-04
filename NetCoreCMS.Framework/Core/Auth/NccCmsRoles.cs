@@ -1,6 +1,6 @@
 ﻿namespace NetCoreCMS.Framework.Core.Auth
 {
-    public class BaseRoles
+    public class NccCmsRoles
     {
         public static string Administrator { get; } = "Administrator";
         public static string Editor { get; } = "Editor";

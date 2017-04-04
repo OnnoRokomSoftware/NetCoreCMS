@@ -30,6 +30,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 SetupHelper.SelectedDatabase = setup.Database.ToString();
 
                 SetupHelper.CreateDatabase(_env, setup.Database, setup);
+                //SetupHelper.CreateAdminUser(_env, setup.AdminUserName, setup.AdminPassword);
 
                 SetupHelper.IsComplete = true;
                 SetupHelper.SaveSetup(_env);

@@ -20,7 +20,7 @@ namespace NetCoreCMS.Web
         private readonly IHostingEnvironment _hostingEnvironment;
         ModuleManager _moduleManager;
         NetCoreStartup _startup;
-        private readonly IList<NccModule> modules = new List<NccModule>();
+        private IList<INccModule> modules = new List<INccModule>();
 
         public Startup(IHostingEnvironment env)
         {
@@ -76,7 +76,7 @@ namespace NetCoreCMS.Web
 
             _moduleManager.LoadModules(moduleFolder);
             _moduleManager.LoadModules(coreModuleFolder);
-            _moduleManager.RegisterModules(mvcBuilder, services);
+            modules = _moduleManager.RegisterModules(mvcBuilder, services);
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -103,7 +103,7 @@ namespace NetCoreCMS.Web
             }
 
             app.UseStaticFiles();
-            _moduleManager.RegisterStaticFiles(app);
+            ResourcePathExpendar.RegisterStaticFiles(env, app, modules);
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715

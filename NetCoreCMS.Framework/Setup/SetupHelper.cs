@@ -2,6 +2,8 @@
 using NetCoreCMS.Framework.Core.Data;
 using Newtonsoft.Json;
 using System.IO;
+using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Setup
 {
@@ -29,6 +31,11 @@ namespace NetCoreCMS.Framework.Setup
             }
             return config;
         }
+
+        //public static bool CreateAdminUser(IHostingEnvironment env, string userName, string password)
+        //{
+        //    NccDbContext dbContext = new NccDbContext();
+        //}
 
         public static SetupConfig SaveSetup(IHostingEnvironment env)
         {
