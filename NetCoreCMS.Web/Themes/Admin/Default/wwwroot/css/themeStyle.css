@@ -12,7 +12,6 @@
 /*
  * Sidebar
  */
-
 /* Hide for mobile, show later */
 .sidebar {
     display: none;
@@ -60,6 +59,7 @@
 
 .main {
     padding: 20px;
+    min-height:85vh;
 }
 
 @media (min-width: 768px) {
