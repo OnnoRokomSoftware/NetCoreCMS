@@ -45,10 +45,13 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
+    <link href="/Theme/Admin/Default/css/themeStyle.css" rel="stylesheet" />
+    @*<script src="/NetCoreCMS.Modules.Setup/js/Setup.js"></script>*@
+
 </head>
 <body>
-    <nav class="navbar navbar-default navbar-fixed-top" style="background-color:darkgray">
-        <div class="container">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -56,22 +59,38 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">NetCoreCMS Backend</a>
+                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">NetCoreCMS Admin</a>
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+                @*<ul class="nav navbar-nav">
                     <li><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
                     <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
                     <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
                     <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
                     
-                </ul>
+                </ul>*@
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>
     </nav>
-    <div class="container body-content">
+    <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+            <ul class="nav nav-sidebar">
+                @*<li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+                <li><a href="#">Reports</a></li>
+                <li><a href="#">Analytics</a></li>
+                <li><a href="#">Export</a></li>*@
+                <li class="active"><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
+                <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
+                <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
+                <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
         @RenderBody()
+        </div>
+    </div>
+    <div class="row text-center">
         <hr />
         <footer>
             <p>&copy; 2017 - NetCoreCMS.Web</p>
