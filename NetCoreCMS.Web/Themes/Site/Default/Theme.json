@@ -1,0 +1,11 @@
+﻿{
+  "ThemeName": "Default",
+  "Type" : "Site",  
+  "Author": "Xonaki",
+  "Email" : "netcorecms@xonaki.com",
+  "Website": "http://xonaki.com",
+  "Description": "Builtin Content Management System Site Theme.",
+  "Version" :  "0.1.1",
+  "NetCoreCMSVersion" :  "0.1.1",
+  "Category" : "Default"
+}

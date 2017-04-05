@@ -10,7 +10,7 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public class DbContextManager 
+    public class DatabaseFactory 
     {
         private static string _sqLiteConString = "Data Source={0}\\{1}.db";
         private static string _sqlLocalDb = "Server=(localdb)\\mssqllocaldb;Database=NetCoreCMS.Web.db;Trusted_Connection=True;MultipleActiveResultSets=true";
@@ -49,6 +49,29 @@ namespace NetCoreCMS.Framework.Core.Data
                     return "";
 
             }
+        }
+
+        public static bool CreateDatabase(IHostingEnvironment env, DatabaseEngine database, DatabaseInfo databaseInfo)
+        {
+            switch (database)
+            {
+                case DatabaseEngine.MsSql:
+                    break;
+                case DatabaseEngine.MsSqlLocalStorage:
+                    break;
+                case DatabaseEngine.MySql:
+                    break;
+                case DatabaseEngine.PgSql:
+                    break;
+                case DatabaseEngine.SqLite:
+                    string path = env.ContentRootPath;
+                    path = Path.Combine(path, "Data");
+                    string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
+                    File.Create(dbFileName);
+                    return File.Exists(dbFileName);
+
+            }
+            return false;
         }
 
         private static void RegisterEntities(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)

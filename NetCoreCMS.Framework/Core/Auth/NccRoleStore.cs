@@ -2,6 +2,7 @@
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using System.Security.Claims;
+using System;
 
 namespace NetCoreCMS.Framework.Core.Auth
 {
@@ -14,6 +15,11 @@ namespace NetCoreCMS.Framework.Core.Auth
         protected override IdentityRoleClaim<long> CreateRoleClaim(NccRole role, Claim claim)
         {
             return new IdentityRoleClaim<long> { RoleId = role.Id, ClaimType = claim.Type, ClaimValue = claim.Value };
+        }
+
+        internal object FindByNameAsync(object reader)
+        {
+            throw new NotImplementedException();
         }
     }
 }

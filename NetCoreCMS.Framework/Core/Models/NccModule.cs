@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class Module : BaseModel
+    public class NccModule : BaseModel
     {
         public bool AntiForgery { get; set; }
         public string Author { get; set; }

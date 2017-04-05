@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +11,7 @@ using NetCoreCMS.Web.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Web
 {
@@ -20,8 +20,7 @@ namespace NetCoreCMS.Web
         private readonly IHostingEnvironment _hostingEnvironment;
         ModuleManager _moduleManager;
         NetCoreStartup _startup;
-        private IList<INccModule> modules = new List<INccModule>();
-
+        
         public Startup(IHostingEnvironment env)
         {
             _hostingEnvironment = env;
@@ -44,6 +43,8 @@ namespace NetCoreCMS.Web
             _moduleManager = new ModuleManager();
             var setupConfig = SetupHelper.LoadSetup(env);
             _startup = new NetCoreStartup();
+            GlobalConfig.ContentRootPath = env.ContentRootPath;
+            GlobalConfig.WebRootPath = env.WebRootPath;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -76,7 +77,7 @@ namespace NetCoreCMS.Web
 
             _moduleManager.LoadModules(moduleFolder);
             _moduleManager.LoadModules(coreModuleFolder);
-            modules = _moduleManager.RegisterModules(mvcBuilder, services);
+            GlobalConfig.Modules = _moduleManager.RegisterModules(mvcBuilder, services);
 
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -103,7 +104,7 @@ namespace NetCoreCMS.Web
             }
 
             app.UseStaticFiles();
-            ResourcePathExpendar.RegisterStaticFiles(env, app, modules);
+            ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules);
             app.UseIdentity();
 
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715

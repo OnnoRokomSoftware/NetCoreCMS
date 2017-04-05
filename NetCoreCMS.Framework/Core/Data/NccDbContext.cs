@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Auth;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
@@ -23,17 +24,21 @@ namespace NetCoreCMS.Framework.Core.Data
             {
                 typeToRegisters.AddRange(module.Assembly.DefinedTypes.Select(t => t.AsType()));
             }
-
-            RegisterEntities(modelBuilder, typeToRegisters);
-
-            RegisterConvention(modelBuilder);
-
+            
+            ScanEntities(modelBuilder, typeToRegisters);
+            SetTableNameByConvention(modelBuilder);
             base.OnModelCreating(modelBuilder);
-
-            RegisterCustomMappings(modelBuilder, typeToRegisters);
+            RegisterModelMappings(modelBuilder, typeToRegisters);
+            RegisterIdentityModules(modelBuilder);
         }
 
-        private static void RegisterConvention(ModelBuilder modelBuilder)
+        private void RegisterIdentityModules(ModelBuilder modelBuilder)
+        {
+            IdentityModelBuilder imb = new IdentityModelBuilder();
+            imb.Build(modelBuilder);
+        }
+
+        private static void SetTableNameByConvention(ModelBuilder modelBuilder)
         {
             foreach (var entity in modelBuilder.Model.GetEntityTypes())
             {
@@ -46,7 +51,7 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
 
-        private static void RegisterEntities(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
+        private static void ScanEntities(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
         {
             var entityTypes = typeToRegisters.Where(x => x.GetTypeInfo().IsSubclassOf(typeof(BaseModel)) && !x.GetTypeInfo().IsAbstract);
             foreach (var type in entityTypes)
@@ -55,7 +60,7 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
 
-        private static void RegisterCustomMappings(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
+        private static void RegisterModelMappings(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
         {
             var customModelBuilderTypes = typeToRegisters.Where(x => typeof(INccModuleBuilder).IsAssignableFrom(x));
             foreach (var builderType in customModelBuilderTypes)

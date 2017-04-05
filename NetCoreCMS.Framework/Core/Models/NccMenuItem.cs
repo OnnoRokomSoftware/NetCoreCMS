@@ -2,9 +2,9 @@
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class Menu : BaseModel
+    public class NccMenuItem : BaseModel
     {
-        public Menu ParentMenu { get; set; }
+        public NccMenuItem Parent { get; set; }
         public string Data { get; set; }
         public string Target { get; set; }
         public int Position { get; set; }

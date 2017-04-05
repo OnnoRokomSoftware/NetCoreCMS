@@ -26,11 +26,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             if (ModelState.IsValid)
             {
-                SetupHelper.ConnectionString = DbContextManager.GetConnectionString(_env, setup.Database, setup.DatabaseHost, setup.DatabasePort, setup.DatabaseName, setup.DatabaseUserName, setup.DatabasePassword);
+                SetupHelper.ConnectionString = DatabaseFactory.GetConnectionString(_env, setup.Database, setup.DatabaseHost, setup.DatabasePort, setup.DatabaseName, setup.DatabaseUserName, setup.DatabasePassword);
                 SetupHelper.SelectedDatabase = setup.Database.ToString();
 
                 SetupHelper.CreateDatabase(_env, setup.Database, setup);
-                //SetupHelper.CreateAdminUser(_env, setup.AdminUserName, setup.AdminPassword);
+                SetupHelper.CreateAdminUser(_env, setup.AdminUserName, setup.AdminPassword, setup.Email, setup.Database, SetupHelper.ConnectionString);
 
                 SetupHelper.IsComplete = true;
                 SetupHelper.SaveSetup(_env);

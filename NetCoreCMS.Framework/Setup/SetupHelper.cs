@@ -2,8 +2,10 @@
 using NetCoreCMS.Framework.Core.Data;
 using Newtonsoft.Json;
 using System.IO;
-using System;
 using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Framework.Core.Auth;
+using NetCoreCMS.Framework.Core.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Setup
 {
@@ -32,10 +34,43 @@ namespace NetCoreCMS.Framework.Setup
             return config;
         }
 
-        //public static bool CreateAdminUser(IHostingEnvironment env, string userName, string password)
-        //{
-        //    NccDbContext dbContext = new NccDbContext();
-        //}
+        public static bool CreateAdminUser(IHostingEnvironment env, string userName, string password, string email, DatabaseEngine database, string connectionString)
+        {
+            var builder = new DbContextOptionsBuilder<NccDbContext>();
+            builder.UseSqlite(connectionString);
+            NccDbContext dbContext = new NccDbContext(builder.Options);
+
+            NccRoleStore roleStore = new NccRoleStore(dbContext);
+            NccUserStore userStore = new NccUserStore(dbContext);
+            CreateCmsDefaultRoles(roleStore);
+
+            var adminUser = new NccUser()
+            {
+                Email = email,
+                FullName = "Site Admin",
+                Name = "Administrator",
+                UserName = userName
+            };
+
+            return false;
+        }
+
+        private static void CreateCmsDefaultRoles(NccRoleStore roleStore)
+        {
+            NccRole administrator = new NccRole() { Name = NccCmsRoles.Administrator, NormalizedName = NccCmsRoles.Administrator };
+            NccRole author = new NccRole() { Name = NccCmsRoles.Author, NormalizedName = NccCmsRoles.Author };
+            NccRole contributor = new NccRole() { Name = NccCmsRoles.Contributor, NormalizedName = NccCmsRoles.Contributor };
+            NccRole editor = new NccRole() { Name = NccCmsRoles.Editor, NormalizedName = NccCmsRoles.Editor };
+            NccRole subscriber = new NccRole() { Name = NccCmsRoles.Subscriber, NormalizedName = NccCmsRoles.Subscriber };
+            NccRole reader = new NccRole() { Name = NccCmsRoles.Reader, NormalizedName = NccCmsRoles.Reader };
+            
+            roleStore.CreateAsync(administrator);
+            roleStore.CreateAsync(author);
+            roleStore.CreateAsync(contributor);
+            roleStore.CreateAsync(editor);
+            roleStore.CreateAsync(subscriber);
+            roleStore.CreateAsync(reader);
+        }
 
         public static SetupConfig SaveSetup(IHostingEnvironment env)
         {
@@ -61,25 +96,7 @@ namespace NetCoreCMS.Framework.Setup
 
         public static bool CreateDatabase(IHostingEnvironment env, DatabaseEngine database, DatabaseInfo databaseInfo)
         {
-            switch (database)
-            {
-                case DatabaseEngine.MsSql:
-                    break;
-                case DatabaseEngine.MsSqlLocalStorage:
-                    break;
-                case DatabaseEngine.MySql:
-                    break;
-                case DatabaseEngine.PgSql:
-                    break;
-                case DatabaseEngine.SqLite:
-                    string path = env.ContentRootPath;
-                    path = Path.Combine(path, "Data");
-                    string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
-                    File.Create(dbFileName);
-                    return File.Exists(dbFileName);
-
-            }
-            return false;
+            return DatabaseFactory.CreateDatabase(env, database, databaseInfo);
         }
     }
 }

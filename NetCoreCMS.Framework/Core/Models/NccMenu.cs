@@ -1,21 +1,22 @@
 ﻿using NetCoreCMS.Framework.Core.Mvc.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class CmsMenu : BaseModel
+    public class NccMenu : BaseModel
     {
-        public CmsMenuType CmsMenuType { get; set; }
-        public List<Menu> Menus { get; set; }
+        public MenuType MenuType { get; set; }
+        public List<NccMenuItem> MenuItems { get; set; }
         public MenuFor MenuFor { get; set; }
     }
 
-    public enum CmsMenuType
+    public enum MenuType
     {
-        Horizontal,
-        Vertical
+        Top,
+        Main,
+        Left,
+        Right,
+        Footer
     }
     public enum MenuFor
     {
