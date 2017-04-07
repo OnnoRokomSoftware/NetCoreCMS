@@ -20,30 +20,30 @@ namespace NetCoreCMS.Framework.Core.Data
         private static string _msSqlConString = "Data Source={0}; Initial Catalog={1}; User Id = {2}; Password = {3}; MultipleActiveResultSets=true";
         private static string _pgSqlConString = "Host={0}; Port={1}; Database={2}; User ID={3}; Password={4}; Pooling=true;";
 
-        public static string GetConnectionString(IHostingEnvironment env, DatabaseEngine engine, string server, string port, string database, string username, string password)
+        public static string GetConnectionString(IHostingEnvironment env, DatabaseEngine engine, DatabaseInfo dbInfo)
         {
             switch (engine)
             {
                 case DatabaseEngine.MsSql:
-                    if (string.IsNullOrEmpty(port))
-                        return string.Format(_msSqlConString, server, database, username, password);
+                    if (string.IsNullOrEmpty(dbInfo.DatabasePort))
+                        return string.Format(_msSqlConString, dbInfo.DatabaseHost, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                     else
-                        return string.Format(_msSqlConString, server+","+port, database, username, password);
+                        return string.Format(_msSqlConString, dbInfo.DatabaseHost + "," + dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
 
                 case DatabaseEngine.MsSqlLocalStorage:
                     return _sqlLocalDb;
 
                 case DatabaseEngine.MySql:
-                    if (string.IsNullOrEmpty(port))
-                        return string.Format(_mySqlConString, server, "3306", database, username, password);
+                    if (string.IsNullOrEmpty(dbInfo.DatabasePort))
+                        return string.Format(_mySqlConString, dbInfo.DatabaseHost, "3306", dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                     else
-                        return string.Format(_mySqlConString, server, port, database, username, password);
+                        return string.Format(_mySqlConString, dbInfo.DatabaseHost, dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
 
                 case DatabaseEngine.PgSql:
-                    if (string.IsNullOrEmpty(port))
-                        return string.Format(_pgSqlConString, server, "5432", database, username, password);
+                    if (string.IsNullOrEmpty(dbInfo.DatabasePort))
+                        return string.Format(_pgSqlConString, dbInfo.DatabaseHost, "5432", dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                     else
-                        return string.Format(_pgSqlConString, server, port, database, username, password);
+                        return string.Format(_pgSqlConString, dbInfo.DatabaseHost, dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                 case DatabaseEngine.SqLite:
                     var path = GlobalConfig.ContentRootPath;
                     return string.Format(_sqLiteConString, Path.Combine(path,"Data"), "NetCoreCMS.Database.SqLite");
@@ -74,13 +74,7 @@ namespace NetCoreCMS.Framework.Core.Data
                     {
                         dbFile.Create();
                     }
-                    var builder = new DbContextOptionsBuilder<NccDbContext>();
-                    var conStr = GetConnectionString(env, DatabaseEngine.SqLite, "","","","","");
-                    builder.UseSqlite( conStr, options => options.MigrationsAssembly("NetCoreCMS.Web"));
-                    var dbContext = new NccDbContext(builder.Options);
-                    var migrator = dbContext.Database.GetPendingMigrations();
-                    dbContext.Database.Migrate();
-                    var created = dbContext.Database.EnsureCreated();
+                   
                     return File.Exists(dbFileName);
 
             }
@@ -96,7 +90,14 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
 
-        
-
+        public static bool InitilizeDatabase(DatabaseEngine database, string connectionString)
+        {
+            var builder = new DbContextOptionsBuilder<NccDbContext>();
+            builder.UseSqlite(connectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));
+            var dbContext = new NccDbContext(builder.Options);
+            var migrator = dbContext.Database.GetPendingMigrations();
+            dbContext.Database.Migrate();
+            return dbContext.Database.EnsureCreated();
+        }
     }
 }

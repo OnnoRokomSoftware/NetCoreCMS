@@ -47,16 +47,20 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 return View();
             }
+            else if(!SetupHelper.IsAdminCreateComplete)
+            {
+                return RedirectToAction("CreateAdmin");
+            }
 
             return RedirectToAction("Success");
         }
 
         [HttpPost]
-        public async  Task<ActionResult> Index(SetupViewModel setup)
+        public async Task<ActionResult> Index(SetupViewModel setup)
         {
             if (ModelState.IsValid && !SetupHelper.IsDbCreateComplete)
             {
-                SetupHelper.ConnectionString = DatabaseFactory.GetConnectionString(_env, setup.Database, setup.DatabaseHost, setup.DatabasePort, setup.DatabaseName, setup.DatabaseUserName, setup.DatabasePassword);
+                SetupHelper.ConnectionString = DatabaseFactory.GetConnectionString(_env, setup.Database, setup);
                 SetupHelper.SelectedDatabase = setup.Database.ToString();
                 SetupHelper.IsDbCreateComplete = SetupHelper.CreateDatabase(_env, setup.Database, setup);               
                 SetupHelper.SaveSetup(_env);
@@ -78,7 +82,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(AdminViewModel viewModel)
         {
-            
+
+            SetupHelper.InitilizeDatabase();
+
             var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
             optionBuilder.UseSqlite(SetupHelper.ConnectionString, options => options.MigrationsAssembly("NetCoreCMS.Web"));
 
@@ -118,19 +124,59 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 );
             nccDbConetxt.Database.Migrate();
 
-            var result = await userManager.CreateAsync(new NccUser()
+            await roleManager.CreateAsync(new NccRole()
+            {
+                Name = NccCmsRoles.Administrator,
+                NormalizedName = NccCmsRoles.Administrator                
+            });
+
+            await roleManager.CreateAsync(new NccRole()
+            {
+                Name = NccCmsRoles.Author,
+                NormalizedName = NccCmsRoles.Author
+            });
+
+            await roleManager.CreateAsync(new NccRole()
+            {
+                Name = NccCmsRoles.Contributor,
+                NormalizedName = NccCmsRoles.Contributor
+            });
+
+            await roleManager.CreateAsync(new NccRole()
+            {
+                Name = NccCmsRoles.Editor,
+                NormalizedName = NccCmsRoles.Editor
+            });
+
+            await roleManager.CreateAsync(new NccRole()
+            {
+                Name = NccCmsRoles.Reader,
+                NormalizedName = NccCmsRoles.Reader
+            });
+
+            await roleManager.CreateAsync(new NccRole()
+            {
+                Name = NccCmsRoles.Subscriber,
+                NormalizedName = NccCmsRoles.Subscriber
+            });
+
+            var admin = new NccUser()
             {
                 Email = viewModel.Email,
                 FullName = "Administrator",
                 Name = "admin",
                 UserName = viewModel.AdminUserName
-                
-            }, viewModel.AdminPassword);
+
+            };
+            var result = await userManager.CreateAsync(admin, viewModel.AdminPassword);
+
+            await userManager.AddToRoleAsync(admin, NccCmsRoles.Administrator);
 
             SetupHelper.IsAdminCreateComplete = true;
             SetupHelper.SaveSetup(_env);
+
+            return RedirectToAction("Success");
             
-            return View();
         }
   
         public ActionResult Success()

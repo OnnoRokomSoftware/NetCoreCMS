@@ -7,6 +7,7 @@ using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using System.Threading.Tasks;
 using NetCoreCMS.Framework.Utility;
+using System;
 
 namespace NetCoreCMS.Framework.Setup
 {
@@ -82,6 +83,11 @@ namespace NetCoreCMS.Framework.Setup
             roleManager.CreateAsync(reader);
         }
 
+        public static void InitilizeDatabase()
+        {
+            DatabaseFactory.InitilizeDatabase((DatabaseEngine)Enum.Parse(typeof(DatabaseEngine),SelectedDatabase), ConnectionString);
+        }
+
         public static SetupConfig SaveSetup(IHostingEnvironment env)
         {
             var config = new SetupConfig();
@@ -107,7 +113,8 @@ namespace NetCoreCMS.Framework.Setup
 
         public static bool CreateDatabase(IHostingEnvironment env, DatabaseEngine database, DatabaseInfo databaseInfo)
         {
-            return DatabaseFactory.CreateDatabase(env, database, databaseInfo);
+            DatabaseFactory.CreateDatabase(env, database, databaseInfo);            
+            return true;
         }
     }
 }
