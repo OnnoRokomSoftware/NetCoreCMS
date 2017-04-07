@@ -14,11 +14,8 @@ using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Setup.Models.ViewModels;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.PlatformAbstractions;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {

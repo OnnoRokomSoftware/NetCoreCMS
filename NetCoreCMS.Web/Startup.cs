@@ -15,6 +15,12 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Auth;
+using NetCoreCMS.Framework.Core.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System;
 
 namespace NetCoreCMS.Web
 {
@@ -39,10 +45,11 @@ namespace NetCoreCMS.Web
                 // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>();
             }
-
+            
             builder.AddEnvironmentVariables();
+            
             Configuration = builder.Build();
-
+            
             GlobalConfig.ContentRootPath = env.ContentRootPath;
             GlobalConfig.WebRootPath = env.WebRootPath;
 
@@ -54,7 +61,7 @@ namespace NetCoreCMS.Web
         public IConfigurationRoot Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public IServiceProvider ConfigureServices(IServiceCollection services)
         { 
             services.AddSession();
             services.AddDistributedMemoryCache();
@@ -64,17 +71,8 @@ namespace NetCoreCMS.Web
                 services.AddDbContext<NccDbContext>(options =>
                     options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
                 );
-
-                services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-                {
-                    options.Password.RequireDigit = false;
-                    options.Password.RequireLowercase = false;
-                    options.Password.RequireNonAlphanumeric = false;
-                    options.Password.RequireUppercase = false;
-                    options.Password.RequiredLength = 1;
-                })
-              .AddEntityFrameworkStores<NccDbContext>()
-              .AddDefaultTokenProviders();
+                services.AddCustomizedIdentity();
+                
             }
 
             var mvcBuilder = services.AddMvc();
@@ -88,11 +86,17 @@ namespace NetCoreCMS.Web
             GlobalConfig.Services = services;
 
             // Add application services.
+            
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddSingleton<IConfiguration>(Configuration);
+            services.AddSingleton<IConfigurationRoot>(Configuration);
+            services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
+            
             _startup.RegisterDatabase(services);
+            return services.Build(Configuration, _hostingEnvironment);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
