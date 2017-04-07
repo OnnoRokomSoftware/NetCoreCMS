@@ -1,17 +1,24 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NetCoreCMS.Web.Data;
-using NetCoreCMS.Web.Models;
-using NetCoreCMS.Web.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Core.Services.Auth;
+using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Auth;
+using Microsoft.AspNetCore.Identity;
+using NetCoreCMS.Web.Data;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using NetCoreCMS.Web.Models;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace NetCoreCMS.Web
 {
@@ -39,12 +46,13 @@ namespace NetCoreCMS.Web
 
             builder.AddEnvironmentVariables();
             Configuration = builder.Build();
+            
+            GlobalConfig.ContentRootPath = env.ContentRootPath;
+            GlobalConfig.WebRootPath = env.WebRootPath;
 
             _moduleManager = new ModuleManager();
             var setupConfig = SetupHelper.LoadSetup(env);
             _startup = new NetCoreStartup();
-            GlobalConfig.ContentRootPath = env.ContentRootPath;
-            GlobalConfig.WebRootPath = env.WebRootPath;
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -52,23 +60,46 @@ namespace NetCoreCMS.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlite(SetupHelper.ConnectionString)
-            );
+            options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddSession();
+            services.AddDistributedMemoryCache();
+
+            //if (SetupHelper.IsDbCreateComplete)
+            //{
+                /*
+                services.AddDbContext<NccDbContext>(options =>
+                    options.UseSqlite(SetupHelper.ConnectionString)
+                );
+            
+                services.AddIdentity<NccUser, NccRole>(options =>
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequiredLength = 1;
+                })
+                .AddUserStore<NccUserStore>()
+                //.AddUserManager<UserManager<NccUser>>()
+                .AddRoleStore<NccRoleStore>()
+                //.AddRoleManager<RoleManager<NccRole>>()
+                .AddSignInManager<NccSignInManager<NccUser>>()
+                .AddEntityFrameworkStores<NccDbContext, long>()
+                .AddDefaultTokenProviders();
+            */
+            //}            
 
             services.AddIdentity<ApplicationUser, IdentityRole>(options =>
-                    {
-                        options.Password.RequireDigit = false;
-                        options.Password.RequireLowercase = false;
-                        options.Password.RequireNonAlphanumeric = false;
-                        options.Password.RequireUppercase = false;
-                        options.Password.RequiredLength = 6;
-                    })
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 1;
+            })
+              .AddEntityFrameworkStores<ApplicationDbContext>()
+              .AddDefaultTokenProviders();
 
             var mvcBuilder = services.AddMvc();
 
@@ -78,11 +109,12 @@ namespace NetCoreCMS.Web
             _moduleManager.LoadModules(moduleFolder);
             _moduleManager.LoadModules(coreModuleFolder);
             GlobalConfig.Modules = _moduleManager.RegisterModules(mvcBuilder, services);
-
+            GlobalConfig.Services = services;
             // Add application services.
             services.AddTransient<IEmailSender, AuthMessageSender>();
             services.AddTransient<ISmsSender, AuthMessageSender>();
-
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             _startup.RegisterDatabase(services);
         }
 
@@ -105,16 +137,20 @@ namespace NetCoreCMS.Web
 
             app.UseStaticFiles();
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules);
-            app.UseIdentity();
-
+            GlobalConfig.App = app;
+            //if (SetupHelper.IsDbCreateComplete)
+            //{
+                app.UseIdentity();
+            //}
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
-
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=CmsHome}/{action=Index}/{id?}");
             });
+
         }
     }
 }

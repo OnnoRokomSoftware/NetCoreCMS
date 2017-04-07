@@ -16,11 +16,11 @@ namespace NetCoreCMS.Web.Controllers
         }
         public IActionResult Index()
         {
-            if (!SetupHelper.IsComplete)
+            if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                return Redirect("/SetupHome/Index");
+                return View();
             }
-            return View();
+            return Redirect("/SetupHome/Index");
         }
         
         [AllowAnonymous]

@@ -9,7 +9,8 @@ namespace NetCoreCMS.Framework.Setup
 {
     public class SetupConfig
     {
-        public bool IsComplete { get; set; }
+        public bool IsDbCreateComplete { get; set; }
+        public bool IsAdminCreateComplete { get; set; }
         public string SelectedDatabase { get; set; }
         public string ConnectionString { get; set; }
     }

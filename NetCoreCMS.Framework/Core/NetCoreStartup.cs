@@ -7,7 +7,7 @@ namespace NetCoreCMS.Framework.Core
     {
         public void RegisterDatabase(IServiceCollection services)
         {
-            if (SetupHelper.IsComplete)
+            if (SetupHelper.IsDbCreateComplete)
             {
                 
             }            

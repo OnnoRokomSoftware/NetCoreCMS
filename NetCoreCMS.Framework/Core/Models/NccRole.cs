@@ -8,6 +8,11 @@ namespace NetCoreCMS.Framework.Core.Models
 {
     public class NccRole : IdentityRole<long, NccUserRole, IdentityRoleClaim<long>>, IBaseModel<long>
     {
+        public NccRole()
+        {
+            CreationDate = DateTime.Now;
+            ModificationDate = DateTime.Now;
+        }
         public int VersionNumber { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }

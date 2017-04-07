@@ -6,7 +6,9 @@ using System.Security.Claims;
 
 namespace NetCoreCMS.Framework.Core.Auth
 {
-    public class NccUserStore : UserStore<NccUser, NccRole, NccDbContext, long, IdentityUserClaim<long>, NccUserRole,
+
+    public class NccUserStore : UserStore<NccUser, 
+        NccRole, NccDbContext, long, IdentityUserClaim<long>, NccUserRole,
         IdentityUserLogin<long>, IdentityUserToken<long>>
     {
         public NccUserStore(NccDbContext context) : base(context)

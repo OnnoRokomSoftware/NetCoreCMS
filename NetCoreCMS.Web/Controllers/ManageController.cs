@@ -9,7 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetCoreCMS.Web.Models;
 using NetCoreCMS.Web.Models.ManageViewModels;
-using NetCoreCMS.Web.Services;
+using NetCoreCMS.Framework.Core.Services.Auth;
 
 namespace NetCoreCMS.Web.Controllers
 {

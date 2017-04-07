@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NetCoreCMS.Web.Models;
 using NetCoreCMS.Web.Models.AccountViewModels;
-using NetCoreCMS.Web.Services;
+using NetCoreCMS.Framework.Core.Services.Auth;
 
 namespace NetCoreCMS.Web.Controllers
 {

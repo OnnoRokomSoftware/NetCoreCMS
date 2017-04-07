@@ -2,23 +2,26 @@
 using NetCoreCMS.Framework.Core.Data;
 using Newtonsoft.Json;
 using System.IO;
-using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Setup
 {
     public class SetupHelper
     {
         private static string _configFileName = "setup.json";
-        public static bool IsComplete { get; set; }
+        public static bool IsDbCreateComplete { get; set; }
+        public static bool IsAdminCreateComplete { get; set; }
         public static string SelectedDatabase { get; set; }
         public static string ConnectionString { get; set; }
+
         public static SetupConfig LoadSetup(IHostingEnvironment env)
         {
             var config = new SetupConfig();
-            var rootDir = env.ContentRootPath;
+            var rootDir = GlobalConfig.ContentRootPath;
             var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate);
             using (StreamReader sr = new StreamReader(file))
             {
@@ -26,7 +29,8 @@ namespace NetCoreCMS.Framework.Setup
                 if (!string.IsNullOrEmpty(content))
                 {
                     config = JsonConvert.DeserializeObject<SetupConfig>(content);
-                    IsComplete = config.IsComplete;
+                    IsDbCreateComplete = config.IsDbCreateComplete;
+                    IsAdminCreateComplete = config.IsAdminCreateComplete;
                     SelectedDatabase = config.SelectedDatabase;
                     ConnectionString = config.ConnectionString;
                 }
@@ -34,28 +38,34 @@ namespace NetCoreCMS.Framework.Setup
             return config;
         }
 
-        public static bool CreateAdminUser(IHostingEnvironment env, string userName, string password, string email, DatabaseEngine database, string connectionString)
-        {
-            var builder = new DbContextOptionsBuilder<NccDbContext>();
-            builder.UseSqlite(connectionString);
-            NccDbContext dbContext = new NccDbContext(builder.Options);
-
-            NccRoleStore roleStore = new NccRoleStore(dbContext);
-            NccUserStore userStore = new NccUserStore(dbContext);
-            CreateCmsDefaultRoles(roleStore);
-
+        public static async Task<bool> CreateAdminUser(
+            IHostingEnvironment env, 
+            UserManager<NccUser> userManager,
+            RoleManager<NccRole> roleManager,
+            SignInManager<NccUser> signInManager,
+            SetupInfo setupInfo
+            )
+        {   
+            
+            CreateCmsDefaultRoles(roleManager);
+            NccRole admin = await roleManager.FindByNameAsync(NccCmsRoles.Administrator);
             var adminUser = new NccUser()
             {
-                Email = email,
+                Email = setupInfo.Email,
                 FullName = "Site Admin",
                 Name = "Administrator",
-                UserName = userName
+                UserName = setupInfo.AdminUserName,
             };
+            
+            await userManager.CreateAsync(adminUser, setupInfo.AdminPassword);
+            NccUser user = await userManager.FindByNameAsync(setupInfo.AdminUserName);
+            await userManager.AddToRoleAsync(user, NccCmsRoles.Administrator);
+            await signInManager.SignInAsync(user, false);
 
             return false;
         }
 
-        private static void CreateCmsDefaultRoles(NccRoleStore roleStore)
+        private static void CreateCmsDefaultRoles(RoleManager<NccRole> roleManager)
         {
             NccRole administrator = new NccRole() { Name = NccCmsRoles.Administrator, NormalizedName = NccCmsRoles.Administrator };
             NccRole author = new NccRole() { Name = NccCmsRoles.Author, NormalizedName = NccCmsRoles.Author };
@@ -64,24 +74,25 @@ namespace NetCoreCMS.Framework.Setup
             NccRole subscriber = new NccRole() { Name = NccCmsRoles.Subscriber, NormalizedName = NccCmsRoles.Subscriber };
             NccRole reader = new NccRole() { Name = NccCmsRoles.Reader, NormalizedName = NccCmsRoles.Reader };
             
-            roleStore.CreateAsync(administrator);
-            roleStore.CreateAsync(author);
-            roleStore.CreateAsync(contributor);
-            roleStore.CreateAsync(editor);
-            roleStore.CreateAsync(subscriber);
-            roleStore.CreateAsync(reader);
+            roleManager.CreateAsync(administrator);
+            roleManager.CreateAsync(author);
+            roleManager.CreateAsync(contributor);
+            roleManager.CreateAsync(editor);
+            roleManager.CreateAsync(subscriber);
+            roleManager.CreateAsync(reader);
         }
 
         public static SetupConfig SaveSetup(IHostingEnvironment env)
         {
             var config = new SetupConfig();
-            var rootDir = env.ContentRootPath;
+            var rootDir = GlobalConfig.ContentRootPath;
             var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create);
             using (StreamWriter sw = new StreamWriter(file))
             {
                 var content = JsonConvert.SerializeObject(new SetupConfig()
                 {
-                    IsComplete = IsComplete,
+                    IsDbCreateComplete = IsDbCreateComplete,
+                    IsAdminCreateComplete = IsAdminCreateComplete,
                     SelectedDatabase = SelectedDatabase,
                     ConnectionString = ConnectionString
                 }, Formatting.Indented);

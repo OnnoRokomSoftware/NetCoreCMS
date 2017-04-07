@@ -8,6 +8,11 @@ namespace NetCoreCMS.Framework.Core.Models
 {
     public class NccUser : IdentityUser<long, IdentityUserClaim<long>, NccUserRole, IdentityUserLogin<long>>, IBaseModel<long>
     {
+        public NccUser()
+        {
+            CreationDate = DateTime.Now;
+            ModificationDate = DateTime.Now;
+        }
         public string FullName { get; set; }
         public string Mobile { get; set; }
         public int VersionNumber { get; set; }

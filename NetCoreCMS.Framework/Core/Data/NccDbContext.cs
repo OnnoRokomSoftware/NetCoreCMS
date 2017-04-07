@@ -30,6 +30,7 @@ namespace NetCoreCMS.Framework.Core.Data
             base.OnModelCreating(modelBuilder);
             RegisterModelMappings(modelBuilder, typeToRegisters);
             RegisterIdentityModules(modelBuilder);
+            
         }
 
         private void RegisterIdentityModules(ModelBuilder modelBuilder)
@@ -73,4 +74,5 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
     }
+
 }

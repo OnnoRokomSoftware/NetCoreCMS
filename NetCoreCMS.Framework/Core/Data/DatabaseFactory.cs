@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,8 +45,8 @@ namespace NetCoreCMS.Framework.Core.Data
                     else
                         return string.Format(_pgSqlConString, server, port, database, username, password);
                 case DatabaseEngine.SqLite:
-                    var path = env.ContentRootPath;
-                    return string.Format(_sqLiteConString, Path.Combine(path,"Data"), database);
+                    var path = GlobalConfig.ContentRootPath;
+                    return string.Format(_sqLiteConString, Path.Combine(path,"Data"), "NetCoreCMS.Database.SqLite");
                 default:
                     return "";
 
@@ -64,10 +66,21 @@ namespace NetCoreCMS.Framework.Core.Data
                 case DatabaseEngine.PgSql:
                     break;
                 case DatabaseEngine.SqLite:
-                    string path = env.ContentRootPath;
+                    string path = GlobalConfig.ContentRootPath;
                     path = Path.Combine(path, "Data");
                     string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
-                    File.Create(dbFileName);
+                    var dbFile = new FileInfo(dbFileName);
+                    if (!dbFile.Exists)
+                    {
+                        dbFile.Create();
+                    }
+                    var builder = new DbContextOptionsBuilder<NccDbContext>();
+                    var conStr = GetConnectionString(env, DatabaseEngine.SqLite, "","","","","");
+                    builder.UseSqlite( conStr, options => options.MigrationsAssembly("NetCoreCMS.Web"));
+                    var dbContext = new NccDbContext(builder.Options);
+                    var migrator = dbContext.Database.GetPendingMigrations();
+                    dbContext.Database.Migrate();
+                    var created = dbContext.Database.EnsureCreated();
                     return File.Exists(dbFileName);
 
             }
@@ -82,5 +95,8 @@ namespace NetCoreCMS.Framework.Core.Data
                 modelBuilder.Entity(type);
             }
         }
+
+        
+
     }
 }
