@@ -92,20 +92,22 @@ namespace NetCoreCMS.Framework.Setup
         {
             var config = new SetupConfig();
             var rootDir = GlobalConfig.ContentRootPath;
-            var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create);
-            using (StreamWriter sw = new StreamWriter(file))
+            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
             {
-                var content = JsonConvert.SerializeObject(new SetupConfig()
+                using (StreamWriter sw = new StreamWriter(file))
                 {
-                    IsDbCreateComplete = IsDbCreateComplete,
-                    IsAdminCreateComplete = IsAdminCreateComplete,
-                    SelectedDatabase = SelectedDatabase,
-                    ConnectionString = ConnectionString
-                }, Formatting.Indented);
+                    var content = JsonConvert.SerializeObject(new SetupConfig()
+                    {
+                        IsDbCreateComplete = IsDbCreateComplete,
+                        IsAdminCreateComplete = IsAdminCreateComplete,
+                        SelectedDatabase = SelectedDatabase,
+                        ConnectionString = ConnectionString
+                    }, Formatting.Indented);
 
-                if (!string.IsNullOrEmpty(content))
-                {
-                    sw.Write(content.ToCharArray());
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        sw.Write(content.ToCharArray());
+                    }
                 }
             }
             return config;

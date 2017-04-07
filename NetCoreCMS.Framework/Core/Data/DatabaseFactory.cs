@@ -69,14 +69,8 @@ namespace NetCoreCMS.Framework.Core.Data
                     string path = GlobalConfig.ContentRootPath;
                     path = Path.Combine(path, "Data");
                     string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
-                    var dbFile = new FileInfo(dbFileName);
-                    if (!dbFile.Exists)
-                    {
-                        dbFile.Create();
-                    }
-                   
+                    using (var dbFile = File.Create(dbFileName)) { };                    
                     return File.Exists(dbFileName);
-
             }
             return false;
         }
