@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +9,6 @@ using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Setup.Models.ViewModels;
@@ -20,15 +18,8 @@ using System.Threading.Tasks;
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
     public class SetupHomeController : NccController
-    {
-        IHostingEnvironment _env;
-        private readonly UserManager<NccUser> _userManager;
-        private readonly RoleManager<NccRole> _roleManager;
-        private readonly SignInManager<NccUser> _signInManager;
-        private readonly IEmailSender _emailSender;
-        private readonly ISmsSender _smsSender;
+    { 
         private readonly ILogger _logger;
-        private readonly string _externalCookieScheme;
         IHttpContextAccessor _httpContextAccessor;
         ILoggerFactory _loggerFactory;
 
@@ -38,7 +29,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             _loggerFactory = loggerFactory;
             _logger = loggerFactory.CreateLogger<SetupHomeController>();
         }
-        public async Task<ActionResult> Index()
+        public ActionResult Index()
         {
             if (!SetupHelper.IsDbCreateComplete)
             {
@@ -53,14 +44,14 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(SetupViewModel setup)
+        public ActionResult Index(SetupViewModel setup)
         {
             if (ModelState.IsValid && !SetupHelper.IsDbCreateComplete)
             {
-                SetupHelper.ConnectionString = DatabaseFactory.GetConnectionString(_env, setup.Database, setup);
+                SetupHelper.ConnectionString = DatabaseFactory.GetConnectionString(setup.Database, setup);
                 SetupHelper.SelectedDatabase = setup.Database.ToString();
-                SetupHelper.IsDbCreateComplete = SetupHelper.CreateDatabase(_env, setup.Database, setup);               
-                SetupHelper.SaveSetup(_env);
+                SetupHelper.IsDbCreateComplete = SetupHelper.CreateDatabase(setup.Database, setup);               
+                SetupHelper.SaveSetup();
                 return RedirectToAction("CreateAdmin");
             }
             else
@@ -71,7 +62,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             return View();
         }
 
-        public async Task<ActionResult> CreateAdmin()
+        public ActionResult CreateAdmin()
         {
             return View();
         }
@@ -84,8 +75,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
             var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
             optionBuilder.UseSqlite(SetupHelper.ConnectionString, options => options.MigrationsAssembly("NetCoreCMS.Web"));
-
             var nccDbConetxt = new NccDbContext(optionBuilder.Options);
+
             var userStore = new NccUserStore(nccDbConetxt);
             var identityOptions = Options.Create(new IdentityOptions());
             var passwordHasher = new PasswordHasher<NccUser>();
@@ -94,7 +85,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var lookupNormalizer = new UpperInvariantLookupNormalizer();
             var identityErrorDescriber = new IdentityErrorDescriber();
             var logger = _loggerFactory.CreateLogger<UserManager<NccUser>>();
-
+            
             var userManager = new UserManager<NccUser>(
                 userStore,
                 identityOptions,
@@ -106,7 +97,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 GlobalConfig.App.ApplicationServices,
                 logger
             );
-
+            
             var roleStore = new NccRoleStore(nccDbConetxt);
             var roleValidatorList = new List<RoleValidator<NccRole>>();
             var roleLogger = _loggerFactory.CreateLogger<RoleManager<NccRole>>();
@@ -119,60 +110,29 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 roleLogger,
                 _httpContextAccessor
                 );
+
+            var claimsFactory = new UserClaimsPrincipalFactory<NccUser,NccRole>(userManager, roleManager, identityOptions);
+            var signInLogger = _loggerFactory.CreateLogger<SignInManager<NccUser>>();
+            var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger);
+            
             nccDbConetxt.Database.Migrate();
 
-            await roleManager.CreateAsync(new NccRole()
+            var setupInfo = new SetupInfo()
             {
-                Name = NccCmsRoles.Administrator,
-                NormalizedName = NccCmsRoles.Administrator                
-            });
-
-            await roleManager.CreateAsync(new NccRole()
-            {
-                Name = NccCmsRoles.Author,
-                NormalizedName = NccCmsRoles.Author
-            });
-
-            await roleManager.CreateAsync(new NccRole()
-            {
-                Name = NccCmsRoles.Contributor,
-                NormalizedName = NccCmsRoles.Contributor
-            });
-
-            await roleManager.CreateAsync(new NccRole()
-            {
-                Name = NccCmsRoles.Editor,
-                NormalizedName = NccCmsRoles.Editor
-            });
-
-            await roleManager.CreateAsync(new NccRole()
-            {
-                Name = NccCmsRoles.Reader,
-                NormalizedName = NccCmsRoles.Reader
-            });
-
-            await roleManager.CreateAsync(new NccRole()
-            {
-                Name = NccCmsRoles.Subscriber,
-                NormalizedName = NccCmsRoles.Subscriber
-            });
-
-            var admin = new NccUser()
-            {
-                Email = viewModel.Email,
-                FullName = "Administrator",
-                Name = "admin",
-                UserName = viewModel.AdminUserName
-
+                AdminPassword = viewModel.AdminPassword,
+                AdminUserName = viewModel.AdminUserName,
+                ConnectionString = SetupHelper.ConnectionString,
+                Database = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase),
+                Email = viewModel.Email
             };
-            var result = await userManager.CreateAsync(admin, viewModel.AdminPassword);
 
-            await userManager.AddToRoleAsync(admin, NccCmsRoles.Administrator);
-
+            var admin = await SetupHelper.CreateAdminUser(userManager, roleManager, signInManager,  setupInfo );
+            SetupHelper.RegisterAuthServices();
+            
             SetupHelper.IsAdminCreateComplete = true;
-            SetupHelper.SaveSetup(_env);
+            SetupHelper.SaveSetup();
 
-            return RedirectToAction("Success");
+            return Redirect("/Home/SetupSuccess");
             
         }
   
@@ -180,5 +140,6 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             return View();
         }
+        
     }
 }

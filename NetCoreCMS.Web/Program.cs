@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using System.Threading;
 
 namespace NetCoreCMS.Web
 {
     public class Program
     {
+        private static CancellationTokenSource cancelTokenSource = new System.Threading.CancellationTokenSource();
+
         public static void Main(string[] args)
         {
             var host = new WebHostBuilder()
@@ -16,10 +15,15 @@ namespace NetCoreCMS.Web
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseApplicationInsights()
+                .UseApplicationInsights()                
                 .Build();
 
-            host.Run();
+            host.Run(cancelTokenSource.Token);
+        }
+
+        public static void Shutdown()
+        {
+            cancelTokenSource.CancelAfter(10000);            
         }
     }
 }

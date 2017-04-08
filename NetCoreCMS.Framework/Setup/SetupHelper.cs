@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Hosting;
-using NetCoreCMS.Framework.Core.Data;
-using Newtonsoft.Json;
+﻿using System;
 using System.IO;
+using Newtonsoft.Json;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Threading.Tasks;
 using NetCoreCMS.Framework.Utility;
-using System;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Setup
 {
@@ -39,8 +42,7 @@ namespace NetCoreCMS.Framework.Setup
             return config;
         }
 
-        public static async Task<bool> CreateAdminUser(
-            IHostingEnvironment env, 
+        public static async Task<NccUser> CreateAdminUser(            
             UserManager<NccUser> userManager,
             RoleManager<NccRole> roleManager,
             SignInManager<NccUser> signInManager,
@@ -60,10 +62,9 @@ namespace NetCoreCMS.Framework.Setup
             
             await userManager.CreateAsync(adminUser, setupInfo.AdminPassword);
             NccUser user = await userManager.FindByNameAsync(setupInfo.AdminUserName);
-            await userManager.AddToRoleAsync(user, NccCmsRoles.Administrator);
-            await signInManager.SignInAsync(user, false);
+            await userManager.AddToRoleAsync(user, NccCmsRoles.Administrator);           
 
-            return false;
+            return user;
         }
 
         private static void CreateCmsDefaultRoles(RoleManager<NccRole> roleManager)
@@ -88,7 +89,7 @@ namespace NetCoreCMS.Framework.Setup
             DatabaseFactory.InitilizeDatabase((DatabaseEngine)Enum.Parse(typeof(DatabaseEngine),SelectedDatabase), ConnectionString);
         }
 
-        public static SetupConfig SaveSetup(IHostingEnvironment env)
+        public static SetupConfig SaveSetup()
         {
             var config = new SetupConfig();
             var rootDir = GlobalConfig.ContentRootPath;
@@ -113,10 +114,19 @@ namespace NetCoreCMS.Framework.Setup
             return config;
         }
 
-        public static bool CreateDatabase(IHostingEnvironment env, DatabaseEngine database, DatabaseInfo databaseInfo)
+        public static bool CreateDatabase(DatabaseEngine database, DatabaseInfo databaseInfo)
         {
-            DatabaseFactory.CreateDatabase(env, database, databaseInfo);            
+            DatabaseFactory.CreateDatabase(database, databaseInfo);            
             return true;
+        }
+
+        public static void RegisterAuthServices()
+        {
+            GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
+                    options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                );
+            GlobalConfig.Services.AddCustomizedIdentity();
+            
         }
     }
 }

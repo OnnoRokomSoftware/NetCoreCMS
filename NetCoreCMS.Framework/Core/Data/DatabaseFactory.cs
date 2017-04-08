@@ -20,7 +20,7 @@ namespace NetCoreCMS.Framework.Core.Data
         private static string _msSqlConString = "Data Source={0}; Initial Catalog={1}; User Id = {2}; Password = {3}; MultipleActiveResultSets=true";
         private static string _pgSqlConString = "Host={0}; Port={1}; Database={2}; User ID={3}; Password={4}; Pooling=true;";
 
-        public static string GetConnectionString(IHostingEnvironment env, DatabaseEngine engine, DatabaseInfo dbInfo)
+        public static string GetConnectionString(DatabaseEngine engine, DatabaseInfo dbInfo)
         {
             switch (engine)
             {
@@ -53,7 +53,7 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
 
-        public static bool CreateDatabase(IHostingEnvironment env, DatabaseEngine database, DatabaseInfo databaseInfo)
+        public static bool CreateDatabase(DatabaseEngine database, DatabaseInfo databaseInfo)
         {
             switch (database)
             {
@@ -89,7 +89,6 @@ namespace NetCoreCMS.Framework.Core.Data
             var builder = new DbContextOptionsBuilder<NccDbContext>();
             builder.UseSqlite(connectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));
             var dbContext = new NccDbContext(builder.Options);
-            var migrator = dbContext.Database.GetPendingMigrations();
             dbContext.Database.Migrate();
             return dbContext.Database.EnsureCreated();
         }

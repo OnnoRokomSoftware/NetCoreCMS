@@ -28,5 +28,12 @@ namespace NetCoreCMS.Web.Controllers
         {
             return View();
         }
+
+        [AllowAnonymous]
+        public IActionResult SetupSuccess()
+        {
+            Program.Shutdown();
+            return View();
+        }
     }
 }

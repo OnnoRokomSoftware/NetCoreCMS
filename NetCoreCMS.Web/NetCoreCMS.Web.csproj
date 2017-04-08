@@ -63,7 +63,15 @@
     <Folder Include="Data\" />
     <Folder Include="Data\" />
     <Folder Include="Data\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Views\Home\SetupSuccess.cshtml" />
   </ItemGroup>
 
 </Project>

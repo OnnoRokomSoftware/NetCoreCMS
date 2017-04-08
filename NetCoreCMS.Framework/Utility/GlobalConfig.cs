@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Configuration;
 
 namespace NetCoreCMS.Framework.Utility
 {
     public class GlobalConfig
     {
+        public static bool IsRestartRequired { get; set; }
         public static List<INccModule> Modules { get; set; } = new List<INccModule>();
         public static string WebRootPath { get; set; }
         public static string ContentRootPath { get; set; }

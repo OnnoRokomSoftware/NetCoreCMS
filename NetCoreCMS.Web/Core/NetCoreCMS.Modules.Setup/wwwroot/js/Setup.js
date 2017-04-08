@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
     var selectedDb = $("#Database").val();
-    if (selectedDb == "" || selectedDb == "SQLite" || selectedDb == "MsSqlLocalStorage") {
+    if (selectedDb == "" || selectedDb == "SqLite" || selectedDb == "MsSqlLocalStorage") {
         $("#databaseInfo").hide();
     }
     else {
@@ -8,7 +8,7 @@
     }
     $("#Database").change(function () {
         var selectedDb = $("#Database").val();
-        if (selectedDb == "" || selectedDb == "SQLite" || selectedDb == "MsSqlLocalStorage") {            
+        if (selectedDb == "" || selectedDb == "SqLite" || selectedDb == "MsSqlLocalStorage") {            
             $("#databaseInfo").hide();
         }
         else {

@@ -9,8 +9,6 @@ using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Services.Auth;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using NetCoreCMS.Web.Models;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -18,8 +16,6 @@ using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using System.Collections.Generic;
 using System;
 
 namespace NetCoreCMS.Web
@@ -65,17 +61,24 @@ namespace NetCoreCMS.Web
         { 
             services.AddSession();
             services.AddDistributedMemoryCache();
+            var mvcBuilder = services.AddMvc();
 
             if (SetupHelper.IsDbCreateComplete)
             {
                 services.AddDbContext<NccDbContext>(options =>
                     options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
                 );
-                services.AddCustomizedIdentity();
-                
+
+                services.AddCustomizedIdentity();                
+                // Add application services.
+                _startup.RegisterDatabase(services);
             }
 
-            var mvcBuilder = services.AddMvc();
+            services.AddTransient<IEmailSender, AuthMessageSender>();
+            services.AddTransient<ISmsSender, AuthMessageSender>();
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
 
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
@@ -83,20 +86,13 @@ namespace NetCoreCMS.Web
             _moduleManager.LoadModules(moduleFolder);
             _moduleManager.LoadModules(coreModuleFolder);
             GlobalConfig.Modules = _moduleManager.RegisterModules(mvcBuilder, services);
-            GlobalConfig.Services = services;
-
-            // Add application services.
             
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IConfigurationRoot>(Configuration);
-            services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
-            
-            _startup.RegisterDatabase(services);
-            return services.Build(Configuration, _hostingEnvironment);
+
+            var serviceProvider = services.Build(Configuration, _hostingEnvironment);
+            GlobalConfig.Services = services;
+            return serviceProvider;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -118,7 +114,7 @@ namespace NetCoreCMS.Web
 
             app.UseStaticFiles();
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules);
-            GlobalConfig.App = app;
+            
             if (SetupHelper.IsDbCreateComplete)
             {
                 app.UseIdentity();
@@ -132,6 +128,7 @@ namespace NetCoreCMS.Web
                     template: "{controller=CmsHome}/{action=Index}/{id?}");
             });
 
+            GlobalConfig.App = app;
         }
     }
 }
