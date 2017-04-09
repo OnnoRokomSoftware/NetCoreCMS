@@ -1,4 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Core.Services.Auth
 {

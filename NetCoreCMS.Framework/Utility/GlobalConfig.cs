@@ -1,4 +1,10 @@
-﻿using NetCoreCMS.Framework.Modules;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using NetCoreCMS.Framework.Modules;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;

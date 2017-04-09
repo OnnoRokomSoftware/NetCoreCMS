@@ -1,4 +1,10 @@
-﻿using NetCoreCMS.Framework.Core.Mvc.Models;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using NetCoreCMS.Framework.Core.Mvc.Models;
 using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models

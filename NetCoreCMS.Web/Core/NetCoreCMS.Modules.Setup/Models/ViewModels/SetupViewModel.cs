@@ -1,4 +1,10 @@
-﻿using NetCoreCMS.Framework.Core.Data;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Setup;
 using System.ComponentModel.DataAnnotations;
 

@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using Microsoft.AspNetCore.Identity;
 using NetCoreCMS.Framework.Core.Models;
 using System;
 using System.Collections.Generic;
