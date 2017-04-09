@@ -15,6 +15,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         public long Id { get; set; }
         public int VersionNumber { get; set; }
         public string Name { get; set; }
+        public string Slug { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public long CreateBy { get; set; }

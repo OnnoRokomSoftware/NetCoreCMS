@@ -7,8 +7,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
@@ -19,6 +17,8 @@ namespace NetCoreCMS.Framework.Core.Models
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
         }
+
+        public string Slug { get; set; }
         public string FullName { get; set; }
         public string Mobile { get; set; }
         public int VersionNumber { get; set; }

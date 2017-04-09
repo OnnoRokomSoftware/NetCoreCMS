@@ -135,6 +135,7 @@ namespace NetCoreCMS.Web
             });
 
             GlobalConfig.App = app;
+            GlobalConfig.WebSite = new NccWebSite() { Name = "NccCMS" }; 
         }
     }
 }

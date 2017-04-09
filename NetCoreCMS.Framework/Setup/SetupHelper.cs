@@ -48,7 +48,7 @@ namespace NetCoreCMS.Framework.Setup
             return config;
         }
 
-        public static async Task<NccUser> CreateAdminUser(            
+        public static async Task<NccUser> CreateSuperAdminUser(            
             UserManager<NccUser> userManager,
             RoleManager<NccRole> roleManager,
             SignInManager<NccUser> signInManager,
@@ -68,20 +68,22 @@ namespace NetCoreCMS.Framework.Setup
             
             await userManager.CreateAsync(adminUser, setupInfo.AdminPassword);
             NccUser user = await userManager.FindByNameAsync(setupInfo.AdminUserName);
-            await userManager.AddToRoleAsync(user, NccCmsRoles.Administrator);           
+            await userManager.AddToRoleAsync(user, NccCmsRoles.SuperAdmin);           
 
             return user;
         }
 
         private static void CreateCmsDefaultRoles(RoleManager<NccRole> roleManager)
         {
+            NccRole superAdmin = new NccRole() { Name = NccCmsRoles.SuperAdmin, NormalizedName = NccCmsRoles.SuperAdmin};
             NccRole administrator = new NccRole() { Name = NccCmsRoles.Administrator, NormalizedName = NccCmsRoles.Administrator };
             NccRole author = new NccRole() { Name = NccCmsRoles.Author, NormalizedName = NccCmsRoles.Author };
             NccRole contributor = new NccRole() { Name = NccCmsRoles.Contributor, NormalizedName = NccCmsRoles.Contributor };
             NccRole editor = new NccRole() { Name = NccCmsRoles.Editor, NormalizedName = NccCmsRoles.Editor };
             NccRole subscriber = new NccRole() { Name = NccCmsRoles.Subscriber, NormalizedName = NccCmsRoles.Subscriber };
             NccRole reader = new NccRole() { Name = NccCmsRoles.Reader, NormalizedName = NccCmsRoles.Reader };
-            
+
+            roleManager.CreateAsync(superAdmin);
             roleManager.CreateAsync(administrator);
             roleManager.CreateAsync(author);
             roleManager.CreateAsync(contributor);

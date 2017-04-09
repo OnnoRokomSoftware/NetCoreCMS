@@ -12,6 +12,7 @@ namespace NetCoreCMS.Framework.Core.Models
     public class NccMenu : BaseModel
     {
         public MenuType MenuType { get; set; }
+        public string MenuIconCls { get; set; }
         public List<NccMenuItem> MenuItems { get; set; }
         public MenuFor MenuFor { get; set; }
     }

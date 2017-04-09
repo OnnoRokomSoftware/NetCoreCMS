@@ -132,7 +132,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                 Email = viewModel.Email
             };
 
-            var admin = await SetupHelper.CreateAdminUser(userManager, roleManager, signInManager,  setupInfo );
+            var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager,  setupInfo );
             SetupHelper.RegisterAuthServices();
             
             SetupHelper.IsAdminCreateComplete = true;

@@ -8,12 +8,13 @@ using NetCoreCMS.Framework.Modules;
 using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Utility
 {
     public class GlobalConfig
     {
+        public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<INccModule> Modules { get; set; } = new List<INccModule>();
         public static string WebRootPath { get; set; }
@@ -23,5 +24,6 @@ namespace NetCoreCMS.Framework.Utility
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }
         public string StartupAction { get; set; }
+         
     }
 }

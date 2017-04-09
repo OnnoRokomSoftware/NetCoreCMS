@@ -10,6 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Utility;
 using System;
@@ -63,6 +64,8 @@ namespace NetCoreCMS.Framework.Core.Auth
             builder.RegisterInstance(hostingEnvironment);
             builder.Populate(services);
             var container = builder.Build();
+            var dbContext = container.Resolve<NccDbContext>();
+            
             return container.Resolve<IServiceProvider>();
         }
     }

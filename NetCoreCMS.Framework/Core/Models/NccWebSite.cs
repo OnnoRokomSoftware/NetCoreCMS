@@ -1,15 +1,15 @@
-﻿/******************************************
-Author: Xonaki
-Website: http://xonaki.com
-Copyright (c) xonaki.com
-License: BSD (3 Clause)
-*******************************************/
+﻿/*
+*Author: Xonaki
+*Website: http://xonaki.com
+*Copyright (c) xonaki.com
+*License: BSD (3 Clause)
+*/
 
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
-namespace NetCoreCMS.Modules.Settings.Models
+namespace NetCoreCMS.Framework.Core.Models
 {
-    public class WebSite : BaseModel
+    public class NccWebSite : BaseModel
     {
         public string SiteTitle { get; set; }
         public string Tagline { get; set; }

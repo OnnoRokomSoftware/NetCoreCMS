@@ -14,6 +14,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Data { get; set; }
         public string Target { get; set; }
         public int Position { get; set; }
+        public string MenuIconCls { get; set; }
         public ActionType ActionType { get; set; }
     }
 
@@ -21,9 +22,10 @@ namespace NetCoreCMS.Framework.Core.Models
     {
         Url,
         Page,
-        Blog,
-        BlogPost,
-        PostCategory,
+        Article,
+        ArticlePage,
+        ArticalCategory,
+        Tag,
         Module
     }
 

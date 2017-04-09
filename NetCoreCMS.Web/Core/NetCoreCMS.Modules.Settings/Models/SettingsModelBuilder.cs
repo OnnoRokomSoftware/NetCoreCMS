@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Modules.Settings.Models;
+
 
 namespace NetCoreCMS.Core.Modules.Settings.Models
 {
@@ -19,7 +19,7 @@ namespace NetCoreCMS.Core.Modules.Settings.Models
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<WebSite>().ToTable("Ncc_WebSite");
+            modelBuilder.Entity<NccWebSite>().ToTable("Ncc_NccWebSite");
             
             //modelBuilder.Entity<BaseModel>(e =>
             //{

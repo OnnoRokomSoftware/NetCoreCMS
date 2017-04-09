@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetCoreCMS.Modules.Settings.Models
+namespace NetCoreCMS.Framework.Core.Middleware
 {
-    class Module
+    public class SetupMiddleware
     {
+
     }
 }

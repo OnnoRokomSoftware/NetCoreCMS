@@ -5,9 +5,6 @@
  * License: BSD (3 Clause)
 */
 using NetCoreCMS.Framework.Core.Mvc.Models;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Models
 {

@@ -30,6 +30,11 @@
     <None Remove="Modules\**" />
     <None Remove="Themes\**" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\SecureMedia\README.md" />
+    <Content Include="wwwroot\media\README.md" />
+  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
@@ -58,10 +63,6 @@
     <ProjectReference Include="..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>

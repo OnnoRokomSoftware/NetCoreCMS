@@ -19,6 +19,7 @@ namespace NetCoreCMS.Framework.Core.Models
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
         }
+        public string Slug { get; set; }
         public int VersionNumber { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
