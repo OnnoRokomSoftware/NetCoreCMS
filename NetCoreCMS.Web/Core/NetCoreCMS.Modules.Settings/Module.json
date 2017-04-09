@@ -1,0 +1,13 @@
+﻿{
+  "ModuleId": "48A20D50-4215-4801-A22E-4802C5361C1E",
+  "ModuleName": "NetCoreCMS.Modules.Settings",
+  "ModuleTitle": "CMS Settings Module",
+  "Author": "Xonaki",
+  "Website": "http://xonaki.com",
+  "AntiForgery": true,
+  "Description": "Builtin Settings Module.",
+  "Version": "0.1.1",
+  "NetCoreCMSVersion": "0.1.1",
+  "Dependencies": [],
+  "Category": "Core"
+}

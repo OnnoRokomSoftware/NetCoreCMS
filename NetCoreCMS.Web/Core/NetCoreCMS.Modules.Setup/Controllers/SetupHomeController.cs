@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using NetCoreCMS.Core.Modules.Setup.Models.ViewModels;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Modules.Setup.Models.ViewModels;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.Modules.Cms.Controllers
+namespace NetCoreCMS.Core.Modules.Setup.Controllers
 {
     public class SetupHomeController : NccController
     { 

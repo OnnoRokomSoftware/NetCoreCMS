@@ -2,7 +2,7 @@
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Setup;
 
-namespace NetCoreCMS.Modules.Cms.Controllers
+namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
     public class CmsHomeController : NccController
     {

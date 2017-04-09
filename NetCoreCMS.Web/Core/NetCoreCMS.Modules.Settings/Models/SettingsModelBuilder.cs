@@ -7,9 +7,9 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
 
-namespace NetCoreCMS.Core.Modules.Cms.Models
+namespace NetCoreCMS.Core.Modules.Settings.Models
 {
-    public class CmsModelBuilder : INccModuleBuilder
+    public class SettingsModelBuilder : INccModuleBuilder
     {
         public void Build(ModelBuilder modelBuilder)
         {

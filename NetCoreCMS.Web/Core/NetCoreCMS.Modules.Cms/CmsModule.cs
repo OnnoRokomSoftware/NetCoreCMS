@@ -5,24 +5,17 @@ using System.Reflection;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
 
-namespace NetCoreCMS.Modules.Cms
+namespace NetCoreCMS.Core.Modules.Cms
 {
     public class CmsModule : INccModule
     {
         public CmsModule()
         {
-            ModuleName = "NetCoreCMS.Modules.Cms";
-            Author = "Xonaki";
-            Website = "http://xonaki.com";
-            AntiForgery = true;
-            Description = "Builtin Content Management System Module.";
-            Version = new Version(0, 1, 1);
-            NetCoreCMSVersion = new Version(0, 1, 1);
-            Dependencies = new List<string>();
-            Category = "Core";
+            LoadModuleInfo();
         }
 
-        public string Id { get; set; }
+        public string ModuleId { get; set; }
+        public string ModuleTitle { get; set; }
         public string ModuleName { get; set; }
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
@@ -36,9 +29,45 @@ namespace NetCoreCMS.Modules.Cms
         public string SortName { get; set; }
         public string Path { get; set; }
         public ModuleStatus Status { get; set; }
+        
+
+        public bool Activate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Inactivate()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Init(IServiceCollection services)
         {
             
+        }
+
+        public bool Install()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadModuleInfo()
+        {
+            ModuleName = "NetCoreCMS.Modules.Cms";
+            ModuleTitle = "";
+            Author = "Xonaki";
+            Website = "http://xonaki.com";
+            AntiForgery = true;
+            Description = "Builtin Content Management System Module.";
+            Version = new Version(0, 1, 1);
+            NetCoreCMSVersion = new Version(0, 1, 1);
+            Dependencies = new List<string>();
+            Category = "Core";
+        }
+
+        public bool Uninstall()
+        {
+            throw new NotImplementedException();
         }
     }
 }

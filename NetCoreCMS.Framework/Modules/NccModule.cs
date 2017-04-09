@@ -22,9 +22,37 @@ namespace NetCoreCMS.Framework.Modules
         public string SortName { get; set; }
         public string Path { get; set; }
         public ModuleStatus Status { get; set; }
+        public string ModuleId { get ; set ; }
+        public string ModuleTitle { get ; set  ; }
+
+        public bool Activate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Inactivate()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Init(IServiceCollection services)
         {
             //Initilize the module here
+        }
+
+        public bool Install()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LoadModuleInfo()
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Uninstall()
+        {
+            throw new NotImplementedException();
         }
     }
 }

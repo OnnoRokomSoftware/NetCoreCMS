@@ -1,16 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using NetCoreCMS.Framework.Core.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
+using NetCoreCMS.Framework.Core.Models;
+
 
 namespace NetCoreCMS.Framework.Modules
 {
     public interface INccModule
     {
-        string Id { get; set; }
-        string ModuleName { get; set; }        
+        string ModuleId { get; set; }
+        string ModuleName { get; set; }
+        string ModuleTitle { get; set; }
         bool AntiForgery { get; set; }
         string Author { get; set; }
         string Website { get; set; } 
@@ -23,6 +24,12 @@ namespace NetCoreCMS.Framework.Modules
         string SortName { get; set; }
         string Path { get; set; }
         ModuleStatus Status { get; set; }
+
         void Init(IServiceCollection services);
+        bool Install();
+        bool Uninstall();
+        bool Activate();
+        bool Inactivate();
+        void LoadModuleInfo();
     }
 }

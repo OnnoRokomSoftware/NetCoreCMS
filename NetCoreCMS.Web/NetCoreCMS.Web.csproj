@@ -52,19 +52,12 @@
     <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
+    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
-    <Folder Include="Data\" />
     <Folder Include="Data\" />
     <Folder Include="Data\" />
     <Folder Include="Data\" />

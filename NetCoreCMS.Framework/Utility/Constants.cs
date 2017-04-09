@@ -8,6 +8,7 @@ namespace NetCoreCMS.Framework.Utility
     {
         public static string SiteLayoutName { get; set; } = "_SiteLayout";
         public static string AdminLayoutName { get; set; } = "_AdminLayout";
+        public static string SettingsLayoutName { get; set; } = "_SettingsLayout";
 
     }
 }

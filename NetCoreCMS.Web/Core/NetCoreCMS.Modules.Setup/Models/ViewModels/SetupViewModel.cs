@@ -2,7 +2,7 @@
 using NetCoreCMS.Framework.Setup;
 using System.ComponentModel.DataAnnotations;
 
-namespace NetCoreCMS.Modules.Setup.Models.ViewModels
+namespace NetCoreCMS.Core.Modules.Setup.Models.ViewModels
 {
     public class SetupViewModel : DatabaseInfo
     { 
