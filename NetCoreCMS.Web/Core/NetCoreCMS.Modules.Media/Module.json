@@ -1,0 +1,13 @@
+﻿{
+  "ModuleId": "D5526BED-976C-4029-8E23-A0C75C23C1B0",
+  "ModuleName": "NetCoreCMS.Modules.Media",
+  "ModuleTitle": "CMS Administration",
+  "Author": "Xonaki",
+  "Website": "http://xonaki.com",
+  "AntiForgery": true,
+  "Description": "Builtin Content Management Module.",
+  "Version": "0.1.1",
+  "NetCoreCMSVersion": "0.1.1",
+  "Dependencies": [],
+  "Category": "Core"
+}
