@@ -61,6 +61,7 @@
     <Folder Include="Data\" />
     <Folder Include="Data\" />
     <Folder Include="Data\" />
+    <Folder Include="Data\" />
     <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
