@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;

@@ -1,4 +1,10 @@
-﻿using Autofac;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;

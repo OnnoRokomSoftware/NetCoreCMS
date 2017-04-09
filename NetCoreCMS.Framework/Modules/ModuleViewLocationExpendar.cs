@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc.Razor;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using Microsoft.AspNetCore.Mvc.Razor;
 using System;
 using System.Collections.Generic;
 using System.Linq;

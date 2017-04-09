@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Setup;
 using System;

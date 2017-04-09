@@ -1,4 +1,11 @@
-﻿namespace NetCoreCMS.Framework.Core.Auth
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+
+namespace NetCoreCMS.Framework.Core.Auth
 {
     public class NccCmsRoles
     {

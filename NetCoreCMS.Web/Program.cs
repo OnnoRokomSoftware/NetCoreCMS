@@ -1,4 +1,11 @@
-﻿using System.IO;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+
+using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading;
 

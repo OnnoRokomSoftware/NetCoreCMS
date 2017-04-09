@@ -1,4 +1,10 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿/*
+ * Author: Xonaki
+ * Website: http://xonaki.com
+ * Copyright (c) xonaki.com
+ * License: BSD (3 Clause)
+*/
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Core.Mvc.Models;
