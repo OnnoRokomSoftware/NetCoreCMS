@@ -13,6 +13,11 @@
     z-index: 10000;
 }
 
+.navbar-inverse {
+    background-color: #23282d !important;
+    border-color: #23282d !important;
+}
+
 /*
  * Main content
  */
