@@ -11,6 +11,9 @@ namespace NetCoreCMS.Framework.Core.Models
     public class NccMenuItem : BaseModel
     {
         public NccMenuItem Parent { get; set; }
+        public string Module { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
         public string Data { get; set; }
         public string Target { get; set; }
         public int Position { get; set; }

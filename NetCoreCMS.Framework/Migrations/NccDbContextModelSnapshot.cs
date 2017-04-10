@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Migrations
 {
@@ -83,6 +84,130 @@ namespace NetCoreCMS.Framework.Migrations
                     b.ToTable("Ncc_UserToken");
                 });
 
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccMenu", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<int>("MenuFor");
+
+                    b.Property<string>("MenuIconCls");
+
+                    b.Property<int>("MenuType");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Status");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ncc_NccMenu");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccMenuItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Action");
+
+                    b.Property<int>("ActionType");
+
+                    b.Property<string>("Controller");
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<string>("Data");
+
+                    b.Property<string>("MenuIconCls");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("Module");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long?>("NccMenuId");
+
+                    b.Property<long?>("ParentId");
+
+                    b.Property<int>("Position");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Target");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NccMenuId");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Ncc_MenuItem");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccModule", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<bool>("AntiForgery");
+
+                    b.Property<string>("Author");
+
+                    b.Property<string>("Category");
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<string>("Dependencies");
+
+                    b.Property<string>("Description");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<int>("ModuleStatus");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("NetCoreCMSVersion");
+
+                    b.Property<string>("Path");
+
+                    b.Property<string>("SortName");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Version");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.Property<string>("Website");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ncc_Module");
+                });
+
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccRole", b =>
                 {
                     b.Property<long>("Id")
@@ -118,6 +243,76 @@ namespace NetCoreCMS.Framework.Migrations
                         .HasName("RoleNameIndex");
 
                     b.ToTable("Ncc_Role");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccSettings", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<string>("Key");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Value");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ncc_Settings");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccTheme", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Author");
+
+                    b.Property<string>("Category");
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Email");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("NetCoreCMSVersion");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("ThemeName");
+
+                    b.Property<string>("Type");
+
+                    b.Property<string>("Version");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.Property<string>("Website");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ncc_Theme");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUser", b =>
@@ -203,14 +398,28 @@ namespace NetCoreCMS.Framework.Migrations
                     b.ToTable("Ncc_UserRole");
                 });
 
-            modelBuilder.Entity("NetCoreCMS.Framework.Core.Mvc.Models.BaseModel", b =>
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWebSite", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("AllowRegistration");
+
+                    b.Property<string>("Copyrights");
+
                     b.Property<long>("CreateBy");
 
                     b.Property<DateTime>("CreationDate");
+
+                    b.Property<string>("DateFormat");
+
+                    b.Property<string>("DomainName");
+
+                    b.Property<string>("EmailAddress");
+
+                    b.Property<string>("FaviconUrl");
+
+                    b.Property<string>("Language");
 
                     b.Property<DateTime>("ModificationDate");
 
@@ -218,15 +427,25 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Slug");
+                    b.Property<string>("NewUserRole");
+
+                    b.Property<string>("SiteLogoUrl");
+
+                    b.Property<string>("SiteTitle");
 
                     b.Property<int>("Status");
+
+                    b.Property<string>("Tagline");
+
+                    b.Property<string>("TimeFormat");
+
+                    b.Property<string>("TimeZone");
 
                     b.Property<int>("VersionNumber");
 
                     b.HasKey("Id");
 
-                    b.ToTable("BaseModel");
+                    b.ToTable("Ncc_WebSite");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityRoleClaim<long>", b =>
@@ -251,6 +470,17 @@ namespace NetCoreCMS.Framework.Migrations
                         .WithMany("Logins")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccMenuItem", b =>
+                {
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccMenu")
+                        .WithMany("MenuItems")
+                        .HasForeignKey("NccMenuId");
+
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccMenuItem", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserRole", b =>

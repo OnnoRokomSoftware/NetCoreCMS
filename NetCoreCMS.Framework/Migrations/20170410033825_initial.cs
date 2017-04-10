@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetCoreCMS.Framework.Migrations
 {
-    public partial class Init : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -23,6 +23,58 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ncc_NccMenu",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    MenuFor = table.Column<int>(nullable: false),
+                    MenuIconCls = table.Column<string>(nullable: true),
+                    MenuType = table.Column<int>(nullable: false),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    VersionNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_NccMenu", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ncc_Module",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    AntiForgery = table.Column<bool>(nullable: false),
+                    Author = table.Column<string>(nullable: true),
+                    Category = table.Column<string>(nullable: true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    Dependencies = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    ModuleStatus = table.Column<int>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    NetCoreCMSVersion = table.Column<string>(nullable: true),
+                    Path = table.Column<string>(nullable: true),
+                    SortName = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    Version = table.Column<string>(nullable: true),
+                    VersionNumber = table.Column<int>(nullable: false),
+                    Website = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_Module", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ncc_Role",
                 columns: table => new
                 {
@@ -35,12 +87,62 @@ namespace NetCoreCMS.Framework.Migrations
                     ModifyBy = table.Column<long>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
                     NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
+                    Slug = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     VersionNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ncc_Role", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ncc_Settings",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    Key = table.Column<string>(nullable: true),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    Value = table.Column<string>(nullable: true),
+                    VersionNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_Settings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ncc_Theme",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Author = table.Column<string>(nullable: true),
+                    Category = table.Column<string>(nullable: true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    Description = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    NetCoreCMSVersion = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    ThemeName = table.Column<string>(nullable: true),
+                    Type = table.Column<string>(nullable: true),
+                    Version = table.Column<string>(nullable: true),
+                    VersionNumber = table.Column<int>(nullable: false),
+                    Website = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_Theme", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,6 +170,7 @@ namespace NetCoreCMS.Framework.Migrations
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
                     SecurityStamp = table.Column<string>(nullable: true),
+                    Slug = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
@@ -79,22 +182,76 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BaseModel",
+                name: "Ncc_WebSite",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    AllowRegistration = table.Column<bool>(nullable: false),
+                    Copyrights = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
+                    DateFormat = table.Column<string>(nullable: true),
+                    DomainName = table.Column<string>(nullable: true),
+                    EmailAddress = table.Column<string>(nullable: true),
+                    FaviconUrl = table.Column<string>(nullable: true),
+                    Language = table.Column<string>(nullable: true),
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
+                    NewUserRole = table.Column<string>(nullable: true),
+                    SiteLogoUrl = table.Column<string>(nullable: true),
+                    SiteTitle = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
+                    Tagline = table.Column<string>(nullable: true),
+                    TimeFormat = table.Column<string>(nullable: true),
+                    TimeZone = table.Column<string>(nullable: true),
                     VersionNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BaseModel", x => x.Id);
+                    table.PrimaryKey("PK_Ncc_WebSite", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ncc_MenuItem",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Action = table.Column<string>(nullable: true),
+                    ActionType = table.Column<int>(nullable: false),
+                    Controller = table.Column<string>(nullable: true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    Data = table.Column<string>(nullable: true),
+                    MenuIconCls = table.Column<string>(nullable: true),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    Module = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    NccMenuId = table.Column<long>(nullable: true),
+                    ParentId = table.Column<long>(nullable: true),
+                    Position = table.Column<int>(nullable: false),
+                    Status = table.Column<int>(nullable: false),
+                    Target = table.Column<string>(nullable: true),
+                    VersionNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_MenuItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ncc_MenuItem_Ncc_NccMenu_NccMenuId",
+                        column: x => x.NccMenuId,
+                        principalTable: "Ncc_NccMenu",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ncc_MenuItem_Ncc_MenuItem_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Ncc_MenuItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -199,6 +356,16 @@ namespace NetCoreCMS.Framework.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ncc_MenuItem_NccMenuId",
+                table: "Ncc_MenuItem",
+                column: "NccMenuId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ncc_MenuItem_ParentId",
+                table: "Ncc_MenuItem",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "Ncc_Role",
                 column: "NormalizedName",
@@ -236,10 +403,25 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_UserToken");
 
             migrationBuilder.DropTable(
+                name: "Ncc_MenuItem");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_Module");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_Settings");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_Theme");
+
+            migrationBuilder.DropTable(
                 name: "Ncc_UserRole");
 
             migrationBuilder.DropTable(
-                name: "BaseModel");
+                name: "Ncc_WebSite");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_NccMenu");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Role");

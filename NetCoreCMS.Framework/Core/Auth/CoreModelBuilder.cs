@@ -13,7 +13,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Auth
 {
-    public class IdentityModelBuilder : INccModuleBuilder
+    public class CoreModelBuilder : INccModuleBuilder
     {
         public void Build(ModelBuilder modelBuilder)
         {
@@ -47,18 +47,21 @@ namespace NetCoreCMS.Framework.Auth
                 b.ToTable("Ncc_UserToken");
             });
 
-            modelBuilder.Entity<BaseModel>(e =>
-            {
-                e.HasKey(x => x.Id);
-                e.Property(x => x.CreateBy);
-                e.Property(x => x.CreationDate);
-                e.Property(x => x.ModificationDate);
-                e.Property(x => x.ModifyBy);
-                e.Property(x => x.Name);
-                e.Property(x => x.Status);
-                e.Property(x => x.VersionNumber);
+            modelBuilder.Entity<NccWebSite>().ToTable("Ncc_WebSite");
+            modelBuilder.Entity<NccModule>().ToTable("Ncc_Module");
+            modelBuilder.Entity<NccTheme>().ToTable("Ncc_Theme");
+            modelBuilder.Entity<NccSettings>().ToTable("Ncc_Settings");
+
+            modelBuilder.Entity<NccMenu>(b => {
+                b.HasMany(ur => ur.MenuItems);
+                b.ToTable("Ncc_NccMenu");
             });
-            
+
+            modelBuilder.Entity<NccMenuItem>(b=> {
+                b.HasOne(ur => ur.Parent);
+                b.ToTable("Ncc_MenuItem");
+            });
+
         }
     }
 }

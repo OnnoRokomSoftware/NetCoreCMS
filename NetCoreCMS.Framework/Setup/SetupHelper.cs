@@ -17,18 +17,25 @@ using NetCoreCMS.Framework.Utility;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Framework.Setup
 {
     public class SetupHelper
     {
+        public SetupHelper()
+        {
+            LoadSetup();
+        }
+
         private static string _configFileName = "setup.json";
         public static bool IsDbCreateComplete { get; set; }
         public static bool IsAdminCreateComplete { get; set; }
         public static string SelectedDatabase { get; set; }
         public static string ConnectionString { get; set; }
 
-        public static SetupConfig LoadSetup(IHostingEnvironment env)
+        public static SetupConfig LoadSetup()
         {
             var config = new SetupConfig();
             var rootDir = GlobalConfig.ContentRootPath;
@@ -52,7 +59,7 @@ namespace NetCoreCMS.Framework.Setup
             UserManager<NccUser> userManager,
             RoleManager<NccRole> roleManager,
             SignInManager<NccUser> signInManager,
-            SetupInfo setupInfo
+            WebSiteInfo setupInfo
             )
         {   
             
@@ -92,6 +99,11 @@ namespace NetCoreCMS.Framework.Setup
             roleManager.CreateAsync(reader);
         }
 
+        internal static DbContextOptions GetDbContextOptions()
+        {
+            return DatabaseFactory.GetDbContextOptions();            
+        }
+
         public static void InitilizeDatabase()
         {
             DatabaseFactory.InitilizeDatabase((DatabaseEngine)Enum.Parse(typeof(DatabaseEngine),SelectedDatabase), ConnectionString);
@@ -126,6 +138,26 @@ namespace NetCoreCMS.Framework.Setup
         {
             DatabaseFactory.CreateDatabase(database, databaseInfo);            
             return true;
+        }
+
+        public static void CreateWebSite(NccDbContext dbContext, WebSiteInfo setupInfo)
+        {
+            var webSiteRepository = new NccWebSiteRepository(dbContext);
+            var webSiteService = new NccWebSiteService(webSiteRepository);
+            var webSite = new NccWebSite()
+            {
+                AllowRegistration = true,
+                Copyrights = "Copyright (c) " + DateTime.Now.Year + " " + setupInfo.SiteName,
+                DateFormat = "dd/mm/yyyy",
+                EmailAddress = setupInfo.Email,
+                Name = setupInfo.SiteName,
+                NewUserRole = "Reader",
+                SiteTitle = setupInfo.SiteName,
+                Tagline = setupInfo.Tagline,
+                TimeFormat = "hh:mm:ss",
+                TimeZone = "UTC +6"
+            };
+            webSiteService.Save(webSite);
         }
 
         public static void RegisterAuthServices()

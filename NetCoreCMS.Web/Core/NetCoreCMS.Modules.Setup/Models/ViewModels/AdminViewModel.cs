@@ -14,7 +14,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Models.ViewModels
         [Required]
         public string SiteName { get; set; }
         [Required]
-        public string Slogan { get; set; }
+        public string Tagline { get; set; }
         [Required]
         public SetupTemplate SetupTemplate { get; set; }
         [Required]

@@ -14,11 +14,17 @@ using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Auth;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public class NccDbContext : IdentityDbContext<NccUser, NccRole, long, IdentityUserClaim<long>, NccUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>
+    public class NccDbContext : IdentityDbContext<NccUser, NccRole, long, IdentityUserClaim<long>, NccUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>, IDbContextFactory<NccDbContext>
     {
+        public NccDbContext()
+        {
+
+        }
         public NccDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -41,7 +47,7 @@ namespace NetCoreCMS.Framework.Core.Data
 
         private void RegisterIdentityModules(ModelBuilder modelBuilder)
         {
-            IdentityModelBuilder imb = new IdentityModelBuilder();
+            CoreModelBuilder imb = new CoreModelBuilder();
             imb.Build(modelBuilder);
         }
 
@@ -78,6 +84,13 @@ namespace NetCoreCMS.Framework.Core.Data
                     builder.Build(modelBuilder);
                 }
             }
+        }
+
+        public NccDbContext Create(DbContextFactoryOptions options)
+        {
+            var opts = SetupHelper.GetDbContextOptions();
+            var nccDbConetxt = new NccDbContext(opts);
+            return nccDbConetxt;
         }
     }
 

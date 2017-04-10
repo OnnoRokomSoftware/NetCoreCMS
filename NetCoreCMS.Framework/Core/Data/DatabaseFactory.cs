@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
@@ -88,6 +89,28 @@ namespace NetCoreCMS.Framework.Core.Data
             {
                 modelBuilder.Entity(type);
             }
+        }
+
+        internal static DbContextOptions GetDbContextOptions()
+        {
+            DatabaseEngine dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
+            switch (dbe)
+            {
+                case DatabaseEngine.MsSql:
+                    break;
+                case DatabaseEngine.MsSqlLocalStorage:
+                    break;
+                case DatabaseEngine.MySql:
+                    break;
+                case DatabaseEngine.PgSql:
+                    break;
+                case DatabaseEngine.SqLite:
+                    var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
+                    optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    return optionBuilder.Options;
+            }
+
+            return null;
         }
 
         public static bool InitilizeDatabase(DatabaseEngine database, string connectionString)

@@ -80,7 +80,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             SetupHelper.InitilizeDatabase();
 
             var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
-            optionBuilder.UseSqlite(SetupHelper.ConnectionString, options => options.MigrationsAssembly("NetCoreCMS.Web"));
+            optionBuilder.UseSqlite(SetupHelper.ConnectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));
             var nccDbConetxt = new NccDbContext(optionBuilder.Options);
 
             var userStore = new NccUserStore(nccDbConetxt);
@@ -123,8 +123,10 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             
             nccDbConetxt.Database.Migrate();
 
-            var setupInfo = new SetupInfo()
+            var setupInfo = new WebSiteInfo()
             {
+                SiteName = viewModel.SiteName,
+                Tagline = viewModel.Tagline,
                 AdminPassword = viewModel.AdminPassword,
                 AdminUserName = viewModel.AdminUserName,
                 ConnectionString = SetupHelper.ConnectionString,
@@ -134,7 +136,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
 
             var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager,  setupInfo );
             SetupHelper.RegisterAuthServices();
-            
+            SetupHelper.CreateWebSite(nccDbConetxt, setupInfo);
             SetupHelper.IsAdminCreateComplete = true;
             SetupHelper.SaveSetup();
 

@@ -11,7 +11,7 @@ using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System.Linq;
 
-namespace NetCoreCMS.Framework.Core.Repository
+namespace NetCoreCMS.Framework.Core.Mvc.Repository
 {
     public class BaseRepository<EntityT, IdT> : IBaseRepository<EntityT, IdT> where EntityT : class, IBaseModel<IdT>
     {

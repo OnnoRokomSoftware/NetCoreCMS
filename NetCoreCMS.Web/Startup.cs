@@ -23,6 +23,7 @@ using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.IO;
 
 namespace NetCoreCMS.Web
 {
@@ -56,7 +57,7 @@ namespace NetCoreCMS.Web
             GlobalConfig.WebRootPath = env.WebRootPath;
 
             _moduleManager = new ModuleManager();
-            var setupConfig = SetupHelper.LoadSetup(env);
+            var setupConfig = SetupHelper.LoadSetup();
             _startup = new NetCoreStartup();
         }
 
@@ -64,7 +65,8 @@ namespace NetCoreCMS.Web
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
-        { 
+        {
+            
             services.AddSession();
             services.AddDistributedMemoryCache();
             var mvcBuilder = services.AddMvc();
@@ -75,7 +77,7 @@ namespace NetCoreCMS.Web
                     options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
                 );
 
-                services.AddCustomizedIdentity();                
+                services.AddCustomizedIdentity();
                 // Add application services.
                 _startup.RegisterDatabase(services);
             }
@@ -85,20 +87,22 @@ namespace NetCoreCMS.Web
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
-
+ 
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
 
             _moduleManager.LoadModules(moduleFolder);
             _moduleManager.LoadModules(coreModuleFolder);
             GlobalConfig.Modules = _moduleManager.RegisterModules(mvcBuilder, services);
-            
+                         
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddSingleton<IConfigurationRoot>(Configuration);
 
             var serviceProvider = services.Build(Configuration, _hostingEnvironment);
+
             GlobalConfig.Services = services;
             return serviceProvider;
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

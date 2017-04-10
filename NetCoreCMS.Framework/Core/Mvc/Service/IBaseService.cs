@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetCoreCMS.Framework.Core.Services
+namespace NetCoreCMS.Framework.Core.Mvc.Services
 {
     public interface IBaseService<EntityT>
     {
@@ -15,8 +15,7 @@ namespace NetCoreCMS.Framework.Core.Services
         EntityT Save(EntityT model);
         EntityT Update(EntityT model);
         void Remove(long entityId);
-        void DeletePermanently(long entityId);
-        string ToUniqueSlug(string slug, long entityId);
+        void DeletePermanently(long entityId);        
 
     }
 }

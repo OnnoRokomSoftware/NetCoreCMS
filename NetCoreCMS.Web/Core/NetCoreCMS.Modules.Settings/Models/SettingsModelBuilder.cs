@@ -18,9 +18,7 @@ namespace NetCoreCMS.Core.Modules.Settings.Models
     public class SettingsModelBuilder : INccModuleBuilder
     {
         public void Build(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<NccWebSite>().ToTable("Ncc_NccWebSite");
-            
+        {                        
             //modelBuilder.Entity<BaseModel>(e =>
             //{
             //    e.HasKey(x => x.Id);

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Core.Modules.Settings
 {
@@ -49,7 +50,7 @@ namespace NetCoreCMS.Core.Modules.Settings
 
         public void Init(IServiceCollection services)
         {
-            
+            //services.AddSingleton<NccWebSiteService>();
         }
 
         public bool Install()

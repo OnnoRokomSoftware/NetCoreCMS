@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NetCoreCMS.Framework.Core.Repository;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Core.Mvc.Repository;
+using NetCoreCMS.Framework.Core.Mvc.Services;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -96,32 +95,12 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.NewUserRole = entity.NewUserRole;
             oldEntity.SiteLogoUrl = entity.SiteLogoUrl;
             oldEntity.SiteTitle = entity.SiteTitle;
-            oldEntity.Slug = entity.Slug;
             oldEntity.Status = entity.Status;
             oldEntity.Tagline = entity.Tagline;
             oldEntity.TimeFormat = entity.TimeFormat;
             oldEntity.TimeZone = entity.TimeZone;
             oldEntity.VersionNumber = entity.VersionNumber;
         }
-
-        public string ToUniqueSlug(string slug, long entityId)
-        {
-            var i = 2;
-            while (true)
-            {
-                var entity = _entityRepository.Query().FirstOrDefault(x => x.Slug == slug);
-                if (entity != null && !(entity.Id == entityId))
-                {
-                    slug = string.Format("{0}-{1}", slug, i);
-                    i++;
-                }
-                else
-                {
-                    break;
-                }
-            }
-
-            return slug;
-        }
+        
     }
 }

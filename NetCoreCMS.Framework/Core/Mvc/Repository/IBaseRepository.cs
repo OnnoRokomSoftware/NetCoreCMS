@@ -8,7 +8,7 @@
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Linq;
 
-namespace NetCoreCMS.Framework.Core.Repository
+namespace NetCoreCMS.Framework.Core.Mvc.Repository
 {
     public interface IBaseRepository<EntityT, IdT>
     {

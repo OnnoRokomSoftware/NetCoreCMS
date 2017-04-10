@@ -14,6 +14,10 @@ namespace NetCoreCMS.Framework.Utility
 {
     public class GlobalConfig
     {
+        public GlobalConfig()
+        {
+            
+        }
         public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<INccModule> Modules { get; set; } = new List<INccModule>();

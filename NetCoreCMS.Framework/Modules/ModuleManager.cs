@@ -27,28 +27,35 @@ namespace NetCoreCMS.Framework.Modules
         {   
             foreach (var moduleFolder in moduleRootFolder.Where(x => x.IsDirectory))
             {
-                var binFolder = new DirectoryInfo(Path.Combine(moduleFolder.PhysicalPath, "bin"));
-                if (!binFolder.Exists)
+                try
                 {
-                    continue;
-                }
-
-                foreach (var file in binFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories))
-                {
-                    Assembly assembly;
-                    try
+                    var binFolder = new DirectoryInfo(Path.Combine(moduleFolder.PhysicalPath, "bin"));
+                    if (!binFolder.Exists)
                     {
-                        assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
-                    }
-                    catch (FileLoadException)
-                    { 
                         continue;
                     }
-                    
-                    if (assembly.FullName.Contains(moduleFolder.Name))
+
+                    foreach (var file in binFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories))
                     {
-                        modules.Add(new NccModule { ModuleName = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
+                        Assembly assembly;
+                        try
+                        {
+                            assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
+                        }
+                        catch (FileLoadException)
+                        {
+                            continue;
+                        }
+
+                        if (assembly.FullName.Contains(moduleFolder.Name))
+                        {
+                            modules.Add(new NccModule { ModuleName = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    
                 }
             }
             return modules;
@@ -58,15 +65,22 @@ namespace NetCoreCMS.Framework.Modules
         {
             foreach (var module in modules)
             {
-                // Register controller from modules
-                mvcBuilder.AddApplicationPart(module.Assembly);
-
-                // Register dependency in modules
-                var moduleInitializerType = module.Assembly.GetTypes().Where(x => typeof(INccModule).IsAssignableFrom(x)).FirstOrDefault();
-                if (moduleInitializerType != null && moduleInitializerType != typeof(INccModule))
+                try
                 {
-                    var moduleInitializer = (INccModule) Activator.CreateInstance(moduleInitializerType);
-                    moduleInitializer.Init(services);
+                    // Register controller from modules
+                    mvcBuilder.AddApplicationPart(module.Assembly);
+
+                    // Register dependency in modules
+                    var moduleInitializerType = module.Assembly.GetTypes().Where(x => typeof(INccModule).IsAssignableFrom(x)).FirstOrDefault();
+                    if (moduleInitializerType != null && moduleInitializerType != typeof(INccModule))
+                    {
+                        var moduleInitializer = (INccModule)Activator.CreateInstance(moduleInitializerType);
+                        moduleInitializer.Init(services);
+                    }
+                }
+                catch (Exception ex)
+                {
+
                 }
             }
             
