@@ -2,16 +2,16 @@
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Repository;
 using NetCoreCMS.Framework.Core.Mvc.Services;
+using NetCoreCMS.Framework.Core.Repository;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     public class NccWebSiteService : IBaseService<NccWebSite>
     {
-        private readonly IBaseRepository<NccWebSite, long> _entityRepository;
+        private readonly NccWebSiteRepository _entityRepository;
 
-        public NccWebSiteService(IBaseRepository<NccWebSite, long> entityRepository)
+        public NccWebSiteService(NccWebSiteRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
@@ -30,10 +30,18 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccWebSite Update(NccWebSite entity)
         {
-            var oldEntity = _entityRepository.Query().First(x => x.Id == entity.Id);
-            CopyNewData(oldEntity, entity);
-            _entityRepository.Eidt(oldEntity);
-            _entityRepository.SaveChange();
+            var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
+            if(oldEntity != null)
+            {
+                using (var txn = _entityRepository.BeginTransaction())
+                {
+                    CopyNewData(oldEntity, entity);
+                    _entityRepository.Eidt(oldEntity);
+                    _entityRepository.SaveChange();
+                    txn.Commit();
+                }
+            }
+            
             return entity;
         }
         

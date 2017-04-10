@@ -136,9 +136,9 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
 
             var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager,  setupInfo );
             SetupHelper.RegisterAuthServices();
-            SetupHelper.CreateWebSite(nccDbConetxt, setupInfo);
             SetupHelper.IsAdminCreateComplete = true;
             SetupHelper.SaveSetup();
+            SetupHelper.CrateNccWebSite(nccDbConetxt, setupInfo);
 
             return Redirect("/Home/SetupSuccess");
             

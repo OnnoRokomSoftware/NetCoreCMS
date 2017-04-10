@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Http
 @using Microsoft.AspNetCore.Http.Authentication
 @using Microsoft.AspNetCore.Identity
-
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 @inject SignInManager<NccUser> SignInManager
 @inject UserManager<NccUser> UserManager
 
@@ -11,6 +11,8 @@
         {
             <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
                 <ul class="nav navbar-nav navbar-right">
+                    <li><a asp-area="" asp-controller="CmsHome" asp-action="Index" target="_blank">Website</a></li>
+                    <li><a asp-area="" asp-controller="Settings" asp-action="Index">Settings</a></li>
                     <li>
                         <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
                     </li>
@@ -23,7 +25,8 @@
         else
         {
             <ul class="nav navbar-nav navbar-right">
-                <li><a asp-area="" asp-controller="Home" asp-action="Index">Settings</a></li>
+                <li><a asp-area="" asp-controller="CmsHome" asp-action="Index" target="_blank">Website</a></li>
+                <li><a asp-area="" asp-controller="Settings" asp-action="Index">Settings</a></li>
                 <li><a asp-area="" asp-controller="Account" asp-action="Register">Register</a></li>
                 <li><a asp-area="" asp-controller="Account" asp-action="Login">Log in</a></li>
             </ul>

@@ -6,11 +6,13 @@
 */
 
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
     public class NccWebSite : BaseModel
     {
+        [Required]
         public string SiteTitle { get; set; }
         public string Tagline { get; set; }
         public string FaviconUrl { get; set; }
@@ -24,5 +26,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string TimeFormat { get; set; }
         public string Language { get; set; }
         public string Copyrights { get; set; }
+        public string PrivacyPolicyUrl { get; set; }
+        public string TermsAndConditionsUrl { get; set; }
     }
 }

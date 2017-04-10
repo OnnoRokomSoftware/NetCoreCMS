@@ -9,9 +9,10 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    partial class NccDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170410161602_column added into NccWebSite model")]
+    partial class columnaddedintoNccWebSitemodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");

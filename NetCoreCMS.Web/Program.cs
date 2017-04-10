@@ -30,7 +30,7 @@ namespace NetCoreCMS.Web
 
         public static void Shutdown()
         {
-            cancelTokenSource.CancelAfter(10000);            
+            cancelTokenSource.CancelAfter(5000);            
         }
     }
 }

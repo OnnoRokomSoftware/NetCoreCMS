@@ -31,7 +31,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">NetCoreCMS Frontend</a>
+                <a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">NetCoreCMS Frontend</a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -41,7 +41,7 @@
                     <li><a asp-area="" asp-controller="CmsPage" asp-action="Index">Pages</a></li>
                     <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
                 </ul>
-                @await Html.PartialAsync("_LoginPartial")
+                @await Html.PartialAsync("_SiteLoginPartial")
             </div>
         </div>
     </nav>

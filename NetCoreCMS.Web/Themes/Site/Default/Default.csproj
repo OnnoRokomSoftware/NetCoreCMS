@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Shared\_LoginPartial.cshtml">
+    <Content Include="Shared\_SiteLoginPartial.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Shared\_SiteLayout.cshtml">

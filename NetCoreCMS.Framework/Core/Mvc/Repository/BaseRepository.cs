@@ -33,7 +33,9 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
 
         public EntityT Eidt(EntityT entity)
         {
+            entity.Status = EntityStatus.Modified;
             Context.Entry(entity).State = EntityState.Modified;
+
             return entity;
         }
 

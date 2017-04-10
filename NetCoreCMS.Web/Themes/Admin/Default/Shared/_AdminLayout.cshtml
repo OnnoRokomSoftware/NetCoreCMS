@@ -63,7 +63,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">NetCoreCMS Admin</a>
+                <a asp-area="" asp-controller="Admin" asp-action="Index" class="navbar-brand">NetCoreCMS Admin</a>
             </div>
             <div class="navbar-collapse collapse">
                 @*<ul class="nav navbar-nav">
@@ -73,7 +73,7 @@
                     <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
                     
                 </ul>*@
-                @*@await Html.PartialAsync("_LoginPartial")*@
+                 @await Html.PartialAsync("_AdminLoginPartial") 
             </div>
         </div>
     </nav>
@@ -132,7 +132,7 @@
                         </li>
                     </ul>
 
-                    @await Html.PartialAsync("_LoginPartial")
+                    @await Html.PartialAsync("_AdminLoginPartial")
                 </div>
             </div>
         </nav>

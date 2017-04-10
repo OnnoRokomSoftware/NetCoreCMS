@@ -160,6 +160,27 @@ namespace NetCoreCMS.Framework.Setup
             webSiteService.Save(webSite);
         }
 
+        public static void CrateNccWebSite(NccDbContext dbContext, WebSiteInfo webSiteInfo)
+        {
+            var webSiteRepository = new NccWebSiteRepository(dbContext);
+            var webSiteService = new NccWebSiteService(webSiteRepository);
+            var webSite = new NccWebSite()
+            {
+                Name = webSiteInfo.SiteName,
+                AllowRegistration = true,
+                DateFormat = "dd/MM/yyyy",
+                TimeFormat = "hh:mm:ss",
+                EmailAddress = webSiteInfo.Email,
+                Language = "en_US",
+                NewUserRole = "Subscriber",
+                SiteTitle = webSiteInfo.SiteName,
+                Tagline = webSiteInfo.Tagline,
+                TimeZone = "UTC_1",
+            };
+            webSiteService.Save(webSite);
+
+        }
+
         public static void RegisterAuthServices()
         {
             GlobalConfig.Services.AddDbContext<NccDbContext>(options =>

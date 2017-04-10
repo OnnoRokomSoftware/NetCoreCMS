@@ -11,6 +11,7 @@ using System.Reflection;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Core.Repository;
 
 namespace NetCoreCMS.Core.Modules.Settings
 {
@@ -50,7 +51,8 @@ namespace NetCoreCMS.Core.Modules.Settings
 
         public void Init(IServiceCollection services)
         {
-            //services.AddSingleton<NccWebSiteService>();
+            services.AddTransient<NccWebSiteRepository>();
+            services.AddTransient<NccWebSiteService>();
         }
 
         public bool Install()

@@ -8,7 +8,7 @@
     <Content Include="Shared\_AdminLayout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Shared\_LoginPartial.cshtml">
+    <Content Include="Shared\_AdminLoginPartial.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Views\_ViewImports.cshtml">
