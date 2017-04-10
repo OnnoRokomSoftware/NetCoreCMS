@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.Web.Models.AccountViewModels
+namespace NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels
 {
-    public class ExternalLoginConfirmationViewModel
+    public class ForgotPasswordViewModel
     {
         [Required]
         [EmailAddress]

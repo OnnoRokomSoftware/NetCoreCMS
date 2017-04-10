@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.Web.Models.ManageViewModels
+namespace NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels
 {
     public class FactorViewModel
     {

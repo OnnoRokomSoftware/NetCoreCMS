@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -7,10 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NetCoreCMS.Web.Models;
-using NetCoreCMS.Web.Models.ManageViewModels;
 using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels;
 
 namespace NetCoreCMS.Web.Controllers
 {

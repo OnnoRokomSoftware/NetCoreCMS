@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using NetCoreCMS.Web.Models.AccountViewModels;
 using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Auth;
+using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels;
 
 namespace NetCoreCMS.Web.Controllers
 {
@@ -144,7 +144,7 @@ namespace NetCoreCMS.Web.Controllers
         {
             await _signInManager.SignOutAsync();
             _logger.LogInformation(4, "User logged out.");
-            return RedirectToAction(nameof(HomeController.Index), "Home");
+            return RedirectToAction("Index", "CmsHome");
         }
 
         //
@@ -472,7 +472,7 @@ namespace NetCoreCMS.Web.Controllers
             }
             else
             {
-                return RedirectToAction(nameof(HomeController.Index), "Home");
+                return RedirectToAction("Index", "CmsHome");
             }
         }
 
