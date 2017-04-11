@@ -46,10 +46,10 @@
 
     <link href="/Theme/Admin/Default/css/themeStyle.css" rel="stylesheet" />
     <link href="/Theme/Admin/Default/css/sidebar.css" rel="stylesheet" />
-    @*<script src="/NetCoreCMS.Modules.Setup/js/Setup.js"></script>*@
 
 </head>
 <body>
+
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -156,6 +156,7 @@
         </footer>
     </div>
     <script type="text/javascript">
+
         function htmlbodyHeightUpdate() {
             var height3 = $(window).height()
             var height1 = $('.nav').height() + 50
@@ -170,6 +171,7 @@
             }
 
         }
+
         $(document).ready(function () {
             htmlbodyHeightUpdate()
             $(window).resize(function () {
@@ -180,7 +182,9 @@
                 htmlbodyHeightUpdate()
             });
         });
+
     </script>
+
     @RenderSection("Scripts", required: false)
 </body>
 </html>

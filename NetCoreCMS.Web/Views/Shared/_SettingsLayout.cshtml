@@ -41,10 +41,13 @@
         <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
+    <link href="/css/sidebar.css" rel="stylesheet" />
+    <link href="/css/navbarcustom.css" rel="stylesheet" />
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container-fluid">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -52,27 +55,142 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Admin" asp-action="Index" class="navbar-brand">NetCoreCMS Admin</a>
+                <a asp-area="" asp-controller="Settings" asp-action="Index" class="navbar-brand">NetCoreCMS Settings</a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
-                </ul>
+            <div class="navbar-collapse collapse">                
                 @await Html.PartialAsync("_SettingsLoginPartial")
             </div>
         </div>
     </nav>
-    <div class="container body-content">
-        @RenderBody()
+    <div class="row">
+        <nav class="navbar navbar-default sidebar" role="navigation">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                @*<div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="#">Brand</a>
+                    </div>*@
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
+                    
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a asp-controller="Settings" asp-action="Index">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
+                        
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Menu<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a href="#">Create</a></li>
+                                <li><a href="#">Assign</a></li>
+                                <li><a href="#">Manage</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Media<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a href="#">Create</a></li>
+                                <li><a href="#">Manage</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Theme<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a href="#">Install</a></li>
+                                <li><a href="#">Manage</a></li>                                
+                            </ul>
+                        </li>
+
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Modules<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">                                
+                                <li><a href="#">Install</a></li>
+                                <li><a href="#">Manage</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">User <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a href="#">New User</a></li>
+                                <li><a href="#">Manage</a></li>                                
+                            </ul>
+                        </li>
+                        
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a href="#">General</a></li>  .
+                                <li><a href="#">Profile<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+
+                    @*@await Html.PartialAsync("_SettingsLoginPartial")*@
+                </div>
+            </div>
+        </nav>
+        @*<div class="col-sm-3 col-md-2 sidebar">
+
+                <ul class="nav nav-sidebar">
+                    <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
+                    <li><a href="#">Reports</a></li>
+                    <li><a href="#">Analytics</a></li>
+                    <li><a href="#">Export</a></li>
+                    <li class="active"><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
+                    <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
+                    <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
+                    <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
+                </ul>
+            </div>*@
+        <div class="col-sm-8 main">
+            @RenderBody()
+        </div>
+        <div style="clear:both;"></div>
+    </div>
+    <div style="clear:both;"></div>
+    <div class="row text-center">
         <hr />
         <footer>
             <p>&copy; 2017 - NetCoreCMS.Web</p>
         </footer>
     </div>
+    <div style="clear:both;"></div>
+    <script type="text/javascript">
 
+        function htmlbodyHeightUpdate() {
+            var height3 = $(window).height()
+            var height1 = $('.nav').height() + 50
+            height2 = $('.main').height()
+            if (height2 > height3) {
+                $('html').height(Math.max(height1, height3, height2) + 10);
+                $('body').height(Math.max(height1, height3, height2) + 10);
+            }
+            else {
+                $('html').height(Math.max(height1, height3, height2));
+                $('body').height(Math.max(height1, height3, height2));
+            }
+
+        }
+
+        $(document).ready(function () {
+            htmlbodyHeightUpdate()
+            $(window).resize(function () {
+                htmlbodyHeightUpdate()
+            });
+            $(window).scroll(function () {
+                height2 = $('.main').height()
+                htmlbodyHeightUpdate()
+            });
+        });
+
+    </script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

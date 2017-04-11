@@ -33,6 +33,7 @@
 
   <ItemGroup>
     <Content Include="Data\SecureMedia\README.md" />
+    <Content Include="wwwroot\css\navbarcustom.css" />
     <Content Include="wwwroot\media\README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -67,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Views\Home\SetupSuccess.cshtml" />
+    <None Include="wwwroot\css\sidebar.css" />
   </ItemGroup>
 
 </Project>
