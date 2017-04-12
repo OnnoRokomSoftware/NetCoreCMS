@@ -7,28 +7,28 @@ using NetCoreCMS.Framework.Core.Repository;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccWebSiteService : IBaseService<NccWebSite>
+    public class NccMenuService : IBaseService<NccMenu>
     {
-        private readonly NccWebSiteRepository _entityRepository;
+        private readonly NccMenuRepository _entityRepository;
 
-        public NccWebSiteService(NccWebSiteRepository entityRepository)
+        public NccMenuService(NccMenuRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
          
-        public NccWebSite Get(long entityId)
+        public NccMenu Get(long entityId)
         {
             return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
         }
 
-        public NccWebSite Save(NccWebSite entity)
+        public NccMenu Save(NccMenu entity)
         {
             _entityRepository.Add(entity);
             _entityRepository.SaveChange();
             return entity;
         }
 
-        public NccWebSite Update(NccWebSite entity)
+        public NccMenu Update(NccMenu entity)
         {
             var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
             if(oldEntity != null)
@@ -56,22 +56,22 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccWebSite> GetAll()
+        public List<NccMenu> GetAll()
         {
             return _entityRepository.Query().ToList();
         }
 
-        public List<NccWebSite> GetAllByStatus(int status)
+        public List<NccMenu> GetAllByStatus(int status)
         {
             return _entityRepository.Query().Where(x => x.Status == status).ToList();
         }
 
-        public List<NccWebSite> GetAllByName(string name)
+        public List<NccMenu> GetAllByName(string name)
         {
             return _entityRepository.Query().Where(x => x.Name == name).ToList();
         }
 
-        public List<NccWebSite> GetAllByNameContains(string name)
+        public List<NccMenu> GetAllByNameContains(string name)
         {
             return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
         }
@@ -86,25 +86,16 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        private void CopyNewData(NccWebSite oldEntity, NccWebSite entity)
-        {
-            oldEntity.AllowRegistration = entity.AllowRegistration;
-            oldEntity.Copyrights = entity.Copyrights;
-            oldEntity.DateFormat = entity.DateFormat;
-            oldEntity.DomainName = entity.DomainName;
-            oldEntity.EmailAddress = entity.EmailAddress;
-            oldEntity.FaviconUrl = entity.FaviconUrl;
-            oldEntity.Language = entity.Language;
+        private void CopyNewData(NccMenu oldEntity, NccMenu entity)
+        {                
             oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.ModifyBy = entity.ModifyBy;
-            oldEntity.Name = entity.Name;
-            oldEntity.NewUserRole = entity.NewUserRole;
-            oldEntity.SiteLogoUrl = entity.SiteLogoUrl;
-            oldEntity.SiteTitle = entity.SiteTitle;
+            oldEntity.ModifyBy = entity.GetCurrentUserId();
+            oldEntity.Name = entity.Name;            
             oldEntity.Status = entity.Status;
-            oldEntity.Tagline = entity.Tagline;
-            oldEntity.TimeFormat = entity.TimeFormat;
-            oldEntity.TimeZone = entity.TimeZone;
+            oldEntity.MenuFor = entity.MenuFor;
+            oldEntity.MenuIconCls = entity.MenuIconCls;
+            oldEntity.MenuPosition = entity.MenuPosition;
+            oldEntity.Status = entity.Status;            
         }
         
     }

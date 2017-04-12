@@ -13,7 +13,7 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Core.Modules.Cms
 {
-    public class CmsModule : INccModule
+    public class CmsModule : IModule
     {
         public CmsModule()
         {

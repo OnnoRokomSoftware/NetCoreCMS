@@ -8,22 +8,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Loader;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.Hosting;
+using System.Reflection;
 
 namespace NetCoreCMS.Framework.Modules
 {
     public class ModuleManager
     {
-        List<INccModule> modules = new List<INccModule>();
-        public List<INccModule> LoadModules(IDirectoryContents moduleRootFolder)
+        List<IModule> modules = new List<IModule>();
+        public List<IModule> LoadModules(IDirectoryContents moduleRootFolder)
         {   
             foreach (var moduleFolder in moduleRootFolder.Where(x => x.IsDirectory))
             {
@@ -49,7 +46,7 @@ namespace NetCoreCMS.Framework.Modules
 
                         if (assembly.FullName.Contains(moduleFolder.Name))
                         {
-                            modules.Add(new NccModule { ModuleName = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
+                            modules.Add(new Module{ ModuleName = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
                         }
                     }
                 }
@@ -61,7 +58,7 @@ namespace NetCoreCMS.Framework.Modules
             return modules;
         }
         
-        public List<INccModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services)
+        public List<IModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services)
         {
             foreach (var module in modules)
             {
@@ -71,10 +68,10 @@ namespace NetCoreCMS.Framework.Modules
                     mvcBuilder.AddApplicationPart(module.Assembly);
 
                     // Register dependency in modules
-                    var moduleInitializerType = module.Assembly.GetTypes().Where(x => typeof(INccModule).IsAssignableFrom(x)).FirstOrDefault();
-                    if (moduleInitializerType != null && moduleInitializerType != typeof(INccModule))
+                    var moduleInitializerType = module.Assembly.GetTypes().Where(x => typeof(IModule).IsAssignableFrom(x)).FirstOrDefault();
+                    if (moduleInitializerType != null && moduleInitializerType != typeof(IModule))
                     {
-                        var moduleInitializer = (INccModule)Activator.CreateInstance(moduleInitializerType);
+                        var moduleInitializer = (IModule)Activator.CreateInstance(moduleInitializerType);
                         moduleInitializer.Init(services);
                     }
                 }

@@ -13,11 +13,11 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Modules
 {
-    public interface INccModule
+    public interface IPlugins
     {
-        string ModuleId { get; set; }
-        string ModuleName { get; set; }
-        string ModuleTitle { get; set; }
+        string PluginsId { get; set; }
+        string PluginsName { get; set; }
+        string PluginsTitle { get; set; }
         bool AntiForgery { get; set; }
         string Author { get; set; }
         string Website { get; set; } 
@@ -29,13 +29,13 @@ namespace NetCoreCMS.Framework.Modules
         Assembly Assembly { get; set; }
         string SortName { get; set; }
         string Path { get; set; }
-        ModuleStatus Status { get; set; }
+        PluginsStatus Status { get; set; }
 
         void Init(IServiceCollection services);
         bool Install();
         bool Uninstall();
         bool Activate();
         bool Inactivate();
-        void LoadModuleInfo();
+        void LoadPluginsInfo();
     }
 }

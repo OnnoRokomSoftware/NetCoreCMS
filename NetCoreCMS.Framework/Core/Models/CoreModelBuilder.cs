@@ -11,7 +11,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
 
-namespace NetCoreCMS.Framework.Auth
+namespace NetCoreCMS.Framework.Core.Models
 {
     public class CoreModelBuilder : INccModuleBuilder
     {
@@ -36,17 +36,14 @@ namespace NetCoreCMS.Framework.Auth
                 b.HasOne(ur => ur.User).WithMany(u => u.Roles).HasForeignKey(u => u.UserId);
                 b.ToTable("Ncc_UserRole");
             });
-
             modelBuilder.Entity<IdentityUserLogin<long>>(b =>
             {
                 b.ToTable("Ncc_UserLogin");
             });
-
             modelBuilder.Entity<IdentityUserToken<long>>(b =>
             {
                 b.ToTable("Ncc_UserToken");
             });
-
             modelBuilder.Entity<NccWebSite>().ToTable("Ncc_WebSite");
             modelBuilder.Entity<NccModule>().ToTable("Ncc_Module");
             modelBuilder.Entity<NccTheme>().ToTable("Ncc_Theme");
@@ -62,6 +59,39 @@ namespace NetCoreCMS.Framework.Auth
                 b.ToTable("Ncc_MenuItem");
             });
 
+            modelBuilder.Entity<NccPage>(b => {
+                b.ToTable("Ncc_Page");
+                b.HasOne(p => p.Parent);
+            });
+
+            modelBuilder.Entity<NccPlugins>(b => {
+                b.ToTable("Ncc_Plugins");
+            });
+
+            modelBuilder.Entity<NccPost>(b => {
+                b.ToTable("Ncc_NccPost");
+                b.HasOne(p => p.Parent);
+                b.HasOne(p => p.Author);
+                b.HasMany(p => p.Categories);
+                b.HasMany(p => p.PostComments);
+                b.HasMany(p => p.Tags);
+            });
+
+            modelBuilder.Entity<NccPostCategory>(b => {
+                b.ToTable("Ncc_PostCategory");
+                b.HasOne(p => p.Parent);
+                b.HasMany(p => p.Posts);
+            });
+
+            modelBuilder.Entity<NccPostComment>(b => {
+                b.ToTable("Ncc_PostComment");
+                b.HasOne(p => p.Post);
+                b.HasOne(p => p.Author);
+            });
+
+            modelBuilder.Entity<NccTag>().ToTable("Ncc_Tag");
+            modelBuilder.Entity<NccTheme>().ToTable("Ncc_Theme");
+            modelBuilder.Entity<NccWidget>().ToTable("Ncc_Widget");
         }
     }
 }

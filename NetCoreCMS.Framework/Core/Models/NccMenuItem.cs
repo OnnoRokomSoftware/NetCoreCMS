@@ -14,22 +14,31 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Module { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
+        public string Url { get; set; }
         public string Data { get; set; }
         public string Target { get; set; }
         public int Position { get; set; }
         public string MenuIconCls { get; set; }
+        public int MenuOrder { get; set; }
         public ActionType ActionType { get; set; }
+        public MenuItemFor MenuItemFor { get; set; }
     }
 
     public enum ActionType
     {
         Url,
         Page,
-        Article,
-        ArticlePage,
-        ArticalCategory,
+        Blog,
+        Module,
+        BlogPost,
+        BlogCategory,
         Tag,
-        Module
+    }
+
+    public enum MenuItemFor
+    {
+        Site,
+        Admin
     }
 
 }

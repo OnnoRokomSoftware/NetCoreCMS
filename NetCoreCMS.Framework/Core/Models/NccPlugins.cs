@@ -5,11 +5,10 @@
  * License: BSD (3 Clause)
 */
 using NetCoreCMS.Framework.Core.Mvc.Models;
-using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccModule : BaseModel
+    public class NccPlugins : BaseModel
     {
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
@@ -21,11 +20,10 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Category { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public List<NccWidget> Widgets { get; set; }
-        public ModuleStatus ModuleStatus { get; set; }
+        public PluginsStatus PluginsStatus { get; set; }
     }
 
-    public enum ModuleStatus
+    public enum PluginsStatus
     {
         Listed,
         Installed,

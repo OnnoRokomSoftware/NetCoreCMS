@@ -23,7 +23,6 @@ using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
-using System.IO;
 
 namespace NetCoreCMS.Web
 {
@@ -139,7 +138,7 @@ namespace NetCoreCMS.Web
             });
 
             GlobalConfig.App = app;
-            GlobalConfig.WebSite = new NccWebSite() { Name = "NccCMS" }; 
+            GlobalConfig.WebSite = new NccWebSite() { Name = "Net Core CMS" }; 
         }
     }
 }

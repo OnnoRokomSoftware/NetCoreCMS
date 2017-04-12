@@ -4,24 +4,19 @@
  * Copyright (c) xonaki.com
  * License: BSD (3 Clause)
 */
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
-using NetCoreCMS.Framework.Modules;
+using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Models;
 
-namespace NetCoreCMS.Core.Modules.Setup
+namespace NetCoreCMS.Framework.Modules
 {
-    public class SetupModule : IModule
+    public class Module : IModule
     {
-        public SetupModule()
-        {
-            LoadModuleInfo();
-        }
-
+        public string Id { get; set; }
         public string ModuleId { get; set; }
+        public string ModuleTitle { get; set; }
         public string ModuleName { get; set; }
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
@@ -35,7 +30,7 @@ namespace NetCoreCMS.Core.Modules.Setup
         public string SortName { get; set; }
         public string Path { get; set; }
         public ModuleStatus Status { get; set; }
-        public string ModuleTitle { get; set; }
+        
 
         public bool Activate()
         {
@@ -49,7 +44,7 @@ namespace NetCoreCMS.Core.Modules.Setup
 
         public void Init(IServiceCollection services)
         {
-            
+            //Initilize the module here
         }
 
         public bool Install()
@@ -59,15 +54,7 @@ namespace NetCoreCMS.Core.Modules.Setup
 
         public void LoadModuleInfo()
         {
-            ModuleName = "NetCoreCMS.Modules.Setup";
-            Author = "Xonaki";
-            Website = "http://xonaki.com";
-            AntiForgery = true;
-            Description = "Builtin Content Management System Module.";
-            Version = new Version(0, 1, 1);
-            NetCoreCMSVersion = new Version(0, 1, 1);
-            Dependencies = new List<string>();
-            Category = "Core";
+            throw new NotImplementedException();
         }
 
         public bool Uninstall()

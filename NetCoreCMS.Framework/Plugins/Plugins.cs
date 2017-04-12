@@ -12,10 +12,11 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Modules
 {
-    public class NccModule : INccModule
+    public class Plugins : IPlugins
     {
-        public string Id { get; set; }
-        public string ModuleName { get; set; }
+        public string PluginsId { get; set; }
+        public string PluginsTitle { get; set; }
+        public string PluginsName { get; set; }
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
         public string Website { get; set; }
@@ -27,9 +28,8 @@ namespace NetCoreCMS.Framework.Modules
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public ModuleStatus Status { get; set; }
-        public string ModuleId { get ; set ; }
-        public string ModuleTitle { get ; set  ; }
+        public PluginsStatus Status { get; set; }
+        
 
         public bool Activate()
         {
@@ -51,7 +51,7 @@ namespace NetCoreCMS.Framework.Modules
             throw new NotImplementedException();
         }
 
-        public void LoadModuleInfo()
+        public void LoadPluginsInfo()
         {
             throw new NotImplementedException();
         }

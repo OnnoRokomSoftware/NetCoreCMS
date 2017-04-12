@@ -15,7 +15,7 @@ using NetCoreCMS.Framework.Core.Repository;
 
 namespace NetCoreCMS.Core.Modules.Settings
 {
-    public class SettingsModule : INccModule
+    public class SettingsModule : IModule
     {
         public SettingsModule()
         {

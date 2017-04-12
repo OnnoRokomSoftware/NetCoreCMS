@@ -14,7 +14,7 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Modules.HelloWorld
 {
-    public class HelloWorldModule : INccModule
+    public class HelloWorldModule : IModule
     {
         public HelloWorldModule()
         {

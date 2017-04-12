@@ -36,6 +36,7 @@
   <ItemGroup>
     <Folder Include="Core\Models\ViewModels\" />
     <Folder Include="Core\Events\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
   
 </Project>

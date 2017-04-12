@@ -13,7 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Auth;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Setup;
 

@@ -7,7 +7,7 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Core.Modules.Media
 {
-    public class MediaModule : INccModule
+    public class MediaModule : IModule
     {
         public MediaModule()
         {

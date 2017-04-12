@@ -17,7 +17,7 @@ namespace NetCoreCMS.Framework.Modules
 {
     public class ResourcePathExpendar
     {
-        public static void RegisterStaticFiles(IHostingEnvironment env, IApplicationBuilder app, IList<INccModule> modules)
+        public static void RegisterStaticFiles(IHostingEnvironment env, IApplicationBuilder app, IList<IModule> modules)
         {
             foreach (var module in modules)
             {
@@ -34,8 +34,21 @@ namespace NetCoreCMS.Framework.Modules
 
             var activeAdminTheme = "Default";
             var activeSiteTheme = "Default";
-
             var themePath = Path.Combine(env.ContentRootPath, "Themes");
+
+            var siteThemePath = Path.Combine(themePath, "Site");
+            siteThemePath = Path.Combine(siteThemePath, activeSiteTheme);
+            siteThemePath = Path.Combine(siteThemePath, "wwwroot");
+            var siteThemeDir = new DirectoryInfo(siteThemePath);
+            if (siteThemeDir.Exists)
+            {
+                app.UseStaticFiles(new StaticFileOptions()
+                {
+                    FileProvider = new PhysicalFileProvider(siteThemeDir.FullName),
+                    RequestPath = new PathString("/Theme/Site/" + activeSiteTheme)
+                });
+            }
+            
             var adminThemePath = Path.Combine(themePath, "Admin");
             adminThemePath = Path.Combine(adminThemePath, activeAdminTheme);
             adminThemePath = Path.Combine(adminThemePath, "wwwroot");
@@ -49,19 +62,7 @@ namespace NetCoreCMS.Framework.Modules
                     RequestPath = new PathString("/Theme/Admin/" + activeAdminTheme)
                 });
             }
-
-            var siteThemePath = Path.Combine(themePath, "Site");
-            siteThemePath = Path.Combine(siteThemePath, activeSiteTheme);
-            siteThemePath = Path.Combine(siteThemePath, "wwwroot");
-            var siteThemeDir = new DirectoryInfo(adminThemePath);
-            if (siteThemeDir.Exists)
-            {
-                app.UseStaticFiles(new StaticFileOptions()
-                {
-                    FileProvider = new PhysicalFileProvider(siteThemeDir.FullName),
-                    RequestPath = new PathString("/Theme/Site/" + activeSiteTheme)
-                });
-            }
+            
         }
     }
 }

@@ -4,8 +4,8 @@
 *Copyright (c) xonaki.com
 *License: BSD (3 Clause)
 */
-
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Models
@@ -28,5 +28,6 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Copyrights { get; set; }
         public string PrivacyPolicyUrl { get; set; }
         public string TermsAndConditionsUrl { get; set; }
+        public string GoogleAnalyticsId { get; set; }
     }
 }
