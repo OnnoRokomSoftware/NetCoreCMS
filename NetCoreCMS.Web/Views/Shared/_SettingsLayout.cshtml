@@ -84,9 +84,9 @@
                         <li class="dropdown open">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Appearance<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
                             <ul class="dropdown-menu forAnimate" role="menu">
-                                <li><a href="#">Menu</a></li>
-                                <li><a href="#">Widget</a></li>
-                                <li><a href="#">Theme</a></li>                                
+                                <li><a asp-controller="CmsMenu" asp-action="Index"> Menu </a></li>
+                                <li><a asp-controller="CmsWidget" asp-action="Index"> Widget </a></li>
+                                <li><a asp-controller="CmsTheme" asp-action="Index"> Theme </a></li>           
                             </ul>
                         </li>
 
@@ -99,18 +99,10 @@
                         </li>
 
                         <li class="dropdown open">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Theme<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                            <ul class="dropdown-menu forAnimate" role="menu">
-                                <li><a href="#">New Theme</a></li>
-                                <li><a href="#">Manage</a></li>                                
-                            </ul>
-                        </li>
-
-                        <li class="dropdown open">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Modules<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
                             <ul class="dropdown-menu forAnimate" role="menu">                                
-                                <li><a href="#">New Module</a></li>
-                                <li><a href="#">Manage</a></li>
+                                <li><a asp-controller="CmsModule" asp-action="Index" >New Module</a></li>
+                                <li><a asp-controller="CmsModule" asp-action="Manage" >Manage</a></li>
                             </ul>
                         </li>
 

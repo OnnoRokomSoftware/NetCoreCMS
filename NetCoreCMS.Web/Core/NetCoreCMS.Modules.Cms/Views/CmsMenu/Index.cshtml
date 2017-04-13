@@ -1,0 +1,91 @@
+﻿@using NetCoreCMS.Framework.Utility
+@{
+    Layout = Constants.SettingsLayoutName;
+}
+
+<link href="/NetCoreCMS.Modules.Cms/css/menu.css" rel="stylesheet" />
+<script src="/NetCoreCMS.Modules.Cms/js/menu.js"></script>
+
+<ol class="breadcrumb">
+    <li><a asp-controller="Settings" asp-action="Index">Settings</a></li>
+    <li><a href="#">Appearance</a></li>
+    <li><a asp-controller="CmsMenu" asp-action="Index">Menu</a></li>
+</ol>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#editMenu">Edit Menu</a></li>
+    <li><a data-toggle="tab" href="#menuLocation">Menu Location</a></li>
+</ul>
+
+<div class="tab-content">
+    <div id="editMenu" class="tab-pane fade in active" style="padding: 10px 10px;">
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                                Url
+                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel1"><i class="glyphicon glyphicon-chevron-down  navbar-right panel-title-right-align"></i></a>
+                        </div>
+                        <div id="panel1" class="panel-collapse collapse in">
+                            <div class="panel-body">Contents panel 1</div>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Page
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel2"><i class="glyphicon glyphicon-chevron-down  navbar-right panel-title-right-align"></i></a>
+                             
+
+                        </div>
+                        <div id="panel2" class="panel-collapse collapse">
+                            <div class="panel-body">Contents panel 2</div>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Blog Category
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel3"><i class="glyphicon glyphicon-chevron-down navbar-right panel-title-right-align"></i></a>
+                             
+
+                        </div>
+                        <div id="panel3" class="panel-collapse collapse">
+                            <div class="panel-body">Contents panel 3</div>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Blog Post
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel4"><i class="glyphicon glyphicon-chevron-down navbar-right panel-title-right-align"></i></a>
+                            
+                        </div>
+                        <div id="panel4" class="panel-collapse collapse">
+                            <div class="panel-body">Contents panel 3</div>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            Tag
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel5"><i class="glyphicon glyphicon-chevron-down navbar-right panel-title-right-align"></i></a>
+                             
+                        </div>
+                        <div id="panel5" class="panel-collapse collapse">
+                            <div class="panel-body">Contents panel 3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">MainMenu</div>
+                    <div class="panel-body">This is panel body</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="menuLocation" class="tab-pane fade" style="padding: 10px 10px;">
+        <h3>Menu Location</h3>
+        <p>Some content in menu 1.</p>
+    </div>
+</div>
+

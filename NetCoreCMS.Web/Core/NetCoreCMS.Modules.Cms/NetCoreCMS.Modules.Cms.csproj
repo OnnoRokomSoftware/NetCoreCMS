@@ -48,22 +48,22 @@
     <Content Include="Views\Account\VerifyCode.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Views\Manage\AddPhoneNumber.cshtml">
+    <Content Include="Views\ManageAccount\AddPhoneNumber.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Views\Manage\ChangePassword.cshtml">
+    <Content Include="Views\ManageAccount\ChangePassword.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Views\Manage\Index.cshtml">
+    <Content Include="Views\ManageAccount\Index.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Views\Manage\ManageLogins.cshtml">
+    <Content Include="Views\ManageAccount\ManageLogins.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Views\Manage\SetPassword.cshtml">
+    <Content Include="Views\ManageAccount\SetPassword.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Views\Manage\VerifyPhoneNumber.cshtml">
+    <Content Include="Views\ManageAccount\VerifyPhoneNumber.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Views\CmsHome\About.cshtml">

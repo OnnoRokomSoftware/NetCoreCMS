@@ -13,7 +13,7 @@ using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels;
 namespace NetCoreCMS.Web.Controllers
 {
     [Authorize]
-    public class ManageController : Controller
+    public class ManageAccountController : Controller
     {
         private readonly UserManager<NccUser> _userManager;
         private readonly SignInManager<NccUser> _signInManager;
@@ -22,7 +22,7 @@ namespace NetCoreCMS.Web.Controllers
         private readonly ISmsSender _smsSender;
         private readonly ILogger _logger;
 
-        public ManageController(
+        public ManageAccountController(
           UserManager<NccUser> userManager,
           SignInManager<NccUser> signInManager,
           IOptions<IdentityCookieOptions> identityCookieOptions,
@@ -35,7 +35,7 @@ namespace NetCoreCMS.Web.Controllers
             _externalCookieScheme = identityCookieOptions.Value.ExternalCookieAuthenticationScheme;
             _emailSender = emailSender;
             _smsSender = smsSender;
-            _logger = loggerFactory.CreateLogger<ManageController>();
+            _logger = loggerFactory.CreateLogger<ManageAccountController>();
         }
 
         //

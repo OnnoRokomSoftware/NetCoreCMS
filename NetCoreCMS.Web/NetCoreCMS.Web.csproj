@@ -19,15 +19,19 @@
   <ItemGroup>
     <Compile Remove="Core\**" />
     <Compile Remove="Modules\**" />
+    <Compile Remove="Plugins\**" />
     <Compile Remove="Themes\**" />
     <Content Remove="Core\**" />
     <Content Remove="Modules\**" />
+    <Content Remove="Plugins\**" />
     <Content Remove="Themes\**" />
     <EmbeddedResource Remove="Core\**" />
     <EmbeddedResource Remove="Modules\**" />
+    <EmbeddedResource Remove="Plugins\**" />
     <EmbeddedResource Remove="Themes\**" />
     <None Remove="Core\**" />
     <None Remove="Modules\**" />
+    <None Remove="Plugins\**" />
     <None Remove="Themes\**" />
   </ItemGroup>
 

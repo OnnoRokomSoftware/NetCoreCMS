@@ -88,42 +88,50 @@
                 </div>*@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
-                        <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
-                        <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
-
-                    </ul>
+                    
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="#">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
-                        <li><a href="#">Profile<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
-                        <li><a href="#">Messages<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-envelope"></span></a></li>
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Blog<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
                             <ul class="dropdown-menu forAnimate" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
+                                <li><a asp-controller="Blog" asp-action="Index">New Post</a></li>
+                                <li><a asp-controller="Blog" asp-action="Manage">All Post</a></li>
+                                <li><a asp-controller="Blog" asp-action="PostCategory">Category</a></li>
+                                <li><a asp-controller="Blog" asp-action="Comments">Comments</a></li>
+                                <li><a asp-controller="Blog" asp-action="Tag">Tag</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
-                        <li><a href="#">Profile<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
-                        <li><a href="#">Messages<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-envelope"></span></a></li>
-                        <li class="dropdown open">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
                             <ul class="dropdown-menu forAnimate" role="menu">
-                                <li><a href="#">Action</a></li>
-                                <li><a href="#">Another action</a></li>
-                                <li><a href="#">Something else here</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">Separated link</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#">One more separated link</a></li>
+                                <li><a asp-controller="CmsPage" asp-action="Index">New Page</a></li>
+                                <li><a asp-controller="CmsPage" asp-action="Manage">Manage</a></li>                                
+                            </ul>
+                        </li>
+                         <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Media<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a asp-controller="MediaHome" asp-action="Index">New Media</a></li>
+                                <li><a  asp-controller="MediaHome" asp-action="Manage">Manage</a></li>
+                            </ul>
+                        </li>
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Appearance<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a asp-controller="CmsMenu" asp-action="Index"> Menu </a></li>
+                                <li><a asp-controller="CmsWidget" asp-action="Index"> Widget </a></li>
+                                <li><a asp-controller="CmsTheme" asp-action="Index"> Theme </a></li>
+                            </ul>
+                        </li>
+
+                        <li class="dropdown open">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
+                            <ul class="dropdown-menu forAnimate" role="menu">
+                                <li><a asp-controller="CmsSettings" asp-action="Index"> General </a></li>
+                                <li><a asp-controller="CmsSettings" asp-action="Reading"> Reading </a></li>
+                                <li><a asp-controller="CmsSettings" asp-action="Writing"> Writing </a></li>
+                                <li><a asp-controller="CmsSettings" asp-action="Media"> Media </a></li>
+                                <li><a asp-controller="CmsSettings" asp-action="PermaLink"> PermaLink</a></li>
                             </ul>
                         </li>
                     </ul>
