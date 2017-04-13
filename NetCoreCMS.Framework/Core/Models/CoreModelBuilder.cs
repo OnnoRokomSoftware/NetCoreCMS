@@ -14,18 +14,14 @@ namespace NetCoreCMS.Framework.Core.Models
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NccBlog>(b => {
-                b.ToTable( "Ncc_NccBlog" );
-                b.HasOne( bl => bl.Author );
-                b.HasMany(bl => bl.Posts);
-            });
             modelBuilder.Entity<NccMenu>(b => {
                 b.ToTable("Ncc_NccMenu");
                 b.HasMany(ur => ur.MenuItems);
             });
             modelBuilder.Entity<NccMenuItem>(b => {
                 b.ToTable("Ncc_MenuItem");
-                b.HasOne(ur => ur.Parent);
+                b.HasOne( m => m.Parent );
+                b.HasMany( m => m.SubActions );
             });
             modelBuilder.Entity<NccModule>(b => {
                 b.ToTable("Ncc_Module");
@@ -37,7 +33,7 @@ namespace NetCoreCMS.Framework.Core.Models
             });
             modelBuilder.Entity<NccPlugins>(b => {
                 b.ToTable("Ncc_Plugins");
-                b.HasOne(p => p.Widgets);
+                b.HasMany(p => p.Widgets);
             });
             modelBuilder.Entity<NccPost>(b => {
                 b.ToTable("Ncc_NccPost");

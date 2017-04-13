@@ -5,6 +5,7 @@
  * License: BSD (3 Clause)
 */
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
@@ -22,6 +23,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public int MenuOrder { get; set; }
         public ActionType MenuActionType { get; set; }
         public MenuItemFor MenuFor { get; set; }
+        public List<NccMenuItem> SubActions { get; set; }
 
         public enum ActionType
         {

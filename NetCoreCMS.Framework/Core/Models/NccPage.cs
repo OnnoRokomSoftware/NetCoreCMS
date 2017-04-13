@@ -17,5 +17,6 @@ namespace NetCoreCMS.Framework.Core.Models
         public string MetaDescription { get; set; }
         public string MetaKeyword { get; set; }
         public byte[] Content { get; set; }
+        public List<NccPage> LinkedPages { get; set; }
     }
 }

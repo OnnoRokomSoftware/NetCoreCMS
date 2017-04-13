@@ -16,6 +16,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Version { get; set; }
         public string NetCoreCMSVersion { get; set; }
         public string LayoutImage { get; set; }
+        public string FileName { get; set; }
         public List<NccWidgetSection> WidgetSections { get; set; }
     }
 }

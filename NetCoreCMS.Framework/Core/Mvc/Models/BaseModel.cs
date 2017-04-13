@@ -17,8 +17,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         {
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
-            CreateBy = GetCurrentUserId();
-            ModifyBy = GetCurrentUserId();
+            CreateBy = ModifyBy = GetCurrentUserId();
             Status = EntityStatus.New;
             VersionNumber = 1;
         }
@@ -36,7 +35,10 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         public long GetCurrentUserId()
         {
             HttpContextAccessor hca = new HttpContextAccessor();
-            return hca.HttpContext.User.GetUserId();
+            long? userId = hca.HttpContext?.User?.GetUserId();
+            if (userId == null)
+                return 0;
+            return userId.Value;
         }
     }
 }

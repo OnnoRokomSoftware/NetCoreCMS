@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Settings
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Media", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Media\NetCoreCMS.Modules.Media.csproj", "{67554FCE-6694-4794-9F65-E57FAEB21D07}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Blog", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Blog\NetCoreCMS.Modules.Blog.csproj", "{F2550C70-13E5-416F-8E36-C0A6C1594A68}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{67554FCE-6694-4794-9F65-E57FAEB21D07}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{67554FCE-6694-4794-9F65-E57FAEB21D07}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{67554FCE-6694-4794-9F65-E57FAEB21D07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2550C70-13E5-416F-8E36-C0A6C1594A68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2550C70-13E5-416F-8E36-C0A6C1594A68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2550C70-13E5-416F-8E36-C0A6C1594A68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2550C70-13E5-416F-8E36-C0A6C1594A68}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -94,5 +100,6 @@ Global
 		{4C2A5474-E42C-4330-9E14-AD640C53D857} = {6F492190-BD43-43F1-8512-26701469FB7E}
 		{539F1B60-2475-4998-B03D-148E34E4E39F} = {6F492190-BD43-43F1-8512-26701469FB7E}
 		{67554FCE-6694-4794-9F65-E57FAEB21D07} = {6F492190-BD43-43F1-8512-26701469FB7E}
+		{F2550C70-13E5-416F-8E36-C0A6C1594A68} = {6F492190-BD43-43F1-8512-26701469FB7E}
 	EndGlobalSection
 EndGlobal
