@@ -7,5 +7,16 @@
   "Description": "Builtin Content Management System Site Theme.",
   "Version" :  "0.1.1",
   "NetCoreCMSVersion" :  "0.1.1",
-  "Category" : "Default"
+  "Category": "Default",
+  "PreviewImage": "preview.jpg",
+  "Laout": [
+    {
+      "Name": "Layout1",
+      "PreviewImage": "Layout1"
+    },
+    {
+      "Name": "Layout2",
+      "PreviewImage": "Layout2"
+    }
+  ]  
 }

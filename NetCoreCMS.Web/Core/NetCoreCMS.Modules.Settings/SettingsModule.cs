@@ -35,7 +35,7 @@ namespace NetCoreCMS.Core.Modules.Settings
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public ModuleStatus Status { get; set; }
+        public NccModule.NccModuleStatus Status { get; set; }
         public string ModuleId { get ; set ; }
         public string ModuleTitle { get ; set ; }
 

@@ -17,10 +17,21 @@ namespace NetCoreCMS.Framework.Core.Models
         public string MetaDescription { get; set; }
         public string MetaKeyword { get; set; }
         public byte[] Content { get; set; }
+        public bool IsFeatured { get; set; }
+        public bool IsStiky { get; set; }
+        public bool AllowComment { get; set; }
         public string ThumImage { get; set; }
         public NccUser Author { get; set; }
+        public NccPostStatus PostStatus { get; set; }
         public List<NccPostCategory> Categories { get; set; }
         public List<NccTag> Tags { get; set; }
         public List<NccPostComment> PostComments { get; set; }
+
+        public enum NccPostStatus
+        {
+            Draft,
+            Published,
+            UnPublished
+        }
     }
 }

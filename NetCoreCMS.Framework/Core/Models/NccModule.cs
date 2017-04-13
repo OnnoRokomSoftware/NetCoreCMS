@@ -22,15 +22,15 @@ namespace NetCoreCMS.Framework.Core.Models
         public string SortName { get; set; }
         public string Path { get; set; }
         public List<NccWidget> Widgets { get; set; }
-        public ModuleStatus ModuleStatus { get; set; }
-    }
+        public NccModuleStatus ModuleStatus { get; set; }
 
-    public enum ModuleStatus
-    {
-        Listed,
-        Installed,
-        Active,
-        Inactive,
-        Uninstalled
-    }
+        public enum NccModuleStatus
+        {
+            Listed,
+            Installed,
+            Active,
+            Inactive,
+            Uninstalled
+        }
+    }     
 }

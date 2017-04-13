@@ -11,23 +11,24 @@ namespace NetCoreCMS.Framework.Core.Models
 {
     public class NccMenu : BaseModel
     {
-        public MenuPosition MenuPosition { get; set; }
+        public MenuPosition Position { get; set; }
         public string MenuIconCls { get; set; }
         public List<NccMenuItem> MenuItems { get; set; }
-        public MenuFor MenuFor { get; set; }
-    }
+        public NccMenuFor MenuFor { get; set; }
+        public int MenuOrder { get; set; }
 
-    public enum MenuPosition
-    {
-        Top,
-        Main,
-        Left,
-        Right,
-        Footer
-    }
-    public enum MenuFor
-    {
-        Site,
-        Admin
-    }
+        public enum MenuPosition
+        {
+            Top,
+            Main,
+            Left,
+            Right,
+            Footer
+        }
+        public enum NccMenuFor
+        {
+            Site,
+            Admin
+        }
+    }   
 }

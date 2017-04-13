@@ -29,7 +29,7 @@ namespace NetCoreCMS.Framework.Modules
         Assembly Assembly { get; set; }
         string SortName { get; set; }
         string Path { get; set; }
-        PluginsStatus Status { get; set; }
+        NccPlugins.NccPluginsStatus Status { get; set; }
 
         void Init(IServiceCollection services);
         bool Install();

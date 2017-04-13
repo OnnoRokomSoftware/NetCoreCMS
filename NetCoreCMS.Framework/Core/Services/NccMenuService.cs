@@ -94,7 +94,7 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.Status = entity.Status;
             oldEntity.MenuFor = entity.MenuFor;
             oldEntity.MenuIconCls = entity.MenuIconCls;
-            oldEntity.MenuPosition = entity.MenuPosition;
+            oldEntity.Position = entity.Position;
             oldEntity.Status = entity.Status;            
         }
         

@@ -20,7 +20,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string NetCoreCMSVersion { get; set; }
         public string Category { get; set; }
         public ThemeType Type { get; set; }
-        public List<NccWidgetSection> WidgetSections { get; set; }
+        public string PreviewImage { get; set; }      
         public List<NccThemeLayout> ThemeLayouts { get; set; }
 
         public enum ThemeType

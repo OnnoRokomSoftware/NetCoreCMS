@@ -20,25 +20,32 @@ namespace NetCoreCMS.Framework.Core.Models
         public int Position { get; set; }
         public string MenuIconCls { get; set; }
         public int MenuOrder { get; set; }
-        public ActionType ActionType { get; set; }
-        public MenuItemFor MenuItemFor { get; set; }
-    }
+        public ActionType MenuActionType { get; set; }
+        public MenuItemFor MenuFor { get; set; }
 
-    public enum ActionType
-    {
-        Url,
-        Page,
-        Blog,
-        Module,
-        BlogPost,
-        BlogCategory,
-        Tag,
-    }
+        public enum ActionType
+        {
+            Url,
+            Page,
+            Blog,
+            Module,
+            BlogPost,
+            BlogCategory,
+            Tag,
+        }
 
-    public enum MenuItemFor
-    {
-        Site,
-        Admin
-    }
+        public enum MenuItemFor
+        {
+            Site,
+            Admin
+        }
 
+        public class MenuItemTarget
+        {
+            public static string Blank { get { return "_blank"; } }
+            public static string Parent { get { return "_parent"; } }
+            public static string Self { get { return "_self"; } }
+            public static string Top { get { return "_top"; } }
+        }
+    }    
 }

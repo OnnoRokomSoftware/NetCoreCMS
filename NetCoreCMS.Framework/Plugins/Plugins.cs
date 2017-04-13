@@ -28,7 +28,7 @@ namespace NetCoreCMS.Framework.Modules
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public PluginsStatus Status { get; set; }
+        public NccPlugins.NccPluginsStatus Status { get; set; }
         
 
         public bool Activate()
