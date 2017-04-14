@@ -44,18 +44,65 @@
                                         <div id="recentPages" class="tab-pane fade in active" style="padding: 10px 10px;">
                                             <div class="row">
                                                 <div class="col-sm-4">
-                                                    <div class="row">
-                                                        Recent
-                                                    </div>
-                                                    <div class="row">                                                         
-                                                        <a id="selectAllPages" class="pull-left" href="#">Select All</a>
-                                                        <button id="addPageToMenu" class="btn btn-sm btn-primary pull-right" type="button" >Add to Menu</button>
-                                                    </div>
+                                                    <div id="recentPagesCheckBoxList" class="checkBoxList">
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" value="">Page 1</label>
+                                                        </div>
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" value="">Page 2</label>
+                                                        </div>
+                                                        <div class="checkbox disabled">
+                                                            <label><input type="checkbox" value="">Page 3</label>
+                                                        </div>
+                                                    </div>                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="viewAllPages" class="tab-pane fade in" style="padding: 10px 10px;">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div id="allpagesCheckBoxList" class="checkBoxList">
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" value="">Page 1</label>
+                                                        </div>
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" value="">Page 2</label>
+                                                        </div>
+                                                        <div class="checkbox disabled">
+                                                            <label><input type="checkbox" value="">Page 3</label>
+                                                        </div>
+                                                    </div>   
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="searchPages" class="tab-pane fade in" style="padding: 10px 10px;">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div id="searchPagesCheckBoxList" class="checkBoxList">
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" value="">Page 1</label>
+                                                        </div>
+                                                        <div class="checkbox">
+                                                            <label><input type="checkbox" value="">Page 2</label>
+                                                        </div>
+                                                        <div class="checkbox disabled">
+                                                            <label><input type="checkbox" value="">Page 3</label>
+                                                        </div>
+                                                    </div>   
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                    <div class="panel-footer">
+                                        <div class="pull-left">
+                                            <a id="selectAllPages" class="pull-left" href="#">Select All</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <button id="addPageToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                                        </div>
+                                        <div style="clear:both;"></div>
+                                    </div>
+                                </div>                                
                             </div>
                         </div>
                         <div class="panel panel-primary">
@@ -170,7 +217,7 @@
                     </div><!-- panel-group -->
                 </div><!-- container -->
             </div>
-            <div class="col-sm-8">
+            <div class="col-sm-7">
                 <div class="panel panel-primary">
                     <div class="panel-heading">MainMenu</div>
                     <div class="panel-body">This is panel body</div>

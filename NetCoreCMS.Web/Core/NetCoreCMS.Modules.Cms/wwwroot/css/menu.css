@@ -26,3 +26,8 @@
 .panel-default > .panel-heading + .panel-collapse > .panel-body {
     border-top-color: #EEEEEE;
 }
+
+.pagesCheckBoxList{
+    max-height:300px;
+    overflow:scroll;
+}
