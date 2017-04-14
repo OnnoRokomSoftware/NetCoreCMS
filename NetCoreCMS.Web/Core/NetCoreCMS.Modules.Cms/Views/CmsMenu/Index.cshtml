@@ -21,59 +21,154 @@
     <div id="editMenu" class="tab-pane fade in active" style="padding: 10px 10px;">
         <div class="row">
             <div class="col-sm-4">
-                <div class="panel-group" id="accordion">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                                Url
-                            <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel1"><i class="glyphicon glyphicon-chevron-down  navbar-right panel-title-right-align"></i></a>
-                        </div>
-                        <div id="panel1" class="panel-collapse collapse in">
-                            <div class="panel-body">Contents panel 1</div>
-                        </div>
-                    </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Page
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel2"><i class="glyphicon glyphicon-chevron-down  navbar-right panel-title-right-align"></i></a>
-                             
+                <div class="row">
 
+                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" role="tab" id="headingOne">
+                                <div class="panel-title">
+                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                                        Page
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                                <div class="panel-body">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#recentPages">Recent</a></li>
+                                        <li><a data-toggle="tab" href="#viewAllPages">View All</a></li>
+                                        <li><a data-toggle="tab" href="#searchPages">Search</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="recentPages" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="row">
+                                                        Recent
+                                                    </div>
+                                                    <div class="row">                                                         
+                                                        <a id="selectAllPages" class="pull-left" href="#">Select All</a>
+                                                        <button id="addPageToMenu" class="btn btn-sm btn-primary pull-right" type="button" >Add to Menu</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div id="panel2" class="panel-collapse collapse">
-                            <div class="panel-body">Contents panel 2</div>
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" role="tab" id="headingTwo">
+                                <div class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        <i class="more-less glyphicon-chevron-down" style="color:white;"></i>
+                                        Post
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                                <div class="panel-body">
+                                    
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Blog Category
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel3"><i class="glyphicon glyphicon-chevron-down navbar-right panel-title-right-align"></i></a>
-                             
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" role="tab" id="headingThree">
+                                <div class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                                        Category
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" role="tab" id="headingThree">
+                                <div class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                                        Module
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                                <div class="panel-body">
+                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
+                                </div>
+                            </div>
                         </div>
-                        <div id="panel3" class="panel-collapse collapse">
-                            <div class="panel-body">Contents panel 3</div>
+
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" role="tab" id="headingTag">
+                                <div class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTag" aria-expanded="false" aria-controls="collapseTag">
+                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                                        Tag
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="collapseTag" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTag">
+                                <div class="panel-body">
+                                    <ul class="nav nav-tabs">
+                                        <li class="active"><a data-toggle="tab" href="#recentTags">Recent</a></li>
+                                        <li><a data-toggle="tab" href="#allTags">View All</a></li>
+                                        <li><a data-toggle="tab" href="#searchTag">Search</a></li>
+                                    </ul>
+                                    <div class="tab-content">
+                                        <div id="recentTags" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="row">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="allTags" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="row">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="searchTags" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                            <div class="row">
+                                                <div class="col-sm-4">
+                                                    <div class="row">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Blog Post
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel4"><i class="glyphicon glyphicon-chevron-down navbar-right panel-title-right-align"></i></a>
-                            
+
+                        <div class="panel panel-primary">
+                            <div class="panel-heading" role="tab" id="headingUrl">
+                                <div class="panel-title">
+                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseUrl" aria-expanded="false" aria-controls="collapseUrl">
+                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                                        Url
+                                    </a>
+                                </div>
+                            </div>
+                            <div id="collapseUrl" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingUrl">
+                                <div class="panel-body">
+                                    <input type="text" id="url" />
+                                </div>
+                            </div>
                         </div>
-                        <div id="panel4" class="panel-collapse collapse">
-                            <div class="panel-body">Contents panel 3</div>
-                        </div>
-                    </div>
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            Tag
-                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#panel5"><i class="glyphicon glyphicon-chevron-down navbar-right panel-title-right-align"></i></a>
-                             
-                        </div>
-                        <div id="panel5" class="panel-collapse collapse">
-                            <div class="panel-body">Contents panel 3</div>
-                        </div>
-                    </div>
-                </div>
+
+                    </div><!-- panel-group -->
+                </div><!-- container -->
             </div>
             <div class="col-sm-8">
                 <div class="panel panel-primary">

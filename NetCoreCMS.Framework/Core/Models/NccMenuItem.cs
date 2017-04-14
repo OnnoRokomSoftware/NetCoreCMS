@@ -29,10 +29,9 @@ namespace NetCoreCMS.Framework.Core.Models
         {
             Url,
             Page,
-            Blog,
-            Module,
             BlogPost,
             BlogCategory,
+            Module,
             Tag,
         }
 

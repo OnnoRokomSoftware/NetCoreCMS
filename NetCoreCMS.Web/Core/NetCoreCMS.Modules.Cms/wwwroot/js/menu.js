@@ -1,6 +1,8 @@
-﻿var selectIds = $('#panel1,#panel2,#panel3,#panel4,#panel5');
-$(function ($) {
-    selectIds.on('show.bs.collapse hidden.bs.collapse', function () {
-        $(this).prev().find('.glyphicon').toggleClass('glyphicon-plus glyphicon-minus');
-    })
-});
+﻿function toggleIcon(e) {
+    $(e.target)
+        .prev('.panel-heading')
+        .find(".more-less")
+        .toggleClass('glyphicon-plus glyphicon-minus');
+}
+$('.panel-group').on('hidden.bs.collapse', toggleIcon);
+$('.panel-group').on('shown.bs.collapse', toggleIcon);
