@@ -15,6 +15,7 @@
         });        
     });
 
+    $('#menuListDt').DataTable();
 
     $('#selectedMenuTree').nestedSortable({
         handle: 'div',

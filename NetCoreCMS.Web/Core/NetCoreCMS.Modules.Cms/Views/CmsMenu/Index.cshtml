@@ -19,8 +19,7 @@
 
 <div class="tab-content">
     <div id="manageMenu" class="tab-pane fade" style="padding: 10px 10px;">
-        <h3>Manage</h3>
-        <p>Some content in menu 1.</p>
+        @await  Html.PartialAsync("Partial/_ManageMenu")
     </div>
     <div id="createMenu" class="tab-pane fade in active" style="padding: 10px 10px;">
         <div class="row">
@@ -34,3 +33,6 @@
 <link href="/NetCoreCMS.Modules.Cms/css/nastedDragDrop.css" rel="stylesheet" />
 <script src="/NetCoreCMS.Modules.Cms/js/nestedDragDrop.js"></script>
 <script src="~/lib/jquery-sortable/source/js/jquery-sortable-min.js"></script>
+<link href="~/lib/DataTables/DataTables-1.10.13/css/dataTables.bootstrap.css" rel="stylesheet" />
+<script src="~/lib/DataTables/datatables.js"></script>
+<script src="~/lib/DataTables/DataTables-1.10.13/js/dataTables.bootstrap.js"></script>

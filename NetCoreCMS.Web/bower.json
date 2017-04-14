@@ -7,6 +7,10 @@
     "jquery-validation": "1.14.0",
     "jquery-validation-unobtrusive": "3.2.6",
     "jquery-sortable": "0.9.13",
-    "jquery-ui": "1.12.0"
+    "jquery-ui": "1.12.0",
+    "DataTables": "RELEASE_1_9_4"
+  },
+  "resolutions": {
+    "jquery": ">= 1.7.2"
   }
 }
