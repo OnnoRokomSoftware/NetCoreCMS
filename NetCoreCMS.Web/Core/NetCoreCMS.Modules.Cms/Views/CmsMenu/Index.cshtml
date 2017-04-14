@@ -13,221 +13,24 @@
 </ol>
 
 <ul class="nav nav-tabs">
-    <li class="active"><a data-toggle="tab" href="#editMenu">Edit Menu</a></li>
-    <li><a data-toggle="tab" href="#menuLocation">Menu Location</a></li>
+    <li class="active"><a data-toggle="tab" href="#createMenu">Create Menu</a></li>
+    <li><a data-toggle="tab" href="#manageMenu">Manage</a></li>
 </ul>
 
 <div class="tab-content">
-    <div id="editMenu" class="tab-pane fade in active" style="padding: 10px 10px;">
-        <div class="row">
-            <div class="col-sm-4">
-                <div class="row">
-
-                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" role="tab" id="headingOne">
-                                <div class="panel-title">
-                                    <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
-                                        Page
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
-                                <div class="panel-body">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a data-toggle="tab" href="#recentPages">Recent</a></li>
-                                        <li><a data-toggle="tab" href="#viewAllPages">View All</a></li>
-                                        <li><a data-toggle="tab" href="#searchPages">Search</a></li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div id="recentPages" class="tab-pane fade in active" style="padding: 10px 10px;">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div id="recentPagesCheckBoxList" class="checkBoxList">
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" value="">Page 1</label>
-                                                        </div>
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" value="">Page 2</label>
-                                                        </div>
-                                                        <div class="checkbox disabled">
-                                                            <label><input type="checkbox" value="">Page 3</label>
-                                                        </div>
-                                                    </div>                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="viewAllPages" class="tab-pane fade in" style="padding: 10px 10px;">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div id="allpagesCheckBoxList" class="checkBoxList">
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" value="">Page 1</label>
-                                                        </div>
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" value="">Page 2</label>
-                                                        </div>
-                                                        <div class="checkbox disabled">
-                                                            <label><input type="checkbox" value="">Page 3</label>
-                                                        </div>
-                                                    </div>   
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="searchPages" class="tab-pane fade in" style="padding: 10px 10px;">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div id="searchPagesCheckBoxList" class="checkBoxList">
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" value="">Page 1</label>
-                                                        </div>
-                                                        <div class="checkbox">
-                                                            <label><input type="checkbox" value="">Page 2</label>
-                                                        </div>
-                                                        <div class="checkbox disabled">
-                                                            <label><input type="checkbox" value="">Page 3</label>
-                                                        </div>
-                                                    </div>   
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="panel-footer">
-                                        <div class="pull-left">
-                                            <a id="selectAllPages" class="pull-left" href="#">Select All</a>
-                                        </div>
-                                        <div class="pull-right">
-                                            <button id="addPageToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
-                                        </div>
-                                        <div style="clear:both;"></div>
-                                    </div>
-                                </div>                                
-                            </div>
-                        </div>
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" role="tab" id="headingTwo">
-                                <div class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                        <i class="more-less glyphicon-chevron-down" style="color:white;"></i>
-                                        Post
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
-                                <div class="panel-body">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" role="tab" id="headingThree">
-                                <div class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
-                                        Category
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" role="tab" id="headingThree">
-                                <div class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
-                                        Module
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
-                                <div class="panel-body">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident. Ad vegan excepteur butcher vice lomo. Leggings occaecat craft beer farm-to-table, raw denim aesthetic synth nesciunt you probably haven't heard of them accusamus labore sustainable VHS.
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" role="tab" id="headingTag">
-                                <div class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTag" aria-expanded="false" aria-controls="collapseTag">
-                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
-                                        Tag
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="collapseTag" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTag">
-                                <div class="panel-body">
-                                    <ul class="nav nav-tabs">
-                                        <li class="active"><a data-toggle="tab" href="#recentTags">Recent</a></li>
-                                        <li><a data-toggle="tab" href="#allTags">View All</a></li>
-                                        <li><a data-toggle="tab" href="#searchTag">Search</a></li>
-                                    </ul>
-                                    <div class="tab-content">
-                                        <div id="recentTags" class="tab-pane fade in active" style="padding: 10px 10px;">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div class="row">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="allTags" class="tab-pane fade in active" style="padding: 10px 10px;">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div class="row">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div id="searchTags" class="tab-pane fade in active" style="padding: 10px 10px;">
-                                            <div class="row">
-                                                <div class="col-sm-4">
-                                                    <div class="row">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="panel panel-primary">
-                            <div class="panel-heading" role="tab" id="headingUrl">
-                                <div class="panel-title">
-                                    <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseUrl" aria-expanded="false" aria-controls="collapseUrl">
-                                        <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
-                                        Url
-                                    </a>
-                                </div>
-                            </div>
-                            <div id="collapseUrl" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingUrl">
-                                <div class="panel-body">
-                                    <input type="text" id="url" />
-                                </div>
-                            </div>
-                        </div>
-
-                    </div><!-- panel-group -->
-                </div><!-- container -->
-            </div>
-            <div class="col-sm-7">
-                <div class="panel panel-primary">
-                    <div class="panel-heading">MainMenu</div>
-                    <div class="panel-body">This is panel body</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="menuLocation" class="tab-pane fade" style="padding: 10px 10px;">
-        <h3>Menu Location</h3>
+    <div id="manageMenu" class="tab-pane fade" style="padding: 10px 10px;">
+        <h3>Manage</h3>
         <p>Some content in menu 1.</p>
     </div>
+    <div id="createMenu" class="tab-pane fade in active" style="padding: 10px 10px;">
+        <div class="row">
+            @await Html.PartialAsync("Partial/_MenuSelectionPanel")
+            @await Html.PartialAsync("Partial/_MenuSelectionTree")
+        </div>
+    </div> 
 </div>
 
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<link href="/NetCoreCMS.Modules.Cms/css/nastedDragDrop.css" rel="stylesheet" />
+<script src="/NetCoreCMS.Modules.Cms/js/nestedDragDrop.js"></script>
+<script src="~/lib/jquery-sortable/source/js/jquery-sortable-min.js"></script>

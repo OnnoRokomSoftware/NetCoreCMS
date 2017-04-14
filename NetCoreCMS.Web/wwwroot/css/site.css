@@ -41,6 +41,13 @@ textarea {
     width: 100%;
 }
 
+.margin-right-10{
+    margin-right:10px;
+}
+
+.padding-top-buttom-10px{
+    padding:10px 0px 10px 0px;
+}
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */
@@ -48,3 +55,4 @@ textarea {
         display: none;
     }
 }
+

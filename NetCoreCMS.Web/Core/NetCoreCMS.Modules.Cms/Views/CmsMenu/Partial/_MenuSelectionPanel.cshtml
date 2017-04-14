@@ -1,0 +1,451 @@
+﻿<div class="col-sm-4">
+    <div class="row">
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-primary">
+                <div class="panel-heading" role="tab" id="headingOne">
+                    <div class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                            Page
+                        </a>
+                    </div>
+                </div>
+                <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+                    <div class="panel-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#recentPages">Recent</a></li>
+                            <li><a data-toggle="tab" href="#viewAllPages">View All</a></li>
+                            <li><a data-toggle="tab" href="#searchPages">Search</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="recentPages" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="recentPagesCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Page 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="viewAllPages" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="allpagesCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Page 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchPages" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="searchPagesCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Page 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>                        
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <a id="selectAllPages" class="pull-left" href="#">Select All</a>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addPageToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading" role="tab" id="headingTwo">
+                    <div class="panel-title">
+                        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseOne">
+                            <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                            Post
+                        </a>
+                    </div>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+                    <div class="panel-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#recentPost">Recent</a></li>
+                            <li><a data-toggle="tab" href="#viewAllPost">View All</a></li>
+                            <li><a data-toggle="tab" href="#searchPost">Search</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="recentPost" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="recentPostCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Page 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="viewAllPost" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="allPostCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Page 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchPost" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="searchPostCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Page 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Page 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <a id="selectAllPost" class="pull-left" href="#">Select All</a>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addPostToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <div class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                            <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                            Category
+                        </a>
+                    </div>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+                    <div class="panel-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#recentCategories">Recent</a></li>
+                            <li><a data-toggle="tab" href="#viewAllCategorys">View All</a></li>
+                            <li><a data-toggle="tab" href="#searchCategorys">Search</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="recentCategorys" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="recentCategorysCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Category 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Category 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Category 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="viewAllCategorys" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="allCategorysCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Category 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Category 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Category 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchCategorys" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="searchCategorysCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Category 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Category 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Category 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <a id="selectAllCategorys" class="pull-left" href="#">Select All</a>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addCategoryToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading" role="tab" id="headingThree">
+                    <div class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseThree">
+                            <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                            Module
+                        </a>
+                    </div>
+                </div>
+                <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
+                    <div class="panel-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#recentModules">Recent</a></li>
+                            <li><a data-toggle="tab" href="#viewAllModules">View All</a></li>
+                            <li><a data-toggle="tab" href="#searchModules">Search</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="recentModules" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="recentModulesCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Module 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Module 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Module 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="viewAllModules" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="allModulesCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Module 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Module 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Module 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchModules" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="searchModulesCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Module 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Module 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Module 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <a id="selectAllModules" class="pull-left" href="#">Select All</a>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addModuleToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading" role="tab" id="headingTag">
+                    <div class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTag" aria-expanded="false" aria-controls="collapseTag">
+                            <i class="more-less glyphicon glyphicon-chevron-down" style="color:white;"></i>
+                            Tag
+                        </a>
+                    </div>
+                </div>
+                <div id="collapseTag" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTag">
+                    <div class="panel-body">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a data-toggle="tab" href="#recentTags">Recent</a></li>
+                            <li><a data-toggle="tab" href="#viewAllTags">View All</a></li>
+                            <li><a data-toggle="tab" href="#searchTags">Search</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div id="recentTags" class="tab-pane fade in active" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="recentTagsCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Tag 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Tag 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Tag 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="viewAllTags" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="allTagsCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Tag 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Tag 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Tag 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="searchTags" class="tab-pane fade in" style="padding: 10px 10px;">
+                                <div class="row">
+                                    <div class="col-sm-4">
+                                        <div id="searchTagsCheckBoxList" class="checkBoxList">
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Tag 1</label>
+                                            </div>
+                                            <div class="checkbox">
+                                                <label><input type="checkbox" value="">Tag 2</label>
+                                            </div>
+                                            <div class="checkbox disabled">
+                                                <label><input type="checkbox" value="">Tag 3</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <a id="selectAllTags" class="pull-left" href="#">Select All</a>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addTagToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel panel-primary">
+                <div class="panel-heading" role="tab" id="headingUrl">
+                    <div class="panel-title">
+                        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseUrl" aria-expanded="false" aria-controls="collapseUrl">
+                            <i class="more-less glyphicon glyphicon-chevron-down" style="color:white"></i>
+                            Url
+                        </a>
+                    </div>
+                </div>
+                <div id="collapseUrl" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingUrl">
+                    <div class="panel-body">
+                        <label>URL:</label><input class="form-control input-sm" type="text" id="url" />
+                        
+                        <label>Target: </label><select class="form-control input-sm">
+                            <option value="_blank">Blank Window</option>
+                            <option value="parent">Parent</option>
+                            <option value="_self">Self</option>
+                            <option value="_top">Top</option>
+                        </select>
+                    </div>
+                    <div class="panel-footer">
+                        
+                        <div class="pull-right">
+                            <button id="addUrlToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div> 
+    </div> 
+</div>

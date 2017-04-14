@@ -31,3 +31,28 @@
     max-height:300px;
     overflow:scroll;
 }
+
+#selectedMenuTree {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.no-boarder {
+    border: none;
+    padding: 2px 0px 0px 0px;
+    margin-top: 2px;
+}
+
+.left-dash-boarder {
+    border-left: dashed 1px #000000;
+}
+
+.menu-item-content{
+    border: solid 1px #ddd;
+    height:30px;
+    padding: 5px 5px;
+}
