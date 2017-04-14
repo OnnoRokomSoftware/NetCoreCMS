@@ -5,6 +5,7 @@
  * License: BSD (3 Clause)
 */
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System;
 using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
@@ -26,12 +27,23 @@ namespace NetCoreCMS.Framework.Core.Models
         public List<NccPostCategory> Categories { get; set; }
         public List<NccTag> Tags { get; set; }
         public List<NccPostComment> PostComments { get; set; }
+        public NccPostType PostType { get; set; }
+        public DateTime PublishDate { get; set; }
 
         public enum NccPostStatus
         {
             Draft,
+            Review,
             Published,
-            UnPublished
+            UnPublished,
+            Archived
         }
+        public enum NccPostType
+        {
+            Public,
+            Privet,
+            PasswordProtected
+        }
+
     }
 }

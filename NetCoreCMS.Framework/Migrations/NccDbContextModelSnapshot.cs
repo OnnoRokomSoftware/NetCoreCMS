@@ -225,6 +225,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("AddToNavigationMenu");
+
                     b.Property<byte[]>("Content");
 
                     b.Property<long>("CreateBy");
@@ -241,7 +243,13 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("PageStatus");
+
+                    b.Property<int>("PageType");
+
                     b.Property<long?>("ParentId");
+
+                    b.Property<DateTime>("PublishDate");
 
                     b.Property<string>("Slug");
 
@@ -338,6 +346,10 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long?>("ParentId");
 
                     b.Property<int>("PostStatus");
+
+                    b.Property<int>("PostType");
+
+                    b.Property<DateTime>("PublishDate");
 
                     b.Property<string>("Slug");
 

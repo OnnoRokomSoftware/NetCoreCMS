@@ -5,6 +5,7 @@
  * License: BSD (3 Clause)
 */
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System;
 using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
@@ -18,5 +19,25 @@ namespace NetCoreCMS.Framework.Core.Models
         public string MetaKeyword { get; set; }
         public byte[] Content { get; set; }
         public List<NccPage> LinkedPages { get; set; }
+        public bool AddToNavigationMenu { get; set; }
+        public NccPageStatus PageStatus { get; set; }
+        public NccPageType PageType { get; set; }
+        public DateTime PublishDate { get; set; }
+
+        public enum NccPageStatus
+        {
+            Draft,
+            Review,
+            Published,
+            UnPublished,
+            Archived
+        }
+
+        public enum NccPageType
+        {
+            Public,
+            Privet,
+            PasswordProtected
+        }
     }
 }
