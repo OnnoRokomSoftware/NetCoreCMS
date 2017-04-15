@@ -48,7 +48,7 @@ namespace NetCoreCMS.Framework.Core.Services
             if(oldEntity != null)
             {
                 oldEntity.ModificationDate = DateTime.Now;
-                oldEntity.ModifyBy = oldEntity.GetCurrentUserId();
+                oldEntity.ModifyBy = BaseModel.GetCurrentUserId();
                 using (var txn = _entityRepository.BeginTransaction())
                 {
                     CopyNewData(entity, oldEntity);
@@ -105,7 +105,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public NccPage CopyNewData(NccPage copyFrom, NccPage copyTo)
         {                
             copyTo.ModificationDate = copyFrom.ModificationDate;
-            copyTo.ModifyBy = copyFrom.GetCurrentUserId();
+            copyTo.ModifyBy = BaseModel.GetCurrentUserId();
             copyTo.Name = copyFrom.Name;            
             copyTo.Status = copyFrom.Status;
             copyTo.AddToNavigationMenu = copyFrom.AddToNavigationMenu;

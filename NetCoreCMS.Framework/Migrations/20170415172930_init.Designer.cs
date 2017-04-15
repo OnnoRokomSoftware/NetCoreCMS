@@ -9,8 +9,8 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20170413161055_initial")]
-    partial class initial
+    [Migration("20170415172930_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -226,6 +226,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("AddToNavigationMenu");
+
                     b.Property<byte[]>("Content");
 
                     b.Property<long>("CreateBy");
@@ -242,7 +244,15 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<int>("PageOrder");
+
+                    b.Property<int>("PageStatus");
+
+                    b.Property<int>("PageType");
+
                     b.Property<long?>("ParentId");
+
+                    b.Property<DateTime>("PublishDate");
 
                     b.Property<string>("Slug");
 
@@ -339,6 +349,10 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long?>("ParentId");
 
                     b.Property<int>("PostStatus");
+
+                    b.Property<int>("PostType");
+
+                    b.Property<DateTime>("PublishDate");
 
                     b.Property<string>("Slug");
 

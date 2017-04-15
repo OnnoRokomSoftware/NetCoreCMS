@@ -6,24 +6,35 @@
         $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
     });
 
-    $("#publish").click(function () {   
+    function ClearForm(){
+        $("#pageCreateForm").trigger("reset");
+        CKEDITOR.instances["PageContent"].setData("");
+    }
+
+    $("#publish").click(function () { 
+        
         NccPageMask.ShowLoadingMask();
         $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
         var form = $("#pageCreateForm");
-        console.log(form);
+        
         $.ajax({
             type: "post",
             url: form.action,
             data: form.serialize(),
             contentType: "application/x-www-form-urlencoded",
-            success: function (responseData, textStatus, jqXHR) {
+            success: function (rsp, textStatus, jqXHR) {
                 NccPageMask.HideLoadingMask();
-                NccAlert.ShowSuccess("Successfully saved the page.");
+                if (rsp.isSuccess) {
+                    NccAlert.ShowSuccess(rsp.message);
+                    ClearForm();
+                }
+                else {
+                    NccAlert.ShowError("Error: " + rsp.message);
+                }                
             },
-            error: function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR, textStatus, errorThrown);
+            error: function (jqXHR, textStatus, errorThrown) {                
                 NccPageMask.HideLoadingMask();
-                NccAlert.ShowError("Successfully saved the page.");
+                NccAlert.ShowError("Error. Please try again.");
             }
         })
     });

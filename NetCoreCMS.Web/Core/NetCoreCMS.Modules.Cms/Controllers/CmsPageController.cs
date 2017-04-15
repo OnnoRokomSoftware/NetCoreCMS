@@ -45,18 +45,18 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         }
 
         [HttpPost]
-        public ActionResult Create(NccPage model, string PageContent)
+        public ActionResult Create(NccPage model, string PageContent, long Parent)
         {
             ApiResponse rsp = new ApiResponse();
             try
-            {             
+            {
+                model.Content = Encoding.UTF8.GetBytes(PageContent);
                 if (ModelState.IsValid)
                 {
-                    var nccPage = new NccPage();
-                    model.Content = Encoding.UTF8.GetBytes(PageContent);
-                    _pageService.Save(nccPage);
+                    _pageService.Save(model);
                     rsp.IsSuccess = true;
                     rsp.Message = "Page save successful";
+                    rsp.Data = "";
                     return Json(rsp);
                 }
                 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetCoreCMS.Framework.Migrations
 {
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -81,6 +81,7 @@ namespace NetCoreCMS.Framework.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    AddToNavigationMenu = table.Column<bool>(nullable: false),
                     Content = table.Column<byte[]>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
@@ -89,7 +90,11 @@ namespace NetCoreCMS.Framework.Migrations
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
+                    PageOrder = table.Column<int>(nullable: false),
+                    PageStatus = table.Column<int>(nullable: false),
+                    PageType = table.Column<int>(nullable: false),
                     ParentId = table.Column<long>(nullable: true),
+                    PublishDate = table.Column<DateTime>(nullable: false),
                     Slug = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: true),
@@ -628,6 +633,8 @@ namespace NetCoreCMS.Framework.Migrations
                     NccPostCategoryId = table.Column<long>(nullable: true),
                     ParentId = table.Column<long>(nullable: true),
                     PostStatus = table.Column<int>(nullable: false),
+                    PostType = table.Column<int>(nullable: false),
+                    PublishDate = table.Column<DateTime>(nullable: false),
                     Slug = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     ThumImage = table.Column<string>(nullable: true),

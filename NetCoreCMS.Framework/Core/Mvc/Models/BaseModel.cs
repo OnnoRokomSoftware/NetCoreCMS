@@ -32,7 +32,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         public long ModifyBy { get; set; }
         public int Status { get; set; }
 
-        public long GetCurrentUserId()
+        public static long GetCurrentUserId()
         {
             HttpContextAccessor hca = new HttpContextAccessor();
             long? userId = hca.HttpContext?.User?.GetUserId();
