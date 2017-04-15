@@ -36,8 +36,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot/lib\css-loader\dist\loader-ball.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Data\SecureMedia\README.md" />
     <Content Include="wwwroot\css\navbarcustom.css" />
+    <Content Include="wwwroot\js\common.js" />
     <Content Include="wwwroot\media\README.md" />
   </ItemGroup>
   <ItemGroup>

@@ -12,6 +12,11 @@ namespace NetCoreCMS.Framework.Core.Models
 {
     public class NccPage : BaseModel
     {
+        public NccPage()
+        {
+            PageOrder = 0;
+            PublishDate = DateTime.Now;
+        }
         public NccPage Parent { get; set; }
         public string Title { get; set; }
         public string Slug { get; set; }
@@ -23,6 +28,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public NccPageStatus PageStatus { get; set; }
         public NccPageType PageType { get; set; }
         public DateTime PublishDate { get; set; }
+        public int PageOrder { get; set; }
 
         public enum NccPageStatus
         {
@@ -36,7 +42,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public enum NccPageType
         {
             Public,
-            Privet,
+            Private,
             PasswordProtected
         }
     }

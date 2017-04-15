@@ -14,14 +14,18 @@
         
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
         
     @Html.Raw(JavaScriptSnippet.FullScript)
          
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/common.js" asp-append-version="true"></script>
+
 </head>
 <body>
+    <div id="loadingMask" class="loader loader-double"></div>
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">

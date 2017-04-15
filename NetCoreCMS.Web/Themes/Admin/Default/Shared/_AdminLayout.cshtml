@@ -30,14 +30,17 @@
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/common.js" asp-append-version="true"></script>
+
     </environment>
 
     <link href="/Theme/Admin/Default/css/themeStyle.css" rel="stylesheet" />
     <link href="/Theme/Admin/Default/css/sidebar.css" rel="stylesheet" />
+    <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
 
 </head>
 <body>
-
+    <div id="loadingMask" class="loader loader-double"></div>
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -92,8 +95,8 @@
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
                             <ul class="dropdown-menu forAnimate" role="menu">
-                                <li><a asp-controller="CmsPage" asp-action="Index">New Page</a></li>
-                                <li><a asp-controller="CmsPage" asp-action="Manage">Manage</a></li>                                
+                                <li><a asp-controller="CmsPage" asp-action="Create">New Page</a></li>
+                                <li><a asp-controller="CmsPage" asp-action="Index">Manage</a></li>                                
                             </ul>
                         </li>
                          <li class="dropdown open">
@@ -128,29 +131,20 @@
                 </div>
             </div>
         </nav>
-        @*<div class="col-sm-3 col-md-2 sidebar">
-            
-            <ul class="nav nav-sidebar">
-                <li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-                <li><a href="#">Reports</a></li>
-                <li><a href="#">Analytics</a></li>
-                <li><a href="#">Export</a></li>
-                <li class="active"><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
-                <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
-                <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
-                <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
-            </ul>
-        </div>*@
+        
         <div class="col-sm-12 main">
-        @RenderBody()
+            <div id="messageContainer"></div>
+            @RenderBody()
         </div>
     </div>
+
     <div class="row text-center">
         <hr />
         <footer>
             <p>&copy; 2017 - NetCoreCMS.Web</p>
         </footer>
     </div>
+
     <script type="text/javascript">
 
         function htmlbodyHeightUpdate() {
@@ -165,7 +159,6 @@
                 $('html').height(Math.max(height1, height3, height2));
                 $('body').height(Math.max(height1, height3, height2));
             }
-
         }
 
         $(document).ready(function () {

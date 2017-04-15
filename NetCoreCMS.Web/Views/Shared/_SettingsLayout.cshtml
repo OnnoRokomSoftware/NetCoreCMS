@@ -24,6 +24,7 @@
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/js/common.js" asp-append-version="true"></script>
     </environment>
     <environment names="Staging,Production">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
@@ -43,9 +44,10 @@
 
     <link href="/css/sidebar.css" rel="stylesheet" />
     <link href="/css/navbarcustom.css" rel="stylesheet" />
+    <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
 </head>
 <body>
-
+    <div id="loadingMask" class="loader loader-double"></div>
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
             <div class="navbar-header">
