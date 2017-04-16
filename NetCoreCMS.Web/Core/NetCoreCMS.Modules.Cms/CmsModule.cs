@@ -51,6 +51,8 @@ namespace NetCoreCMS.Core.Modules.Cms
 
         public void Init(IServiceCollection services)
         {
+            services.AddTransient<NccMenuRepository>();
+            services.AddTransient<NccMenuService>();
             services.AddTransient<NccPageRepository>();
             services.AddTransient<NccPageService>();
         }

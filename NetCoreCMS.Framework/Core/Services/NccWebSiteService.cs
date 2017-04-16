@@ -56,22 +56,22 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccWebSite> GetAll()
+        public List<NccWebSite> LoadAll()
         {
             return _entityRepository.Query().ToList();
         }
 
-        public List<NccWebSite> GetAllByStatus(int status)
+        public List<NccWebSite> LoadAllByStatus(int status)
         {
             return _entityRepository.Query().Where(x => x.Status == status).ToList();
         }
 
-        public List<NccWebSite> GetAllByName(string name)
+        public List<NccWebSite> LoadAllByName(string name)
         {
             return _entityRepository.Query().Where(x => x.Name == name).ToList();
         }
 
-        public List<NccWebSite> GetAllByNameContains(string name)
+        public List<NccWebSite> LoadAllByNameContains(string name)
         {
             return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
         }

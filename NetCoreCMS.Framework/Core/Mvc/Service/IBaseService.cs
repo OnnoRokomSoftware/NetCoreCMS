@@ -8,10 +8,10 @@ namespace NetCoreCMS.Framework.Core.Mvc.Services
     public interface IBaseService<EntityT>
     {
         EntityT Get(long entityId);
-        List<EntityT> GetAll();
-        List<EntityT> GetAllByStatus(int status);
-        List<EntityT> GetAllByName(string name);
-        List<EntityT> GetAllByNameContains(string name);
+        List<EntityT> LoadAll();
+        List<EntityT> LoadAllByStatus(int status);
+        List<EntityT> LoadAllByName(string name);
+        List<EntityT> LoadAllByNameContains(string name);
         EntityT Save(EntityT model);
         EntityT Update(EntityT model);
         void Remove(long entityId);

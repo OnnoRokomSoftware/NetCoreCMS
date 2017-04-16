@@ -30,7 +30,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         }
         public ActionResult Index()
         {
-            var allPages = _pageService.GetAll();
+            var allPages = _pageService.LoadAll();
             return View(allPages); 
         }
 

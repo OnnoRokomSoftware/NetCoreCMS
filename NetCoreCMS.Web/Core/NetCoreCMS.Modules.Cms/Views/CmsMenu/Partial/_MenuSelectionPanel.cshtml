@@ -20,36 +20,26 @@
                         </ul>
                         <div class="tab-content">
                             <div id="recentPages" class="tab-pane fade in active" style="padding: 10px 10px;">
-                                <div class="row">
-                                    <div class="col-sm-4">
-                                        <div id="recentPagesCheckBoxList" class="checkBoxList">
+                                <div class="row">                                     
+                                    <div id="recentPagesCheckBoxList" class="checkBoxList">
+                                        @foreach (var page in ViewBag.RecentPages)
+                                        {
                                             <div class="checkbox">
-                                                <label><input type="checkbox" value="">Page 1</label>
+                                                <label><input type="checkbox" value="@page.Id">@page.Title</label>
                                             </div>
-                                            <div class="checkbox">
-                                                <label><input type="checkbox" value="">Page 2</label>
-                                            </div>
-                                            <div class="checkbox disabled">
-                                                <label><input type="checkbox" value="">Page 3</label>
-                                            </div>
-                                        </div>
-                                    </div>
+                                        }                                            
+                                    </div>                                    
                                 </div>
                             </div>
                             <div id="viewAllPages" class="tab-pane fade in" style="padding: 10px 10px;">
                                 <div class="row">
-                                    <div class="col-sm-4">
-                                        <div id="allpagesCheckBoxList" class="checkBoxList">
+                                    <div id="allpagesCheckBoxList" class="checkBoxList">
+                                        @foreach (var page in ViewBag.AllPages)
+                                        {
                                             <div class="checkbox">
-                                                <label><input type="checkbox" value="">Page 1</label>
+                                                <label><input type="checkbox" value="@page.Id">@page.Title</label>
                                             </div>
-                                            <div class="checkbox">
-                                                <label><input type="checkbox" value="">Page 2</label>
-                                            </div>
-                                            <div class="checkbox disabled">
-                                                <label><input type="checkbox" value="">Page 3</label>
-                                            </div>
-                                        </div>
+                                        } 
                                     </div>
                                 </div>
                             </div>

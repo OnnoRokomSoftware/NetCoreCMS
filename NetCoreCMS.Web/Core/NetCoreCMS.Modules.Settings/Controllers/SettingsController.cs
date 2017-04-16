@@ -22,7 +22,7 @@ namespace NetCoreCMS.Core.Modules.Settings.Controllers
         public ActionResult Index()
         {
             var webSite = new NccWebSite();
-            var webSites = _webSiteService.GetAll();
+            var webSites = _webSiteService.LoadAll();
 
             if(webSites != null && webSites.Count > 0)
             {

@@ -22,6 +22,12 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
         }
 
+        public List<NccPage> LoadRecentPages(int count)
+        {
+            var pages = _entityRepository.LoadRecentPages(count);
+            return pages;
+        }
+
         public NccPage Save(NccPage entity)
         {
             using (var txn = _entityRepository.BeginTransaction())
@@ -72,22 +78,27 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccPage> GetAll()
+        public List<NccPage> LoadAll()
         {
             return _entityRepository.Query().ToList();
         }
 
-        public List<NccPage> GetAllByStatus(int status)
+        public List<NccPage> LoadAllByStatus(int status)
         {
             return _entityRepository.Query().Where(x => x.Status == status).ToList();
         }
 
-        public List<NccPage> GetAllByName(string name)
+        public List<NccPage> LoadAllByPageStatus(NccPage.NccPageStatus status)
+        {
+            return _entityRepository.Query().Where(x => x.PageStatus == status).ToList();
+        }
+
+        public List<NccPage> LoadAllByName(string name)
         {
             return _entityRepository.Query().Where(x => x.Name == name).ToList();
         }
 
-        public List<NccPage> GetAllByNameContains(string name)
+        public List<NccPage> LoadAllByNameContains(string name)
         {
             return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
         }
