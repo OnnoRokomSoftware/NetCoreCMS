@@ -29,8 +29,9 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _logger = factory.CreateLogger<CmsPageController>();
         }
         public ActionResult Index()
-        { 
-            return View(); 
+        {
+            var allPages = _pageService.GetAll();
+            return View(allPages); 
         }
 
         [HttpPost]

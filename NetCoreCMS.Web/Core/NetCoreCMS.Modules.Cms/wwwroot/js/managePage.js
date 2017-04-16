@@ -1,21 +1,11 @@
 ﻿$(document).ready(function () {
 
-    CKEDITOR.replace('PageContent');
+    $('#pageListDt').DataTable();
 
-    $("#Title").change(function () {
-        $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
-    });
-
-    function ClearForm(){
-        $("#pageCreateForm").trigger("reset");
-        CKEDITOR.instances["PageContent"].setData("");
-    }
-
+    /*
     $("#publish").click(function () { 
         
         NccPageMask.ShowLoadingMask();
-        $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
-        var form = $("#pageCreateForm");
         
         $.ajax({
             type: "post",
@@ -38,6 +28,6 @@
             }
         })
     });
-
+    */
 
 });
