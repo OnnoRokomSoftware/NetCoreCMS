@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
 
-    $('#pageListDt').DataTable();
+    //$('#pageListDt').DataTable();
 
     /*
     $("#publish").click(function () { 

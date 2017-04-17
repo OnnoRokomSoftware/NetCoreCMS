@@ -3,9 +3,6 @@
     Layout = Constants.SettingsLayoutName;
 }
 
-<link href="/NetCoreCMS.Modules.Cms/css/menu.css" rel="stylesheet" />
-<script src="/NetCoreCMS.Modules.Cms/js/menu.js"></script>
-
 <ol class="breadcrumb">
     <li><a asp-controller="Settings" asp-action="Index">Settings</a></li>
     <li><a href="#">Appearance</a></li>
@@ -29,10 +26,12 @@
     </div> 
 </div>
 
-<script src="~/lib/jquery-ui/jquery-ui.js"></script>
-<link href="/NetCoreCMS.Modules.Cms/css/nastedDragDrop.css" rel="stylesheet" />
-<script src="/NetCoreCMS.Modules.Cms/js/nestedDragDrop.js"></script>
-<script src="~/lib/jquery-sortable/source/js/jquery-sortable-min.js"></script>
-<link href="~/lib/DataTables/DataTables-1.10.13/css/dataTables.bootstrap.css" rel="stylesheet" />
-<script src="~/lib/DataTables/datatables.js"></script>
-<script src="~/lib/DataTables/DataTables-1.10.13/js/dataTables.bootstrap.js"></script>
+@section Scripts{
+
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script> 
+    <script src="~/lib/jquery-sortable/source/js/jquery-sortable-min.js"></script>
+    <link href="/NetCoreCMS.Modules.Cms/css/nastedDragDrop.css" rel="stylesheet" />
+    <script src="/NetCoreCMS.Modules.Cms/js/nestedDragDrop.js"></script>
+    <link href="/NetCoreCMS.Modules.Cms/css/menu.css" rel="stylesheet" />
+    <script src="/NetCoreCMS.Modules.Cms/js/menu.js"></script>
+}

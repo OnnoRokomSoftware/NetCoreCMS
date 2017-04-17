@@ -10613,24 +10613,24 @@ if (typeof jQuery === 'undefined') {
   }
 
   function clearMenus(e) {
-    if (e && e.which === 3) return
-    $(backdrop).remove()
-    $(toggle).each(function () {
-      var $this         = $(this)
-      var $parent       = getParent($this)
-      var relatedTarget = { relatedTarget: this }
+    //if (e && e.which === 3) return
+    //$(backdrop).remove()
+    //$(toggle).each(function () {
+    //  var $this         = $(this)
+    //  var $parent       = getParent($this)
+    //  var relatedTarget = { relatedTarget: this }
 
-      if (!$parent.hasClass('open')) return
+    //  if (!$parent.hasClass('open')) return
 
-      if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
+    //  if (e && e.type == 'click' && /input|textarea/i.test(e.target.tagName) && $.contains($parent[0], e.target)) return
 
-      $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
+    //  $parent.trigger(e = $.Event('hide.bs.dropdown', relatedTarget))
 
-      if (e.isDefaultPrevented()) return
+    //  if (e.isDefaultPrevented()) return
 
-      $this.attr('aria-expanded', 'false')
-      $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
-    })
+    //  $this.attr('aria-expanded', 'false')
+    //  $parent.removeClass('open').trigger($.Event('hidden.bs.dropdown', relatedTarget))
+    //})
   }
 
   Dropdown.prototype.toggle = function (e) {
@@ -10670,35 +10670,35 @@ if (typeof jQuery === 'undefined') {
   }
 
   Dropdown.prototype.keydown = function (e) {
-    if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
+    //if (!/(38|40|27|32)/.test(e.which) || /input|textarea/i.test(e.target.tagName)) return
 
-    var $this = $(this)
+    //var $this = $(this)
 
-    e.preventDefault()
-    e.stopPropagation()
+    //e.preventDefault()
+    //e.stopPropagation()
 
-    if ($this.is('.disabled, :disabled')) return
+    //if ($this.is('.disabled, :disabled')) return
 
-    var $parent  = getParent($this)
-    var isActive = $parent.hasClass('open')
+    //var $parent  = getParent($this)
+    //var isActive = $parent.hasClass('open')
 
-    if (!isActive && e.which != 27 || isActive && e.which == 27) {
-      if (e.which == 27) $parent.find(toggle).trigger('focus')
-      return $this.trigger('click')
-    }
+    //if (!isActive && e.which != 27 || isActive && e.which == 27) {
+    //  if (e.which == 27) $parent.find(toggle).trigger('focus')
+    //  return $this.trigger('click')
+    //}
 
-    var desc = ' li:not(.disabled):visible a'
-    var $items = $parent.find('.dropdown-menu' + desc)
+    //var desc = ' li:not(.disabled):visible a'
+    //var $items = $parent.find('.dropdown-menu' + desc)
 
-    if (!$items.length) return
+    //if (!$items.length) return
 
-    var index = $items.index(e.target)
+    //var index = $items.index(e.target)
 
-    if (e.which == 38 && index > 0)                 index--         // up
-    if (e.which == 40 && index < $items.length - 1) index++         // down
-    if (!~index)                                    index = 0
+    //if (e.which == 38 && index > 0)                 index--         // up
+    //if (e.which == 40 && index < $items.length - 1) index++         // down
+    //if (!~index)                                    index = 0
 
-    $items.eq(index).trigger('focus')
+    //$items.eq(index).trigger('focus')
   }
 
 
