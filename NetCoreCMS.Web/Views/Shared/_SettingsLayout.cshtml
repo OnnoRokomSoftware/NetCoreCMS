@@ -2,54 +2,45 @@
 
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - NetCoreCMS.Web</title>
-
-    <environment names="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>@ViewData["Title"] - NetCoreCMS Settings</title>
+    <environment names="Development">        
     </environment>
     <environment names="Staging,Production">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
-    </environment>
-    @Html.Raw(JavaScriptSnippet.FullScript)
-
-    <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="~/js/common.js" asp-append-version="true"></script>
-    </environment>
-    <environment names="Staging,Production">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-2.2.0.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-K+ctZQ+LL8q6tP7I94W+qzQsfRV2a+AfHIi9k8z8l9ggpc8X+Ytst4yBo/hH+8Fk">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
     </environment>
 
-    <link href="/css/sidebar.css" rel="stylesheet" />
-    <link href="/css/navbarcustom.css" rel="stylesheet" />
-    <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
+    <!-- Bootstrap Core CSS -->    
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+
+    <!-- MetisMenu CSS -->
+    <link rel="stylesheet" href="~/css/metisMenu.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/sb-admin-2.min.css">
+    <!-- Custom Fonts -->
+    <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/font-awesome.min.css">
+
+    @* NEED TO CHECK WHAT IS THIS *@
+    @*@Html.Raw(JavaScriptSnippet.FullScript)*@
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
 </head>
 <body>
-    <div id="loadingMask" class="loader loader-double"></div>
-    <nav class="navbar navbar-default navbar-fixed-top">
-        <div class="container-fluid">
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -57,121 +48,125 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
+                @*<a class="navbar-brand" href="index.html">SB Admin v2.0</a>*@
                 <a asp-area="" asp-controller="Settings" asp-action="Index" class="navbar-brand">NetCoreCMS Settings</a>
             </div>
-            <div class="navbar-collapse collapse">                
+            <!-- /.navbar-header -->
+            <ul class="nav navbar-top-links navbar-right">              
+                @*<li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li>
+                            <a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="login.html"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>*@
+                <!-- /.dropdown -->
                 @await Html.PartialAsync("_SettingsLoginPartial")
-            </div>
-        </div>
-    </nav>
-    <div class="row">
-        <nav class="navbar navbar-default sidebar" role="navigation">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                @*<div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-sidebar-navbar-collapse-1">
-                            <span class="sr-only">Toggle navigation</span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                            <span class="icon-bar"></span>
-                        </button>
-                        <a class="navbar-brand" href="#">Brand</a>
-                    </div>*@
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-sidebar-navbar-collapse-1">
-                    
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a asp-controller="Settings" asp-action="Index">Home<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-home"></span></a></li>
-                        
-                        <li class="dropdown open">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Appearance<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                            <ul class="dropdown-menu forAnimate" role="menu">
+            </ul>
+            <!-- /.navbar-top-links -->
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        @*<li class="sidebar-search">
+                            <div class="input-group custom-search-form">
+                                <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                            <!-- /input-group -->
+                        </li>*@
+                        <li class="active">
+                            <a asp-controller="Settings" asp-action="Index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Appearance<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
                                 <li><a asp-controller="CmsMenu" asp-action="Index"> Menu </a></li>
                                 <li><a asp-controller="CmsWidget" asp-action="Index"> Widget </a></li>
-                                <li><a asp-controller="CmsTheme" asp-action="Index"> Theme </a></li>           
+                                <li><a asp-controller="CmsTheme" asp-action="Index"> Theme </a></li>  
                             </ul>
                         </li>
-
-                        <li class="dropdown open">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Media<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                            <ul class="dropdown-menu forAnimate" role="menu">
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Media<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
                                 <li><a href="#">Create</a></li>
                                 <li><a href="#">Manage</a></li>
                             </ul>
                         </li>
-
-                        <li class="dropdown open">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Modules<span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                            <ul class="dropdown-menu forAnimate" role="menu">                                
-                                <li><a asp-controller="CmsModule" asp-action="Index" >New Module</a></li>
-                                <li><a asp-controller="CmsModule" asp-action="Manage" >Manage</a></li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Module<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a asp-controller="CmsModule" asp-action="Index">New Module</a></li>
+                                <li><a asp-controller="CmsModule" asp-action="Manage">Manage</a></li>
                             </ul>
                         </li>
-
-                        <li class="dropdown open">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">User <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                            <ul class="dropdown-menu forAnimate" role="menu">
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> User<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
                                 <li><a href="#">New User</a></li>
-                                <li><a href="#">Manage</a></li>                                
+                                <li><a href="#">Manage</a></li>   
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Settings<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a href="#">General</a></li>
+                                <li><a href="#">Profile</a></li>
                             </ul>
                         </li>
                         
-                        <li class="dropdown open">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span><span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-cog"></span></a>
-                            <ul class="dropdown-menu forAnimate" role="menu">
-                                <li><a href="#">General</a></li>  .
-                                <li><a href="#">Profile<span style="font-size:16px;" class="pull-right hidden-xs showopacity glyphicon glyphicon-user"></span></a></li>
-                            </ul>
-                        </li>
-
                     </ul>
-
-                    @*@await Html.PartialAsync("_SettingsLoginPartial")*@
                 </div>
+                <!-- /.sidebar-collapse -->
             </div>
+            <!-- /.navbar-static-side -->
         </nav>
-        <div class="col-sm-10 main">
-            @RenderBody()
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        @*<h1 class="page-header">Blank</h1>*@
+                        @RenderBody()
+                    </div>
+                    <!-- /.col-lg-12 -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
         </div>
-        <div style="clear:both;"></div>
+        <!-- /#page-wrapper -->
     </div>
     <div style="clear:both;"></div>
     <div class="row text-center">
         <hr />
         <footer>
-            <p>&copy; 2017 - NetCoreCMS.Web</p>
+            <p>&copy; @DateTime.Now.Year - NetCoreCMS</p>
         </footer>
     </div>
-    <div style="clear:both;"></div>
-    <script type="text/javascript">
-
-        function htmlbodyHeightUpdate() {
-            var height3 = $(window).height()
-            var height1 = $('.nav').height() + 50
-            height2 = $('.main').height()
-            if (height2 > height3) {
-                $('html').height(Math.max(height1, height3, height2) + 10);
-                $('body').height(Math.max(height1, height3, height2) + 10);
-            }
-            else {
-                $('html').height(Math.max(height1, height3, height2));
-                $('body').height(Math.max(height1, height3, height2));
-            }
-
-        }
-
-        $(document).ready(function () {
-            htmlbodyHeightUpdate()
-            $(window).resize(function () {
-                htmlbodyHeightUpdate()
-            });
-            $(window).scroll(function () {
-                height2 = $('.main').height()
-                htmlbodyHeightUpdate()
-            });
-        });
-
-    </script>
+    <!-- /#wrapper -->
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- Metis Menu Plugin JavaScript -->
+    <script src="~/js/metisMenu.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="~/js/sb-admin-2.min.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
