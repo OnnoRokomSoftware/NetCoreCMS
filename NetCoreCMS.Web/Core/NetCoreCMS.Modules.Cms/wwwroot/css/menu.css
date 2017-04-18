@@ -53,6 +53,10 @@
 
 .menu-item-content{
     border: solid 1px #ddd;
-    height:30px;
+    height:40px;
     padding: 5px 5px;
+}
+
+.ncc-menu-title{
+    padding-left:10px;
 }

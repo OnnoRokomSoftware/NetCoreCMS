@@ -21,11 +21,11 @@
                         <div class="tab-content">
                             <div id="recentPages" class="tab-pane fade in active" style="padding: 10px 10px;">
                                 <div class="row">                                     
-                                    <div id="recentPagesCheckBoxList" class="checkBoxList">
+                                    <div class="checkBoxList">
                                         @foreach (var page in ViewBag.RecentPages)
                                         {
                                             <div class="checkbox">
-                                                <label><input type="checkbox" value="@page.Id">@page.Title</label>
+                                                <label><input type="checkbox" class="recentPagesCheckBoxList" value="@page.Id" ncc-page-title="@page.Title">@page.Title</label>
                                             </div>
                                         }                                            
                                     </div>                                    
@@ -37,7 +37,7 @@
                                         @foreach (var page in ViewBag.AllPages)
                                         {
                                             <div class="checkbox">
-                                                <label><input type="checkbox" value="@page.Id">@page.Title</label>
+                                                <label><input type="checkbox" class="recentPagesCheckBoxList" value="@page.Id" ncc-page-title="@page.Title">@page.Title</label>
                                             </div>
                                         } 
                                     </div>

@@ -1,13 +1,12 @@
 ﻿
 <div class="col-sm-8">
     <div class="panel panel-primary">
-
         <div class="panel-heading">
             <div class="col-sm-12">
-                <div class="col-sm-7" style="padding-right:0px;">
-                    <label class="pull-left" style="padding-left:0px;padding-top:5px;">Name:</label><input type="text" id="menuName" class="form-control input-sm col-sm-4 pull-right" />
+                <div class="col-sm-6" style="padding-right:0px;">
+                    <input type="text" id="menuName" class="form-control input-sm" placeholder="Enter Menu Name" />
                 </div>
-                <div class="col-sm-3">
+                <div class="col-sm-4">
                     <select id="menuLocation" class="form-control input-sm">
                         <option value="">Select Menu Location</option>
                         <option value="Top">Top</option>
@@ -27,43 +26,15 @@
 
         <div class="panel-body">
             <ul id="selectedMenuTree">
-                <li class="list-group-item no-boarder" name="co 1">
-                    <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>Company 1<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                </li>
-                <li class="list-group-item no-boarder" name="co 2">
-                    <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>Company 2<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                </li>
-                <li class="list-group-item no-boarder" name="co 3">
-                    <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>Company 3<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                    <ul>
-                        <li class="list-group-item no-boarder" name="co 3.1">
-                            <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>User 3.1<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                        </li>
-                        <li class="list-group-item no-boarder" name="co 3.2">
-                            <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>User 3.2<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                        </li>
-                    </ul>
-                </li>
-                <li class="list-group-item no-boarder" name="co 4">
-                    <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>Company 4<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                </li>
-                <li class="list-group-item no-boarder" name="co 5">
-                    <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>Company 5<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                    <ul>
-                        <li class="list-group-item no-boarder" name="co 5.1">
-                            <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>User 5.1<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                        </li>
-                        <li class="list-group-item no-boarder" name="co 5.2">
-                            <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>User 5.2<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                        </li>
-                        <li class="list-group-item no-boarder" name="co 5.3">
-                            <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>User 5.3<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                        </li>
-                        <li class="list-group-item no-boarder" name="co 5.4">
-                            <div class="menu-item-content"><i class="glyphicon glyphicon-move margin-right-10"></i>User 5.4<i class="removeMenuItem glyphicon glyphicon glyphicon-remove pull-right"></i></div>
-                        </li>
-                    </ul>
-                </li>
+                <li class="list-group-item no-boarder" ncc-model-id="0" ncc-menu-action-type="Url" ncc-controller="CmsHome" ncc-action="Index" name="Home">
+                    <div class="menu-item-content">
+                        <div class="pull-left" style="padding: 5px 5px;">
+                            <i class="glyphicon glyphicon-move margin-right-10"></i>
+                            <span class="ncc-menu-title">Home</span>
+                        </div>
+                        <input type="button" class="closeMenuItem pull-right" value="X" onclick="RemoveMenuItem(this)" />
+                    </div>
+                </li>                
             </ul>
             <span id="result"></span>
         </div>
