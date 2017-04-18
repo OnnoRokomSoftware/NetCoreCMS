@@ -4,12 +4,7 @@
 @{
     Layout = Constants.AdminLayoutName;
 }
-<script>
-    KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
-</script>
-<script src="~/lib/ckeditor/ckeditor.js"></script>
-<link href="/NetCoreCMS.Modules.Cms/css/page.css" rel="stylesheet" />
-<script src="/NetCoreCMS.Modules.Cms/js/page.js"></script>
+
 
 
 <div class="row">
@@ -135,4 +130,11 @@
         </form>
     </div>
 </div>
-
+@section Scripts{
+    <script>
+        KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
+    </script>
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <link href="/NetCoreCMS.Modules.Cms/css/page.css" rel="stylesheet" />
+    <script src="/NetCoreCMS.Modules.Cms/js/page.js"></script>
+}
