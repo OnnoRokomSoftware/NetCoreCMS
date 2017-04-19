@@ -34,11 +34,12 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-
+    <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
     @Html.Raw(JavaScriptSnippet.FullScript)
 
 </head>
 <body class="hold-transition skin-purple sidebar-mini fixed">
+    <div id="loadingMask" class="loader loader-double"></div>
     <!-- Site wrapper -->
     <div class="wrapper">
         <header class="main-header">
@@ -228,6 +229,7 @@
                         </div>
                     </div>*@
                     <div class="box-body">
+                        <div id="messageContainer"></div>
                         @RenderBody()
                     </div>
                     <!-- /.box-body -->
@@ -429,7 +431,7 @@
     <script src="/Theme/Admin/Default/js/fastclick/fastclick.min.js"></script>
     <!-- AdminLTE App -->
     <script src="/Theme/Admin/Default/js/app.min.js"></script>
-
+    <script src="/js/common.js"></script>
     <script type="text/javascript">
     </script>
     @RenderSection("Scripts", required: false)
