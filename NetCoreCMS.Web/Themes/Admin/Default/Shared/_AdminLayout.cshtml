@@ -204,8 +204,8 @@
             <!-- Content Header (Page header) -->
             <section class="content-header">
                 <h1>
-                    Page Title
-                    <small>page subtitle</small>
+                    @ViewData["PageTitle"]
+                    <small>@ViewData["PageSubtitle"]</small>
                 </h1>
                 <ol class="breadcrumb">
                     <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -215,6 +215,7 @@
             </section>
             <!-- Main content -->
             <section class="content">
+                <div id="messageContainer"></div>
                 <!-- Default box -->
                 <div class="box">
                     @*<div class="box-header with-border">
@@ -229,7 +230,6 @@
                         </div>
                     </div>*@
                     <div class="box-body">
-                        <div id="messageContainer"></div>
                         @RenderBody()
                     </div>
                     <!-- /.box-body -->
