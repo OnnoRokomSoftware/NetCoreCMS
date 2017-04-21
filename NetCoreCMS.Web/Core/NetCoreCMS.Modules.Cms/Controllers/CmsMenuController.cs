@@ -25,5 +25,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
             return View();
         }
+
+        public JsonResult CreateMenu(CmsMenuViewModel model)
     }
 }

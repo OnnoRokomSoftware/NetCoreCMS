@@ -36,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot/js\New Text Document.txt" />
     <Content Remove="wwwroot/lib\css-loader\dist\loader-ball.css" />
   </ItemGroup>
 
