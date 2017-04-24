@@ -1,22 +1,42 @@
-﻿function Menu() {
+﻿function NccMenuActionType() {
+    this.Url = "Url";
+    this.Page = "Page";
+    this.BlogPost = "BlogPost";
+    this.BlogCategory = "BlogCategory";
+    this.Module = "Module";
+    this.Tag = "Tag";
+}
+
+function NccMenuItemFor() {
+    this.Site = "Site";
+    this.Admin = "Admin";
+}
+
+function NccMenuItemTarget() {
+    this.Blank = "_blank"; 
+    this.Parent = "_parent";
+    this.Self = "_self"; 
+    this.Top = "_top"; 
+}
+
+function NccMenu() {
     this.Id = 0;
     this.Name = "";
     this.Position = "";
     this.Items = new Array();
 }
 
-function MenuItem() {
+function NccMenuItem() {
     this.Id = 0;
-    this.Parent = new Object;
+    this.ParentId = 0;
     this.Title;
-    this.ModelId;
     this.Type;
     this.Controller;
     this.Action;
     this.Data;
     this.Url;
     this.Target;
-    this.Order;
+    this.Order = 0;
     this.Childrens = new Array();
 }
 
@@ -41,8 +61,6 @@ $(document).ready(function () {
             $(ob).prop("checked",true); 
         });        
     });
-
-    //$('#menuListDt').DataTable();
 
     $('#selectedMenuTree').nestedSortable({
         handle: 'div',
@@ -78,6 +96,10 @@ $(document).ready(function () {
                 menuItem = menuItem.replace("{ACTION_TYPE}", "Page");
                 menuItem = menuItem.replace("{CONTROLLER}", "CmsPage");
                 menuItem = menuItem.replace("{ACTION}", "Index");
+                menuItem = menuItem.replace("{DATA}", $(this).attr("value"));
+                menuItem = menuItem.replace("{URL}", "");
+                menuItem = menuItem.replace("{TARGET}", "_self");
+                menuItem = menuItem.replace("{ORDER}", 0);
                 menuItem = menuItem.replace(/\{TITLE}/g, $(this).attr("ncc-page-title"));
 
                 $("#selectedMenuTree").append($($.parseHTML(menuItem)));
@@ -86,10 +108,10 @@ $(document).ready(function () {
     });
 
     function getMenuItemFromLi(listItem) {
-        var mi  = new MenuItem();
+        var mi  = new NccMenuItem();
         mi.Id           = $(listItem).attr("ncc-menu-item-id");
         mi.Title        = $(listItem).attr("ncc-menu-item-title");
-        mi.Type         = $(listItem).attr("ncc-menu-item-type");
+        mi.Type         = $(listItem).attr("ncc-menu-item-action-type");
         mi.Controller   = $(listItem).attr("ncc-menu-item-controller");
         mi.Action       = $(listItem).attr("ncc-menu-item-action");
         mi.Data         = $(listItem).attr("ncc-menu-item-action-data");
@@ -106,13 +128,14 @@ $(document).ready(function () {
 
         $(parentUl).children().each(function (index) {
 
-            console.log(order,$(this),"--");
             var menuItem = getMenuItemFromLi($(this));
-            menuItem.Parent = parent;
+            if (parent != null) {
+                menuItem.ParentId = parent.Id;
+            }
             menuItem.Order = order;
             order = order + 1;
 
-            var ul = $(this).find("ul");
+            var ul = $(this).find(" > ul");
             if (ul.length > 0) {
                 var menuItems = getMenuTree(ul, menuItem, order);
                 $(menuItems).each(function (index) {
@@ -127,7 +150,41 @@ $(document).ready(function () {
     }
 
     $("#saveMenuBtn").on("click", function () {
-        var menuTree = getMenuTree($("ul#selectedMenuTree"));
-        console.log(menuTree);
+
+        var menuItemTree = getMenuTree($("ul#selectedMenuTree"), null, 1);
+
+        var menu = new NccMenu();
+        menu.Id = $("#menuId").val();
+        $(menuItemTree).each(function (index) {
+            menu.Items.push(menuItemTree[index]);
+        });
+        
+        menu.Name = $("#menuName").val();
+        menu.Position = $("#menuPosition").val();
+        
+        NccPageMask.ShowLoadingMask();
+
+        var menuJson = JSON.stringify(menu);
+        console.log(menuJson);
+
+        $.ajax({
+            type: "POST",
+            url: "/CmsMenu/CreateMenu",
+            data: { model : menuJson },
+            success: function (rsp, textStatus, jqXHR) {
+                NccPageMask.HideLoadingMask();
+                if (rsp.isSuccess) {
+                    NccAlert.ShowSuccess(rsp.message);
+                }
+                else {
+                    NccAlert.ShowError("Error: " + rsp.message);
+                }
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                NccPageMask.HideLoadingMask();
+                NccAlert.ShowError("Error. Please try again.");
+            }
+        });
+
     });
 });

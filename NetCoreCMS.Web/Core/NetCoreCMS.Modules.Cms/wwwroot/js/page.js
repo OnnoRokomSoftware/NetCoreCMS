@@ -30,13 +30,13 @@
                 }
                 else {
                     NccAlert.ShowError("Error: " + rsp.message);
-                }                
+                }
             },
-            error: function (jqXHR, textStatus, errorThrown) {                
+            error: function (jqXHR, textStatus, errorThrown) {
                 NccPageMask.HideLoadingMask();
                 NccAlert.ShowError("Error. Please try again.");
             }
-        })
+        });
     });
 
 
