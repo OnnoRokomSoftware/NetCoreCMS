@@ -23,6 +23,7 @@ function NccMenu() {
     this.Id = 0;
     this.Name = "";
     this.Position = "";
+    this.MenuFor = "";
     this.Items = new Array();
 }
 
@@ -160,7 +161,8 @@ $(document).ready(function () {
         });
         
         menu.Name = $("#menuName").val();
-        menu.Position = $("#menuPosition").val();
+        menu.Position = $("#menuLocation").val();
+        menu.MenuFor = $("#menuFor").val();
         
         NccPageMask.ShowLoadingMask();
 

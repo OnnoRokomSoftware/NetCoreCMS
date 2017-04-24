@@ -40,7 +40,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public enum MenuPosition
         {
             Top,
-            Main,
+            Navigation,
             Left,
             Right,
             Footer
