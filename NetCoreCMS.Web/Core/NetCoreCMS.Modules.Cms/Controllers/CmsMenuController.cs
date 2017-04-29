@@ -26,7 +26,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
             ViewBag.RecentPages = _pageService.LoadRecentPages(5);
-
+            ViewBag.MenuList = _menuService.LoadAll();
             return View();
         }
 
@@ -39,7 +39,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             if(menu != null)
             {
                 NccMenu menuModel = CreateMenuObject(menu);
-                menuModel.MenuItems = CreateMenuItems(menuModel, menu);
+                CreateMenuItems(menuModel, menu);
                 _menuService.Save(menuModel);
 
                 var r = new ApiResponse();
@@ -58,20 +58,53 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             foreach (var item in menu.Items)
             {
-                List<NccMenuItem> items = ConstructMenuItems(item);
-                if(items != null && items.Count > 0)
+                NccMenuItem mi = MakeNccMenuItem(item);
+                if(mi != null)
                 {
-                    menuModel.MenuItems.AddRange(items);
+                    menuModel.MenuItems.Add(mi);
                 }
             }
             
             return new List<NccMenuItem>();
         }
-
-        private List<NccMenuItem> ConstructMenuItems(NccMenuItemViewModel item)
+        
+        private NccMenuItem MakeNccMenuItem(NccMenuItemViewModel miViewModel)
         {
-            //TODO: Write code
-            throw new NotImplementedException();
+            NccMenuItem parentMenuItem = null;
+            if (miViewModel != null)
+            {
+                parentMenuItem = CreateNccMenuItemObject(miViewModel);                
+                if (miViewModel.Childrens != null)
+                {
+                    foreach (NccMenuItemViewModel menuItem in miViewModel.Childrens)
+                    {
+                        var cMi = MakeNccMenuItem(menuItem);
+                        if(cMi != null)
+                        {
+                            parentMenuItem.Childrens.Add(cMi);
+                        }
+                    }
+                }
+            }
+            return parentMenuItem;
+        }
+
+        private static NccMenuItem CreateNccMenuItemObject(NccMenuItemViewModel item)
+        {
+            return new NccMenuItem()
+            {
+                Action = item.Action,
+                Controller = item.Controller,
+                Data = item.Data,
+                Id = item.Id,
+                MenuActionType = TypeConverter.TryParseActionTypeEnum(item.Type),
+                MenuFor = NccMenuItem.MenuItemFor.Site,
+                MenuOrder = int.Parse(item.Order),
+                Module = "",
+                Name = item.Title,
+                Target = item.Target,
+                Url = item.url
+            };
         }
 
         private NccMenu CreateMenuObject(NccMenuViewModel menu)

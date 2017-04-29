@@ -20,6 +20,7 @@ namespace NetCoreCMS.Framework.Core.Models
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
             Status = EntityStatus.New;
             VersionNumber = 1;
+            MenuItems = new List<NccMenuItem>();
         }
 
         [Key]

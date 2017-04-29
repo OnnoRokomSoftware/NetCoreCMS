@@ -9,9 +9,10 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    partial class NccDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170429145012_menuitem_changes")]
+    partial class menuitem_changes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");

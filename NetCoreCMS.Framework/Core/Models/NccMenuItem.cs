@@ -20,6 +20,8 @@ namespace NetCoreCMS.Framework.Core.Models
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
             Status = EntityStatus.New;
             VersionNumber = 1;
+            SubActions = new List<NccMenuItem>();
+            Childrens = new List<NccMenuItem>();            
         }
 
         [Key]
@@ -44,6 +46,8 @@ namespace NetCoreCMS.Framework.Core.Models
         public ActionType MenuActionType { get; set; }
         public MenuItemFor MenuFor { get; set; }
         public List<NccMenuItem> SubActions { get; set; }
+        public List<NccMenuItem> Childrens { get; set; }
+
 
         public enum ActionType
         {

@@ -9,6 +9,7 @@ using NetCoreCMS.Framework.Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -26,6 +27,13 @@ namespace NetCoreCMS.Framework.Utility
             DatabaseEngine dbEnum;
             Enum.TryParse<DatabaseEngine>(input, out dbEnum);
             return dbEnum;
+        }
+
+        public static NccMenuItem.ActionType TryParseActionTypeEnum(string input)
+        {
+            NccMenuItem.ActionType atEnum;
+            Enum.TryParse<NccMenuItem.ActionType>(input, out atEnum);
+            return atEnum;
         }
     }
 }

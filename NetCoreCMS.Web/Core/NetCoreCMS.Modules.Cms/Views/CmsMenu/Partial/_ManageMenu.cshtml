@@ -1,21 +1,21 @@
 ﻿<table id="menuListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
     <thead>
-        <tr><th>SN</th><th>Name</th><th>Order</th><th>Position</th><th>Action</th></tr>
+        <tr><th>Id</th><th>Name</th><th>Order</th><th>Position</th><th>Action</th></tr>
     </thead>
     <tbody>
-        <tr>
-            <td>1</td>
-            <td>Main Menu</td>
-            <td>1</td>
-            <td>Navigation</td>
-            <td><a asp-controller="CmsMenu" asp-action="Index">Edit</a></td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Left Menu</td>
-            <td>1</td>
-            <td>Left</td>
-            <td><a asp-controller="CmsMenu" asp-action="Index">Edit</a></td>
-        </tr>
+        @foreach (var item in ViewBag.MenuList)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Name</td>
+                <td>@item.MenuOrder</td>
+                <td>@item.Position</td>
+                <td>
+                    <a asp-controller="CmsMenu" asp-action="Index">Edit</a> | 
+                    <a asp-controller="CmsMenu" asp-action="Delete">Delete</a>
+                </td>
+            </tr>
+        }
+        
     </tbody>
 </table>

@@ -23,6 +23,7 @@ namespace NetCoreCMS.Framework.Core.Models
                 b.ToTable("Ncc_MenuItem");
                 b.HasOne( m => m.Parent );
                 b.HasMany( m => m.SubActions );
+                b.HasMany(m => m.Childrens);
             });
             modelBuilder.Entity<NccModule>(b => {
                 b.ToTable("Ncc_Module");
