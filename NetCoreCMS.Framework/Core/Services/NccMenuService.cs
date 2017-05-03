@@ -4,6 +4,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -78,7 +79,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public void DeletePermanently(long entityId)
         {
-            var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
+            var entity = _entityRepository.Query().Include(x=>x.MenuItems).FirstOrDefault(x => x.Id == entityId);
             if (entity != null)
             {
                 _entityRepository.Remove(entity);

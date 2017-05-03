@@ -54,6 +54,28 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             return Json(rsp);
         }
 
+        [HttpGet]
+        public ActionResult DeleteMenu(long menuId)
+        {
+            ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
+            ViewBag.RecentPages = _pageService.LoadRecentPages(5);
+            ViewBag.MenuList = _menuService.LoadAll();
+
+            try
+            {
+                _menuService.DeletePermanently(menuId);
+                TempData["SuccessMessage"] = "Delete successful";
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                    //TODO: log error
+            }
+
+            TempData["ErrorMessage"] = "Delete Failed";
+            return RedirectToAction("Index");
+        }
+
         private List<NccMenuItem> CreateMenuItems(NccMenu menuModel, NccMenuViewModel menu)
         {
             foreach (var item in menu.Items)
