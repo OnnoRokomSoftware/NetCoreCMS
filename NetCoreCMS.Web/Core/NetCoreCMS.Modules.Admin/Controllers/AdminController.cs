@@ -5,16 +5,45 @@
  * License: BSD (3 Clause)
 */
 using Microsoft.AspNetCore.Mvc;
+using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-
+using NetCoreCMS.Framework.Core.Services;
+using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
 {
     public class AdminController : NccController
     {
+        NccWebSiteService _webSiteService;
+
+        public AdminController(NccWebSiteService nccWebSiteService)
+        {
+            _webSiteService = nccWebSiteService;
+        }
         public ActionResult Index()
-        { 
-            return View(); 
-        } 
+        {
+            var webSite = new NccWebSite();
+            var webSites = _webSiteService.LoadAll();
+
+            if (webSites != null && webSites.Count > 0)
+            {
+                webSite = webSites.FirstOrDefault();
+            }
+            return View(webSite);
+        }
+
+        [HttpPost]
+        public ActionResult Index(NccWebSite website)
+        {
+            if (ModelState.IsValid)
+            {
+                _webSiteService.Update(website);
+            }
+            else
+            {
+                ModelState.AddModelError("Name", "Please check all values and submit again.");
+            }
+            return View(website);
+        }
     }
 }

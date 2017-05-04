@@ -31,35 +31,19 @@ namespace NetCoreCMS.Framework.Modules
                     });
                 }
             }
-
-            var activeAdminTheme = "Default";
+            
             var activeSiteTheme = "Default";
             var themePath = Path.Combine(env.ContentRootPath, "Themes");
-
-            var siteThemePath = Path.Combine(themePath, "Site");
-            siteThemePath = Path.Combine(siteThemePath, activeSiteTheme);
-            siteThemePath = Path.Combine(siteThemePath, "wwwroot");
-            var siteThemeDir = new DirectoryInfo(siteThemePath);
+            
+            var activeThemePath = Path.Combine(themePath, activeSiteTheme);
+            activeThemePath = Path.Combine(activeThemePath, "wwwroot");
+            var siteThemeDir = new DirectoryInfo(activeThemePath);
             if (siteThemeDir.Exists)
             {
                 app.UseStaticFiles(new StaticFileOptions()
                 {
                     FileProvider = new PhysicalFileProvider(siteThemeDir.FullName),
-                    RequestPath = new PathString("/Theme/Site/" + activeSiteTheme)
-                });
-            }
-            
-            var adminThemePath = Path.Combine(themePath, "Admin");
-            adminThemePath = Path.Combine(adminThemePath, activeAdminTheme);
-            adminThemePath = Path.Combine(adminThemePath, "wwwroot");
-
-            var adminThemeDir = new DirectoryInfo(adminThemePath);
-            if (adminThemeDir.Exists)
-            {
-                app.UseStaticFiles(new StaticFileOptions()
-                {
-                    FileProvider = new PhysicalFileProvider(adminThemeDir.FullName),
-                    RequestPath = new PathString("/Theme/Admin/" + activeAdminTheme)
+                    RequestPath = new PathString("/Theme/" + activeSiteTheme)
                 });
             }
             

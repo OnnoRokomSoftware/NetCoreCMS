@@ -75,7 +75,7 @@
                     <!-- /.dropdown-user -->
                 </li>*@
                 <!-- /.dropdown -->
-                @await Html.PartialAsync("_SettingsLoginPartial")
+                @await Html.PartialAsync("_AdminLoginPartial")
             </ul>
             <!-- /.navbar-top-links -->
             <div class="navbar-default sidebar" role="navigation">
@@ -94,6 +94,13 @@
                         </li>*@
                         <li class="active">
                             <a asp-controller="Settings" asp-action="Index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Page<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li><a asp-controller="CmsPage" asp-action="Create"> New Page </a></li>
+                                <li><a asp-controller="CmsPage" asp-action="Index"> Manage </a></li>
+                            </ul>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Appearance<span class="fa arrow"></span></a>

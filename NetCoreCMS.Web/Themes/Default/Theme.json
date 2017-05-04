@@ -8,7 +8,7 @@
   "Version" :  "0.1.1",
   "NetCoreCMSVersion" :  "0.1.1",
   "Category": "Default",
-  "PreviewImage": "preview.jpg",
+  "PreviewImage": "screenshot.png",
   "Laout": [
     {
       "Name": "Layout1",

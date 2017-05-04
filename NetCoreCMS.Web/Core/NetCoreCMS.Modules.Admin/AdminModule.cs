@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using System.Reflection;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Core.Modules.Admin
 {
@@ -48,7 +50,8 @@ namespace NetCoreCMS.Core.Modules.Admin
 
         public void Init(IServiceCollection services)
         {
-            
+            services.AddTransient<NccWebSiteRepository>();
+            services.AddTransient<NccWebSiteService>();
         }
 
         public bool Install()
