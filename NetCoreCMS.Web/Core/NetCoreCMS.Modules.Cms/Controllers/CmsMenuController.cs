@@ -36,22 +36,35 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var query = Request.Query;
             var menu = JsonConvert.DeserializeObject<NccMenuViewModel>(model);
 
-            if(menu != null)
+            var r = new ApiResponse();
+            if (menu != null)
             {
-                NccMenu menuModel = CreateMenuObject(menu);
-                CreateMenuItems(menuModel, menu);
-                _menuService.Save(menuModel);
+                if (menu.Name.Trim() == "")
+                {
+                    r.IsSuccess = false;
+                    r.Message = "Please enter a menu name.";
+                }
+                else if (menu.Position.Trim() == "")
+                {
+                    r.IsSuccess = false;
+                    r.Message = "Please select a menu position.";
+                }
+                else
+                {
+                    NccMenu menuModel = CreateMenuObject(menu);
+                    CreateMenuItems(menuModel, menu);
+                    _menuService.Save(menuModel);
 
-                var r = new ApiResponse();
-                r.IsSuccess = true;
-                r.Message = "Menu Save Successful.";
-                return Json(r);
+                    r.IsSuccess = true;
+                    r.Message = "Menu Save Successful.";
+                }
             }
 
-            ApiResponse rsp = new ApiResponse();
-            rsp.IsSuccess = false;
-            rsp.Message = "Error occoured. Please fill up all field correctly.";
-            return Json(rsp);
+            //ApiResponse rsp = new ApiResponse();
+            //rsp.IsSuccess = false;
+            //rsp.Message = "Error occoured. Please fill up all field correctly.";
+            //return Json(rsp);
+            return Json(r);
         }
 
         [HttpGet]
