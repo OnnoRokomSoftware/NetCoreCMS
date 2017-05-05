@@ -1,20 +1,51 @@
 ﻿@using NetCoreCMS.Framework.Utility
 @{
     Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Menu Management";
+    ViewData["PageSubtitle"] = "Manage menus";
 }
 
-<ol class="breadcrumb">
+
+@*<ol class="breadcrumb">
     <li><a asp-controller="Settings" asp-action="Index">Settings</a></li>
     <li><a href="#">Appearance</a></li>
     <li><a asp-controller="CmsMenu" asp-action="Index">Menu</a></li>
-</ol>
-
-<ul class="nav nav-tabs">
+</ol>*@
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#createMenu" data-toggle="tab">Create Menu</a>
+            </li>
+            <li>
+                <a href="#manageMenu" data-toggle="tab">Manage</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+                <div id="createMenu" class="tab-pane fade in active">
+                    <div class="panel panel-default" style="border-top:none">
+                        <div class="panel-body">
+                            @await Html.PartialAsync("Partial/_MenuSelectionPanel")
+                            @await Html.PartialAsync("Partial/_MenuSelectionTree")
+                        </div>
+                    </div>
+                </div>
+                <div id="manageMenu" class="tab-pane fade">
+                    <div class="panel panel-default" style="border-top:none">
+                        <div class="panel-body">
+                            @await Html.PartialAsync("Partial/_ManageMenu")
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+@*<ul class="nav nav-tabs">
     <li class="active"><a data-toggle="tab" href="#createMenu">Create Menu</a></li>
     <li><a data-toggle="tab" href="#manageMenu">Manage</a></li>
-</ul>
+</ul>*@
 
-<div class="tab-content">
+@*<div class="tab-content">
     <div id="manageMenu" class="tab-pane fade" style="padding: 10px 10px;">
         @await  Html.PartialAsync("Partial/_ManageMenu")
     </div>
@@ -24,7 +55,7 @@
             @await Html.PartialAsync("Partial/_MenuSelectionTree")
         </div>
     </div> 
-</div>
+</div>*@
 
 @section Scripts{
 
