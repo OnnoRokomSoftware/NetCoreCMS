@@ -12,6 +12,7 @@ using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.Framework.Themes;
 
 namespace NetCoreCMS.Core.Modules.Cms
 {
@@ -55,6 +56,7 @@ namespace NetCoreCMS.Core.Modules.Cms
             services.AddTransient<NccMenuService>();
             services.AddTransient<NccPageRepository>();
             services.AddTransient<NccPageService>();
+            services.AddTransient<ThemeManager>();
         }
 
         public bool Install()

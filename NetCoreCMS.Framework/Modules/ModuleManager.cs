@@ -39,7 +39,11 @@ namespace NetCoreCMS.Framework.Modules
                         {
                             assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
                         }
-                        catch (FileLoadException)
+                        catch (FileLoadException ex )
+                        {
+                            continue;
+                        }
+                        catch(BadImageFormatException ex)
                         {
                             continue;
                         }
@@ -52,7 +56,7 @@ namespace NetCoreCMS.Framework.Modules
                 }
                 catch (Exception ex)
                 {
-                    
+                    throw new Exception("Could not load module from " + moduleFolder);
                 }
             }
             return modules;

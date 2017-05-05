@@ -89,7 +89,7 @@ namespace NetCoreCMS.Web
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
- 
+            
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
 
@@ -125,9 +125,9 @@ namespace NetCoreCMS.Web
             }
 
             app.UseStaticFiles();
+            
 
-            var themeLogger = loggerFactory.CreateLogger<ThemeManager>();
-            _themeManager = new ThemeManager(themeLogger);
+            _themeManager = new ThemeManager(loggerFactory);
             var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
             GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
 

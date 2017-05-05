@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Blog", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Default", "NetCoreCMS.Web\Themes\Default\Default.csproj", "{999CC508-BFAB-43BF-A8D4-F51804C997F6}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultDark", "NetCoreCMS.Web\Themes\DefaultDark\DefaultDark.csproj", "{3210BDB2-2156-4B3C-A42E-51C804984B2D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -69,6 +71,10 @@ Global
 		{999CC508-BFAB-43BF-A8D4-F51804C997F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{999CC508-BFAB-43BF-A8D4-F51804C997F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{999CC508-BFAB-43BF-A8D4-F51804C997F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3210BDB2-2156-4B3C-A42E-51C804984B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3210BDB2-2156-4B3C-A42E-51C804984B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3210BDB2-2156-4B3C-A42E-51C804984B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3210BDB2-2156-4B3C-A42E-51C804984B2D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -81,5 +87,6 @@ Global
 		{67554FCE-6694-4794-9F65-E57FAEB21D07} = {6F492190-BD43-43F1-8512-26701469FB7E}
 		{F2550C70-13E5-416F-8E36-C0A6C1594A68} = {6F492190-BD43-43F1-8512-26701469FB7E}
 		{999CC508-BFAB-43BF-A8D4-F51804C997F6} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
+		{3210BDB2-2156-4B3C-A42E-51C804984B2D} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 	EndGlobalSection
 EndGlobal
