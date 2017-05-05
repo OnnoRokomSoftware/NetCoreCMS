@@ -71,5 +71,39 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             rsp.Message = "Error occoured. Please fill up all field correctly.";
             return Json(rsp);
         }
+
+        public ActionResult Edit(long Id)
+        {
+            NccPage page = _pageService.Get(Id);  
+            //page.
+            return View(page);
+        }
+
+        [HttpPost]
+        public ActionResult Edit(NccPage model, string PageContent, long Parent)
+        {
+            ApiResponse rsp = new ApiResponse();
+            try
+            {
+                model.Content = Encoding.UTF8.GetBytes(PageContent);
+                if (ModelState.IsValid)
+                {
+                    _pageService.Update(model);
+                    rsp.IsSuccess = true;
+                    rsp.Message = "Page updated successful";
+                    rsp.Data = "";
+                    return Json(rsp);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Page create error.", ex.ToString());
+            }
+
+            rsp.IsSuccess = false;
+            rsp.Message = "Error occoured. Please fill up all field correctly.";
+            return Json(rsp);
+        }
     }
 }

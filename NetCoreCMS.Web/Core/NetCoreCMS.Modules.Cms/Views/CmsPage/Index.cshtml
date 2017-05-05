@@ -4,7 +4,7 @@
 @{
     Layout = Constants.AdminLayoutName;
     ViewData["PageTitle"] = "Page Manage";
-    ViewData["PageSubtitle"] = "View and manage all existing pages";
+    ViewData["PageSubtitle"] = "Manage pages";
 }
 
 <script src="~/lib/ckeditor/ckeditor.js"></script>
@@ -13,40 +13,47 @@
 
 
 <div class="row">
-    <div class="col-sm-12">    
-        <div style="width:200px;">
-            <div class="col-sm-6"><h3>Pages</h3></div>
-            <div class="col-sm-6" style="padding-top:15px;"><input class="btn btn-primary" type="button" value="Add New" /></div>
-            <div style="clear:both;"></div>
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                <div class="pull-right"><a asp-controller="CmsPage" asp-action="Create" class="btn btn-outline btn-primary btn-xs">Add New</a></div> 
+            </div>
+            <div class="panel-body">
+                <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr><th>Title</th><th>Author</th><th>PublishDate</th><th>Status</th><th>Order</th><th>Action</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var page in Model)
+                        {
+                            <tr>
+                                <td>@page.Title</td>
+                                <td>@page.CreateBy</td>
+                                <td>@page.PublishDate</td>
+                                <td>@page.PageStatus</td>
+                                <td>@page.PageOrder</td>
+                                <td>
+                                    <a asp-controller="CmsPage" asp-action="Edit" asp-route-id="@page.Id">Edit</a> |
+                                    <a asp-controller="CmsPage" asp-action="Delete" asp-route-id="@page.Id">Delete</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.panel-body -->
         </div>
-        <br/>
-        <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-                <tr><th>Title</th><th>Author</th><th>PublishDate</th><th>Status</th><th>Order</th><th>Action</th></tr>
-            </thead>
-            <tbody>
-                @foreach (var page in Model)
-                {
-                    <tr>
-                        <td>@page.Title</td>
-                        <td>@page.CreateBy</td>
-                        <td>@page.PublishDate</td>
-                        <td>@page.PageStatus</td>
-                        <td>@page.PageOrder</td>
-                        <td>
-                            <a asp-controller="CmsPage" asp-action="Index">Edit</a> |
-                            <a asp-controller="CmsPage" asp-action="Index">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+        <!-- /.panel -->
     </div>
 </div>
+
+
 
 @section Scripts{
     <link href="~/lib/DataTables/dataTables.bootstrap.css" rel="stylesheet" />
     <link href="~/lib/DataTables/jquery.dataTables.min.css" rel="stylesheet" />
     <script src="~/lib/DataTables/jquery.dataTables.min.js"></script>
-    <script src="~/lib/DataTables/dataTables.bootstrap.min.js"></script>    
+    <script src="~/lib/DataTables/dataTables.bootstrap.min.js"></script>
 }

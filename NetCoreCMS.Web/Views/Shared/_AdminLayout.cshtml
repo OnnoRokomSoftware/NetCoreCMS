@@ -150,17 +150,38 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
-                        @*<h1 class="page-header">Blank</h1>*@
+                        <h1 class="page-header">@ViewData["PageTitle"]</h1>
                         <div id="messageContainer">
-                            @if (TempData.ContainsKey("ErrorMessage"))
+                            @if (TempData.ContainsKey("SuccessMessage") || ViewBag.SuccessMessage == "SuccessMessage")
                             {
-                                <div class="alert alert-danger alert-dismissable">@TempData["ErrorMessage"]<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a></div>
+                                <div class="alert alert-success alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    @TempData["SuccessMessage"]<a href="#" class="alert-link"></a>.
+                                </div>
                             }
-                            @if (TempData.ContainsKey("SuccessMessage"))
+                            @if (TempData.ContainsKey("InfoMessage") || ViewBag.InfoMessage == "InfoMessage")
                             {
-                                <div class="alert alert-success alert-dismissable">@TempData["SuccessMessage"]<a href="#" class="close" data-dismiss="alert" aria-label="close">×</a></div>
+                                <div class="alert alert-info alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    @TempData["InfoMessage"]<a href="#" class="alert-link"></a>.
+                                </div>
+                            }
+                            @if (TempData.ContainsKey("WarningMessage") || ViewBag.WarningMessage == "WarningMessage")
+                            {
+                                <div class="alert alert-warning alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    @TempData["WarningMessage"]<a href="#" class="alert-link"></a>.
+                                </div>
+                            }
+                            @if (TempData.ContainsKey("ErrorMessage") || ViewBag.ErrorMessage == "ErrorMessage")
+                            {
+                                <div class="alert alert-danger alert-dismissable">
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    @TempData["ErrorMessage"]<a href="#" class="alert-link"></a>.
+                                </div>
                             }
                         </div>
+
                         @RenderBody()
                     </div>
                     <!-- /.col-lg-12 -->
