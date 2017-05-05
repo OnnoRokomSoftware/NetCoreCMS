@@ -9,14 +9,31 @@
   "NetCoreCMSVersion" :  "0.1.1",
   "Category": "Default",
   "PreviewImage": "screenshot.png",
+  "IsActive" :  true,
   "Laout": [
     {
-      "Name": "Layout1",
-      "PreviewImage": "Layout1"
+      "Name": "SiteLayout",
+      "PreviewImage": "SiteLayoutScreenShot.png",
+      "WidgetSections": [
+        "Top",
+        "NavBar",
+        "LeftMenu",
+        "RightMenu",
+        "FooterMenu"
+      ]
     },
     {
-      "Name": "Layout2",
-      "PreviewImage": "Layout2"
+      "Name": "TwoColumnLayout",
+      "PreviewImage": "TwoColumnLayoutScreenShot.png",
+      "WidgetSections": [
+        "Top",
+        "NavBar",
+        "Slider",
+        "Featured",
+        "LeftMenu",
+        "RightMenu",
+        "FooterMenu"
+      ]
     }
   ]  
 }

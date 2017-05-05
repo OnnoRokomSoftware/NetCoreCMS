@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
+using NetCoreCMS.Framework.Core;
+using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,8 +34,8 @@ namespace NetCoreCMS.Framework.Modules
                 }
             }
             
-            var activeSiteTheme = "Default";
-            var themePath = Path.Combine(env.ContentRootPath, "Themes");
+            var activeSiteTheme = GlobalConfig.ActiveTheme.ThemeName;
+            var themePath = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
             
             var activeThemePath = Path.Combine(themePath, activeSiteTheme);
             activeThemePath = Path.Combine(activeThemePath, "wwwroot");
@@ -43,7 +45,7 @@ namespace NetCoreCMS.Framework.Modules
                 app.UseStaticFiles(new StaticFileOptions()
                 {
                     FileProvider = new PhysicalFileProvider(siteThemeDir.FullName),
-                    RequestPath = new PathString("/Theme/" + activeSiteTheme)
+                    RequestPath = new PathString("/Themes/" + activeSiteTheme)
                 });
             }
             

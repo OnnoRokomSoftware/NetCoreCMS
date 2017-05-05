@@ -19,5 +19,6 @@ namespace NetCoreCMS.Framework.Core
         public static string Author { get; } = "xonaki.com";
         public static string CoreModuleFolder { get; } = "Core";
         public static string ModuleFolder { get; } = "Modules";
+        public static string ThemeFolder { get; } = "Themes";
     }
 }

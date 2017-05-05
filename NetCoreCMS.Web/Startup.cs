@@ -23,6 +23,8 @@ using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
+using NetCoreCMS.Framework.Themes;
+using System.IO;
 
 namespace NetCoreCMS.Web
 {
@@ -30,6 +32,7 @@ namespace NetCoreCMS.Web
     {
         private readonly IHostingEnvironment _hostingEnvironment;
         ModuleManager _moduleManager;
+        ThemeManager _themeManager;
         NetCoreStartup _startup;
 
         public Startup(IHostingEnvironment env)
@@ -55,7 +58,7 @@ namespace NetCoreCMS.Web
             GlobalConfig.ContentRootPath = env.ContentRootPath;
             GlobalConfig.WebRootPath = env.WebRootPath;
 
-            _moduleManager = new ModuleManager();
+            _moduleManager = new ModuleManager();            
             var setupConfig = SetupHelper.LoadSetup();
             _startup = new NetCoreStartup();
         }
@@ -122,6 +125,12 @@ namespace NetCoreCMS.Web
             }
 
             app.UseStaticFiles();
+
+            var themeLogger = loggerFactory.CreateLogger<ThemeManager>();
+            _themeManager = new ThemeManager(themeLogger);
+            var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
+            GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
+
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules);
             
             if (SetupHelper.IsDbCreateComplete)
@@ -136,7 +145,7 @@ namespace NetCoreCMS.Web
                     name: "default",
                     template: "{controller=CmsHome}/{action=Index}/{id?}");
             });
-
+            
             GlobalConfig.App = app;
             GlobalConfig.WebSite = new NccWebSite() { Name = "Net Core CMS" }; 
         }

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Themes;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -21,10 +22,12 @@ namespace NetCoreCMS.Framework.Utility
         public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<IModule> Modules { get; set; } = new List<IModule>();
+        public static List<Theme> Themes { get; set; } = new List<Theme>();
         public static string WebRootPath { get; set; }
         public static string ContentRootPath { get; set; }
         public static IServiceCollection Services { get; set; }
         public static IApplicationBuilder App { get; set; }
+        public static Theme ActiveTheme { get; set; }
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }
         public string StartupAction { get; set; }
