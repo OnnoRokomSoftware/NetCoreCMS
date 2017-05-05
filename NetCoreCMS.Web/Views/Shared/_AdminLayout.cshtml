@@ -96,46 +96,46 @@
                             <a asp-controller="Settings" asp-action="Index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Page<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-file-text-o fa-fw"></i> Page<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a asp-controller="CmsPage" asp-action="Create"> New Page </a></li>
-                                <li><a asp-controller="CmsPage" asp-action="Index"> Manage </a></li>
+                                <li><a asp-controller="CmsPage" asp-action="Create"><i class="fa fa-pencil-square-o fa-fw"></i> New Page </a></li>
+                                <li><a asp-controller="CmsPage" asp-action="Index"><i class="fa fa-th-list fa-fw"></i> Manage </a></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Appearance<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-tasks fa-fw"></i> Appearance<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a asp-controller="CmsMenu" asp-action="Index"> Menu </a></li>
-                                <li><a asp-controller="CmsWidget" asp-action="Index"> Widget </a></li>
-                                <li><a asp-controller="CmsTheme" asp-action="Index"> Theme </a></li>  
+                                <li><a asp-controller="CmsMenu" asp-action="Index"><i class="fa fa-list fa-fw"></i> Menu </a></li>
+                                <li><a asp-controller="CmsWidget" asp-action="Index"><i class="fa fa-magic fa-fw"></i> Widget </a></li>
+                                <li><a asp-controller="CmsTheme" asp-action="Index"><i class="fa fa-laptop fa-fw"></i> Theme </a></li>  
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Media<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-image fa-fw"></i> Media<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a href="#">Create</a></li>
-                                <li><a href="#">Manage</a></li>
+                                <li><a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> Create</a></li>
+                                <li><a href="#"><i class="fa fa-th-list fa-fw"></i> Manage</a></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Module<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-th-large fa-fw"></i> Module<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a asp-controller="CmsModule" asp-action="Index">New Module</a></li>
-                                <li><a asp-controller="CmsModule" asp-action="Manage">Manage</a></li>
+                                <li><a asp-controller="CmsModule" asp-action="Index"><i class="fa fa-pencil-square-o fa-fw"></i> New Module</a></li>
+                                <li><a asp-controller="CmsModule" asp-action="Manage"><i class="fa fa-th-list fa-fw"></i> Manage</a></li>
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> User<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-users fa-fw"></i> User<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a href="#">New User</a></li>
-                                <li><a href="#">Manage</a></li>   
+                                <li><a href="#"><i class="fa fa-pencil-square-o fa-fw"></i> New User</a></li>
+                                <li><a href="#"><i class="fa fa-th-list fa-fw"></i> Manage</a></li>   
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Settings<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-gears fa-fw"></i> Settings<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a href="#">General</a></li>
-                                <li><a href="#">Profile</a></li>
+                                <li><a asp-controller="Settings" asp-action="Index"><i class="fa fa-gear fa-fw"></i> General</a></li>
+                                <li><a href="#"><i class="fa fa-user fa-fw"></i> Profile</a></li>
                             </ul>
                         </li>
                         
@@ -152,32 +152,32 @@
                     <div class="col-lg-12">
                         <h1 class="page-header">@ViewData["PageTitle"]</h1>
                         <div id="messageContainer">
-                            @if (TempData.ContainsKey("SuccessMessage") || ViewBag.SuccessMessage == "SuccessMessage")
+                            @if (TempData.ContainsKey("SuccessMessage") || ViewBag.MessageType == "SuccessMessage")
                             {
                                 <div class="alert alert-success alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @TempData["SuccessMessage"]<a href="#" class="alert-link"></a>.
+                                    @TempData["SuccessMessage"]@ViewBag.Message<a href="#" class="alert-link"></a>.
                                 </div>
                             }
-                            @if (TempData.ContainsKey("InfoMessage") || ViewBag.InfoMessage == "InfoMessage")
+                            @if (TempData.ContainsKey("InfoMessage") || ViewBag.MessageType == "InfoMessage")
                             {
                                 <div class="alert alert-info alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                     @TempData["InfoMessage"]<a href="#" class="alert-link"></a>.
                                 </div>
                             }
-                            @if (TempData.ContainsKey("WarningMessage") || ViewBag.WarningMessage == "WarningMessage")
+                            @if (TempData.ContainsKey("WarningMessage") || ViewBag.MessageType == "WarningMessage")
                             {
                                 <div class="alert alert-warning alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                                     @TempData["WarningMessage"]<a href="#" class="alert-link"></a>.
                                 </div>
                             }
-                            @if (TempData.ContainsKey("ErrorMessage") || ViewBag.ErrorMessage == "ErrorMessage")
+                            @if (TempData.ContainsKey("ErrorMessage") || ViewBag.MessageType == "ErrorMessage")
                             {
                                 <div class="alert alert-danger alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @TempData["ErrorMessage"]<a href="#" class="alert-link"></a>.
+                                    @TempData["ErrorMessage"]@ViewBag.Message<a href="#" class="alert-link"></a>.
                                 </div>
                             }
                         </div>

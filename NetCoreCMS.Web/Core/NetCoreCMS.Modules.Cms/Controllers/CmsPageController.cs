@@ -31,7 +31,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         public ActionResult Index()
         {
             var allPages = _pageService.LoadAll();
-            return View(allPages); 
+            return View(allPages);
         }
 
         [HttpPost]
@@ -60,7 +60,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                     rsp.Data = "";
                     return Json(rsp);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -74,7 +74,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
         public ActionResult Edit(long Id)
         {
-            NccPage page = _pageService.Get(Id);  
+            NccPage page = _pageService.Get(Id);
             //page.
             return View(page);
         }
@@ -94,7 +94,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                     rsp.Data = "";
                     return Json(rsp);
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -104,6 +104,26 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             rsp.IsSuccess = false;
             rsp.Message = "Error occoured. Please fill up all field correctly.";
             return Json(rsp);
+        }
+
+        public ActionResult Delete(long Id)
+        {
+            NccPage page = _pageService.Get(Id);
+            //page.
+            return View(page);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(long Id, int status)
+        {
+            ApiResponse rsp = new ApiResponse();
+            _pageService.DeletePermanently(Id);
+            //rsp.IsSuccess = true;
+            //rsp.Message = "Page deleted successful";
+            //rsp.Data = "";
+            ViewBag.MessageType = "SuccessMessage";
+            ViewBag.Message = "Page deleted successful";
+            return RedirectToAction("Index");
         }
     }
 }
