@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using NetCoreCMS.Framework.Core;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,34 @@ namespace NetCoreCMS.Framework.Modules
 {
     public class ResourcePathExpendar
     {
-        public static void RegisterStaticFiles(IHostingEnvironment env, IApplicationBuilder app, IList<IModule> modules)
+        public static void RegisterStaticFiles(IHostingEnvironment env, IApplicationBuilder app, IList<IModule> modules, List<Theme> themes)
+        {
+            RegisterModulesResourcePath(env,app,modules);
+            RegisterActiveThemeResourcePath(env,app,themes);
+            RegisterThemesPreviewResourcePath(env,app,themes);
+        }
+
+        private static void RegisterThemesPreviewResourcePath(IHostingEnvironment env, IApplicationBuilder app, List<Theme> themes)
+        {
+            foreach (var item in themes)
+            {
+                var themePath = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
+
+                var activeThemePath = Path.Combine(themePath, item.ThemeName);
+                activeThemePath = Path.Combine(activeThemePath, "Preview");
+                var siteThemeDir = new DirectoryInfo(activeThemePath);
+                if (siteThemeDir.Exists)
+                {
+                    app.UseStaticFiles(new StaticFileOptions()
+                    {
+                        FileProvider = new PhysicalFileProvider(siteThemeDir.FullName),
+                        RequestPath = new PathString("/Themes/" + item.ThemeName + "/Preview")
+                    });
+                }
+            }
+        }
+
+        private static void RegisterModulesResourcePath(IHostingEnvironment env, IApplicationBuilder app, IList<IModule> modules)
         {
             foreach (var module in modules)
             {
@@ -33,10 +61,13 @@ namespace NetCoreCMS.Framework.Modules
                     });
                 }
             }
-            
+        }
+
+        private static void RegisterActiveThemeResourcePath(IHostingEnvironment env, IApplicationBuilder app, List<Theme> themes)
+        {
             var activeSiteTheme = GlobalConfig.ActiveTheme.ThemeName;
             var themePath = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
-            
+
             var activeThemePath = Path.Combine(themePath, activeSiteTheme);
             activeThemePath = Path.Combine(activeThemePath, "wwwroot");
             var siteThemeDir = new DirectoryInfo(activeThemePath);
@@ -48,7 +79,6 @@ namespace NetCoreCMS.Framework.Modules
                     RequestPath = new PathString("/Themes/" + activeSiteTheme)
                 });
             }
-            
         }
     }
 }

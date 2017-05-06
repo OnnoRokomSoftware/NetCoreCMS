@@ -43,6 +43,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public bool AddToNavigationMenu { get; set; }
         public NccPageStatus PageStatus { get; set; }
         public NccPageType PageType { get; set; }
+        public string Layout { get; set; }
         public DateTime PublishDate { get; set; }
         public int PageOrder { get; set; }
 

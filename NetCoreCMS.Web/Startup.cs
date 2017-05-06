@@ -131,7 +131,7 @@ namespace NetCoreCMS.Web
             var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
             GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
 
-            ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules);
+            ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
             
             if (SetupHelper.IsDbCreateComplete)
             {

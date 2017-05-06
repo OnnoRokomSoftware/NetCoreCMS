@@ -1,1 +1,39 @@
-{"ThemeName":"DefaultDark","Type":"Site","Author":"Xonaki","Email":"netcorecms@xonaki.com","Website":"http://xonaki.com","Description":"Builtin Content Management System Site Theme.","Version":"0.1.1","NetCoreCMSVersion":"0.1.1","Category":"Default","PreviewImage":"screenshot.png","IsActive":true,"Laout":[{"Name":"SiteLayout","PreviewImage":"SiteLayoutScreenShot.png","WidgetSections":["Top","NavBar","LeftMenu","RightMenu","FooterMenu"]},{"Name":"TwoColumnLayout","PreviewImage":"TwoColumnLayoutScreenShot.png","WidgetSections":["Top","NavBar","Slider","Featured","LeftMenu","RightMenu","FooterMenu"]}]}
+{
+  "ThemeName": "DefaultDark",
+  "Type": "Site",
+  "Author": "Xonaki",
+  "Email": "netcorecms@xonaki.com",
+  "Website": "http://xonaki.com",
+  "Description": "Builtin Content Management System Site Theme.",
+  "Version": "0.1.1",
+  "NetCoreCMSVersion": "0.1.1",
+  "Category": "Default",
+  "PreviewImage": "screenshot.png",
+  "IsActive": false,
+  "Laout": [
+    {
+      "Name": "SiteLayout",
+      "PreviewImage": "SiteLayoutScreenShot.png",
+      "WidgetSections": [
+        "Top",
+        "NavBar",
+        "LeftMenu",
+        "RightMenu",
+        "FooterMenu"
+      ]
+    },
+    {
+      "Name": "TwoColumnLayout",
+      "PreviewImage": "TwoColumnLayoutScreenShot.png",
+      "WidgetSections": [
+        "Top",
+        "NavBar",
+        "Slider",
+        "Featured",
+        "LeftMenu",
+        "RightMenu",
+        "FooterMenu"
+      ]
+    }
+  ]
+}

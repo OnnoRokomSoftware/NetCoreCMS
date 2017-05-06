@@ -73,7 +73,7 @@ namespace NetCoreCMS.Framework.Themes
                         {
                             theme.IsActive = true;
                             GlobalConfig.ActiveTheme = theme;
-                            var themeJson = JsonConvert.SerializeObject(theme);
+                            var themeJson = JsonConvert.SerializeObject(theme,Formatting.Indented);
                             File.WriteAllText(infoFileLocation, themeJson);
                         }
                         else
@@ -113,7 +113,7 @@ namespace NetCoreCMS.Framework.Themes
                     {
                         theme.IsActive = false;
                         GlobalConfig.ActiveTheme = theme;
-                        var themeJson = JsonConvert.SerializeObject(theme);
+                        var themeJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
                         File.WriteAllText(infoFileLocation, themeJson);
                     }
 
