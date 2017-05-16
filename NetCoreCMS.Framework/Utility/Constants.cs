@@ -12,7 +12,7 @@ namespace NetCoreCMS.Framework.Utility
 {
     public static class Constants
     {
-        public static string SiteLayoutName { get; } = "_TwoColumnLayout";
+        public static string SiteLayoutName { get; } = "_SiteLayout";
         public static string AdminLayoutName { get; } = "_AdminLayout";
         public static string SiteUrl { get;} = "CmsHome";
         public static string AdminUrl { get;} = "Admin";

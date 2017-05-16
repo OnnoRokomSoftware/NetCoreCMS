@@ -35,5 +35,13 @@ namespace NetCoreCMS.Web.Controllers
             Program.Shutdown();
             return View();
         }
+
+        [AllowAnonymous]
+        public IActionResult RestartHost()
+        {
+            NetCoreCmsHost.IsRestartRequired = true;
+            Program.Shutdown();
+            return View();
+        }
     }
 }

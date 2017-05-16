@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Identity;
 using System;
 using NetCoreCMS.Framework.Themes;
 using System.IO;
+using NetCoreCMS.Framework.Core.Middleware;
 
 namespace NetCoreCMS.Web
 {
@@ -34,6 +35,9 @@ namespace NetCoreCMS.Web
         ModuleManager _moduleManager;
         ThemeManager _themeManager;
         NetCoreStartup _startup;
+        IMvcBuilder _mvcBuilder;
+        IServiceCollection _services;
+
 
         public Startup(IHostingEnvironment env)
         {
@@ -68,41 +72,42 @@ namespace NetCoreCMS.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddSession();
-            services.AddDistributedMemoryCache();
-            var mvcBuilder = services.AddMvc();
+            _mvcBuilder = services.AddMvc();
+            _services = services;
 
+            _services.AddSession();
+            _services.AddDistributedMemoryCache();
+            
             if (SetupHelper.IsDbCreateComplete)
             {
-                services.AddDbContext<NccDbContext>(options =>
+                _services.AddDbContext<NccDbContext>(options =>
                     options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
                 );
 
-                services.AddCustomizedIdentity();
+                _services.AddCustomizedIdentity();
                 // Add application services.
-                _startup.RegisterDatabase(services);
+                _startup.RegisterDatabase(_services);
             }
 
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
-            
+            _services.AddTransient<IEmailSender, AuthMessageSender>();
+            _services.AddTransient<ISmsSender, AuthMessageSender>();
+            _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            _services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
+
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
 
             _moduleManager.LoadModules(moduleFolder);
             _moduleManager.LoadModules(coreModuleFolder);
-            GlobalConfig.Modules = _moduleManager.RegisterModules(mvcBuilder, services);
-                         
-            services.AddSingleton<IConfiguration>(Configuration);
-            services.AddSingleton<IConfigurationRoot>(Configuration);
+            GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services);
+            
+            _services.AddSingleton<IConfiguration>(Configuration);
+            _services.AddSingleton<IConfigurationRoot>(Configuration);
 
-            var serviceProvider = services.Build(Configuration, _hostingEnvironment);
+            var serviceProvider = _services.Build(Configuration, _hostingEnvironment);
 
-            GlobalConfig.Services = services;
+            GlobalConfig.Services = _services;
             return serviceProvider;
             
         }
@@ -112,6 +117,15 @@ namespace NetCoreCMS.Web
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            _themeManager = new ThemeManager(loggerFactory);
+            var themeFolder = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
+            GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
+
+            ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
+
+            //app.UseThemeActivator(env, loggerFactory);
+            //app.UseModuleActivator(env, _mvcBuilder, _services, loggerFactory);
 
             if (env.IsDevelopment())
             {
@@ -125,13 +139,6 @@ namespace NetCoreCMS.Web
             }
 
             app.UseStaticFiles();
-            
-
-            _themeManager = new ThemeManager(loggerFactory);
-            var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
-            GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
-
-            ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
             
             if (SetupHelper.IsDbCreateComplete)
             {

@@ -18,6 +18,13 @@
                 <div class="pull-right"><a asp-controller="CmsTheme" asp-action="Install" class="btn btn-outline btn-primary btn-xs">Add New</a></div> 
             </div>
             <div class="panel-body">
+
+                @if (@TempData.Keys.Contains("ThemeSuccessMessage")) { 
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @TempData["ThemeSuccessMessage"] - <a href="/Home/RestartHost">Restart Now</a> <a href="#" class="alert-link"></a>.
+                    </div>
+                }
                 <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr><th>Name</th><th>Author</th><th>Description</th><th>Version</th><th>Category</th><th>Preview</th><th>Action</th></tr>

@@ -39,8 +39,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         public ActionResult Activate(string themeName)
         {
             _themeManager.ActivateTheme(themeName);
-            TempData["SuccessMessage"] = "Theme "+ themeName +" Activated Successfully. Restart site";
-
+            NetCoreCmsHost.IsRestartRequired = true;
+            TempData["ThemeSuccessMessage"] = "Theme "+ themeName +" Activated Successfully.";
             return RedirectToAction("Index");
         }
 

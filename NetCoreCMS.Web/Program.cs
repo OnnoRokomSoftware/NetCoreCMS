@@ -24,7 +24,6 @@ namespace NetCoreCMS.Web
                 .UseStartup<Startup>()
                 .UseApplicationInsights()                
                 .Build();
-
             host.Run(cancelTokenSource.Token);
         }
 

@@ -35,5 +35,6 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
             return View();
         }
+         
     }
 }
