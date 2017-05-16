@@ -47,6 +47,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public List<NccTag> Tags { get; set; }
         public List<NccPostComment> PostComments { get; set; }
         public NccPostType PostType { get; set; }
+        public string Layout { get; set; }
         public DateTime PublishDate { get; set; }
 
         public enum NccPostStatus

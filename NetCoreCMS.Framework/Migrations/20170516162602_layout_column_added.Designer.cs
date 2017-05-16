@@ -9,9 +9,10 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    partial class NccDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170516162602_layout_column_added")]
+    partial class layout_column_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");
@@ -340,8 +341,6 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<bool>("IsFeatured");
 
                     b.Property<bool>("IsStiky");
-
-                    b.Property<string>("Layout");
 
                     b.Property<string>("MetaDescription");
 
