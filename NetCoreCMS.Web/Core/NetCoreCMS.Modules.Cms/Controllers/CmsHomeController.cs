@@ -29,6 +29,11 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             return View();
         }
 
+        public IActionResult ResourceNotFound()
+        {   
+            return View();
+        }
+
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";

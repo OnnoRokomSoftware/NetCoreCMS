@@ -9,8 +9,8 @@
   "NetCoreCMSVersion": "0.1.1",
   "Category": "Default",
   "PreviewImage": "screenshot.png",
-  "IsActive": false,
-  "Laout": [
+  "IsActive": true,
+  "Layouts": [
     {
       "Name": "SiteLayout",
       "PreviewImage": "SiteLayoutScreenShot.png",

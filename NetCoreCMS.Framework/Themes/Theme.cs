@@ -4,7 +4,7 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Themes
 {
-    public class Laout
+    public class Layout
     {
         public string Name { get; set; }
         public string PreviewImage { get; set; }
@@ -24,6 +24,6 @@ namespace NetCoreCMS.Framework.Themes
         public string Category { get; set; }
         public string PreviewImage { get; set; }
         public bool IsActive { get; set; }
-        public List<Laout> Laout { get; set; }
+        public List<Layout> Layouts { get; set; }
     }
 }

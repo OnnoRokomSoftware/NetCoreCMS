@@ -28,16 +28,31 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _pageService = pageService;
             _logger = factory.CreateLogger<CmsPageController>();
         }
-        public ActionResult Index()
-        {
-            var allPages = _pageService.LoadAll();
-            return View(allPages);
+
+        public ActionResult Index(string id)
+        {            
+            if(!string.IsNullOrEmpty(id))
+            {
+                var page = _pageService.GetBySlugs(id);
+                if (page != null)
+                {
+                    return View(page);
+                }
+            }
+            TempData["Message"] = "Page not found";
+            return Redirect("/CmsHome/ResourceNotFound");
         }
 
         [HttpPost]
         public ActionResult Index(NccPage model)
         {
             return View();
+        }
+        
+        public ActionResult Manage()
+        {
+            var allPages = _pageService.LoadAll();
+            return View(allPages);
         }
 
         public ActionResult Create()

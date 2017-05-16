@@ -22,6 +22,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
         }
 
+        public NccPage GetBySlugs(string slug)
+        {
+           return _entityRepository.Query().FirstOrDefault(x => x.Slug == slug.ToLower());
+        }
+
         public List<NccPage> LoadRecentPages(int count)
         {
             var pages = _entityRepository.LoadRecentPages(count);
@@ -47,7 +52,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 return entity;
             }
         }
-
+         
         public NccPage Update(NccPage entity)
         {
             var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
