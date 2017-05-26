@@ -13,8 +13,7 @@ namespace NetCoreCMS.Core.Modules.Media
         List<IWidget> _widgets;
         public BlogModule()
         {
-            LoadModuleInfo();
-            _widgets = new List<IWidget>();
+            
         }
 
         public string ModuleId { get; set; }
@@ -53,20 +52,7 @@ namespace NetCoreCMS.Core.Modules.Media
         {
             throw new NotImplementedException();
         }
-
-        public void LoadModuleInfo()
-        {
-            ModuleName = "NetCoreCMS.Modules.Blog";
-            Author = "Xonaki";
-            Website = "http://xonaki.com";
-            AntiForgery = true;
-            Description = "Builtin Content Management System Module.";
-            Version = new Version(0, 1, 1);
-            NetCoreCMSVersion = new Version(0, 1, 1);
-            Dependencies = new List<string>();
-            Category = "Core";
-        }
-
+          
         public bool Uninstall()
         {
             throw new NotImplementedException();

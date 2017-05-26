@@ -36,6 +36,6 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         /// <returns></returns>
         string Render();
         string RenderConfig();
-        void Prepare();
+        void Init();
     }
 }

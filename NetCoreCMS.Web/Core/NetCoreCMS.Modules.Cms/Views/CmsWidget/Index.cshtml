@@ -42,8 +42,7 @@
                                     <div class="panel-heading">@item.ModuleTitle</div>
                                     <div class="panel-body"  ondrop="drop(event)" ondragover="allowDrop(event)">
                                         @foreach (IWidget widget in item.Widgets)
-                                        {
-                                            widget.Prepare();
+                                        { 
                                             <div id="@widget.WidgetId" data-module-id="@item.ModuleId" class="panel panel-default" draggable="true" ondragstart="drag(event)" >
                                                 <div class="panel-heading">
                                                     <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;@widget.Title

@@ -25,8 +25,7 @@ namespace NetCoreCMS.Core.Modules.Admin
         List<IWidget> _widgets;
         public AdminModule()
         {
-            LoadModuleInfo();
-            _widgets = new List<IWidget>();
+             
         }
 
         public string ModuleId { get; set; }
@@ -66,12 +65,7 @@ namespace NetCoreCMS.Core.Modules.Admin
         {
             throw new NotImplementedException();
         }
-
-        public void LoadModuleInfo()
-        {
-            
-        }
-
+         
         public bool Uninstall()
         {
             throw new NotImplementedException();

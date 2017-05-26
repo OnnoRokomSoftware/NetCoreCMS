@@ -21,7 +21,7 @@ namespace NetCoreCMS.Modules.HelloWorld
         List<IWidget> _widgets;
         public HelloWorldModule()
         {
-            _widgets = new List<IWidget>();
+             
         }
 
         public string ModuleId { get; set; }
@@ -57,7 +57,7 @@ namespace NetCoreCMS.Modules.HelloWorld
 
         public void Init(IServiceCollection services)
         {
-            _widgets.Add(new HelloWidget());
+            
         }
 
         public bool Install()

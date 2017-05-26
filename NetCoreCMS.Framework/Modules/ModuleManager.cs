@@ -16,6 +16,7 @@ using Microsoft.Extensions.FileProviders;
 using System.Reflection;
 using NetCoreCMS.Framework.Utility;
 using Newtonsoft.Json;
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -80,8 +81,9 @@ namespace NetCoreCMS.Framework.Modules
                     if (moduleInitializerType != null && moduleInitializerType != typeof(IModule))
                     {
                         var initilizedModule = (IModule)Activator.CreateInstance(moduleInitializerType);                        
-                        initilizedModule.Init(services);
+                        initilizedModule.Init(services);                        
                         LoadModuleInfo(initilizedModule, module);
+                        InitilizeWidgets(initilizedModule);
                         instantiatedModuleList.Add(initilizedModule);
                     }
                 }
@@ -107,6 +109,20 @@ namespace NetCoreCMS.Framework.Modules
             return instantiatedModuleList;
         }
 
+        private void InitilizeWidgets(IModule module)
+        {
+            module.Widgets = new List<IWidget>();
+            var widgetTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces()?.Where(y => y.Name == typeof(IWidget).Name).FirstOrDefault() != null).ToList();
+             
+            foreach (var widgetType in widgetTypeList)
+            {
+                var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);
+                widgetInstance.Init();
+                module.Widgets.Add(widgetInstance);
+
+            }
+             
+        }
         public void LoadModuleInfo(IModule module, IModule moduleInfo)
         {
             var moduleConfigFile = Path.Combine(moduleInfo.Path, Constants.ModuleConfigFileName);

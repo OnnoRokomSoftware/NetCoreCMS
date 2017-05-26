@@ -20,8 +20,7 @@ namespace NetCoreCMS.Core.Modules.Setup
         List<IWidget> _widgets;
         public SetupModule()
         {
-            LoadModuleInfo();
-            _widgets = new List<IWidget>();
+            
         }
 
         public string ModuleId { get; set; }
@@ -60,20 +59,7 @@ namespace NetCoreCMS.Core.Modules.Setup
         {
             throw new NotImplementedException();
         }
-
-        public void LoadModuleInfo()
-        {
-            ModuleName = "NetCoreCMS.Modules.Setup";
-            Author = "Xonaki";
-            Website = "http://xonaki.com";
-            AntiForgery = true;
-            Description = "Builtin Content Management System Module.";
-            Version = new Version(0, 1, 1);
-            NetCoreCMSVersion = new Version(0, 1, 1);
-            Dependencies = new List<string>();
-            Category = "Core";
-        }
-
+ 
         public bool Uninstall()
         {
             throw new NotImplementedException();
