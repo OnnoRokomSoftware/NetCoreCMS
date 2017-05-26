@@ -6,10 +6,12 @@ namespace NetCoreCMS.Framework.Modules.Widgets
 {
     public interface IWidget
     {
-        string WidgetID { get;}
+        string WidgetId { get;}
         string Title { get;}
+        string Description { get; }
         string Body { get;}
         string Footer { get;}
+        string ConfigJson { get; }
         /// <summary>
         /// {{%%BODY%%}} use inside your html design so that widget can replace his body content at render time
         /// </summary>
@@ -33,6 +35,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         /// </summary>
         /// <returns></returns>
         string Render();
+        string RenderConfig();
         void Prepare();
     }
 }

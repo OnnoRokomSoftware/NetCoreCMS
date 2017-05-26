@@ -97,9 +97,9 @@ namespace NetCoreCMS.Web
 
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
-
-            _moduleManager.LoadModules(moduleFolder);
+            
             _moduleManager.LoadModules(coreModuleFolder);
+            _moduleManager.LoadModules(moduleFolder);
             GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services);
             
             _services.AddSingleton<IConfiguration>(Configuration);

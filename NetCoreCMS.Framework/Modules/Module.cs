@@ -34,7 +34,7 @@ namespace NetCoreCMS.Framework.Modules
         public string Path { get; set; }
         public NccModule.NccModuleStatus Status { get; set; }
 
-        public List<IWidget> Widgets { get { return _widgets; } }
+        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public Module()
         {

@@ -1,6 +1,6 @@
 ﻿{
   "ModuleId": "D5526BED-976C-4029-8E23-A0C75C23C1B0",
-  "ModuleName": "NetCoreCMS.Modules.Media",
+  "ShortName": "NetCoreCMS.Modules.Media",
   "ModuleTitle": "CMS Administration",
   "Author": "Xonaki",
   "Website": "http://xonaki.com",

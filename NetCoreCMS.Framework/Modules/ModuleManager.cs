@@ -14,6 +14,8 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Reflection;
+using NetCoreCMS.Framework.Utility;
+using Newtonsoft.Json;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -64,6 +66,8 @@ namespace NetCoreCMS.Framework.Modules
         
         public List<IModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services)
         {
+            var instantiatedModuleList = new List<IModule>();
+
             foreach (var module in modules)
             {
                 try
@@ -75,13 +79,15 @@ namespace NetCoreCMS.Framework.Modules
                     var moduleInitializerType = module.Assembly.GetTypes().Where(x => typeof(IModule).IsAssignableFrom(x)).FirstOrDefault();
                     if (moduleInitializerType != null && moduleInitializerType != typeof(IModule))
                     {
-                        var moduleInitializer = (IModule)Activator.CreateInstance(moduleInitializerType);
-                        moduleInitializer.Init(services);
+                        var initilizedModule = (IModule)Activator.CreateInstance(moduleInitializerType);                        
+                        initilizedModule.Init(services);
+                        LoadModuleInfo(initilizedModule, module);
+                        instantiatedModuleList.Add(initilizedModule);
                     }
                 }
                 catch (Exception ex)
                 {
-
+                    //RAISE GLOBAL ERROR
                 }
             }
             
@@ -98,8 +104,38 @@ namespace NetCoreCMS.Framework.Modules
                 }
             });
 
-            return modules;
+            return instantiatedModuleList;
         }
-        
+
+        public void LoadModuleInfo(IModule module, IModule moduleInfo)
+        {
+            var moduleConfigFile = Path.Combine(moduleInfo.Path, Constants.ModuleConfigFileName);
+            if (File.Exists(moduleConfigFile))
+            {                
+                var moduleInfoFileJson = File.ReadAllText(moduleConfigFile);
+                var loadedModule = JsonConvert.DeserializeObject<Module>(moduleInfoFileJson);
+                module.AntiForgery = loadedModule.AntiForgery;
+                module.Author = loadedModule.Author;
+                module.Category = loadedModule.Category;
+                module.Dependencies = loadedModule.Dependencies;
+                module.Description = loadedModule.Description;
+                module.ModuleId = loadedModule.ModuleId;
+                
+                module.ModuleTitle = loadedModule.ModuleTitle;
+                module.NetCoreCMSVersion = loadedModule.NetCoreCMSVersion;
+                module.SortName = loadedModule.SortName;
+                module.Version = loadedModule.Version;
+                module.Website = loadedModule.Website;
+
+                module.ModuleName = moduleInfo.ModuleName;
+                module.Assembly = moduleInfo.Assembly;
+                module.Path = moduleInfo.Path;
+            }
+            else
+            {
+                //RAISE GLOBAL ERROR
+            }
+        }
+
     }
 }

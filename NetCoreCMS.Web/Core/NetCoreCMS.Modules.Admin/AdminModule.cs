@@ -13,6 +13,9 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
+using System.IO;
+using NetCoreCMS.Framework.Utility;
+using Newtonsoft.Json;
 
 namespace NetCoreCMS.Core.Modules.Admin
 {
@@ -41,7 +44,7 @@ namespace NetCoreCMS.Core.Modules.Admin
         public string SortName { get; set; }
         public string Path { get; set; }
         public NccModule.NccModuleStatus Status { get; set; }
-        public List<IWidget> Widgets { get { return _widgets; } }
+        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
         {
@@ -66,15 +69,7 @@ namespace NetCoreCMS.Core.Modules.Admin
 
         public void LoadModuleInfo()
         {
-            ModuleName = "NetCoreCMS.Modules.Admin";
-            Author = "Xonaki";
-            Website = "http://xonaki.com";
-            AntiForgery = true;
-            Description = "Builtin Content Management System Module.";
-            Version = new Version(0, 1, 1);
-            NetCoreCMSVersion = new Version(0, 1, 1);
-            Dependencies = new List<string>();
-            Category = "Core";
+            
         }
 
         public bool Uninstall()

@@ -41,7 +41,7 @@ namespace NetCoreCMS.Core.Modules.Cms
         public string SortName { get; set; }
         public string Path { get; set; }
         public NccModule.NccModuleStatus Status { get; set; }
-        public List<IWidget> Widgets { get { return _widgets; } }
+        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
         {

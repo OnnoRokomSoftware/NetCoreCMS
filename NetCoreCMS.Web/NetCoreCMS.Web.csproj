@@ -44,6 +44,7 @@
     <Content Include="Data\SecureMedia\README.md" />
     <Content Include="wwwroot\css\navbarcustom.css" />
     <Content Include="wwwroot\js\common.js" />
+    <Content Include="wwwroot\js\site.js" />
     <Content Include="wwwroot\media\README.md" />
   </ItemGroup>
   <ItemGroup>

@@ -1,4 +1,6 @@
 ﻿@using NetCoreCMS.Framework.Utility
+@using NetCoreCMS.Framework.Modules
+
 @{
     Layout = Constants.SiteLayoutName;
 }
@@ -10,10 +12,34 @@
         <div class="col-lg-8">
             <div class="panel panel-default">
                 <div class="panel-heading">
-
+                    Widgets
                 </div>
                 <div class="panel-body">
-
+                    @foreach (IModule item in ViewBag.Modules)
+                    {
+                        if (item.Widgets.Count > 0)
+                        {
+                            <div class="col-lg-6">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">@item.ModuleTitle</div>
+                                    <div class="panel-body">
+                                        @foreach (IWidget widget in item.Widgets)
+                                        {
+                                            widget.Prepare();
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;@widget.Title
+                                                </div>
+                                                <div class="panel-body">
+                                                     @widget.Description
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
                 </div>
             </div>
         </div>
@@ -21,23 +47,29 @@
 
             <div class="panel with-nav-tabs panel-default">
                 <div class="panel-heading">
-                    <ul class="nav nav-tabs">
-                    @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
-                    {
-                        <li>
-                            <a href="#tab1@layout.Name" data-toggle="tab"> @layout.Name </a>
-                        </li>                        
-                     }
-                    </ul>
+                    
                 </div>
                 <div class="panel-body">
-                    <div class="tab-content">
-                        
+                    <ul class="nav nav-tabs">
                         @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
                         {
-                            <div class="tab-pane fade active in" id="tab1@layout.Name">
+                            var tabName = "#tab_" + layout.Name.Replace(' ', '_');
+                            
+                            <li>
+                                <a href="@tabName" data-toggle="tab" > @layout.Name </a>
+                            </li> 
+                        }
+                    </ul>
+                    <div class="tab-content">
+                        <br/>
+                        @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
+                        {
+                            var tabName = "tab_" + layout.Name.Replace(' ','_');
+                            var active = "active";                            
+                            <div class="tab-pane @active" id="@tabName">
+                                <div>Widget Sections for layout <strong>@layout.Name</strong>  </div>
                                 @foreach (var zone in layout.WidgetSections)
-                                {
+                                {   
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
                                             @zone
@@ -47,12 +79,15 @@
                                         </div>
                                     </div>
                                 }
-                            </div>
-                        }
+                            </div> 
+                            @if (!string.IsNullOrEmpty(active))
+                            {
+                                active = "";
+                            }
+                        } 
                     </div>
                 </div>
             </div>
         </div>
-        
     </div>
 </div>

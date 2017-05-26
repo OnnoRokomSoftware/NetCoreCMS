@@ -10,14 +10,20 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _title;
         string _body;
         string _footer;
-        
-        public string WidgetID { get { return "76983E5A-0E4C-473E-B8BC-0C63F6733FCF"; } }
+        string _configJson;
+        string _description;
+
+        public string WidgetId { get { return "76983E5A-0E4C-473E-B8BC-0C63F6733FCF"; } }
 
         public string Title { get { return _title; } }
+
+        public string Description { get { return _description; } }
 
         public string Body { get { return _body; } }
 
         public string Footer { get { return _footer; } }
+
+        public string ConfigJson { get { return _configJson; } }
 
         public HelloWidget()
         {
@@ -27,6 +33,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public void Prepare()
         {
             _title = "Hellow Widget world";
+            _description = "This is a sample widget which will show an image.";
             _body = "<img src='https://static.pexels.com/photos/158607/cairn-fog-mystical-background-158607.jpeg' width='100' height='100' />";
             _footer = "Footer";
         }
@@ -87,6 +94,11 @@ namespace NetCoreCMS.HelloWorld.Widgets
             }
 
             return html;
+        }
+
+        public string RenderConfig()
+        {
+            throw new NotImplementedException();
         }
     }
 }

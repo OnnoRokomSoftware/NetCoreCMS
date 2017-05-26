@@ -29,7 +29,7 @@ namespace NetCoreCMS.Framework.Modules
         Assembly Assembly { get; set; }
         string SortName { get; set; }
         string Path { get; set; }
-        List<IWidget> Widgets { get; }
+        List<IWidget> Widgets { get; set; }
         NccModule.NccModuleStatus Status { get; set; }
 
         void Init(IServiceCollection services);
@@ -37,6 +37,5 @@ namespace NetCoreCMS.Framework.Modules
         bool Uninstall();
         bool Activate();
         bool Inactivate();
-        void LoadModuleInfo();
     }
 }

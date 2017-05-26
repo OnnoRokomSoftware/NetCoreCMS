@@ -42,8 +42,8 @@ namespace NetCoreCMS.Modules.HelloWorld
         public string Path { get ; set ; }
         public NccModule.NccModuleStatus Status { get; set; }
         public string ModuleTitle { get ; set ; }
-
-        public List<IWidget> Widgets { get { return _widgets; } }
+        [NotMapped]
+        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
         {
@@ -64,20 +64,7 @@ namespace NetCoreCMS.Modules.HelloWorld
         {
             throw new NotImplementedException();
         }
-
-        public void LoadModuleInfo()
-        {
-            ModuleName = "NetCoreCMS.Modules.HelloWorld";
-            Author = "Xonaki";
-            Website = "http://xonaki.com";
-            AntiForgery = true;
-            Description = "Builtin Content Management System Module.";
-            Version = new Version(0, 1, 1);
-            NetCoreCMSVersion = new Version(0, 1, 1);
-            Dependencies = new List<string>();
-            Category = "Core";
-        }
-
+          
         public bool Uninstall()
         {
             throw new NotImplementedException();

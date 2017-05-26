@@ -1,6 +1,6 @@
 ﻿{
   "ModuleId": "EDDED285-161B-4F3D-A3CF-CBADB3FAE0A7",
-  "ModuleName": "NetCoreCMS.Modules.Setup",
+  "ShortName": "NetCoreCMS.Modules.Setup",
   "ModuleTitle": "NetCoreCMS Setup",
   "Author": "Xonaki",
   "Website": "http://xonaki.com",
