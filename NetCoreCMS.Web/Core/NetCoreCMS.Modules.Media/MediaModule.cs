@@ -4,14 +4,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Core.Modules.Media
 {
     public class MediaModule : IModule
     {
+        List<IWidget> _widgets;
         public MediaModule()
         {
             LoadModuleInfo();
+            _widgets = new List<IWidget>();
         }
 
         public string ModuleId { get; set; }
@@ -29,7 +32,7 @@ namespace NetCoreCMS.Core.Modules.Media
         public string SortName { get; set; }
         public string Path { get; set; }
         public NccModule.NccModuleStatus Status { get; set; }
-        
+        public List<IWidget> Widgets { get { return _widgets; } }
         public bool Activate()
         {
             throw new NotImplementedException();

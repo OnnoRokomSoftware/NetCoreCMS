@@ -13,14 +13,17 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Themes;
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Core.Modules.Cms
 {
     public class CmsModule : IModule
     {
+        List<IWidget> _widgets;
         public CmsModule()
         {
             LoadModuleInfo();
+            _widgets = new List<IWidget>();
         }
 
         public string ModuleId { get; set; }
@@ -38,7 +41,7 @@ namespace NetCoreCMS.Core.Modules.Cms
         public string SortName { get; set; }
         public string Path { get; set; }
         public NccModule.NccModuleStatus Status { get; set; }
-        
+        public List<IWidget> Widgets { get { return _widgets; } }
 
         public bool Activate()
         {

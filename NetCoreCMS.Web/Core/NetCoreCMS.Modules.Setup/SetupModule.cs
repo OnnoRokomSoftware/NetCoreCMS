@@ -11,14 +11,17 @@ using System.Reflection;
 using System.Text;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Core.Modules.Setup
 {
     public class SetupModule : IModule
     {
+        List<IWidget> _widgets;
         public SetupModule()
         {
             LoadModuleInfo();
+            _widgets = new List<IWidget>();
         }
 
         public string ModuleId { get; set; }
@@ -36,6 +39,7 @@ namespace NetCoreCMS.Core.Modules.Setup
         public string Path { get; set; }
         public NccModule.NccModuleStatus Status { get; set; }
         public string ModuleTitle { get; set; }
+        public List<IWidget> Widgets { get { return _widgets; } }
 
         public bool Activate()
         {

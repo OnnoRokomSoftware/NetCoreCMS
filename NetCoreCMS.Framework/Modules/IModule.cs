@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Models;
-
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -29,6 +29,7 @@ namespace NetCoreCMS.Framework.Modules
         Assembly Assembly { get; set; }
         string SortName { get; set; }
         string Path { get; set; }
+        List<IWidget> Widgets { get; }
         NccModule.NccModuleStatus Status { get; set; }
 
         void Init(IServiceCollection services);

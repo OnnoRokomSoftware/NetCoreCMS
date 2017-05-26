@@ -11,14 +11,17 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.HelloWorld.Widgets;
 
 namespace NetCoreCMS.Modules.HelloWorld
 {
     public class HelloWorldModule : IModule
     {
+        List<IWidget> _widgets;
         public HelloWorldModule()
         {
-            
+            _widgets = new List<IWidget>();
         }
 
         public string ModuleId { get; set; }
@@ -40,6 +43,8 @@ namespace NetCoreCMS.Modules.HelloWorld
         public NccModule.NccModuleStatus Status { get; set; }
         public string ModuleTitle { get ; set ; }
 
+        public List<IWidget> Widgets { get { return _widgets; } }
+
         public bool Activate()
         {
             throw new NotImplementedException();
@@ -52,7 +57,7 @@ namespace NetCoreCMS.Modules.HelloWorld
 
         public void Init(IServiceCollection services)
         {
-            
+            _widgets.Add(new HelloWidget());
         }
 
         public bool Install()

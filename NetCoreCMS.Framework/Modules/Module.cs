@@ -9,11 +9,14 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Framework.Modules
 {
     public class Module : IModule
     {
+        List<IWidget> _widgets;
+
         public string Id { get; set; }
         public string ModuleId { get; set; }
         public string ModuleTitle { get; set; }
@@ -30,7 +33,13 @@ namespace NetCoreCMS.Framework.Modules
         public string SortName { get; set; }
         public string Path { get; set; }
         public NccModule.NccModuleStatus Status { get; set; }
-        
+
+        public List<IWidget> Widgets { get { return _widgets; } }
+
+        public Module()
+        {
+            _widgets = new List<IWidget>();
+        }
 
         public bool Activate()
         {
