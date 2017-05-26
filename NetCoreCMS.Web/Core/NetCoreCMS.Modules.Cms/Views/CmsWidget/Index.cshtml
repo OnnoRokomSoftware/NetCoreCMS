@@ -5,6 +5,24 @@
     Layout = Constants.SiteLayoutName;
 }
 
+<script>
+
+    var dragSrcEl = null;
+    function allowDrop(ev) {
+        ev.preventDefault();
+
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("divId", ev.target.id);
+    }
+
+    function drop(ev) {
+        ev.preventDefault();
+        var divId = ev.dataTransfer.getData("divId");
+        ev.target.appendChild(document.getElementById(divId));
+    }
+</script>
 
 <div class="row">
 
@@ -20,13 +38,13 @@
                         if (item.Widgets.Count > 0)
                         {
                             <div class="col-lg-6">
-                                <div class="panel panel-primary">
+                                <div id="@item.ModuleId" class="panel panel-primary">
                                     <div class="panel-heading">@item.ModuleTitle</div>
-                                    <div class="panel-body">
+                                    <div class="panel-body"  ondrop="drop(event)" ondragover="allowDrop(event)">
                                         @foreach (IWidget widget in item.Widgets)
                                         {
                                             widget.Prepare();
-                                            <div class="panel panel-default">
+                                            <div id="@widget.WidgetId" data-module-id="@item.ModuleId" class="panel panel-default" draggable="true" ondragstart="drag(event)" >
                                                 <div class="panel-heading">
                                                     <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;@widget.Title
                                                 </div>
@@ -67,14 +85,14 @@
                             var tabName = "tab_" + layout.Name.Replace(' ','_');
                             var active = "active";                            
                             <div class="tab-pane @active" id="@tabName">
-                                <div>Widget Sections for layout <strong>@layout.Name</strong>  </div>
+                                <div>Widget Sections for layout <strong>@layout.Name</strong> </div>
                                 @foreach (var zone in layout.WidgetSections)
                                 {   
                                     <div class="panel panel-default">
                                         <div class="panel-heading">
                                             @zone
                                         </div>
-                                        <div class="panel-body">
+                                        <div class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             Drop widget here
                                         </div>
                                     </div>
