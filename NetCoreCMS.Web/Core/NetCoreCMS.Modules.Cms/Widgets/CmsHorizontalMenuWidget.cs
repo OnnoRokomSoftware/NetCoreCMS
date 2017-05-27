@@ -5,7 +5,7 @@ using System.Text;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {
-    public class CmsLeftMenuWidget : IWidget
+    public class CmsHorizontalMenuWidget : IWidget
     {
         string _title;
         string _body;
@@ -25,15 +25,15 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public string ConfigJson { get { return _configJson; } }
 
-        public CmsLeftMenuWidget()
+        public CmsHorizontalMenuWidget()
         {
 
         }
 
         public void Init()
         {
-            _title = "Left Menu";
-            _description = "Left nevigation menu";
+            _title = "Horizontal Menu";
+            _description = "Horizontal nevigation menu";
             _body = "<ul>" +
                         "<li><a href='/CmsHome'>Home</a></li>" +
                         "<li><a href='/CmsPage'>Pages</a></li>" +
