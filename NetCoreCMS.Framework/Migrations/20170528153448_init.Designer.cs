@@ -9,7 +9,7 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20170415172930_init")]
+    [Migration("20170528153448_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -152,6 +152,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<long?>("NccMenuItemId");
 
+                    b.Property<long?>("NccMenuItemId1");
+
                     b.Property<long?>("ParentId");
 
                     b.Property<int>("Position");
@@ -169,6 +171,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.HasIndex("NccMenuId");
 
                     b.HasIndex("NccMenuItemId");
+
+                    b.HasIndex("NccMenuItemId1");
 
                     b.HasIndex("ParentId");
 
@@ -234,6 +238,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
+                    b.Property<string>("Layout");
+
                     b.Property<string>("MetaDescription");
 
                     b.Property<string>("MetaKeyword");
@@ -254,11 +260,13 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<DateTime>("PublishDate");
 
-                    b.Property<string>("Slug");
+                    b.Property<string>("Slug")
+                        .IsRequired();
 
                     b.Property<int>("Status");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .IsRequired();
 
                     b.Property<int>("VersionNumber");
 
@@ -333,6 +341,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<bool>("IsFeatured");
 
                     b.Property<bool>("IsStiky");
+
+                    b.Property<string>("Layout");
 
                     b.Property<string>("MetaDescription");
 
@@ -777,23 +787,19 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Description");
-
-                    b.Property<long?>("LayoutId");
+                    b.Property<string>("LayoutName");
 
                     b.Property<DateTime>("ModificationDate");
 
                     b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("ModuleId");
 
-                    b.Property<long?>("SectionId");
+                    b.Property<string>("Name");
 
                     b.Property<int>("Status");
 
-                    b.Property<long?>("ThemeId");
-
-                    b.Property<string>("Title");
+                    b.Property<string>("ThemeId");
 
                     b.Property<int>("VersionNumber");
 
@@ -801,21 +807,17 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("WidgetConfigJson");
 
-                    b.Property<long?>("WidgetId");
+                    b.Property<string>("WidgetData");
+
+                    b.Property<string>("WidgetId");
 
                     b.Property<int>("WidgetOrder");
 
+                    b.Property<string>("WidgetSection");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("LayoutId");
-
-                    b.HasIndex("SectionId");
-
-                    b.HasIndex("ThemeId");
-
                     b.HasIndex("WebSiteId");
-
-                    b.HasIndex("WidgetId");
 
                     b.ToTable("Ncc_WebSiteWidget");
                 });
@@ -936,6 +938,10 @@ namespace NetCoreCMS.Framework.Migrations
                         .WithMany("SubActions")
                         .HasForeignKey("NccMenuItemId");
 
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccMenuItem")
+                        .WithMany("Childrens")
+                        .HasForeignKey("NccMenuItemId1");
+
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccMenuItem", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId");
@@ -1014,25 +1020,9 @@ namespace NetCoreCMS.Framework.Migrations
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWebSiteWidget", b =>
                 {
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccThemeLayout", "Layout")
-                        .WithMany()
-                        .HasForeignKey("LayoutId");
-
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccWidgetSection", "Section")
-                        .WithMany()
-                        .HasForeignKey("SectionId");
-
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccTheme", "Theme")
-                        .WithMany()
-                        .HasForeignKey("ThemeId");
-
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccWebSite", "WebSite")
                         .WithMany()
                         .HasForeignKey("WebSiteId");
-
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccWidget", "Widget")
-                        .WithMany()
-                        .HasForeignKey("WidgetId");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWidget", b =>

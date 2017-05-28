@@ -8,11 +8,12 @@ namespace NetCoreCMS.Framework.Themes
     {
         public string Name { get; set; }
         public string PreviewImage { get; set; }
-        public List<string> WidgetSections { get; set; }
+        public List<string> LayoutZones { get; set; }
     }
 
     public class Theme
     {
+        public string ThemeId { get; set; }
         public string ThemeName { get; set; }
         public string Type { get; set; }
         public string Author { get; set; }

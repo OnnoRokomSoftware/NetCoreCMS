@@ -61,6 +61,46 @@ NccAlert = new function () {
     }
 }
 
+NccGlobalAlert = new function () {
+
+    this.AutoHideInterval = 5000;
+
+    this.ShowError = function (message) {
+        var id = GUID.NewGUID();
+        var msg = '<div id="' + id + '" class="alert alert-danger"> <strong>' + message + '</strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div ></div >';
+        $("#globalMessageContainer").append(msg);
+        setTimeout(function () {
+            $("#" + id).hide();
+        }, this.AutoHideInterval);
+    }
+
+    this.ShowSuccess = function (message) {
+        var id = GUID.NewGUID();
+        var msg = '<div id="' + id + '" class="alert alert-success"> <strong>' + message + '</strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div >';
+        $("#globalMessageContainer").append(msg);
+        setTimeout(function () {
+            $("#" + id).hide();
+        }, this.AutoHideInterval);
+    }
+
+    this.ShowInfo = function (message) {
+        var id = GUID.NewGUID();
+        var msg = '<div id="' + id + '" class="alert alert-info"> <strong>' + message + '</strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div >';
+        $("#globalMessageContainer").append(msg);
+        setTimeout(function () {
+            $("#" + id).hide();
+        }, this.AutoHideInterval);
+    }
+    this.ShowWarning = function (message) {
+        var id = GUID.NewGUID();
+        var msg = '<div id="' + id + '" class="alert alert-warning"> <strong>' + message + '</strong><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button></div >';
+        $("#globalMessageContainer").append(msg);
+        setTimeout(function () {
+            $("#" + id).hide();
+        }, this.AutoHideInterval);
+    }
+}
+
 NccUtil = new function () {
     this.GetSafeSlug = function(string){
         return string

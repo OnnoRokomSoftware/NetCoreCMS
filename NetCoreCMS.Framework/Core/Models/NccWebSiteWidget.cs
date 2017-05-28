@@ -31,14 +31,14 @@ namespace NetCoreCMS.Framework.Core.Models
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }
         public int Status { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
         public NccWebSite WebSite { get; set; }
-        public NccTheme Theme { get; set; }
-        public NccThemeLayout Layout { get; set; }
-        public NccWidgetSection Section { get; set; }
-        public NccWidget Widget { get; set; }
+        public string ThemeId { get; set; }
+        public string ModuleId { get; set; }
+        public string LayoutName { get; set; }
+        public string WidgetSection { get; set; }
+        public string WidgetId { get; set; }
         public int WidgetOrder { get; set; }
         public string WidgetConfigJson { get; set; }
+        public string WidgetData { get; set; }
     }
 }

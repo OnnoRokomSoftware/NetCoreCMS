@@ -7,31 +7,31 @@ using NetCoreCMS.Framework.Core.Repository;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccWebSiteService : IBaseService<NccWebSite>
+    public class NccWebSiteWidgetService : IBaseService<NccWebSiteWidget>
     {
-        private readonly NccWebSiteRepository _entityRepository;
+        private readonly NccWebSiteWidgetRepository _entityRepository;
 
-        public NccWebSiteService()
+        public NccWebSiteWidgetService()
         {
         }
-        public NccWebSiteService(NccWebSiteRepository entityRepository)
+        public NccWebSiteWidgetService(NccWebSiteWidgetRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
          
-        public NccWebSite Get(long entityId)
+        public NccWebSiteWidget Get(long entityId)
         {
             return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
         }
 
-        public NccWebSite Save(NccWebSite entity)
+        public NccWebSiteWidget Save(NccWebSiteWidget entity)
         {
             _entityRepository.Add(entity);
             _entityRepository.SaveChange();
             return entity;
         }
 
-        public NccWebSite Update(NccWebSite entity)
+        public NccWebSiteWidget Update(NccWebSiteWidget entity)
         {
             var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
             if(oldEntity != null)
@@ -59,22 +59,22 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccWebSite> LoadAll()
+        public List<NccWebSiteWidget> LoadAll()
         {
             return _entityRepository.Query().ToList();
         }
 
-        public List<NccWebSite> LoadAllByStatus(int status)
+        public List<NccWebSiteWidget> LoadAllByStatus(int status)
         {
             return _entityRepository.Query().Where(x => x.Status == status).ToList();
         }
 
-        public List<NccWebSite> LoadAllByName(string name)
+        public List<NccWebSiteWidget> LoadAllByName(string name)
         {
             return _entityRepository.Query().Where(x => x.Name == name).ToList();
         }
 
-        public List<NccWebSite> LoadAllByNameContains(string name)
+        public List<NccWebSiteWidget> LoadAllByNameContains(string name)
         {
             return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
         }
@@ -89,26 +89,23 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        private void CopyNewData(NccWebSite oldEntity, NccWebSite entity)
-        {
-            oldEntity.AllowRegistration = entity.AllowRegistration;
-            oldEntity.Copyrights = entity.Copyrights;
-            oldEntity.DateFormat = entity.DateFormat;
-            oldEntity.DomainName = entity.DomainName;
-            oldEntity.EmailAddress = entity.EmailAddress;
-            oldEntity.FaviconUrl = entity.FaviconUrl;
-            oldEntity.Language = entity.Language;
+        private void CopyNewData(NccWebSiteWidget oldEntity, NccWebSiteWidget entity)
+        {   
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;
-            oldEntity.Name = entity.Name;
-            oldEntity.NewUserRole = entity.NewUserRole;
-            oldEntity.SiteLogoUrl = entity.SiteLogoUrl;
-            oldEntity.SiteTitle = entity.SiteTitle;
+            oldEntity.Name = entity.Name; 
             oldEntity.Status = entity.Status;
-            oldEntity.Tagline = entity.Tagline;
-            oldEntity.TimeFormat = entity.TimeFormat;
-            oldEntity.TimeZone = entity.TimeZone;
+            oldEntity.CreateBy = entity.CreateBy;
+            oldEntity.LayoutName = entity.LayoutName;
+            oldEntity.ModificationDate = entity.ModificationDate;
+            oldEntity.Name = entity.Name;
+            oldEntity.Status = entity.Status;
+            oldEntity.WebSite = entity.WebSite;
+            oldEntity.WidgetConfigJson = entity.WidgetConfigJson;
+            oldEntity.WidgetData = entity.WidgetData;
+            oldEntity.WidgetId = entity.WidgetId;
+            oldEntity.WidgetOrder = entity.WidgetOrder;
+            oldEntity.WidgetSection = oldEntity.WidgetSection;
         }
-        
     }
 }

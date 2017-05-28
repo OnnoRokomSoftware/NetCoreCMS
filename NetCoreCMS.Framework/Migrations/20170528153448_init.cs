@@ -85,6 +85,7 @@ namespace NetCoreCMS.Framework.Migrations
                     Content = table.Column<byte[]>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
+                    Layout = table.Column<string>(nullable: true),
                     MetaDescription = table.Column<string>(nullable: true),
                     MetaKeyword = table.Column<string>(nullable: true),
                     ModificationDate = table.Column<DateTime>(nullable: false),
@@ -95,9 +96,9 @@ namespace NetCoreCMS.Framework.Migrations
                     PageType = table.Column<int>(nullable: false),
                     ParentId = table.Column<long>(nullable: true),
                     PublishDate = table.Column<DateTime>(nullable: false),
-                    Slug = table.Column<string>(nullable: true),
+                    Slug = table.Column<string>(nullable: false),
                     Status = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: false),
                     VersionNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -305,6 +306,7 @@ namespace NetCoreCMS.Framework.Migrations
                     Name = table.Column<string>(nullable: true),
                     NccMenuId = table.Column<long>(nullable: true),
                     NccMenuItemId = table.Column<long>(nullable: true),
+                    NccMenuItemId1 = table.Column<long>(nullable: true),
                     ParentId = table.Column<long>(nullable: true),
                     Position = table.Column<int>(nullable: false),
                     Status = table.Column<int>(nullable: false),
@@ -324,6 +326,12 @@ namespace NetCoreCMS.Framework.Migrations
                     table.ForeignKey(
                         name: "FK_Ncc_MenuItem_Ncc_MenuItem_NccMenuItemId",
                         column: x => x.NccMenuItemId,
+                        principalTable: "Ncc_MenuItem",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ncc_MenuItem_Ncc_MenuItem_NccMenuItemId1",
+                        column: x => x.NccMenuItemId1,
                         principalTable: "Ncc_MenuItem",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -492,6 +500,40 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ncc_WebSiteWidget",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    LayoutName = table.Column<string>(nullable: true),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    ModuleId = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    ThemeId = table.Column<string>(nullable: true),
+                    VersionNumber = table.Column<int>(nullable: false),
+                    WebSiteId = table.Column<long>(nullable: true),
+                    WidgetConfigJson = table.Column<string>(nullable: true),
+                    WidgetData = table.Column<string>(nullable: true),
+                    WidgetId = table.Column<string>(nullable: true),
+                    WidgetOrder = table.Column<int>(nullable: false),
+                    WidgetSection = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_WebSiteWidget", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ncc_WebSiteWidget_Ncc_WebSite_WebSiteId",
+                        column: x => x.WebSiteId,
+                        principalTable: "Ncc_WebSite",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ncc_WidgetSections",
                 columns: table => new
                 {
@@ -518,64 +560,6 @@ namespace NetCoreCMS.Framework.Migrations
                         name: "FK_Ncc_WidgetSections_Ncc_ThemeLayout_NccThemeLayoutId",
                         column: x => x.NccThemeLayoutId,
                         principalTable: "Ncc_ThemeLayout",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ncc_WebSiteWidget",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CreateBy = table.Column<long>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    LayoutId = table.Column<long>(nullable: true),
-                    ModificationDate = table.Column<DateTime>(nullable: false),
-                    ModifyBy = table.Column<long>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    SectionId = table.Column<long>(nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    ThemeId = table.Column<long>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    VersionNumber = table.Column<int>(nullable: false),
-                    WebSiteId = table.Column<long>(nullable: true),
-                    WidgetConfigJson = table.Column<string>(nullable: true),
-                    WidgetId = table.Column<long>(nullable: true),
-                    WidgetOrder = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ncc_WebSiteWidget", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ncc_WebSiteWidget_Ncc_ThemeLayout_LayoutId",
-                        column: x => x.LayoutId,
-                        principalTable: "Ncc_ThemeLayout",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ncc_WebSiteWidget_Ncc_WidgetSections_SectionId",
-                        column: x => x.SectionId,
-                        principalTable: "Ncc_WidgetSections",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ncc_WebSiteWidget_Ncc_Theme_ThemeId",
-                        column: x => x.ThemeId,
-                        principalTable: "Ncc_Theme",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ncc_WebSiteWidget_Ncc_WebSite_WebSiteId",
-                        column: x => x.WebSiteId,
-                        principalTable: "Ncc_WebSite",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ncc_WebSiteWidget_Ncc_Widget_WidgetId",
-                        column: x => x.WidgetId,
-                        principalTable: "Ncc_Widget",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -625,6 +609,7 @@ namespace NetCoreCMS.Framework.Migrations
                     CreationDate = table.Column<DateTime>(nullable: false),
                     IsFeatured = table.Column<bool>(nullable: false),
                     IsStiky = table.Column<bool>(nullable: false),
+                    Layout = table.Column<string>(nullable: true),
                     MetaDescription = table.Column<string>(nullable: true),
                     MetaKeyword = table.Column<string>(nullable: true),
                     ModificationDate = table.Column<DateTime>(nullable: false),
@@ -751,6 +736,11 @@ namespace NetCoreCMS.Framework.Migrations
                 column: "NccMenuItemId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Ncc_MenuItem_NccMenuItemId1",
+                table: "Ncc_MenuItem",
+                column: "NccMenuItemId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Ncc_MenuItem_ParentId",
                 table: "Ncc_MenuItem",
                 column: "ParentId");
@@ -828,29 +818,9 @@ namespace NetCoreCMS.Framework.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_WebSiteWidget_LayoutId",
-                table: "Ncc_WebSiteWidget",
-                column: "LayoutId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_WebSiteWidget_SectionId",
-                table: "Ncc_WebSiteWidget",
-                column: "SectionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_WebSiteWidget_ThemeId",
-                table: "Ncc_WebSiteWidget",
-                column: "ThemeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Ncc_WebSiteWidget_WebSiteId",
                 table: "Ncc_WebSiteWidget",
                 column: "WebSiteId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_WebSiteWidget_WidgetId",
-                table: "Ncc_WebSiteWidget",
-                column: "WidgetId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ncc_Widget_NccModuleId",
@@ -920,28 +890,28 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_WebSiteWidget");
 
             migrationBuilder.DropTable(
+                name: "Ncc_Widget");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_WidgetSections");
+
+            migrationBuilder.DropTable(
                 name: "Ncc_NccMenu");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Role");
 
             migrationBuilder.DropTable(
-                name: "Ncc_WidgetSections");
-
-            migrationBuilder.DropTable(
                 name: "Ncc_WebSite");
-
-            migrationBuilder.DropTable(
-                name: "Ncc_Widget");
-
-            migrationBuilder.DropTable(
-                name: "Ncc_ThemeLayout");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Module");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Plugins");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_ThemeLayout");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Theme");

@@ -59,6 +59,10 @@ namespace NetCoreCMS.Core.Modules.Cms
             services.AddTransient<NccPageRepository>();
             services.AddTransient<NccPageService>();
             services.AddTransient<ThemeManager>();
+            services.AddTransient<NccWebSiteRepository>();
+            services.AddTransient<NccWebSiteWidgetRepository>();
+            services.AddTransient<NccWebSiteService>();
+            services.AddTransient<NccWebSiteWidgetService>();
         }
 
         public bool Install()

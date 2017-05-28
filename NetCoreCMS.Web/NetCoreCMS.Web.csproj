@@ -42,8 +42,11 @@
 
   <ItemGroup>
     <Content Include="Data\SecureMedia\README.md" />
-    <Content Include="wwwroot\css\navbarcustom.css" />
+    <Content Include="wwwroot\css\ncc-common.css" />
     <Content Include="wwwroot\js\common.js" />
+    <Content Include="wwwroot\js\ncc-common.js" />
+    <Content Include="wwwroot\js\ncc.js" />
+    <Content Include="wwwroot\js\ncc.min.js" />
     <Content Include="wwwroot\js\site.js" />
     <Content Include="wwwroot\media\README.md" />
   </ItemGroup>
@@ -80,7 +83,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Views\Home\SetupSuccess.cshtml" />
-    <None Include="wwwroot\css\sidebar.css" />
   </ItemGroup>
 
 </Project>

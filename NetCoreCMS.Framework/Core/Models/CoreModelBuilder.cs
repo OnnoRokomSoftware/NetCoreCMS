@@ -79,10 +79,6 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<NccWebSiteWidget>(b => {
                 b.ToTable("Ncc_WebSiteWidget");
                 b.HasOne(w => w.WebSite);
-                b.HasOne(w => w.Theme);
-                b.HasOne(w => w.Layout);
-                b.HasOne(w => w.Section);
-                b.HasOne(w => w.Widget);
             });
             modelBuilder.Entity<NccWidget>().ToTable("Ncc_Widget");
             modelBuilder.Entity<NccWidgetSection>(b => {

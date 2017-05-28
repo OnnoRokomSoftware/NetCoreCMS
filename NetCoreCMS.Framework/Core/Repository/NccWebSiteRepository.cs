@@ -1,4 +1,4 @@
-﻿using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Repository;
 
