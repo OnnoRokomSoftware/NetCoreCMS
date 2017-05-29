@@ -812,7 +812,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("WidgetOrder");
 
-                    b.Property<string>("WidgetSection");
+                    b.Property<string>("Zone");
 
                     b.HasKey("Id");
 

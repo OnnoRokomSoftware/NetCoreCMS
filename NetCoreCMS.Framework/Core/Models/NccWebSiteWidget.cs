@@ -35,7 +35,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string ThemeId { get; set; }
         public string ModuleId { get; set; }
         public string LayoutName { get; set; }
-        public string WidgetSection { get; set; }
+        public string Zone { get; set; }
         public string WidgetId { get; set; }
         public int WidgetOrder { get; set; }
         public string WidgetConfigJson { get; set; }

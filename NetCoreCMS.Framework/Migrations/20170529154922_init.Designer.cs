@@ -9,7 +9,7 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20170528153448_init")]
+    [Migration("20170529154922_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -813,7 +813,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("WidgetOrder");
 
-                    b.Property<string>("WidgetSection");
+                    b.Property<string>("Zone");
 
                     b.HasKey("Id");
 

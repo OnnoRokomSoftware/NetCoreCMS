@@ -520,7 +520,7 @@ namespace NetCoreCMS.Framework.Migrations
                     WidgetData = table.Column<string>(nullable: true),
                     WidgetId = table.Column<string>(nullable: true),
                     WidgetOrder = table.Column<int>(nullable: false),
-                    WidgetSection = table.Column<string>(nullable: true)
+                    Zone = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

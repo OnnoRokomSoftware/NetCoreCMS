@@ -1,54 +1,10 @@
 ﻿@using NetCoreCMS.Framework.Utility
 @using NetCoreCMS.Framework.Modules
+@using System.Linq;
 
 @{
     Layout = Constants.SiteLayoutName;
 }
-
-<script>
-
-    var dragSrcEl = null;
-    function allowDrop(ev) {
-        ev.preventDefault();
-
-    }
-
-    function drag(ev) {
-        ev.dataTransfer.setData("widgetId", ev.target.id);
-    }
-
-    function drop(ev) {
-
-        ev.preventDefault();
-        var targetDiv = ev.target;
-        var divId = ev.dataTransfer.getData("widgetId");
-        targetDiv.appendChild(document.getElementById(divId));
-        var moduleId = $("#" + divId).attr("data-module-id");
-        var zone = $(targetDiv).attr("data-layout-zone");
-        var layout = $(targetDiv).attr("data-layout-name");
-        var theme = $(targetDiv).attr("data-theme-id");
-
-        $.ajax({
-            method: 'POST',
-            url: '/CmsWidget/SaveZoneWidget',
-            data: { module: moduleId, theme:theme, layout: layout, zone: zone, widget: divId },
-            success: function (rsp) {
-                console.log(rsp);
-                NccGlobalAlert.ShowSuccess(rsp.message);
-            },
-            error: function (rsp) {
-
-            }
-        });
-    }
-
-    function dropBack(ev) {
-        ev.preventDefault();
-        var targetDiv = ev.target;
-        var divId = ev.dataTransfer.getData("widgetId");
-        targetDiv.appendChild(document.getElementById(divId));        
-    }
-</script>
 
 <div class="row">
 
@@ -64,12 +20,12 @@
                         if (item.Widgets.Count > 0)
                         {
                             <div class="col-lg-6">
-                                <div id="@item.ModuleId" class="panel panel-primary">
+                                <div class="panel panel-primary">
                                     <div class="panel-heading">@item.ModuleTitle</div>
-                                    <div class="panel-body"  ondrop="dropBack(event)" ondragover="allowDrop(event)">
+                                    <div data-module-id="@item.ModuleId"  class="panel-body"  ondrop="dropBack(event)" ondragover="allowDrop(event)">
                                         @foreach (IWidget widget in item.Widgets)
                                         {
-                                            <div id="@widget.WidgetId" data-module-id="@item.ModuleId" class="panel panel-default" draggable="true" ondragstart="drag(event)" >
+                                            <div id="SRC_@widget.WidgetId" data-widget-id="@widget.WidgetId" data-module-id="@item.ModuleId" class="panel panel-default" draggable="true" ondragstart="drag(event)" >
                                                 <div class="panel-heading">
                                                     <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;@widget.Title
                                                 </div>
@@ -90,7 +46,7 @@
 
             <div class="panel with-nav-tabs panel-default">
                 <div class="panel-heading">
-                    
+                    Layout Zones
                 </div>
                 <div class="panel-body">
                     <ul class="nav nav-tabs">
@@ -129,6 +85,28 @@
                                         </div>
                                         <div data-theme-id="@GlobalConfig.ActiveTheme.ThemeId"  data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             Drop widget here
+                                            @{
+                                                var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).ToList();
+                                                foreach (var wZone in wZones)
+                                                {
+                                                    var wList = new List<IWidget>();
+                                                    foreach( var x in (List<NetCoreCMS.Framework.Modules.IModule>)ViewBag.Modules){
+                                                        wList.AddRange(x.Widgets);
+                                                    }
+                                                    var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
+
+                                                    if (w != null) {
+                                                        <div id="@wZone.Id" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone" class="panel panel-default" draggable="true" ondragstart="drag(event)" >
+                                                        <div class="panel-heading">
+                                                            <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;@w.Title
+                                                        </div>
+                                                        <div class="panel-body">
+                                                             @w.Description
+                                                        </div>
+                                                    </div>
+                                                    }
+                                                }
+                                            }
                                         </div>
                                     </div>
                                 }
@@ -142,3 +120,89 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    function allowDrop(ev) {
+        ev.preventDefault();
+    }
+
+    function drag(ev) {
+        ev.dataTransfer.setData("widgetId", ev.target.id);
+    }
+
+    function drop(ev) {
+
+        ev.preventDefault();
+        var targetDiv = ev.target;
+        var divId = ev.dataTransfer.getData("widgetId");
+        targetDiv.appendChild(document.getElementById(divId));
+        var moduleId = $("#" + divId).attr("data-module-id");
+        var zone = $(targetDiv).attr("data-layout-zone");
+        var layout = $(targetDiv).attr("data-layout-name");
+        var theme = $(targetDiv).attr("data-theme-id");
+        var widgetId = $("#" + divId).attr("data-widget-id");
+
+        $("#" + divId).attr("data-theme-id", theme);
+        $("#" + divId).attr("data-layout-name", layout);
+        $("#" + divId).attr("data-layout-zone", zone);
+        NccPageMask.ShowLoadingMask();
+        $.ajax({
+            method: 'POST',
+            url: '/CmsWidget/SaveZoneWidget',
+            data: { module: moduleId, theme: theme, layout: layout, zone: zone, widget: widgetId },
+            success: function (rsp) {
+                NccPageMask.HideLoadingMask();
+                console.log(rsp);
+                NccGlobalAlert.ShowSuccess(rsp.message);
+            },
+            error: function (rsp) {
+                NccPageMask.HideLoadingMask();
+                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+            }
+        });
+    }
+
+    function removeWidget(moduleId, theme, layout, zone, widgetId) {
+        NccPageMask.ShowLoadingMask();
+        $.ajax({
+            method: 'POST',
+            url: '/CmsWidget/RemoveZoneWidget',
+            data: { module: moduleId, theme: theme, layout: layout, zone: zone, widget: widgetId },
+            success: function (rsp) {
+                NccPageMask.HideLoadingMask();
+                console.log(rsp);
+                NccGlobalAlert.ShowSuccess(rsp.message);
+            },
+            error: function (rsp) {
+                NccPageMask.HideLoadingMask();
+                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+            }
+        });
+    }
+
+    function dropBack(ev) {
+
+        ev.preventDefault();
+        var targetDiv = ev.target;
+        var divId = ev.dataTransfer.getData("widgetId");
+
+        var destModuleId = $(targetDiv).attr("data-module-id");
+        var srcModuleId = $("#" + divId).attr("data-module-id");
+
+        if (srcModuleId != destModuleId) {
+            NccGlobalAlert.ShowError("Different module widget. Drop into it's module panel.");
+        }
+        else {
+
+            var zone = $("#" + divId).attr("data-layout-zone");
+            var layout = $("#" + divId).attr("data-layout-name");
+            var theme = $("#" + divId).attr("data-theme-id");
+            var widgetId = $("#" + divId).attr("data-widget-id");
+
+            targetDiv.appendChild(document.getElementById(divId));
+            removeWidget(destModuleId, theme, layout, zone, widgetId);
+        }
+    }
+
+</script>

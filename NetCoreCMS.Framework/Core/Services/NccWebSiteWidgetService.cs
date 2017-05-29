@@ -47,7 +47,24 @@ namespace NetCoreCMS.Framework.Core.Services
             
             return entity;
         }
-        
+
+        public void RemoveByModuleThemeLayoutZoneWidget(string module, string theme, string layout, string zone, string widget)
+        {
+            var entity = _entityRepository.Query().FirstOrDefault(
+                x => x.ModuleId == module 
+                && x.ThemeId == theme
+                && x.LayoutName == layout
+                && x.Zone == zone
+                && x.WidgetId == widget
+                );
+
+            if (entity != null)
+            {
+                _entityRepository.Remove(entity);
+                _entityRepository.SaveChange();
+            }
+        }
+
         public void Remove(long entityId)
         {
             var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId );
@@ -105,7 +122,7 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.WidgetData = entity.WidgetData;
             oldEntity.WidgetId = entity.WidgetId;
             oldEntity.WidgetOrder = entity.WidgetOrder;
-            oldEntity.WidgetSection = oldEntity.WidgetSection;
+            oldEntity.Zone = oldEntity.Zone;
         }
     }
 }

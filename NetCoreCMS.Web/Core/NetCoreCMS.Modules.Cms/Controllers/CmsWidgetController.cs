@@ -31,6 +31,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             ViewBag.Modules = GlobalConfig.Modules;
             ViewBag.Theme = GlobalConfig.ActiveTheme;
+            ViewBag.WebsiteWidgetZones = _nccWebSiteWidgetService.LoadAll();
             return View();
         }
 
@@ -46,7 +47,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 ThemeId = theme,
                 WidgetId = widget,
                 WidgetOrder = 1,
-                WidgetSection = zone,
+                Zone = zone,
                 ModuleId = module,
             };
 
@@ -54,7 +55,13 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
             return Json(new ApiResponse() { IsSuccess=true, Message="Save Successful." });
         }
-
+        
+        [HttpPost]
+        public JsonResult RemoveZoneWidget(string module, string theme, string layout, string zone, string widget)
+        {
+            _nccWebSiteWidgetService.RemoveByModuleThemeLayoutZoneWidget(module,theme,layout,zone,widget);
+            return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
+        }
         public JsonResult SaveConfig(string widgetId, string configJson, string widgetData)
         {
             return Json(new ApiResponse());
