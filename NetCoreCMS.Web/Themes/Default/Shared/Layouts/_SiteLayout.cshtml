@@ -1,4 +1,5 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@using NetCoreCMS.Framework.Utility
 @using NetCoreCMS.Core.Modules.Cms
 @using NetCoreCMS.Core.Modules.Cms.Models
 @using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels
@@ -28,7 +29,30 @@
 </head>
 <body>
     <div id="loadingMask" class="loader loader-double"></div>
-    <nav class="navbar navbar-default navbar-fixed-top">
+    
+    <!-- Zone TOP-->
+    <div class="row">
+        <div class="container">
+            <div class="widget-zone-top">
+                @{
+                    var zoneWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Top" && x.LayoutName == "SiteLayout").ToList();
+                    foreach (var item in zoneWidgets)
+                    {
+                        var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                        foreach (var widget in widgets)
+                        {
+                            widget.Init();
+                            <div>
+                                @Html.Raw(widget.Render());
+                            </div>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+    
+    <nav class="navbar navbar-default">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -49,6 +73,9 @@
                 </ul>
                 @await Html.PartialAsync("_SiteLoginPartial")
             </div>
+            <div>
+
+            </div>
         </div>
     </nav>
     <div class="container body-content topMargin">
@@ -57,6 +84,7 @@
 
             </div>
         </div>
+
         @RenderBody()
         <hr />
         <footer>

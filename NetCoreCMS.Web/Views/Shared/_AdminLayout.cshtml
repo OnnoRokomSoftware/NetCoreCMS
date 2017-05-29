@@ -9,11 +9,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>@ViewData["Title"] - NetCoreCMS Settings</title>
+    <title>@ViewData["Title"] - NetCoreCMS Admin</title>
     <environment names="Development">        
     </environment>
     <environment names="Staging,Production">
     </environment>
+
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+
+    <link href="~/css/ncc-common.css" rel="stylesheet" />
+    <script src="~/js/ncc-common.js" asp-append-version="true"></script>
 
     <!-- Bootstrap Core CSS -->    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -93,7 +101,7 @@
                             <!-- /input-group -->
                         </li>*@
                         <li class="active">
-                            <a asp-controller="Settings" asp-action="Index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a asp-controller="Admin" asp-action="Index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
                             <a href="#"><i class="fa fa-file-text-o fa-fw"></i> Page<span class="fa arrow"></span></a>
@@ -150,6 +158,11 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
+                        <div class="row">
+                            <div id="globalMessageContainer" class="ncc-global-message">
+
+                            </div>
+                        </div>
                         <h1 class="page-header">@ViewData["PageTitle"]</h1>
                         <div id="messageContainer">
                             @if (TempData.ContainsKey("SuccessMessage") || ViewBag.MessageType == "SuccessMessage")
@@ -200,15 +213,11 @@
         </footer>
     </div>
     <!-- /#wrapper -->
-    <!-- jQuery -->
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <!-- Bootstrap Core JavaScript -->
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    
     <!-- Metis Menu Plugin JavaScript -->
     <script src="~/js/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="~/js/sb-admin-2.min.js"></script>
-    <script src="/js/common.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>

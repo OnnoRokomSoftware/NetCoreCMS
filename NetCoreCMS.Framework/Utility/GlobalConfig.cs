@@ -10,6 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Themes;
+using System;
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -22,6 +24,8 @@ namespace NetCoreCMS.Framework.Utility
         public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<IModule> Modules { get; set; } = new List<IModule>();
+        public static List<IWidget> Widgets{ get; set; } = new List<IWidget>();
+        public static List<NccWebSiteWidget> WebSiteWidgets { get; set; } = new List<NccWebSiteWidget>();
         public static List<Theme> Themes { get; set; } = new List<Theme>();
         public static string WebRootPath { get; set; }
         public static string ContentRootPath { get; set; }
@@ -31,6 +35,13 @@ namespace NetCoreCMS.Framework.Utility
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }
         public string StartupAction { get; set; }
-         
+
+        public static void ListWidgets()
+        {
+            foreach (var item in Modules)
+            {
+                Widgets.AddRange(item.Widgets);
+            }
+        }
     }
 }

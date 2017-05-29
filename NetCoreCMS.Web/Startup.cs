@@ -24,8 +24,10 @@ using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using System;
 using NetCoreCMS.Framework.Themes;
-using System.IO;
-using NetCoreCMS.Framework.Core.Middleware;
+using System.IO; 
+using NetCoreCMS.Framework.Core.Services;
+using System.Linq;
+using NetCoreCMS.Framework.Core.Repository;
 
 namespace NetCoreCMS.Web
 {
@@ -94,6 +96,10 @@ namespace NetCoreCMS.Web
             _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             _services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
+            _services.AddTransient<NccWebSiteRepository>();
+            _services.AddTransient<NccWebSiteWidgetRepository>();
+            _services.AddTransient<NccWebSiteService>();
+            _services.AddTransient<NccWebSiteWidgetService>();
 
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
@@ -113,7 +119,7 @@ namespace NetCoreCMS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, NccWebSiteWidgetService nccWebsiteWidgetServices, NccWebSiteService nccWebsiteService)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -154,7 +160,9 @@ namespace NetCoreCMS.Web
             });
             
             GlobalConfig.App = app;
-            GlobalConfig.WebSite = new NccWebSite() { Name = "Net Core CMS" }; 
+            GlobalConfig.WebSite = nccWebsiteService.LoadAll().FirstOrDefault();
+            GlobalConfig.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();
+            GlobalConfig.ListWidgets();
         }
     }
 }
