@@ -52,6 +52,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             };
 
             _nccWebSiteWidgetService.Save(nccWebSiteWidget);
+            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll();
 
             return Json(new ApiResponse() { IsSuccess=true, Message="Save Successful." });
         }
@@ -60,6 +61,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         public JsonResult RemoveZoneWidget(string module, string theme, string layout, string zone, string widget)
         {
             _nccWebSiteWidgetService.RemoveByModuleThemeLayoutZoneWidget(module,theme,layout,zone,widget);
+            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
         }
         public JsonResult SaveConfig(string widgetId, string configJson, string widgetData)

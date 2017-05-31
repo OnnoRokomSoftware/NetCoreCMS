@@ -6,6 +6,13 @@
 @using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels
 @using Microsoft.AspNetCore.Identity
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    string bodyClass = "col-sm-12";
+    bool hasLeftMenu = false;
+    bool hasRightMenu = false;
+}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,14 +36,16 @@
 </head>
 <body>
     <div id="loadingMask" class="loader loader-double"></div>
-    
+
     <!-- Zone TOP-->
-    <div class="row">
-        <div class="container">
-            <div class="widget-zone-top">
-                @{
-                    var zoneWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Top" && x.LayoutName == "SiteLayout").ToList();
-                    foreach (var item in zoneWidgets)
+
+    @{
+        var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Top" && x.LayoutName == "SiteLayout").ToList();
+        if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
+        {
+            <div class="row"> 
+                <div class="widget-zone-top">
+                    @foreach (var item in zoneTopWidgets)
                     {
                         var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                         foreach (var widget in widgets)
@@ -47,51 +56,170 @@
                             </div>
                         }
                     }
-                }
-            </div>
-        </div>
-    </div>
-    
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">NetCoreCMS Frontend</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
-                    <li><a asp-area="" asp-controller="CmsPage" asp-action="Index">Pages</a></li>
-                    <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
-                </ul>
-                @await Html.PartialAsync("_SiteLoginPartial")
-            </div>
-            <div>
 
-            </div>
+                </div> 
+            </div> 
+        }
+    }
+     
+    <nav class="navbar navbar-default">
+        
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">NetCoreCMS Frontend</a>
         </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li><a asp-area="" asp-controller="CmsHome" asp-action="Index">Home</a></li>
+                <li><a asp-area="" asp-controller="CmsHome" asp-action="About">About</a></li>
+                <li><a asp-area="" asp-controller="CmsHome" asp-action="Contact">Contact</a></li>
+                <li><a asp-area="" asp-controller="CmsPage" asp-action="Index">Pages</a></li>
+                <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
+            </ul>
+            @await Html.PartialAsync("_SiteLoginPartial")
+        </div>
+
+        <!-- Zone NavBar-->
+        @{
+            var zoneNavBarWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "NavBar" && x.LayoutName == "SiteLayout").ToList();
+
+            if (zoneNavBarWidgets != null && zoneNavBarWidgets.Count > 0)
+            {
+                <div class="row">
+                        
+                    <div class="widget-zone-top">
+
+                        @foreach (var item in zoneNavBarWidgets)
+                        {
+                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                            foreach (var widget in widgets)
+                            {
+                                widget.Init();
+                                <div>
+                                    @Html.Raw(widget.Render());
+                                </div>
+                            }
+                        }
+
+                    </div>
+                        
+                </div>
+            }
+        }
+               
     </nav>
-    <div class="container body-content topMargin">
+
+    <div class="body-content topMargin">
+
         <div class="row">
             <div id="globalMessageContainer" class="ncc-global-message">
 
             </div>
         </div>
 
-        @RenderBody()
+        <!-- Zone LeftMenu-->
+
+        @{
+            var zoneLeftMenuWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftMenu" && x.LayoutName == "SiteLayout").ToList();
+            if (zoneLeftMenuWidgets != null && zoneLeftMenuWidgets.Count > 0)
+            {
+                bodyClass = "col-sm-10";
+                hasLeftMenu = true;
+                 
+                <div class="col-sm-2">
+                    @foreach (var item in zoneLeftMenuWidgets)
+                    {
+                        var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                        foreach (var widget in widgets)
+                        {
+                            widget.Init();
+                            <div>
+                                @Html.Raw(widget.Render());
+                            </div>
+                        }
+                    }
+                </div>
+                         
+            }
+
+            var zoneRightMenuWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightMenu" && x.LayoutName == "SiteLayout").ToList();
+            if (zoneRightMenuWidgets != null && zoneRightMenuWidgets.Count > 0)
+            {
+                bodyClass = "col-sm-10";
+                hasRightMenu = true;
+            }
+
+            if (hasRightMenu && hasRightMenu)
+            {
+                bodyClass = "col-sm-8";
+            }
+        }
+         
+        <div class="@bodyClass">
+            @RenderBody()
+        </div>
+
+        <!-- Zone RightMenu-->
+         
+        @{
+            if (zoneRightMenuWidgets != null && zoneRightMenuWidgets.Count > 0)
+            {
+                         
+                <div class="col-sm-2">
+                    @foreach (var item in zoneRightMenuWidgets)
+                    {
+                        var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                        foreach (var widget in widgets)
+                        {
+                            widget.Init();
+                            <div>
+                                @Html.Raw(widget.Render());
+                            </div>
+                        }
+                    }
+                </div>
+                        
+            }
+        }
+         
+        <div class="clearfix"></div>
         <hr />
+        <!-- Zone FooterMenu-->
+        <div class="row">
+             
+        @{
+            var zoneFooterMenuWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FooterMenu" && x.LayoutName == "SiteLayout").ToList();
+            if (zoneFooterMenuWidgets != null && zoneFooterMenuWidgets.Count > 0)
+            {
+                <div class="widget-zone-navBar">
+                    <div class="col-sm-3">
+                        @foreach (var item in zoneFooterMenuWidgets)
+                        {
+                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                            foreach (var widget in widgets)
+                            {
+                                widget.Init();
+                                <div>
+                                    @Html.Raw(widget.Render());
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        }
+             
+        </div>
         <footer>
             <p>&copy; 2017 - NetCoreCMS.Web</p>
         </footer>
-    </div>
-
+    </div> 
     @RenderSection("Scripts", required: false)
-</body>
+</body> 
+
 </html>
