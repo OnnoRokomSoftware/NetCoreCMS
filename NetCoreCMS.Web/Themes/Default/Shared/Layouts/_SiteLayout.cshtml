@@ -43,8 +43,7 @@
         var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Top" && x.LayoutName == "SiteLayout").ToList();
         if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
         {
-            <div class="row"> 
-                <div class="widget-zone-top">
+            <div class="row">  
                     @foreach (var item in zoneTopWidgets)
                     {
                         var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
@@ -55,9 +54,7 @@
                                 @Html.Raw(widget.Render());
                             </div>
                         }
-                    }
-
-                </div> 
+                    } 
             </div> 
         }
     }
@@ -82,37 +79,32 @@
                 <li><a asp-area="" asp-controller="HelloHome" asp-action="Index">Hello World</a></li>
             </ul>
             @await Html.PartialAsync("_SiteLoginPartial")
-        </div>
+        </div>  
+    </nav>
 
+    <div class="row">
         <!-- Zone NavBar-->
         @{
             var zoneNavBarWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "NavBar" && x.LayoutName == "SiteLayout").ToList();
 
             if (zoneNavBarWidgets != null && zoneNavBarWidgets.Count > 0)
             {
-                <div class="row">
-                        
-                    <div class="widget-zone-top">
-
-                        @foreach (var item in zoneNavBarWidgets)
+                <div class="row"> 
+                    @foreach (var item in zoneNavBarWidgets)
+                    {
+                        var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                        foreach (var widget in widgets)
                         {
-                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                            foreach (var widget in widgets)
-                            {
-                                widget.Init();
-                                <div>
-                                    @Html.Raw(widget.Render());
-                                </div>
-                            }
+                            widget.Init();
+                            <div>
+                                @Html.Raw(widget.Render());
+                            </div>
                         }
-
-                    </div>
-                        
+                    } 
                 </div>
             }
         }
-               
-    </nav>
+    </div>
 
     <div class="body-content topMargin">
 
@@ -190,14 +182,15 @@
         <div class="clearfix"></div>
         <hr />
         <!-- Zone FooterMenu-->
-        <div class="row">
-             
-        @{
-            var zoneFooterMenuWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FooterMenu" && x.LayoutName == "SiteLayout").ToList();
-            if (zoneFooterMenuWidgets != null && zoneFooterMenuWidgets.Count > 0)
-            {
-                <div class="widget-zone-navBar">
-                    <div class="col-sm-3">
+        
+        <footer>
+            <div class="row">
+
+                @{
+                    var zoneFooterMenuWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FooterMenu" && x.LayoutName == "SiteLayout").ToList();
+                    if (zoneFooterMenuWidgets != null && zoneFooterMenuWidgets.Count > 0)
+                    {
+                        
                         @foreach (var item in zoneFooterMenuWidgets)
                         {
                             var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
@@ -209,13 +202,11 @@
                                 </div>
                             }
                         }
-                    </div>
-                </div>
-            }
-        }
-             
-        </div>
-        <footer>
+                            
+                    }
+                }
+
+            </div>
             <p>&copy; 2017 - NetCoreCMS.Web</p>
         </footer>
     </div> 
