@@ -60,6 +60,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 }
             }
 
+            GlobalConfig.Menus = _menuService.LoadAllSiteMenus();
+
             //ApiResponse rsp = new ApiResponse();
             //rsp.IsSuccess = false;
             //rsp.Message = "Error occoured. Please fill up all field correctly.";
@@ -84,6 +86,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                     //TODO: log error
             }
+
+            GlobalConfig.Menus = _menuService.LoadAllSiteMenus();
 
             TempData["ErrorMessage"] = "Delete Failed";
             return RedirectToAction("Index");

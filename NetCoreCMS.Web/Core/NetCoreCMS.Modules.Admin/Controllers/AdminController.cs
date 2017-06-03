@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Utility;
 using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
@@ -43,6 +44,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             {
                 ModelState.AddModelError("Name", "Please check all values and submit again.");
             }
+            GlobalConfig.WebSite = website;
             return View(website);
         }
     }

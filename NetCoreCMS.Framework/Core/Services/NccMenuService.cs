@@ -5,16 +5,19 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     public class NccMenuService : IBaseService<NccMenu>
     {
         private readonly NccMenuRepository _entityRepository;
+        private readonly NccMenuItemRepository _menuItemRepository;
 
-        public NccMenuService(NccMenuRepository entityRepository)
+        public NccMenuService(NccMenuRepository entityRepository, NccMenuItemRepository menuItemRepository)
         {
             _entityRepository = entityRepository;
+            _menuItemRepository = menuItemRepository;
         }
          
         public NccMenu Get(long entityId)
@@ -98,6 +101,35 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.Position = entity.Position;
             oldEntity.Status = entity.Status;            
         }
-        
+
+        public List<NccMenu> LoadAllSiteMenus()
+        {
+            var list =  _entityRepository.Query()
+                .Include("MenuItems")
+                .Where(x => x.MenuFor == NccMenu.NccMenuFor.Site).ToList();
+            foreach (var item in list)
+            {
+                RecursiveChieldLoad(item.MenuItems);
+            }
+            return list;
+        }
+
+        private void RecursiveLoad(NccMenu parent)
+        {
+            var ParentFromDatabase = _entityRepository.GetEntityEntry(parent).Collection("MenuItems");
+            RecursiveChieldLoad(parent.MenuItems);
+        }
+
+        private void RecursiveChieldLoad(List<NccMenuItem> menuItems)
+        {
+            foreach (var child in menuItems)
+            {
+                _menuItemRepository.GetEntityEntry(child).Collection("Childrens").Load();
+                _menuItemRepository.GetEntityEntry(child).Collection("SubActions").Load();
+                if (child.Childrens.Count > 0)
+                    RecursiveChieldLoad(child.Childrens);
+            }
+        }
+
     }
 }

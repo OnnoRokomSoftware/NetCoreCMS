@@ -27,6 +27,7 @@ namespace NetCoreCMS.Framework.Utility
         public static List<IWidget> Widgets{ get; set; } = new List<IWidget>();
         public static List<NccWebSiteWidget> WebSiteWidgets { get; set; } = new List<NccWebSiteWidget>();
         public static List<Theme> Themes { get; set; } = new List<Theme>();
+        public static List<NccMenu> Menus { get; set; } = new List<NccMenu>();
         public static string WebRootPath { get; set; }
         public static string ContentRootPath { get; set; }
         public static IServiceCollection Services { get; set; }

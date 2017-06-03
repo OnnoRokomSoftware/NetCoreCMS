@@ -7,6 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.Loader;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.CodeAnalysis;
 
 namespace NetCoreCMS.Framework.Themes
 {
@@ -132,18 +139,68 @@ namespace NetCoreCMS.Framework.Themes
             return false;
         }
 
+        public static void RegisterThemes(IMvcBuilder mvcBuilder, IServiceCollection services, IDirectoryContents themes )
+        {
+            var themeDlls = new List<Assembly>();
+            foreach (var themeFolder in themes.Where(x => x.IsDirectory))
+            {
+                try
+                {
+                    var binFolder = new DirectoryInfo(Path.Combine(themeFolder.PhysicalPath, "bin"));
+                    if (!binFolder.Exists)
+                    {
+                        continue;
+                    }
+
+                    foreach (var file in binFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories))
+                    {
+                        Assembly assembly;
+                        try
+                        {
+                            assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
+                        }
+                        catch (FileLoadException ex)
+                        {
+                            continue;
+                        }
+                        catch (BadImageFormatException ex)
+                        {
+                            continue;
+                        }
+
+                        if (assembly.FullName.Contains(themeFolder.Name))
+                        {
+                            themeDlls.Add(assembly);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception("Could not load module from " + themeFolder);
+                }
+            } 
+            
+            mvcBuilder.AddRazorOptions(o =>
+            {
+                foreach (var module in themeDlls)
+                {
+                    o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Location));
+                }
+            });
+        }
+
         private void RegisterErrorMessage(string message)
         {
             GlobalMessageRegistry.RegisterMessage(
-                        new GlobalMessage()
-                        {
-                            Registrater = typeof(ThemeManager).Name,
-                            Text = message,
-                            Type = GlobalMessage.MessageType.Error,
-                            For = GlobalMessage.MessageFor.Admin
-                        },
-                        new TimeSpan(0, 1, 0)
-                    );
+                new GlobalMessage()
+                {
+                    Registrater = typeof(ThemeManager).Name,
+                    Text = message,
+                    Type = GlobalMessage.MessageType.Error,
+                    For = GlobalMessage.MessageFor.Admin
+                },
+                new TimeSpan(0, 1, 0)
+            );
         }
     }
 }

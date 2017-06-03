@@ -6,6 +6,7 @@
 */
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Models;
@@ -52,6 +53,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
         public IQueryable<EntityT> Query()
         {
             return DbSet;
+        }
+
+        public EntityEntry GetEntityEntry(EntityT T)
+        {
+            return (EntityEntry)Context.Entry(T);
         }
 
         public void Remove(EntityT entity)

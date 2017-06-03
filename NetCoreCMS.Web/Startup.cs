@@ -39,8 +39,7 @@ namespace NetCoreCMS.Web
         NetCoreStartup _startup;
         IMvcBuilder _mvcBuilder;
         IServiceCollection _services;
-
-
+        
         public Startup(IHostingEnvironment env)
         {
             _hostingEnvironment = env;
@@ -49,16 +48,14 @@ namespace NetCoreCMS.Web
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-
-
+            
             if (env.IsDevelopment())
             {
                 // For more details on using the user secret store see https://go.microsoft.com/fwlink/?LinkID=532709
                 builder.AddUserSecrets<Startup>();
             }
             
-            builder.AddEnvironmentVariables();
-            
+            builder.AddEnvironmentVariables();            
             Configuration = builder.Build();
             
             GlobalConfig.ContentRootPath = env.ContentRootPath;
@@ -100,14 +97,19 @@ namespace NetCoreCMS.Web
             _services.AddTransient<NccWebSiteWidgetRepository>();
             _services.AddTransient<NccWebSiteService>();
             _services.AddTransient<NccWebSiteWidgetService>();
-
+            _services.AddTransient<NccMenuRepository>();
+            _services.AddTransient<NccMenuItemRepository>();
+            _services.AddTransient<NccMenuService>();
+            
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
-            
+            var themesFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
+
             _moduleManager.LoadModules(coreModuleFolder);
             _moduleManager.LoadModules(moduleFolder);
             GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services);
-            
+            ThemeManager.RegisterThemes(_mvcBuilder, _services, themesFolder);
+
             _services.AddSingleton<IConfiguration>(Configuration);
             _services.AddSingleton<IConfigurationRoot>(Configuration);
 
@@ -119,7 +121,7 @@ namespace NetCoreCMS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, NccWebSiteWidgetService nccWebsiteWidgetServices, NccWebSiteService nccWebsiteService)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, NccWebSiteWidgetService nccWebsiteWidgetServices, NccWebSiteService nccWebsiteService, NccMenuService menuService)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -127,7 +129,7 @@ namespace NetCoreCMS.Web
             _themeManager = new ThemeManager(loggerFactory);
             var themeFolder = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
             GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
-
+            
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
 
             //app.UseThemeActivator(env, loggerFactory);
@@ -163,6 +165,7 @@ namespace NetCoreCMS.Web
             GlobalConfig.WebSite = nccWebsiteService.LoadAll().FirstOrDefault();
             GlobalConfig.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();
             GlobalConfig.ListWidgets();
+            GlobalConfig.Menus = menuService.LoadAllSiteMenus();
         }
     }
 }
