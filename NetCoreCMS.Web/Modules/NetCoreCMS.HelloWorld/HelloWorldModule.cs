@@ -47,12 +47,12 @@ namespace NetCoreCMS.Modules.HelloWorld
 
         public bool Activate()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool Inactivate()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public void Init(IServiceCollection services)
@@ -62,12 +62,12 @@ namespace NetCoreCMS.Modules.HelloWorld
 
         public bool Install()
         {
-            throw new NotImplementedException();
+            return true;
         }
           
         public bool Uninstall()
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

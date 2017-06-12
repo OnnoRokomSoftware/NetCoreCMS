@@ -86,20 +86,7 @@ namespace NetCoreCMS.Web
 
             _services.AddTransient<NccModuleRepository>();
             _services.AddTransient<NccModuleService>();
-
-            services.AddTransient<NccMenuRepository>();
-            services.AddTransient<NccMenuItemRepository>();
-            services.AddTransient<NccMenuService>();
-            services.AddTransient<NccPageRepository>();
-            services.AddTransient<NccPageService>();
-            services.AddTransient<ThemeManager>();
-            services.AddTransient<NccWebSiteWidgetRepository>();
-            services.AddTransient<NccWebSiteWidgetService>();
-            services.AddTransient<NccWebSiteRepository>();
-            services.AddTransient<NccWebSiteService>();
-            services.AddTransient<NccThemeRepository>();
-            services.AddTransient<NccThemeService>();
-
+            
             _services.AddSingleton<IConfiguration>(Configuration);
             _services.AddSingleton<IConfigurationRoot>(Configuration);
             

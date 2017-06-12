@@ -20,6 +20,7 @@ namespace NetCoreCMS.Framework.Core.Models
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
             Status = EntityStatus.New;
             VersionNumber = 1;
+            Status = 1;
         }
 
         [Key]
@@ -40,5 +41,13 @@ namespace NetCoreCMS.Framework.Core.Models
         public int WidgetOrder { get; set; }
         public string WidgetConfigJson { get; set; }
         public string WidgetData { get; set; }
+    }
+
+    public enum WebSiteWidgetStatus
+    {
+        Active,
+        Inactive,
+        Installed,
+        Uninstalled
     }
 }
