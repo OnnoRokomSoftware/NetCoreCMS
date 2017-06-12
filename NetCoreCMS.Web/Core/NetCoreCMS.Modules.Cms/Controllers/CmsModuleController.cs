@@ -41,5 +41,63 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             return View();
         }
+
+        public ActionResult Install()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult Install(string file)
+        {
+            return View();
+        }
+
+        public ActionResult ActivateModule(string id)
+        {
+            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.Active);
+            TempData["SuccessMessage"] = "Operation Successful";
+            return RedirectToAction("Index");
+        }
+
+        private void UpdateModuleStatus(string id, Framework.Core.Models.NccModule.NccModuleStatus status)
+        {
+            var nId = long.Parse(id);
+            var module = _moduleService.Get(nId);
+            if (module != null)
+            {
+                module.ModuleStatus = status;
+                _moduleService.Update(module);
+            }
+        }
+
+        public ActionResult InactivateModule(string id)
+        {
+            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.Inactive);
+            TempData["SuccessMessage"] = "Operation Successful";
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult InstallModule(string id)
+        {
+            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.Installed);
+            TempData["SuccessMessage"] = "Operation Successful";
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult UninstallModule(string id)
+        {
+            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.UnInstalled);
+            TempData["SuccessMessage"] = "Operation Successful";
+            return RedirectToAction("Index");
+        }
+
+        public ActionResult RemoveModule(string id)
+        {
+            var nId = long.Parse(id);
+            _moduleService.Remove(nId);
+            TempData["SuccessMessage"] = "Operation Successful";
+            return RedirectToAction("Index");            
+        }
     }
 }

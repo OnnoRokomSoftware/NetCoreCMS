@@ -185,6 +185,7 @@ namespace NetCoreCMS.Framework.Modules
                 module.Widgets.Add(widgetInstance);
             }             
         }
+
         public void LoadModuleInfo(IModule module, IModule moduleInfo)
         {
             var moduleConfigFile = Path.Combine(moduleInfo.Path, Constants.ModuleConfigFileName);
