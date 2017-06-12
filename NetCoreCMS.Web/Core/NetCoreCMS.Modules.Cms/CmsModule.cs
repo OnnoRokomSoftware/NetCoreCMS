@@ -39,7 +39,7 @@ namespace NetCoreCMS.Core.Modules.Cms
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public NccModule.NccModuleStatus Status { get; set; }
+        public string Status { get; set; }
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
@@ -55,10 +55,19 @@ namespace NetCoreCMS.Core.Modules.Cms
         public void Init(IServiceCollection services)
         {
             services.AddTransient<NccMenuRepository>();
+            services.AddTransient<NccMenuItemRepository>();
             services.AddTransient<NccMenuService>();
             services.AddTransient<NccPageRepository>();
             services.AddTransient<NccPageService>();
-            services.AddTransient<ThemeManager>(); 
+            services.AddTransient<ThemeManager>();
+            services.AddTransient<NccWebSiteWidgetRepository>();
+            services.AddTransient<NccWebSiteWidgetService>();
+            services.AddTransient<NccWebSiteRepository>();
+            services.AddTransient<NccWebSiteService>();            
+            services.AddTransient<NccThemeRepository>();
+            services.AddTransient<NccThemeService>();
+            services.AddTransient<NccModuleRepository>();
+            services.AddTransient<NccModuleService>();
         }
 
         public bool Install()

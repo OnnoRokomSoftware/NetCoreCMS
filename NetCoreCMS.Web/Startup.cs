@@ -39,6 +39,7 @@ namespace NetCoreCMS.Web
         NetCoreStartup _startup;
         IMvcBuilder _mvcBuilder;
         IServiceCollection _services;
+        IServiceProvider _serviceProvider;
         
         public Startup(IHostingEnvironment env)
         {
@@ -93,14 +94,7 @@ namespace NetCoreCMS.Web
             _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             _services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
-            _services.AddTransient<NccWebSiteRepository>();
-            _services.AddTransient<NccWebSiteWidgetRepository>();
-            _services.AddTransient<NccWebSiteService>();
-            _services.AddTransient<NccWebSiteWidgetService>();
-            _services.AddTransient<NccMenuRepository>();
-            _services.AddTransient<NccMenuItemRepository>();
-            _services.AddTransient<NccMenuService>();
-            
+             
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
             var themesFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
@@ -113,15 +107,14 @@ namespace NetCoreCMS.Web
             _services.AddSingleton<IConfiguration>(Configuration);
             _services.AddSingleton<IConfigurationRoot>(Configuration);
 
-            var serviceProvider = _services.Build(Configuration, _hostingEnvironment);
+            _serviceProvider = _services.Build(Configuration, _hostingEnvironment);
 
             GlobalConfig.Services = _services;
-            return serviceProvider;
-            
+            return _serviceProvider;            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, NccWebSiteWidgetService nccWebsiteWidgetServices, NccWebSiteService nccWebsiteService, NccMenuService menuService)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -147,10 +140,21 @@ namespace NetCoreCMS.Web
             }
 
             app.UseStaticFiles();
-            
+            GlobalConfig.App = app;
+
             if (SetupHelper.IsDbCreateComplete)
             {
                 app.UseIdentity();
+
+                NccWebSiteWidgetService nccWebsiteWidgetServices = _serviceProvider.GetService<NccWebSiteWidgetService>();
+                NccWebSiteService nccWebsiteService = _serviceProvider.GetService<NccWebSiteService>();
+                NccMenuService menuServic = _serviceProvider.GetService<NccMenuService>();
+                
+                GlobalConfig.WebSite = nccWebsiteService.LoadAll().FirstOrDefault();
+                GlobalConfig.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();
+                GlobalConfig.ListWidgets();
+                GlobalConfig.Menus = menuServic.LoadAllSiteMenus();
+
             }
             // Add external authentication middleware below. To configure them please see https://go.microsoft.com/fwlink/?LinkID=532715
             app.UseSession();
@@ -161,11 +165,6 @@ namespace NetCoreCMS.Web
                     template: "{controller=CmsHome}/{action=Index}/{id?}");
             });
             
-            GlobalConfig.App = app;
-            GlobalConfig.WebSite = nccWebsiteService.LoadAll().FirstOrDefault();
-            GlobalConfig.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();
-            GlobalConfig.ListWidgets();
-            GlobalConfig.Menus = menuService.LoadAllSiteMenus();
         }
     }
 }

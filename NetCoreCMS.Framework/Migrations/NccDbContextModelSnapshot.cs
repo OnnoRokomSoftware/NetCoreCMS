@@ -185,21 +185,17 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<bool>("AntiForgery");
 
-                    b.Property<string>("Author");
-
-                    b.Property<string>("Category");
-
                     b.Property<long>("CreateBy");
 
                     b.Property<DateTime>("CreationDate");
 
                     b.Property<string>("Dependencies");
 
-                    b.Property<string>("Description");
-
                     b.Property<DateTime>("ModificationDate");
 
                     b.Property<long>("ModifyBy");
+
+                    b.Property<string>("ModuleId");
 
                     b.Property<int>("ModuleStatus");
 
@@ -209,15 +205,11 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Path");
 
-                    b.Property<string>("SortName");
-
                     b.Property<int>("Status");
 
                     b.Property<string>("Version");
 
                     b.Property<int>("VersionNumber");
-
-                    b.Property<string>("Website");
 
                     b.HasKey("Id");
 
@@ -560,17 +552,9 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Author");
-
-                    b.Property<string>("Category");
-
                     b.Property<long>("CreateBy");
 
                     b.Property<DateTime>("CreationDate");
-
-                    b.Property<string>("Description");
-
-                    b.Property<string>("Email");
 
                     b.Property<DateTime>("ModificationDate");
 
@@ -584,6 +568,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("Status");
 
+                    b.Property<string>("ThemeId");
+
                     b.Property<string>("ThemeName");
 
                     b.Property<int>("Type");
@@ -591,8 +577,6 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<string>("Version");
 
                     b.Property<int>("VersionNumber");
-
-                    b.Property<string>("Website");
 
                     b.HasKey("Id");
 
@@ -842,8 +826,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long?>("NccModuleId");
-
                     b.Property<long?>("NccPluginsId");
 
                     b.Property<string>("NetCoreCMSVersion");
@@ -857,8 +839,6 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<int>("VersionNumber");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NccModuleId");
 
                     b.HasIndex("NccPluginsId");
 
@@ -1000,7 +980,7 @@ namespace NetCoreCMS.Framework.Migrations
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccThemeLayout", b =>
                 {
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccTheme", "Theme")
-                        .WithMany("ThemeLayouts")
+                        .WithMany()
                         .HasForeignKey("ThemeId");
                 });
 
@@ -1026,10 +1006,6 @@ namespace NetCoreCMS.Framework.Migrations
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWidget", b =>
                 {
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccModule")
-                        .WithMany("Widgets")
-                        .HasForeignKey("NccModuleId");
-
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccPlugins")
                         .WithMany("Widgets")
                         .HasForeignKey("NccPluginsId");

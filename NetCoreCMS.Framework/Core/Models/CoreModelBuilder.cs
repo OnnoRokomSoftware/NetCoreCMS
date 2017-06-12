@@ -27,7 +27,6 @@ namespace NetCoreCMS.Framework.Core.Models
             });
             modelBuilder.Entity<NccModule>(b => {
                 b.ToTable("Ncc_Module");
-                b.HasMany(m => m.Widgets);
             });
             modelBuilder.Entity<NccPage>(b => {
                 b.ToTable("Ncc_Page");
@@ -60,7 +59,6 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<NccTag>().ToTable("Ncc_Tag");
             modelBuilder.Entity<NccTheme>(b => {
                 b.ToTable("Ncc_Theme");
-                b.HasMany(t => t.ThemeLayouts);
             });
             modelBuilder.Entity<NccThemeLayout>(b => {
                 b.ToTable("Ncc_ThemeLayout");

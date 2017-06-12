@@ -36,7 +36,7 @@ namespace NetCoreCMS.Core.Modules.Setup
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public NccModule.NccModuleStatus Status { get; set; }
+        public string Status { get; set; }
         public string ModuleTitle { get; set; }
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 

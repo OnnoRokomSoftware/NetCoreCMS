@@ -30,7 +30,7 @@ namespace NetCoreCMS.Framework.Modules
         string SortName { get; set; }
         string Path { get; set; }
         List<IWidget> Widgets { get; set; }
-        NccModule.NccModuleStatus Status { get; set; }
+        string Status { get; set; }
 
         void Init(IServiceCollection services);
         bool Install();

@@ -1,6 +1,6 @@
 ﻿{
   "ModuleId": "026468AD-174A-4FF7-9B1D-FCED3143E8A6",
-  "ShortName": "NetCoreCMS.Modules.HelloWorld",
+  "ModuleName": "NetCoreCMS.Modules.HelloWorld",
   "ModuleTitle": "NetCoreCMS HelloWorld Module",
   "Author": "Xonaki",
   "Website": "http://xonaki.com",
@@ -9,5 +9,6 @@
   "Version": "0.1.1",
   "NetCoreCMSVersion": "0.1.1",
   "Dependencies": [],
-  "Category": "Example"
+  "Category": "Example",
+  "Status": "Active"
 }

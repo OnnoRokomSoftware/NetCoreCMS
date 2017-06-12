@@ -52,23 +52,19 @@ namespace NetCoreCMS.Framework.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AntiForgery = table.Column<bool>(nullable: false),
-                    Author = table.Column<string>(nullable: true),
-                    Category = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Dependencies = table.Column<string>(nullable: true),
-                    Description = table.Column<string>(nullable: true),
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
+                    ModuleId = table.Column<string>(nullable: true),
                     ModuleStatus = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     NetCoreCMSVersion = table.Column<string>(nullable: true),
                     Path = table.Column<string>(nullable: true),
-                    SortName = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     Version = table.Column<string>(nullable: true),
-                    VersionNumber = table.Column<int>(nullable: false),
-                    Website = table.Column<string>(nullable: true)
+                    VersionNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -191,23 +187,19 @@ namespace NetCoreCMS.Framework.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Author = table.Column<string>(nullable: true),
-                    Category = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
                     NetCoreCMSVersion = table.Column<string>(nullable: true),
                     PreviewImage = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
+                    ThemeId = table.Column<string>(nullable: true),
                     ThemeName = table.Column<string>(nullable: true),
                     Type = table.Column<int>(nullable: false),
                     Version = table.Column<string>(nullable: true),
-                    VersionNumber = table.Column<int>(nullable: false),
-                    Website = table.Column<string>(nullable: true)
+                    VersionNumber = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -357,7 +349,6 @@ namespace NetCoreCMS.Framework.Migrations
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    NccModuleId = table.Column<long>(nullable: true),
                     NccPluginsId = table.Column<long>(nullable: true),
                     NetCoreCMSVersion = table.Column<string>(nullable: true),
                     SortName = table.Column<string>(nullable: true),
@@ -368,12 +359,6 @@ namespace NetCoreCMS.Framework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ncc_Widget", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ncc_Widget_Ncc_Module_NccModuleId",
-                        column: x => x.NccModuleId,
-                        principalTable: "Ncc_Module",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Ncc_Widget_Ncc_Plugins_NccPluginsId",
                         column: x => x.NccPluginsId,
@@ -823,11 +808,6 @@ namespace NetCoreCMS.Framework.Migrations
                 column: "WebSiteId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_Widget_NccModuleId",
-                table: "Ncc_Widget",
-                column: "NccModuleId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Ncc_Widget_NccPluginsId",
                 table: "Ncc_Widget",
                 column: "NccPluginsId");
@@ -872,6 +852,9 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_MenuItem");
 
             migrationBuilder.DropTable(
+                name: "Ncc_Module");
+
+            migrationBuilder.DropTable(
                 name: "Ncc_Page");
 
             migrationBuilder.DropTable(
@@ -903,9 +886,6 @@ namespace NetCoreCMS.Framework.Migrations
 
             migrationBuilder.DropTable(
                 name: "Ncc_WebSite");
-
-            migrationBuilder.DropTable(
-                name: "Ncc_Module");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Plugins");

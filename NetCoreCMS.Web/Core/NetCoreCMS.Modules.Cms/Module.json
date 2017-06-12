@@ -1,6 +1,6 @@
 ﻿{
   "ModuleId": "A5A30A40-68E3-460A-A5BB-98DDA393A4D2",
-  "ShortName": "NetCoreCMS.Modules.Cms",
+  "ModuleName": "NetCoreCMS.Modules.Cms",
   "ModuleTitle": "NetCore CMS",
   "Author": "Xonaki",
   "Website": "http://xonaki.com",
@@ -9,5 +9,6 @@
   "Version": "0.1.1",
   "NetCoreCMSVersion": "0.1.1",
   "Dependencies": [],
-  "Category": "Core"
+  "Category": "Core",
+  "Status" :  "Active"
 }

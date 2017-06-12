@@ -9,6 +9,5 @@ namespace NetCoreCMS.Framework.Core.Repository
         public NccWebSiteWidgetRepository(NccDbContext context) : base(context)
         {
         }
-        
     }
 }

@@ -10,13 +10,16 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Modules.Widgets;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace NetCoreCMS.Framework.Modules
 {
     public class Module : IModule
     {
         List<IWidget> _widgets;
-
+        
         public string Id { get; set; }
         public string ModuleId { get; set; }
         public string ModuleTitle { get; set; }
@@ -27,18 +30,32 @@ namespace NetCoreCMS.Framework.Modules
         public Version Version { get; set; }
         public Version NetCoreCMSVersion { get; set; }
         public string Description { get; set; }
-        public List<string> Dependencies { get; set; }
+        public string DependencyList { get; set; }
+        [NotMapped]
+        public List<string> Dependencies
+        {
+            get
+            {
+                return DependencyList.Split(',').ToList();
+            }
+            set
+            {
+                DependencyList = value.ToArray().Join(",");
+            }
+        }
+
         public string Category { get; set; }
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public NccModule.NccModuleStatus Status { get; set; }
+        public string Status { get; set; }
 
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
-
+        
         public Module()
         {
             _widgets = new List<IWidget>();
+            DependencyList = "";
         }
 
         public bool Activate()

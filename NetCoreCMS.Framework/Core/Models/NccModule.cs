@@ -24,6 +24,7 @@ namespace NetCoreCMS.Framework.Core.Models
 
         [Key]
         public long Id { get; set; }
+        public string ModuleId { get; set; }
         public int VersionNumber { get; set; }
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
@@ -32,25 +33,18 @@ namespace NetCoreCMS.Framework.Core.Models
         public long ModifyBy { get; set; }
         public int Status { get; set; }
         public bool AntiForgery { get; set; }
-        public string Author { get; set; }
-        public string Website { get; set; }
         public string Version { get; set; }
         public string NetCoreCMSVersion { get; set; }
-        public string Description { get; set; }
         public string Dependencies { get; set; }
-        public string Category { get; set; }
-        public string SortName { get; set; }
         public string Path { get; set; }
-        public List<NccWidget> Widgets { get; set; }
         public NccModuleStatus ModuleStatus { get; set; }
 
         public enum NccModuleStatus
-        {
-            Listed,
+        {        
             Installed,
+            UnInstalled,
             Active,
-            Inactive,
-            Uninstalled
+            Inactive
         }
     }     
 }

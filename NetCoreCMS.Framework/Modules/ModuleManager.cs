@@ -130,6 +130,7 @@ namespace NetCoreCMS.Framework.Modules
             {                
                 var moduleInfoFileJson = File.ReadAllText(moduleConfigFile);
                 var loadedModule = JsonConvert.DeserializeObject<Module>(moduleInfoFileJson);
+                module.ModuleId = loadedModule.ModuleId;
                 module.AntiForgery = loadedModule.AntiForgery;
                 module.Author = loadedModule.Author;
                 module.Category = loadedModule.Category;
@@ -139,11 +140,9 @@ namespace NetCoreCMS.Framework.Modules
                 
                 module.ModuleTitle = loadedModule.ModuleTitle;
                 module.NetCoreCMSVersion = loadedModule.NetCoreCMSVersion;
-                module.SortName = loadedModule.SortName;
+                module.ModuleName = loadedModule.ModuleName;
                 module.Version = loadedModule.Version;
                 module.Website = loadedModule.Website;
-
-                module.ModuleName = moduleInfo.ModuleName;
                 module.Assembly = moduleInfo.Assembly;
                 module.Path = moduleInfo.Path;
             }

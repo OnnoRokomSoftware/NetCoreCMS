@@ -40,7 +40,7 @@ namespace NetCoreCMS.Modules.HelloWorld
         [NotMapped]
         public Assembly Assembly { get; set; }
         public string Path { get ; set ; }
-        public NccModule.NccModuleStatus Status { get; set; }
+        public string Status { get; set; }
         public string ModuleTitle { get ; set ; }
         [NotMapped]
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
