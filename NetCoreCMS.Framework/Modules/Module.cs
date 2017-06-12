@@ -27,8 +27,8 @@ namespace NetCoreCMS.Framework.Modules
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
         public string Website { get; set; }
-        public Version Version { get; set; }
-        public Version NetCoreCMSVersion { get; set; }
+        public string Version { get; set; }
+        public string NetCoreCMSVersion { get; set; }
         public string Description { get; set; }
         public string DependencyList { get; set; }
         [NotMapped]

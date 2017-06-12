@@ -28,15 +28,15 @@ namespace NetCoreCMS.Core.Modules.Setup
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
         public string Website { get; set; }
-        public Version Version { get; set; }
-        public Version NetCoreCMSVersion { get; set; }
+        public string Version { get; set; }
+        public string NetCoreCMSVersion { get; set; }
         public string Description { get; set; }
         public List<string> Dependencies { get; set; }
         public string Category { get; set; }
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public string Status { get; set; }
+        
         public string ModuleTitle { get; set; }
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 

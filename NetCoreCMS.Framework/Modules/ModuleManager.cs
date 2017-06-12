@@ -17,6 +17,8 @@ using System.Reflection;
 using NetCoreCMS.Framework.Utility;
 using Newtonsoft.Json;
 using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -65,7 +67,7 @@ namespace NetCoreCMS.Framework.Modules
             return modules;
         }
         
-        public List<IModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services)
+        public List<IModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
         {
             var instantiatedModuleList = new List<IModule>();
 
@@ -73,18 +75,28 @@ namespace NetCoreCMS.Framework.Modules
             {
                 try
                 {
-                    // Register controller from modules
-                    mvcBuilder.AddApplicationPart(module.Assembly);
-
-                    // Register dependency in modules
                     var moduleInitializerType = module.Assembly.GetTypes().Where(x => typeof(IModule).IsAssignableFrom(x)).FirstOrDefault();
+
                     if (moduleInitializerType != null && moduleInitializerType != typeof(IModule))
                     {
-                        var initilizedModule = (IModule)Activator.CreateInstance(moduleInitializerType);                        
-                        initilizedModule.Init(services);                        
+                        var initilizedModule = (IModule)Activator.CreateInstance(moduleInitializerType);
                         LoadModuleInfo(initilizedModule, module);
-                        InitilizeWidgets(initilizedModule);
-                        instantiatedModuleList.Add(initilizedModule);
+
+                        NccModule.NccModuleStatus moduleStatus = VerifyModuleInstallation(initilizedModule, serviceProvider);
+
+                        if (moduleStatus == NccModule.NccModuleStatus.Active)
+                        {
+                            // Register controller from modules
+                            mvcBuilder.AddApplicationPart(module.Assembly);
+                            // Register dependency in modules                            
+                            initilizedModule.Init(services);
+                            InitilizeWidgets(initilizedModule);
+                            instantiatedModuleList.Add(initilizedModule); 
+                        }
+                        else if (moduleStatus == NccModule.NccModuleStatus.Duplicate)
+                        {
+                            //TODO: Raise duplicate error message
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -109,6 +121,58 @@ namespace NetCoreCMS.Framework.Modules
             return instantiatedModuleList;
         }
 
+        private bool IsCoreModule(IModule module)
+        {
+            var pathParts = module.Path.Split("\\".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            var hasCore = pathParts.Where(x => x.Equals("Core", StringComparison.OrdinalIgnoreCase)).FirstOrDefault();
+            return !string.IsNullOrEmpty(hasCore);
+        }
+
+        private NccModule.NccModuleStatus VerifyModuleInstallation(IModule module, IServiceProvider serviceProvider)
+        {
+            var moduleService = serviceProvider.GetService<NccModuleService>();
+            NccModule moduleEntity = moduleService.GetByModuleId(module.ModuleId);
+            if(moduleEntity == null)
+            {
+                moduleEntity = CreateNccModuleEntity(module);
+                moduleService.Save(moduleEntity);
+            }
+            else if(moduleEntity.Name != module.ModuleName)
+            {
+                return NccModule.NccModuleStatus.Duplicate;
+            }
+            
+            return moduleEntity.ModuleStatus;
+        }
+
+        private NccModule CreateNccModuleEntity(IModule module)
+        {
+            var nccModule = new NccModule();
+            nccModule.Name = module.ModuleName;
+            nccModule.AntiForgery = module.AntiForgery;
+            nccModule.ModuleId = module.ModuleId;
+            nccModule.Dependencies = String.Join(",", module.Dependencies);
+            nccModule.NetCoreCMSVersion = module.NetCoreCMSVersion;
+            nccModule.Path = module.Path;            
+            nccModule.Version = module.Version;
+            nccModule.Description = module.Description;
+            nccModule.Category = module.Category;
+            nccModule.Author = module.Author;
+            nccModule.WebSite = module.Website;
+            nccModule.ModuleTitle = module.ModuleTitle;
+
+            if(module.Category.Contains("Core"))
+            {
+                nccModule.ModuleStatus = NccModule.NccModuleStatus.Active;
+            }
+            else
+            {
+                nccModule.ModuleStatus = NccModule.NccModuleStatus.New;
+            }
+
+            return nccModule;
+        }
+
         private void InitilizeWidgets(IModule module)
         {
             module.Widgets = new List<IWidget>();
@@ -119,9 +183,7 @@ namespace NetCoreCMS.Framework.Modules
                 var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);
                 widgetInstance.Init();
                 module.Widgets.Add(widgetInstance);
-
-            }
-             
+            }             
         }
         public void LoadModuleInfo(IModule module, IModule moduleInfo)
         {

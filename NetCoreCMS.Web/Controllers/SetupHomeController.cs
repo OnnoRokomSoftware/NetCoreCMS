@@ -4,6 +4,7 @@
  * Copyright (c) xonaki.com
  * License: BSD (3 Clause)
 */
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCMS.Core.Modules.Setup.Controllers
 {
+    [AllowAnonymous]
     public class SetupHomeController : NccController
     { 
         private readonly ILogger _logger;

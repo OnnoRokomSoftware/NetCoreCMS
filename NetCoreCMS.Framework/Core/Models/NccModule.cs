@@ -25,6 +25,11 @@ namespace NetCoreCMS.Framework.Core.Models
         [Key]
         public long Id { get; set; }
         public string ModuleId { get; set; }
+        public string ModuleTitle { get; set; }
+        public string Description { get; set; }
+        public string Category { get; set; } 
+        public string Author { get; set; }
+        public string WebSite { get; set; }
         public int VersionNumber { get; set; }
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
@@ -37,14 +42,19 @@ namespace NetCoreCMS.Framework.Core.Models
         public string NetCoreCMSVersion { get; set; }
         public string Dependencies { get; set; }
         public string Path { get; set; }
+
         public NccModuleStatus ModuleStatus { get; set; }
 
         public enum NccModuleStatus
         {        
+            New,
             Installed,
             UnInstalled,
             Active,
-            Inactive
+            Inactive,
+            Duplicate,
+            Deleted,
+            InCompatible
         }
     }     
 }

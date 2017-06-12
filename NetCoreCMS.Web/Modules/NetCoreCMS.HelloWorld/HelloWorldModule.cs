@@ -30,8 +30,8 @@ namespace NetCoreCMS.Modules.HelloWorld
         public bool AntiForgery { get; set ; }
         public string Author { get ; set ; }
         public string Website { get ; set ; }
-        public Version Version { get ; set ; }
-        public Version NetCoreCMSVersion { get ; set ; }
+        public string Version { get ; set ; }
+        public string NetCoreCMSVersion { get ; set ; }
         public string Description { get ; set ; }
 
         public List<string> Dependencies { get ; set ; }
@@ -40,7 +40,7 @@ namespace NetCoreCMS.Modules.HelloWorld
         [NotMapped]
         public Assembly Assembly { get; set; }
         public string Path { get ; set ; }
-        public string Status { get; set; }
+        
         public string ModuleTitle { get ; set ; }
         [NotMapped]
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }

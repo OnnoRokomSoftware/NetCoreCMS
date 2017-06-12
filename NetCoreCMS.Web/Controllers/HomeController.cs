@@ -6,7 +6,7 @@ using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Web.Controllers
 {
-    [Authorize(Roles = "Administrator")]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         IHostingEnvironment _env;
@@ -14,29 +14,27 @@ namespace NetCoreCMS.Web.Controllers
         {
             _env = env;
         }
+
         public IActionResult Index()
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                return View();
+                return Redirect("/CmsHome/Index");
             }
             return Redirect("/SetupHome/Index");
         }
-        
-        [AllowAnonymous]
+         
         public IActionResult Error()
         {
             return View();
         }
-
-        [AllowAnonymous]
+         
         public IActionResult SetupSuccess()
         {
             Program.Shutdown();
             return View();
         }
-
-        [AllowAnonymous]
+         
         public IActionResult RestartHost()
         {
             NetCoreCmsHost.IsRestartRequired = true;

@@ -9,9 +9,10 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    partial class NccDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170612100904_columnadded")]
+    partial class columnadded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1");
@@ -185,8 +186,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<bool>("AntiForgery");
 
-                    b.Property<string>("Author");
-
                     b.Property<string>("Category");
 
                     b.Property<long>("CreateBy");
@@ -205,8 +204,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("ModuleStatus");
 
-                    b.Property<string>("ModuleTitle");
-
                     b.Property<string>("Name");
 
                     b.Property<string>("NetCoreCMSVersion");
@@ -218,8 +215,6 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<string>("Version");
 
                     b.Property<int>("VersionNumber");
-
-                    b.Property<string>("WebSite");
 
                     b.HasKey("Id");
 

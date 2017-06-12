@@ -78,6 +78,34 @@ namespace NetCoreCMS.Web
             _services.AddSession();
             _services.AddDistributedMemoryCache();
             
+            _services.AddTransient<IEmailSender, AuthMessageSender>();
+            _services.AddTransient<ISmsSender, AuthMessageSender>();
+            _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            _services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
+            _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
+
+            _services.AddTransient<NccModuleRepository>();
+            _services.AddTransient<NccModuleService>();
+
+            services.AddTransient<NccMenuRepository>();
+            services.AddTransient<NccMenuItemRepository>();
+            services.AddTransient<NccMenuService>();
+            services.AddTransient<NccPageRepository>();
+            services.AddTransient<NccPageService>();
+            services.AddTransient<ThemeManager>();
+            services.AddTransient<NccWebSiteWidgetRepository>();
+            services.AddTransient<NccWebSiteWidgetService>();
+            services.AddTransient<NccWebSiteRepository>();
+            services.AddTransient<NccWebSiteService>();
+            services.AddTransient<NccThemeRepository>();
+            services.AddTransient<NccThemeService>();
+
+            _services.AddSingleton<IConfiguration>(Configuration);
+            _services.AddSingleton<IConfigurationRoot>(Configuration);
+            
+            var themesFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
+            ThemeManager.RegisterThemes(_mvcBuilder, _services, themesFolder);
+
             if (SetupHelper.IsDbCreateComplete)
             {
                 _services.AddDbContext<NccDbContext>(options =>
@@ -87,28 +115,19 @@ namespace NetCoreCMS.Web
                 _services.AddCustomizedIdentity();
                 // Add application services.
                 _startup.RegisterDatabase(_services);
+
+                _serviceProvider = _services.Build(Configuration, _hostingEnvironment);
+
+                var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
+                var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
+                _moduleManager.LoadModules(coreModuleFolder);
+                _moduleManager.LoadModules(moduleFolder);
+
+                GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services, _serviceProvider);
             }
-
-            _services.AddTransient<IEmailSender, AuthMessageSender>();
-            _services.AddTransient<ISmsSender, AuthMessageSender>();
-            _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            _services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
-             
-            var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
-            var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
-            var themesFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
-
-            _moduleManager.LoadModules(coreModuleFolder);
-            _moduleManager.LoadModules(moduleFolder);
-            GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services);
-            ThemeManager.RegisterThemes(_mvcBuilder, _services, themesFolder);
-
-            _services.AddSingleton<IConfiguration>(Configuration);
-            _services.AddSingleton<IConfigurationRoot>(Configuration);
-
+            
             _serviceProvider = _services.Build(Configuration, _hostingEnvironment);
-
+            
             GlobalConfig.Services = _services;
             return _serviceProvider;            
         }
@@ -124,7 +143,7 @@ namespace NetCoreCMS.Web
             GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
             
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
-
+            
             //app.UseThemeActivator(env, loggerFactory);
             //app.UseModuleActivator(env, _mvcBuilder, _services, loggerFactory);
 
@@ -162,7 +181,7 @@ namespace NetCoreCMS.Web
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=CmsHome}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
             
         }

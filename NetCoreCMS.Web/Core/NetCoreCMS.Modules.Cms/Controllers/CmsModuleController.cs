@@ -22,6 +22,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         public CmsModuleController(NccModuleService moduleService, IHostingEnvironment hostingEnvironment)
         {
             _moduleService = moduleService;
+            _hostingEnvironment = hostingEnvironment;
             moduleManager = new ModuleManager();
         }
 
@@ -29,11 +30,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             var publicModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
-            var modules = _moduleService.LoadAll();
+            ViewBag.Modules = _moduleService.LoadAll();
             _coreModules = moduleManager.LoadModules(coreModuleFolder);
             _publicModules = moduleManager.LoadModules(publicModuleFolder);
 
-            return View(modules);
+            return View();
         }
 
         public ActionResult Create()

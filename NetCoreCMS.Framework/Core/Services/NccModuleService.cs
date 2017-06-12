@@ -22,6 +22,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
         }
 
+        internal NccModule GetByModuleId(string moduleId)
+        {
+            return _entityRepository.Query().FirstOrDefault(x => x.ModuleId == moduleId);
+        }
+
         public NccModule Save(NccModule entity)
         {
             _entityRepository.Add(entity);

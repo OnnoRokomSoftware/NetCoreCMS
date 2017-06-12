@@ -79,6 +79,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Views\Home\SetupSuccess.cshtml" />
+    <None Include="Views\SetupHome\CreateAdmin.cshtml" />
+    <None Include="Views\SetupHome\Index.cshtml" />
+    <None Include="Views\SetupHome\Success.cshtml" />
+    <None Include="wwwroot\css\SetupStyle.css" />
+    <None Include="wwwroot\js\Setup.js" />
   </ItemGroup>
 
 </Project>
