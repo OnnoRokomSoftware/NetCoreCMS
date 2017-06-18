@@ -27,4 +27,5 @@ and check the `master` branch.
 
 - Download Visual Studio 2017 (any edition) from https://www.visualstudio.com/downloads/
 - Open `NetCoreCMS.sln`
+- Build `NetCoreCMS.sln` solution (before running the project)
 - Ensure `NetCoreCMS.Web` is the startup project and run it.
