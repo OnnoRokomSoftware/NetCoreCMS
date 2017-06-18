@@ -4,6 +4,7 @@
  * Copyright (c) xonaki.com
  * License: BSD (3 Clause)
 */
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
@@ -13,6 +14,7 @@ using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
 {
+    [Authorize("SuperAdmin")]
     public class AdminController : NccController
     {
         NccWebSiteService _webSiteService;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
@@ -10,8 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
+    [Authorize]
     public class CmsMenuController : NccController
     {
         NccMenuService _menuService;

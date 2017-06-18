@@ -4,12 +4,14 @@
  * Copyright (c) xonaki.com
  * License: BSD (3 Clause)
 */
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
+    [AllowAnonymous]
     public class CmsHomeController : NccController
     {
         public ActionResult Index()

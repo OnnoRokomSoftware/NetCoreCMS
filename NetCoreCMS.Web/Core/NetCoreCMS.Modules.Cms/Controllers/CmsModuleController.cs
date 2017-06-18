@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Models;
@@ -13,6 +14,7 @@ using System.Text;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
+    [Authorize]
     public class CmsModuleController : NccController
     {
         NccModuleService _moduleService;
@@ -59,9 +61,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Active);
             if (entity != null)
-            {
-                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                module.Activate();
+            { 
                 TempData["SuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -72,7 +72,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             return RedirectToAction("Index");
         }
 
-        private NccModule UpdateModuleStatus(string id, Framework.Core.Models.NccModule.NccModuleStatus status)
+        private NccModule UpdateModuleStatus(string id, NccModule.NccModuleStatus status)
         {
             var nId = long.Parse(id);
             var module = _moduleService.Get(nId);
@@ -107,8 +107,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
             if(entity != null)
             {
-                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                module.Install();
+                //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+                //module.Install();
                 TempData["SuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -124,8 +124,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.UnInstalled);
             if(entity != null)
             {
-                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                module.Uninstall();
+                //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+                //module.Uninstall();
                 TempData["SuccessMessage"] = "Operation Successful. Restart Site";
             }
             else

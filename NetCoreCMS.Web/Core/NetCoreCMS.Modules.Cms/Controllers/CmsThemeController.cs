@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
@@ -11,6 +12,7 @@ using System.IO;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
+    [Authorize]
     public class CmsThemeController : NccController
     {
         ThemeManager _themeManager;
