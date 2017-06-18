@@ -80,9 +80,9 @@ $(document).ready(function () {
             console.log($(this).text());
         }
     });
-    
+
     $("#addPageToMenu").on("click", function () {
-        
+
         $(".recentPagesCheckBoxList").each(function (index) {
             if ($(this).prop("checked") == true) {
                 var menuItem = '<li class="list-group-item no-boarder" ncc-menu-item-id="{MENU_ITEM_ID}" ncc-model-item-id="{MODEL_ID}" ncc-menu-item-action-type="{ACTION_TYPE}" ncc-menu-item-controller="{CONTROLLER}" ncc-menu-item-action="{ACTION}" ncc-menu-item-action-data="{DATA}"  ncc-menu-item-url="{URL}" ncc-menu-item-target="{TARGET}" ncc-menu-item-order="{ORDER}" ncc-menu-item-title="{TITLE}">'
@@ -106,6 +106,33 @@ $(document).ready(function () {
                 $("#selectedMenuTree").append($($.parseHTML(menuItem)));
             }
         });
+    });
+
+    $("#addUrlToMenu").on("click", function () {
+        var urlMenuName = $("#urlMenuName").val();
+        var urlMenuUrl = $("#urlMenuUrl").val();
+        var urlMenuTarget = $("#urlMenuTarget").val();
+        if (urlMenuName != "" && urlMenuUrl!="") {
+            var menuItem = '<li class="list-group-item no-boarder" ncc-menu-item-id="{MENU_ITEM_ID}" ncc-model-item-id="{MODEL_ID}" ncc-menu-item-action-type="{ACTION_TYPE}" ncc-menu-item-controller="{CONTROLLER}" ncc-menu-item-action="{ACTION}" ncc-menu-item-action-data="{DATA}"  ncc-menu-item-url="{URL}" ncc-menu-item-target="{TARGET}" ncc-menu-item-order="{ORDER}" ncc-menu-item-title="{TITLE}">'
+                + '<div class="menu-item-content" >'
+                + '<div class="pull-left" style="padding: 5px 5px;"><i class="glyphicon glyphicon-move margin-right-10" ></i>'
+                + '<span class="ncc-menu-title">{TITLE}</span></div>'
+                + '<input type="button" class="closeMenuItem pull-right" value="x" onclick="RemoveMenuItem(this)" ></input>'
+                + '</div>'
+                + '</li> ';
+            menuItem = menuItem.replace("{MENU_ITEM_ID}", "0");
+            menuItem = menuItem.replace("{MODEL_ID}", "");
+            menuItem = menuItem.replace("{ACTION_TYPE}", "");
+            menuItem = menuItem.replace("{CONTROLLER}", "");
+            menuItem = menuItem.replace("{ACTION}", "");
+            menuItem = menuItem.replace("{DATA}", "");
+            menuItem = menuItem.replace("{URL}", urlMenuUrl);
+            menuItem = menuItem.replace("{TARGET}", urlMenuTarget);
+            menuItem = menuItem.replace("{ORDER}", 0);
+            menuItem = menuItem.replace(/\{TITLE}/g, urlMenuName);
+
+            $("#selectedMenuTree").append($($.parseHTML(menuItem)));
+        }
     });
 
     function getMenuItemFromLi(listItem) {
