@@ -25,11 +25,14 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             _pageService = pageService;
             _menuService = menuService;
         }
-        public ActionResult Index()
+        public ActionResult Index(bool isManage = false)
         {
             ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
             ViewBag.RecentPages = _pageService.LoadRecentPages(5);
             ViewBag.MenuList = _menuService.LoadAll();
+            ViewBag.IsManage = false;
+            if(isManage)
+                ViewBag.IsManage = true;
             return View();
         }
 
@@ -83,17 +86,17 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 _menuService.DeletePermanently(menuId);
                 TempData["SuccessMessage"] = "Delete successful";
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", new { isManage = true });
             }
             catch (Exception ex)
             {
-                    //TODO: log error
+                //TODO: log error
             }
 
             GlobalConfig.Menus = _menuService.LoadAllSiteMenus();
 
             TempData["ErrorMessage"] = "Delete Failed";
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { isManage = true });
         }
 
         private List<NccMenuItem> CreateMenuItems(NccMenu menuModel, NccMenuViewModel menu)

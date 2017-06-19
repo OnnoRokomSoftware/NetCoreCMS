@@ -3,6 +3,13 @@
     Layout = Constants.AdminLayoutName;
     ViewData["PageTitle"] = "Menu Management";
     ViewData["PageSubtitle"] = "Manage menus";
+    var createMenu = "active";
+    var manageMenu = "";
+    if(ViewBag.IsManage)
+    {
+        createMenu = "";
+        manageMenu = "active";
+    }
 }
 
 
@@ -14,15 +21,15 @@
 <div class="row">
     <div class="col-lg-12">
         <ul class="nav nav-tabs">
-            <li class="active">
+            <li class="@createMenu">
                 <a href="#createMenu" data-toggle="tab">Create Menu</a>
             </li>
-            <li>
+            <li class="@manageMenu">
                 <a href="#manageMenu" data-toggle="tab">Manage</a>
             </li>
         </ul>
         <div class="tab-content">
-                <div id="createMenu" class="tab-pane fade in active">
+                <div id="createMenu" class="tab-pane fade in @createMenu">
                     <div class="panel panel-default" style="border-top:none">
                         <div class="panel-body">
                             @await Html.PartialAsync("Partial/_MenuSelectionPanel")
@@ -30,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <div id="manageMenu" class="tab-pane fade">
+                <div id="manageMenu" class="tab-pane fade in @manageMenu">
                     <div class="panel panel-default" style="border-top:none">
                         <div class="panel-body">
                             @await Html.PartialAsync("Partial/_ManageMenu")
