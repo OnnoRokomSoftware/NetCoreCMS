@@ -71,7 +71,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                         r.IsSuccess = false;
                         r.Message = "This menu name already exists.";
                     }
-                    else if (menu.Items.Count ==0)
+                    else if (menu.Items.Count == 0)
                     {
                         r.IsSuccess = false;
                         r.Message = "You cannot save an empty menu.";
