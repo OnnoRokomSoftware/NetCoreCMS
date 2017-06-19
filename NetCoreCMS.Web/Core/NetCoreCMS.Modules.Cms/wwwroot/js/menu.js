@@ -104,6 +104,7 @@ $(document).ready(function () {
                 menuItem = menuItem.replace(/\{TITLE}/g, $(this).attr("ncc-page-title"));
 
                 $("#selectedMenuTree").append($($.parseHTML(menuItem)));
+                $(this).prop("checked", false);
             }
         });
     });
@@ -132,6 +133,9 @@ $(document).ready(function () {
             menuItem = menuItem.replace(/\{TITLE}/g, urlMenuName);
 
             $("#selectedMenuTree").append($($.parseHTML(menuItem)));
+            $("#urlMenuName").val("");
+            $("#urlMenuUrl").val("");
+            $("#urlMenuTarget").val("_self");
         }
     });
 

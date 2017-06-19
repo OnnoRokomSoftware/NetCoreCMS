@@ -25,14 +25,19 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             _pageService = pageService;
             _menuService = menuService;
         }
-        public ActionResult Index(bool isManage = false)
+        public ActionResult Index(bool isManage = false, long menuId = 0)
         {
             ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
             ViewBag.RecentPages = _pageService.LoadRecentPages(5);
             ViewBag.MenuList = _menuService.LoadAll();
             ViewBag.IsManage = false;
-            if(isManage)
+            if (isManage)
                 ViewBag.IsManage = true;
+            ViewBag.CurrentMenu = new NccMenu();
+            if (menuId > 0)
+            {
+                ViewBag.CurrentMenu = _menuService.Get(menuId);
+            }
             return View();
         }
 
@@ -45,24 +50,41 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var r = new ApiResponse();
             if (menu != null)
             {
-                if (menu.Name.Trim() == "")
+                if (menu.Id > 0)
                 {
-                    r.IsSuccess = false;
-                    r.Message = "Please enter a menu name.";
-                }
-                else if (menu.Position.Trim() == "")
-                {
-                    r.IsSuccess = false;
-                    r.Message = "Please select a menu position.";
+
                 }
                 else
                 {
-                    NccMenu menuModel = CreateMenuObject(menu);
-                    CreateMenuItems(menuModel, menu);
-                    _menuService.Save(menuModel);
+                    if (menu.Name.Trim() == "")
+                    {
+                        r.IsSuccess = false;
+                        r.Message = "Please enter a menu name.";
+                    }
+                    else if (menu.Position.Trim() == "")
+                    {
+                        r.IsSuccess = false;
+                        r.Message = "Please select a menu position.";
+                    }
+                    else if (_menuService.LoadAllByName(menu.Name).Count > 0)
+                    {
+                        r.IsSuccess = false;
+                        r.Message = "This menu name already exists.";
+                    }
+                    else if (menu.Items.Count ==0)
+                    {
+                        r.IsSuccess = false;
+                        r.Message = "You cannot save an empty menu.";
+                    }
+                    else
+                    {
+                        NccMenu menuModel = CreateMenuObject(menu);
+                        CreateMenuItems(menuModel, menu);
+                        _menuService.Save(menuModel);
 
-                    r.IsSuccess = true;
-                    r.Message = "Menu Save Successful.";
+                        r.IsSuccess = true;
+                        r.Message = "Menu added successfully.";
+                    }
                 }
             }
 

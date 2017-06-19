@@ -11,7 +11,7 @@
                 <td>@item.MenuOrder</td>
                 <td>@item.Position</td>
                 <td>
-                    <a asp-controller="CmsMenu" asp-action="Index">Edit</a> | 
+                    <a asp-controller="CmsMenu" asp-action="Index"asp-route-menuId="@item.Id">Edit</a> | 
                     <a asp-controller="CmsMenu" asp-action="DeleteMenu" asp-route-menuId="@item.Id">Delete</a>
                 </td>
             </tr>
