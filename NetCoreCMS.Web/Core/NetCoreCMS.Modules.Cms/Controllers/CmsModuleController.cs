@@ -84,7 +84,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             return module;
         }
 
-        public ActionResult InactivateModule(string id)
+        public ActionResult DeactivateModule(string id)
         {
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Inactive);
             if (entity != null)
