@@ -1,7 +1,7 @@
 ﻿/*
- * Author: Xonaki
- * Website: http://xonaki.com
- * Copyright (c) xonaki.com
+ * Author: TecRT
+ * Website: http://tecrt.com
+ * Copyright (c) tecrt.com
  * License: BSD (3 Clause)
 */
 using Microsoft.AspNetCore.Authorization;
@@ -59,6 +59,8 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         {
             NccPage page = new NccPage();
             page.Content = "";
+            page.PublishDate = DateTime.Now;
+            page.PageStatus = NccPage.NccPageStatus.Published;
             if (Id > 0)
             {
                 page = _pageService.Get(Id);

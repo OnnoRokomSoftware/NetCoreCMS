@@ -1,7 +1,7 @@
 ﻿/*
- * Author: Xonaki
- * Website: http://xonaki.com
- * Copyright (c) xonaki.com
+ * Author: TecRT
+ * Website: http://tecrt.com
+ * Copyright (c) tecrt.com
  * License: BSD (3 Clause)
 */
 using System.Security.Claims;
