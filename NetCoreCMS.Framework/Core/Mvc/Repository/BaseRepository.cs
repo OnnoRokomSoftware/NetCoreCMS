@@ -32,7 +32,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             return entity;
         }
 
-        public EntityT Eidt(EntityT entity)
+        public EntityT Edit(EntityT entity)
         {
             entity.Status = EntityStatus.Modified;
             Context.Entry(entity).State = EntityState.Modified;

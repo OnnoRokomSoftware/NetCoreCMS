@@ -42,7 +42,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 using (var txn = _entityRepository.BeginTransaction())
                 {
                     CopyNewData(oldEntity, entity);
-                    _entityRepository.Eidt(oldEntity);
+                    _entityRepository.Edit(oldEntity);
                     _entityRepository.SaveChange();
                     txn.Commit();
                 }
@@ -57,7 +57,7 @@ namespace NetCoreCMS.Framework.Core.Services
             if (entity != null)
             {
                 entity.Status = EntityStatus.Deleted;
-                _entityRepository.Eidt(entity);
+                _entityRepository.Edit(entity);
                 _entityRepository.SaveChange();
             }
         }

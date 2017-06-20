@@ -16,7 +16,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
         IQueryable<EntityT> Query();
         EntityEntry GetEntityEntry(EntityT T);
         EntityT Add(EntityT entity);
-        EntityT Eidt(EntityT entity);
+        EntityT Edit(EntityT entity);
         IDbContextTransaction BeginTransaction();        
         void Remove(EntityT entity);
         void DeletePermanently(EntityT entity);
