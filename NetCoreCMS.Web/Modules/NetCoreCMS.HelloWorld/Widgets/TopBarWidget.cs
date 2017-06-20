@@ -12,6 +12,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _footer;
         string _configJson;
         string _description;
+        string _viewFileName;
 
         public string WidgetId { get { return "75983E5A-0E4C-473E-B8BC-0C23F6733ABA"; } }
 
@@ -24,6 +25,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public string Footer { get { return _footer; } }
 
         public string ConfigJson { get { return _configJson; } }
+        public string ViewFileName { get { return _viewFileName; } }
 
         public TopBarWidget()
         {
@@ -38,7 +40,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
             _footer = "Footer";
         }
 
-        public string Render()
+        public string RenderBody()
         { 
             return _body;
         }

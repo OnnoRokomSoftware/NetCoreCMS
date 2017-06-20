@@ -1,7 +1,12 @@
-﻿using NetCoreCMS.Framework.Modules.Widgets;
+﻿using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.HelloWorld.Controllers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {
@@ -11,9 +16,12 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _body;
         string _footer;
         string _configJson;
+        string _viewFileName;
         string _description;
+        NccWebSiteService _nccWebSiteService;
+        IViewRenderService _viewRenderService;
 
-        public string WidgetId { get { return "76983E5A-0E4C-473E-B8BC-0C63F6733FCF"; } }
+        public string WidgetId { get { return "HelloWord.HelloWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -25,33 +33,27 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public string ConfigJson { get { return _configJson; } }
 
-        public HelloWidget()
-        {
+        public string ViewFileName { get { return _viewFileName; } }
 
+        public HelloWidget(NccWebSiteService nccWebSiteService, IViewRenderService viewRenderService)
+        {
+            _nccWebSiteService = nccWebSiteService;
+            _viewRenderService = viewRenderService;
         }
 
         public void Init()
         {
             _title = "Hellow Widget world";
-            _description = "This is a sample widget which will show an image.";
-            _body = "<img src='https://static.pexels.com/photos/158607/cairn-fog-mystical-background-158607.jpeg' width='100' height='100' />";
+            _description = "This is a sample widget which will show an image.";            
             _footer = "Footer";
+            _viewFileName = "Widgets/Hello";
         }
 
-        public string Render()
+        public string RenderBody()
         {
-            var html = "<div class='panel panel-default'>" +
-                            "<div class='panel-heading'>" +
-                                _title +
-                            "</div>"+
-                            "<div class='panel-body'> " +
-                                _body +
-                            "</div>" + 
-                            "<div class='panel-footer'>" +
-                                _footer + 
-                            "</div>" +
-                        "</div>";
-            return html;
+            var webSite = _nccWebSiteService.LoadAll().FirstOrDefault();
+            _body = _viewRenderService.RenderToStringAsync<HelloWidgetController>(_viewFileName, null).Result;             
+            return _body;
         }
 
         public string RenderBody(string html = "")

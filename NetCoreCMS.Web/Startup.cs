@@ -29,6 +29,7 @@ using NetCoreCMS.Framework.Core.Services;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Repository;
 using Microsoft.AspNetCore.Authorization;
+using NetCoreCMS.Framework.Core.Mvc.Views;
 
 namespace NetCoreCMS.Web
 {
@@ -84,6 +85,7 @@ namespace NetCoreCMS.Web
             _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             _services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
             _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
+            _services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
 
             _services.AddTransient<NccModuleRepository>();
             _services.AddTransient<NccModuleService>();
@@ -123,6 +125,10 @@ namespace NetCoreCMS.Web
                 _moduleManager.LoadModules(moduleFolder);
 
                 GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services, _serviceProvider);
+
+                _serviceProvider = _services.Build(Configuration, _hostingEnvironment);
+
+                GlobalConfig.Widgets = _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);
             }
             
             _serviceProvider = _services.Build(Configuration, _hostingEnvironment);
@@ -169,8 +175,7 @@ namespace NetCoreCMS.Web
                 NccMenuService menuServic = _serviceProvider.GetService<NccMenuService>();
                 
                 GlobalConfig.WebSite = nccWebsiteService.LoadAll().FirstOrDefault();
-                GlobalConfig.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();
-                GlobalConfig.ListWidgets();
+                GlobalConfig.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();                
                 GlobalConfig.Menus = menuServic.LoadAllSiteMenus();
 
             }

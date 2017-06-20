@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {
@@ -12,8 +13,9 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _footer;
         string _configJson;
         string _description;
+        string _viewFileName;
 
-        public string WidgetId { get { return "E75C5E82-A7CC-4E5E-8142-CC7DECA64C1F"; } }
+        public string WidgetId { get { return "NetCoreCMS.Modules.Cms.CmsHorizontalMenuWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -24,6 +26,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public string Footer { get { return _footer; } }
 
         public string ConfigJson { get { return _configJson; } }
+        public string ViewFileName { get { return _viewFileName; } }
 
         public CmsHorizontalMenuWidget()
         {
@@ -44,20 +47,9 @@ namespace NetCoreCMS.HelloWorld.Widgets
             _footer = "Footer";
         }
 
-        public string Render()
-        {
-            var html = "<div class='panel panel-default'>" +
-                            "<div class='panel-heading'>" +
-                                _title +
-                            "</div>"+
-                            "<div class='panel-body'> " +
-                                _body +
-                            "</div>" + 
-                            "<div class='panel-footer'>" +
-                                _footer + 
-                            "</div>" +
-                        "</div>";
-            return html;
+        public string RenderBody()
+        {            
+            return _body;
         }
 
         public string RenderBody(string html = "")

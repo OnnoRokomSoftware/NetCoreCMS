@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {
@@ -12,6 +13,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _footer;
         string _configJson;
         string _description;
+        string _viewFileName;
 
         public string WidgetId { get { return "E082E185-2379-4C77-A026-FB73FFD09915"; } }
 
@@ -24,6 +26,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public string Footer { get { return _footer; } }
 
         public string ConfigJson { get { return _configJson; } }
+        public string ViewFileName { get { return _viewFileName; } }
 
         public CmsSlideShowWidget()
         {
@@ -41,20 +44,9 @@ namespace NetCoreCMS.HelloWorld.Widgets
             _footer = "Footer";
         }
 
-        public string Render()
+        public string RenderBody()
         {
-            var html = "<div class='panel panel-default'>" +
-                            "<div class='panel-heading'>" +
-                                _title +
-                            "</div>"+
-                            "<div class='panel-body'> " +
-                                _body +
-                            "</div>" + 
-                            "<div class='panel-footer'>" +
-                                _footer + 
-                            "</div>" +
-                        "</div>";
-            return html;
+            return _body;
         }
 
         public string RenderBody(string html = "")

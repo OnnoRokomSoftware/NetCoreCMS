@@ -25,6 +25,7 @@ namespace NetCoreCMS.Framework.Modules
     public class ModuleManager
     {
         List<IModule> modules = new List<IModule>();
+        List<IModule> instantiatedModuleList = new List<IModule>();
         public List<IModule> LoadModules(IDirectoryContents moduleRootFolder)
         {   
             foreach (var moduleFolder in moduleRootFolder.Where(x => x.IsDirectory))
@@ -68,8 +69,7 @@ namespace NetCoreCMS.Framework.Modules
         }
         
         public List<IModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
-        {
-            var instantiatedModuleList = new List<IModule>();
+        {  
 
             foreach (var module in modules)
             {
@@ -90,7 +90,7 @@ namespace NetCoreCMS.Framework.Modules
                             mvcBuilder.AddApplicationPart(module.Assembly);
                             // Register dependency in modules                            
                             initilizedModule.Init(services);
-                            InitilizeWidgets(initilizedModule);
+                            RegisterWidgets(initilizedModule, services, serviceProvider);
                             instantiatedModuleList.Add(initilizedModule); 
                         }
                         else if (moduleStatus == NccModule.NccModuleStatus.Duplicate)
@@ -145,6 +145,26 @@ namespace NetCoreCMS.Framework.Modules
             return moduleEntity.ModuleStatus;
         }
 
+        public List<IWidget> RegisterModuleWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            var widgetList = new List<IWidget>();
+            foreach (var module in instantiatedModuleList)
+            {
+                module.Widgets = new List<IWidget>();
+                var widgetTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces()?.Where(y => y.Name == typeof(IWidget).Name).FirstOrDefault() != null).ToList();
+
+                foreach (var widgetType in widgetTypeList)
+                {
+                    //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                    
+                    var widgetInstance = (IWidget)serviceProvider.GetService(widgetType);
+                    widgetInstance.Init();
+                    module.Widgets.Add(widgetInstance);
+                    widgetList.Add(widgetInstance);
+                }
+            }
+            return widgetList;
+        }
+
         private NccModule CreateNccModuleEntity(IModule module)
         {
             var nccModule = new NccModule();
@@ -173,16 +193,14 @@ namespace NetCoreCMS.Framework.Modules
             return nccModule;
         }
 
-        private void InitilizeWidgets(IModule module)
+        private void RegisterWidgets(IModule module, IServiceCollection services, IServiceProvider serviceProvider)
         {
             module.Widgets = new List<IWidget>();
             var widgetTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces()?.Where(y => y.Name == typeof(IWidget).Name).FirstOrDefault() != null).ToList();
              
             foreach (var widgetType in widgetTypeList)
-            {
-                var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);
-                widgetInstance.Init();
-                module.Widgets.Add(widgetInstance);
+            {                
+                services.AddTransient(widgetType);                
             }             
         }
 

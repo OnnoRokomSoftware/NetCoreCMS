@@ -46,11 +46,16 @@ namespace NetCoreCMS.Framework.Modules
         public void PopulateValues(ViewLocationExpanderContext context)
         {
             dynamic controller = context.ActionContext.ActionDescriptor;
-            string moduleName = controller.ControllerTypeInfo.Module.Name;
-            moduleName = moduleName.Remove(moduleName.Length-4);
-            if (moduleName != "NetCoreCMS.Web")
+            
+            if (controller != null)
             {
-                context.Values[_moduleKey] = moduleName;
+                var controllerTypeInfo = controller.ControllerTypeInfo;
+                string moduleName = controllerTypeInfo.Module.Name;
+                moduleName = moduleName.Remove(moduleName.Length - 4);
+                if (moduleName != "NetCoreCMS.Web")
+                {
+                    context.Values[_moduleKey] = moduleName;
+                }
             }
         }
     }

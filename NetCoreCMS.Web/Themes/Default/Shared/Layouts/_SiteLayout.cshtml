@@ -53,8 +53,8 @@
                             foreach (var widget in widgets)
                             {
                                 widget.Init();
-                                <div style="width:100%;">
-                                    @Html.Raw(widget.Render());
+                                <div style="width:100%;">                                     
+                                    @Html.Raw(widget.RenderBody())                                       
                                 </div>
                             }
                         } 
@@ -93,8 +93,8 @@
                             foreach (var widget in widgets)
                             {
                                 widget.Init();
-                                <div style="width:100%;">
-                                    @Html.Raw(widget.Render());
+                                <div style="width:100%;">                               
+                                    @Html.Raw(widget.RenderBody());                                         
                                 </div>
                             }
                         } 
@@ -128,7 +128,17 @@
                             {
                                 widget.Init();
                                 <div>
-                                    @Html.Raw(widget.Render());
+                                    <div class='panel panel-default'>
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.RenderTitle())
+                                        </div>
+                                        <div class='panel-body'>
+                                            @Html.Raw(widget.RenderBody())
+                                        </div>
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.RenderFooter())
+                                        </div>
+                                    </div>
                                 </div>
                             }
                         }
@@ -167,7 +177,17 @@
                             {
                                 widget.Init();
                                 <div>
-                                    @Html.Raw(widget.Render());
+                                    <div class='panel panel-default'>
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.RenderTitle())
+                                        </div>
+                                        <div class='panel-body'>
+                                            @Html.Raw(widget.RenderBody())
+                                        </div>
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.RenderFooter())
+                                        </div>
+                                    </div>
                                 </div>
                             }
                         }
@@ -195,7 +215,7 @@
                                 {
                                     widget.Init();
                                     <div>
-                                        @Html.Raw(widget.Render());
+                                        @Html.Raw(widget.RenderBody())
                                     </div>
                                 }
                             }

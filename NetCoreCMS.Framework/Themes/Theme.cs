@@ -26,5 +26,6 @@ namespace NetCoreCMS.Framework.Themes
         public string PreviewImage { get; set; }
         public bool IsActive { get; set; }
         public List<Layout> Layouts { get; set; }
+        public List<string> MenuLocations { get; set; }
     }
 }

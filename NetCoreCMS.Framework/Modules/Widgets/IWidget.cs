@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Modules.Widgets
 {
@@ -12,6 +13,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         string Body { get;}
         string Footer { get;}
         string ConfigJson { get; }
+        string ViewFileName { get; }
         /// <summary>
         /// {{%%BODY%%}} use inside your html design so that widget can replace his body content at render time
         /// </summary>
@@ -34,7 +36,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         /// Will render complete widget using default design
         /// </summary>
         /// <returns></returns>
-        string Render();
+        string RenderBody();
         string RenderConfig();
         void Init();
     }

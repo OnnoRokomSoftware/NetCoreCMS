@@ -1,5 +1,5 @@
 {
-  "ThemeId": "DE726CA6-C191-43CD-8665-DAED8248941D",
+  "ThemeId": "DE726CA6-C191-43CD-8665-DAED8248941D", //Must be unique string
   "ThemeName": "Default",
   "Type": "Site",
   "Author": "Xonaki",
@@ -11,6 +11,7 @@
   "Category": "Default",
   "PreviewImage": "screenshot.png",
   "IsActive": true,
+  "MenuLocations": ["Top","Navigation","LeftColumn","RightColumn","Footer"],
   "Layouts": [
     {
       "Name": "SiteLayout",
