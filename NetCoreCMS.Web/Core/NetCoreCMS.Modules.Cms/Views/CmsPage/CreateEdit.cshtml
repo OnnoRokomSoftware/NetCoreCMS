@@ -67,7 +67,7 @@
                                         <div class="panel-title">
                                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                                                 <i class="more-less glyphicon glyphicon-chevron-down"></i>
-                                                Update
+                                                Publish
                                             </a>
                                         </div>
                                     </div>
@@ -115,6 +115,22 @@
                                                     else
                                                     {
                                                         <option value="Archived">Archived</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Layout</label>
+                                                <select class="form-control" asp-for="Layout">
+                                                    @foreach (var themeLayout in ViewBag.Layouts)
+                                                    {
+                                                        if (Model.Layout == themeLayout.Name)
+                                                        {
+                                                            <option value="@themeLayout.Name" selected>@themeLayout.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@themeLayout.Name">@themeLayout.Name</option>
+                                                        }
                                                     }
                                                 </select>
                                             </div>
@@ -183,12 +199,19 @@
                                         <div class="panel-body">
                                             <div>
                                                 <label>Parent Page:</label>
-                                                <select class="form-control" asp-for="Parent">
+                                                <select class="form-control" name="ParentId">
                                                     <option value="0">Select Parent</option>
-                                                    <option value="1">Page1</option>
-                                                    <option value="2">Page2</option>
-                                                    <option value="3">Page3</option>
-                                                    <option value="4">Page4</option>
+                                                    @foreach (var page in ViewBag.AllPages)
+                                                    {
+                                                        if (Model.Parent != null && Model.Parent.Id == page.Id)
+                                                        {
+                                                            <option value="@page.Id" selected>@page.Title</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@page.Id">@page.Title</option>
+                                                        }
+                                                    }
                                                 </select>
                                             </div>
                                             <div>

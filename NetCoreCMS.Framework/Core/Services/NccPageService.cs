@@ -136,6 +136,7 @@ namespace NetCoreCMS.Framework.Core.Services
             copyTo.PublishDate = copyFrom.PublishDate;
             copyTo.Slug = copyFrom.Slug;
             copyTo.Title = copyFrom.Title;
+            copyTo.Layout = copyFrom.Layout;
             copyTo.VersionNumber = copyFrom.VersionNumber;
             return copyTo;
         }

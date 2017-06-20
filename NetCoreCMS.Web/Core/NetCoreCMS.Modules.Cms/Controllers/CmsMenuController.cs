@@ -31,6 +31,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
             ViewBag.RecentPages = _pageService.LoadRecentPages(5);
             ViewBag.MenuList = _menuService.LoadAll();
+            ViewBag.MenuLocations = GlobalConfig.ActiveTheme.MenuLocations.ToList();
             ViewBag.IsManage = false;
             if (isManage)
                 ViewBag.IsManage = true;

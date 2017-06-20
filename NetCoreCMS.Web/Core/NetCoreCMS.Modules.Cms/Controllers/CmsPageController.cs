@@ -11,9 +11,11 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Cms.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
@@ -57,6 +59,8 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
         public ActionResult CreateEdit(long Id = 0)
         {
+            ViewBag.Layouts = GlobalConfig.ActiveTheme.Layouts;
+            ViewBag.AllPages = _pageService.LoadAll().Where(p => p.Status == (int)NccPage.NccPageStatus.Published && p.Id != Id);
             NccPage page = new NccPage();
             page.Content = "";
             page.PublishDate = DateTime.Now;
@@ -69,7 +73,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateEdit(NccPage model, string PageContent, long Parent)
+        public ActionResult CreateEdit(NccPage model, string PageContent, long ParentId)
         {
             ApiResponse rsp = new ApiResponse();
             if (model.Id > 0)
@@ -77,6 +81,12 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 try
                 {
                     model.Content = PageContent;
+                    try
+                    {
+                        var parrent = _pageService.Get(ParentId);
+                        model.Parent = parrent;
+                    }
+                    catch (Exception) { }
                     if (ModelState.IsValid)
                     {
                         _pageService.Update(model);
