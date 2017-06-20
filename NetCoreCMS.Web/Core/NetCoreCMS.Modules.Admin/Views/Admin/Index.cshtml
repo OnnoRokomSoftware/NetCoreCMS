@@ -1,165 +1,290 @@
-﻿@using NetCoreCMS.Framework.Utility
-@using NetCoreCMS.Framework.Core
-@model NccWebSite
-@{
+﻿@{
     Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Dashboard";
+    ViewData["PageSubtitle"] = "Admin Dashboard";
 }
-
-<h1> @NccInfo.Name Settings </h1>
-
 <div class="row">
-    <form class="form-horizontal" asp-controller="Admin" asp-action="Index" method="post">
-        <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
-        <input type="hidden" class="form-control" id="Id" name="Id" asp-for="Id" >
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="SiteName">Site Name:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="Name" name="Name" asp-for="Name" placeholder="Enter Site Name">
-                <span asp-validation-for="Name" class="text-danger"></span>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-file-text-o fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">26</div>
+                        <div>Total Pages!</div>
+                    </div>
+                </div>
             </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
         </div>
-        
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="SiteTitle">Site Title:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="SiteTitle" name="SiteTitle" asp-for="SiteTitle" placeholder="Enter Site Title">
-                <span asp-validation-for="SiteTitle" class="text-danger"></span>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-tasks fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">12</div>
+                        <div>Total Menus!</div>
+                    </div>
+                </div>
             </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-group fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">13</div>
+                        <div>Total Users!</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="panel panel-success">
+            <div class="panel-heading">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <i class="fa fa-desktop fa-5x"></i>
+                    </div>
+                    <div class="col-xs-9 text-right">
+                        <div class="huge">2</div>
+                        <div>Total Theme!</div>
+                    </div>
+                </div>
+            </div>
+            <a href="#">
+                <div class="panel-footer">
+                    <span class="pull-left">View Details</span>
+                    <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
+                    <div class="clearfix"></div>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Second Row Start --
+<div class="row">
+    <div class="col-lg-8">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-bar-chart-o fa-fw"></i> Bar Chart Example
+                <div class="pull-right">
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            Actions
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            <li>
+                                <a href="#">Action</a>
+                            </li>
+                            <li>
+                                <a href="#">Another action</a>
+                            </li>
+                            <li>
+                                <a href="#">Something else here</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a href="#">Separated link</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Time</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>3326</td>
+                                        <td>10/21/2013</td>
+                                        <td>3:29 PM</td>
+                                        <td>$321.33</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3325</td>
+                                        <td>10/21/2013</td>
+                                        <td>3:20 PM</td>
+                                        <td>$234.34</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3324</td>
+                                        <td>10/21/2013</td>
+                                        <td>3:03 PM</td>
+                                        <td>$724.17</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3323</td>
+                                        <td>10/21/2013</td>
+                                        <td>3:00 PM</td>
+                                        <td>$23.71</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3322</td>
+                                        <td>10/21/2013</td>
+                                        <td>2:49 PM</td>
+                                        <td>$8345.23</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3321</td>
+                                        <td>10/21/2013</td>
+                                        <td>2:23 PM</td>
+                                        <td>$245.12</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3320</td>
+                                        <td>10/21/2013</td>
+                                        <td>2:15 PM</td>
+                                        <td>$5663.54</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3319</td>
+                                        <td>10/21/2013</td>
+                                        <td>2:13 PM</td>
+                                        <td>$943.45</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-8">
+                        <div id="morris-bar-chart" style="position: relative; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                            <svg height="347" version="1.1" width="669.546875" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="overflow: hidden; position: relative; left: -0.765625px;"><desc style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">Created with Raphaël 2.2.0</desc><defs style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></defs><text x="36.5" y="312" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">0</tspan></text><path fill="none" stroke="#aaaaaa" d="M49,312H644.546875" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="36.5" y="240.25" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">25</tspan></text><path fill="none" stroke="#aaaaaa" d="M49,240.25H644.546875" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="36.5" y="168.5" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">50</tspan></text><path fill="none" stroke="#aaaaaa" d="M49,168.5H644.546875" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="36.5" y="96.75" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">75</tspan></text><path fill="none" stroke="#aaaaaa" d="M49,96.75H644.546875" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="36.5" y="25" text-anchor="end" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: end; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">100</tspan></text><path fill="none" stroke="#aaaaaa" d="M49,25H644.546875" stroke-width="0.5" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);"></path><text x="602.0078125" y="324.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7.5)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2012</tspan></text><text x="516.9296875" y="324.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7.5)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2011</tspan></text><text x="431.8515625" y="324.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7.5)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2010</tspan></text><text x="346.7734375" y="324.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7.5)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2009</tspan></text><text x="261.6953125" y="324.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7.5)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2008</tspan></text><text x="176.6171875" y="324.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7.5)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2007</tspan></text><text x="91.5390625" y="324.5" text-anchor="middle" font-family="sans-serif" font-size="12px" stroke="none" fill="#888888" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); text-anchor: middle; font-family: sans-serif; font-size: 12px; font-weight: normal;" font-weight="normal" transform="matrix(1,0,0,1,0,7.5)"><tspan dy="4" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0);">2006</tspan></text><rect x="59.634765625" y="25" width="30.404296875" height="287" rx="0" ry="0" fill="#0b62a4" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="93.0390625" y="53.69999999999999" width="30.404296875" height="258.3" rx="0" ry="0" fill="#7a92a3" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="144.712890625" y="96.75" width="30.404296875" height="215.25" rx="0" ry="0" fill="#0b62a4" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="178.1171875" y="125.44999999999999" width="30.404296875" height="186.55" rx="0" ry="0" fill="#7a92a3" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="229.791015625" y="168.5" width="30.404296875" height="143.5" rx="0" ry="0" fill="#0b62a4" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="263.1953125" y="197.2" width="30.404296875" height="114.80000000000001" rx="0" ry="0" fill="#7a92a3" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="314.869140625" y="96.75" width="30.404296875" height="215.25" rx="0" ry="0" fill="#0b62a4" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="348.2734375" y="125.44999999999999" width="30.404296875" height="186.55" rx="0" ry="0" fill="#7a92a3" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="399.947265625" y="168.5" width="30.404296875" height="143.5" rx="0" ry="0" fill="#0b62a4" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="433.3515625" y="197.2" width="30.404296875" height="114.80000000000001" rx="0" ry="0" fill="#7a92a3" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="485.025390625" y="96.75" width="30.404296875" height="215.25" rx="0" ry="0" fill="#0b62a4" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="518.4296875" y="125.44999999999999" width="30.404296875" height="186.55" rx="0" ry="0" fill="#7a92a3" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="570.103515625" y="25" width="30.404296875" height="287" rx="0" ry="0" fill="#0b62a4" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect><rect x="603.5078125" y="53.69999999999999" width="30.404296875" height="258.3" rx="0" ry="0" fill="#7a92a3" stroke="none" fill-opacity="1" style="-webkit-tap-highlight-color: rgba(0, 0, 0, 0); fill-opacity: 1;"></rect></svg><div class="morris-hover morris-default-style" style="left: 132.117px; top: 135px; display: none;">
+                                <div class="morris-hover-row-label">2007</div><div class="morris-hover-point" style="color: #0b62a4">
+                                    Series A:
+                                    75
+                                </div><div class="morris-hover-point" style="color: #7a92a3">
+                                    Series B:
+                                    65
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="Tagline">Tagline:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="Tagline" name="Tagline" asp-for="Tagline" placeholder="Enter Tagline">
-                <span asp-validation-for="Tagline" class="text-danger"></span>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <i class="fa fa-bell fa-fw"></i> Notifications Panel
             </div>
+
+            <div class="panel-body">
+                <div class="list-group">
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-comment fa-fw"></i> New Comment
+                        <span class="pull-right text-muted small">
+                            <em>4 minutes ago</em>
+                        </span>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                        <span class="pull-right text-muted small">
+                            <em>12 minutes ago</em>
+                        </span>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-envelope fa-fw"></i> Message Sent
+                        <span class="pull-right text-muted small">
+                            <em>27 minutes ago</em>
+                        </span>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-tasks fa-fw"></i> New Task
+                        <span class="pull-right text-muted small">
+                            <em>43 minutes ago</em>
+                        </span>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                        <span class="pull-right text-muted small">
+                            <em>11:32 AM</em>
+                        </span>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-bolt fa-fw"></i> Server Crashed!
+                        <span class="pull-right text-muted small">
+                            <em>11:13 AM</em>
+                        </span>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <i class="fa fa-warning fa-fw"></i> Server Not Responding
+                        <span class="pull-right text-muted small">
+                            <em>10:57 AM</em>
+                        </span>
+                    </a>
+                    @*<a href="#" class="list-group-item">
+                            <i class="fa fa-shopping-cart fa-fw"></i> New Order Placed
+                            <span class="pull-right text-muted small">
+                                <em>9:49 AM</em>
+                            </span>
+                        </a>*@
+                    @*<a href="#" class="list-group-item">
+                            <i class="fa fa-money fa-fw"></i> Payment Received
+                            <span class="pull-right text-muted small">
+                                <em>Yesterday</em>
+                            </span>
+                        </a>*@
+                </div>
+
+                <a href="#" class="btn btn-default btn-block">View All Alerts</a>
+            </div>
+
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="FaviconUrl">Favicon URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="FaviconUrl" type="text" class="form-control" id="FaviconUrl" name="FaviconUrl" placeholder="Enter Favicon Url">
-                <span asp-validation-for="FaviconUrl" class="text-danger"></span>
-            </div>
-        </div>
+    </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="SiteLogoUrl">Site Logo URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="SiteLogoUrl" type="text" class="form-control" id="SiteLogoUrl" name="SiteLogoUrl" placeholder="Enter Site Logo Url">
-                <span asp-validation-for="SiteLogoUrl" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="DomainName">Website URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="DomainName" type="text" class="form-control" id="DomainName" name="DomainName" placeholder="Enter Website URL">
-                <span asp-validation-for="DomainName" class="text-danger"></span>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="Email">Email:</label>
-            <div class="col-sm-10">
-                <input asp-for="EmailAddress" type="Email" class="form-control" id="EmailAddress" name="EmailAddress" placeholder="Enter Email">
-                <span asp-validation-for="EmailAddress" class="text-danger"></span>
-            </div>
-        </div>
-        
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="Email">Allow User Registration:</label>
-            <div class="col-sm-10">
-                <input asp-for="AllowRegistration" type="checkbox" class="form-control" id="AllowRegistration" name="AllowRegistration" >
-                <span asp-validation-for="AllowRegistration" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="SetupTemplate">New User Role:</label>
-            <div class="col-sm-10">
-                <select asp-for="NewUserRole" type="text" class="form-control" id="NewUserRole" name="NewUserRole">
-                    <option value="">Select new user role</option>
-                    <option value="Administrator">Administrator</option>
-                    <option value="Author">Author</option>
-                    <option value="Editor">Editor</option>
-                    <option value="Reader">Reader</option>
-                    <option value="Subscriber">Subscriber</option>                    
-                </select>
-                <span asp-validation-for="NewUserRole" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="TimeZone">TimeZone:</label>
-            <div class="col-sm-10">
-                <select asp-for="TimeZone" type="text" class="form-control" id="TimeZone" name="TimeZone">
-                    <option value="">Select TimeZone</option>
-                    <option value="UTC_6">UTC +6</option>
-                    <option value="UTC_1">UTC 1</option>                    
-                </select>
-                <span asp-validation-for="TimeZone" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="Language">Language:</label>
-            <div class="col-sm-10">
-                <select asp-for="Language" type="text" class="form-control" id="Language" name="Language">
-                    <option value="">Select Language</option>
-                    <option value="en_US">English US</option>
-                    <option value="bn_BD">Bangla BD</option>
-                </select>
-                <span asp-validation-for="Language" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="DateFormat">Date Format:</label>
-            <div class="col-sm-10">
-                <input asp-for="DateFormat" type="text" class="form-control" id="DateFormat" name="DateFormat">
-                <span asp-validation-for="DateFormat" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="TimeFormat">Time Format:</label>
-            <div class="col-sm-10">
-                <input asp-for="TimeFormat" type="text" class="form-control" id="TimeFormat" name="TimeFormat">
-                <span asp-validation-for="TimeFormat" class="text-danger"></span>
-            </div>
-        </div>
-         
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="Copyrights">Copyrights:</label>
-            <div class="col-sm-10">
-                <input asp-for="Copyrights" type="text" class="form-control" id="Copyrights" name="Copyrights">
-                <span asp-validation-for="Copyrights" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="PrivacyPolicyUrl">Privacy Policy URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="PrivacyPolicyUrl" type="text" class="form-control" id="PrivacyPolicyUrl" name="PrivacyPolicyUrl">
-                <span asp-validation-for="PrivacyPolicyUrl" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="TermsAndConditionsUrl">Terms and Conditions URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="TermsAndConditionsUrl" type="text" class="form-control" id="TermsAndConditionsUrl" name="TermsAndConditionsUrl">
-                <span asp-validation-for="TermsAndConditionsUrl" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="reset" class="btn btn-default">Clear</button>
-            </div>
-        </div>
-
-    </form>
-</div>  
-       
+</div>
+<!-- Second Row End -->       

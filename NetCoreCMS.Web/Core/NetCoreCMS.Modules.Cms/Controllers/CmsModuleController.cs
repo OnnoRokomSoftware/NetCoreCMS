@@ -1,16 +1,20 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core;
+using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
+    [Authorize]
     public class CmsModuleController : NccController
     {
         NccModuleService _moduleService;
@@ -55,12 +59,20 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
         public ActionResult ActivateModule(string id)
         {
-            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.Active);
-            TempData["SuccessMessage"] = "Operation Successful";
+            var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Active);
+            if (entity != null)
+            { 
+                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Error. Module is not found.";
+            }
+
             return RedirectToAction("Index");
         }
 
-        private void UpdateModuleStatus(string id, Framework.Core.Models.NccModule.NccModuleStatus status)
+        private NccModule UpdateModuleStatus(string id, NccModule.NccModuleStatus status)
         {
             var nId = long.Parse(id);
             var module = _moduleService.Get(nId);
@@ -69,26 +81,57 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 module.ModuleStatus = status;
                 _moduleService.Update(module);
             }
+            return module;
         }
 
-        public ActionResult InactivateModule(string id)
+        public ActionResult DeactivateModule(string id)
         {
-            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.Inactive);
-            TempData["SuccessMessage"] = "Operation Successful";
+            var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Inactive);
+            if (entity != null)
+            {
+                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+                module.Inactivate();
+                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Error. Module is not found.";
+            }
+
             return RedirectToAction("Index");
         }
 
         public ActionResult InstallModule(string id)
         {
-            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.Installed);
-            TempData["SuccessMessage"] = "Operation Successful";
+            
+            var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
+            if(entity != null)
+            {
+                //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+                //module.Install();
+                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Error. Module is not found.";
+            }
+            
             return RedirectToAction("Index");
         }
 
         public ActionResult UninstallModule(string id)
         {
-            UpdateModuleStatus(id, Framework.Core.Models.NccModule.NccModuleStatus.UnInstalled);
-            TempData["SuccessMessage"] = "Operation Successful";
+            var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.UnInstalled);
+            if(entity != null)
+            {
+                //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+                //module.Uninstall();
+                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Error. Module is not found.";
+            }
             return RedirectToAction("Index");
         }
 
@@ -96,8 +139,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             var nId = long.Parse(id);
             _moduleService.Remove(nId);
-            TempData["SuccessMessage"] = "Operation Successful";
-            return RedirectToAction("Index");            
+            TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+            return RedirectToAction("Index"); 
         }
     }
 }

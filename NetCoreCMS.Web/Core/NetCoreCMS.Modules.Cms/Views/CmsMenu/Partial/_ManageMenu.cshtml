@@ -1,6 +1,9 @@
 ﻿<table id="menuListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
     <thead>
-        <tr><th>Id</th><th>Name</th><th>Order</th><th>Position</th><th>Action</th></tr>
+        <tr>
+            <th>Id</th><th>Name</th><th>Order</th><th>Position</th>
+            <th>Action | <a class="btn btn-sm btn-info" asp-controller="CmsMenu" asp-action="Index" asp-route-isManage=true><i class="fa fa-refresh"></i> </a></th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var item in ViewBag.MenuList)
@@ -11,11 +14,10 @@
                 <td>@item.MenuOrder</td>
                 <td>@item.Position</td>
                 <td>
-                    <a asp-controller="CmsMenu" asp-action="Index">Edit</a> | 
+                    <a asp-controller="CmsMenu" asp-action="Index" asp-route-menuId="@item.Id">Edit</a> | 
                     <a asp-controller="CmsMenu" asp-action="DeleteMenu" asp-route-menuId="@item.Id">Delete</a>
                 </td>
             </tr>
         }
-        
     </tbody>
 </table>

@@ -19,10 +19,10 @@ namespace NetCoreCMS.Framework.Core.Services
             _entityRepository = entityRepository;
             _menuItemRepository = menuItemRepository;
         }
-         
+
         public NccMenu Get(long entityId)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
+            return _entityRepository.Query().Include(x => x.MenuItems).FirstOrDefault(x => x.Id == entityId);
         }
 
         public NccMenu Save(NccMenu entity)

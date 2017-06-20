@@ -4,6 +4,7 @@
  * Copyright (c) xonaki.com
  * License: BSD (3 Clause)
 */
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
@@ -13,6 +14,7 @@ using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
 {
+    [Authorize("SuperAdmin")]
     public class AdminController : NccController
     {
         NccWebSiteService _webSiteService;
@@ -21,6 +23,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         {
             _webSiteService = nccWebSiteService;
         }
+
         public ActionResult Index()
         {
             var webSite = new NccWebSite();
@@ -33,8 +36,20 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(webSite);
         }
 
+        public ActionResult Settings()
+        {
+            var webSite = new NccWebSite();
+            var webSites = _webSiteService.LoadAll();
+
+            if (webSites != null && webSites.Count > 0)
+            {
+                webSite = webSites.FirstOrDefault();
+            }
+            return View(webSite);
+        }
+
         [HttpPost]
-        public ActionResult Index(NccWebSite website)
+        public ActionResult Settings(NccWebSite website)
         {
             if (ModelState.IsValid)
             {

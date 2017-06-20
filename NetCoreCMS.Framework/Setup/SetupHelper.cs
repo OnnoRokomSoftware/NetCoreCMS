@@ -88,7 +88,7 @@ namespace NetCoreCMS.Framework.Setup
             NccRole contributor = new NccRole() { Name = NccCmsRoles.Contributor, NormalizedName = NccCmsRoles.Contributor };
             NccRole editor = new NccRole() { Name = NccCmsRoles.Editor, NormalizedName = NccCmsRoles.Editor };
             NccRole subscriber = new NccRole() { Name = NccCmsRoles.Subscriber, NormalizedName = NccCmsRoles.Subscriber };
-            NccRole reader = new NccRole() { Name = NccCmsRoles.Reader, NormalizedName = NccCmsRoles.Reader };
+            //NccRole reader = new NccRole() { Name = NccCmsRoles.Reader, NormalizedName = NccCmsRoles.Reader };
 
             roleManager.CreateAsync(superAdmin);
             roleManager.CreateAsync(administrator);
@@ -96,7 +96,7 @@ namespace NetCoreCMS.Framework.Setup
             roleManager.CreateAsync(contributor);
             roleManager.CreateAsync(editor);
             roleManager.CreateAsync(subscriber);
-            roleManager.CreateAsync(reader);
+            //roleManager.CreateAsync(reader);
         }
 
         internal static DbContextOptions GetDbContextOptions()

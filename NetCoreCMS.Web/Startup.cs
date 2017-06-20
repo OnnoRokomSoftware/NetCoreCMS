@@ -28,6 +28,7 @@ using System.IO;
 using NetCoreCMS.Framework.Core.Services;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Repository;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NetCoreCMS.Web
 {
@@ -74,7 +75,7 @@ namespace NetCoreCMS.Web
         {
             _mvcBuilder = services.AddMvc();
             _services = services;
-
+            
             _services.AddSession();
             _services.AddDistributedMemoryCache();
             
@@ -86,20 +87,7 @@ namespace NetCoreCMS.Web
 
             _services.AddTransient<NccModuleRepository>();
             _services.AddTransient<NccModuleService>();
-
-            services.AddTransient<NccMenuRepository>();
-            services.AddTransient<NccMenuItemRepository>();
-            services.AddTransient<NccMenuService>();
-            services.AddTransient<NccPageRepository>();
-            services.AddTransient<NccPageService>();
-            services.AddTransient<ThemeManager>();
-            services.AddTransient<NccWebSiteWidgetRepository>();
-            services.AddTransient<NccWebSiteWidgetService>();
-            services.AddTransient<NccWebSiteRepository>();
-            services.AddTransient<NccWebSiteService>();
-            services.AddTransient<NccThemeRepository>();
-            services.AddTransient<NccThemeService>();
-
+            
             _services.AddSingleton<IConfiguration>(Configuration);
             _services.AddSingleton<IConfigurationRoot>(Configuration);
             
@@ -115,6 +103,17 @@ namespace NetCoreCMS.Web
                 _services.AddCustomizedIdentity();
                 // Add application services.
                 _startup.RegisterDatabase(_services);
+
+                _services.AddAuthorization(options =>
+                {
+                    options.AddPolicy("SuperAdmin", policy => policy.Requirements.Add(new AuthRequire("SuperAdmin", "")));
+                    options.AddPolicy("Administrator", policy => policy.Requirements.Add(new AuthRequire("Administrator", "")));
+                    options.AddPolicy("Author", policy => policy.Requirements.Add(new AuthRequire("Author", "")));
+                    options.AddPolicy("Editor", policy => policy.Requirements.Add(new AuthRequire("Editor", "")));
+                    options.AddPolicy("Subscriber", policy => policy.Requirements.Add(new AuthRequire("Subscriber", "")));
+                });
+
+                _services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
 
                 _serviceProvider = _services.Build(Configuration, _hostingEnvironment);
 

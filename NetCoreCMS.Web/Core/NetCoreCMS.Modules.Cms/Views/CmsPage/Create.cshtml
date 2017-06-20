@@ -15,7 +15,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 @ViewData["PageSubtitle"]
-                <div class="pull-right"><a asp-controller="CmsPage" asp-action="Index" class="btn btn-outline btn-primary btn-xs">Back to Manage</a></div> 
+                <div class="pull-right"><a asp-controller="CmsPage" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Back to Manage</a></div> 
             </div>
             <div class="panel-body">
                 <div class="row">
@@ -31,7 +31,7 @@
                                     <span asp-validation-for="Title" class="text-danger"></span>
                                 </div>
                                 <div class="form-group input-group">
-                                    <span class="input-group-addon">http://yourdomain.com/CmsPage/</span>
+                                    <span class="input-group-addon">http://yourdomain.com/CmsPage/</span> 
                                     <input type="text" class="form-control" id="Slug" name="Slug" asp-for="Slug" placeholder="Slug">
                                     <span asp-validation-for="Slug" class="text-danger"></span>
                                 </div>
