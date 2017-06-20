@@ -3,8 +3,8 @@
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "Page Edit";
-    ViewData["PageSubtitle"] = "Edit page";
+    ViewData["PageTitle"] = "Page";
+    ViewData["PageSubtitle"] = "Create or edit page";
 }
 
 
@@ -15,14 +15,19 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 @ViewData["PageSubtitle"]
-                <div class="pull-right"><a asp-controller="CmsPage" asp-action="Index" class="btn btn-outline btn-primary btn-xs">Back to Manage</a></div> 
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        <a asp-controller="CmsPage" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>
+                    }
+                    <a asp-controller="CmsPage" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Back to Manage</a>
+                </div> 
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <form id="pageEditForm" class="form-horizontal" asp-controller="CmsPage" asp-action="Edit" method="post">
+                    <form id="pageCreateEditForm" class="form-horizontal" asp-controller="CmsPage" asp-action="CreateEdit" method="post">
 
                         <div class="col-sm-8 pull-left">
-                            @*<h3>@ViewData["PageTitle"]</h3>*@
                             <div class="col-md-12">
                                 <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
                                 <input type="hidden" id="Id" name="Id" value="@Model.Id" />
@@ -37,21 +42,6 @@
                                     <span asp-validation-for="Slug" class="text-danger"></span>
                                 </div>
                             </div>
-                            @*<div>
-                                <label for="Title">Title:</label>
-                                <div>
-                                    <input type="text" class="form-control" id="Title" name="Title" asp-for="Title" placeholder="Enter Page Title">
-                                    <span asp-validation-for="Title" class="text-danger"></span>
-                                </div>
-                            </div>*@
-                            @*<div>
-                                <label for="Slug">Slug:</label>
-                                <div>
-                                    <label>http://yourdomain.com/CmsPage/</label>
-                                    <input type="text" class="form-control" id="Slug" name="Slug" asp-for="Slug">
-                                    <span asp-validation-for="Slug" class="text-danger"></span>
-                                </div>
-                            </div>*@
 
                             <div>
                                 <label>Page Content</label>
@@ -76,7 +66,7 @@
                                     <div class="panel-heading" role="tab" id="headingOne">
                                         <div class="panel-title">
                                             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                                                <i class="more-less glyphicon glyphicon-chevron-down" ></i>
+                                                <i class="more-less glyphicon glyphicon-chevron-down"></i>
                                                 Update
                                             </a>
                                         </div>
@@ -86,34 +76,44 @@
                                             <div>
                                                 <label>Status</label>
                                                 <select class="form-control" asp-for="PageStatus">
-                                                    @if((int)Model.PageStatus == 0){
+                                                    @if ((int)Model.PageStatus == 0)
+                                                    {
                                                         <option value="Draft" selected>Draft</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="Draft">Draft</option>
                                                     }
-                                                    @if((int)Model.PageStatus == 1){
+                                                    @if ((int)Model.PageStatus == 1)
+                                                    {
                                                         <option value="Review" selected>Review</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="Review">Review</option>
                                                     }
-                                                    @if((int)Model.PageStatus == 2){
+                                                    @if ((int)Model.PageStatus == 2)
+                                                    {
                                                         <option value="Published" selected>Published</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="Published">Published</option>
                                                     }
-                                                    @if((int)Model.PageStatus == 3){
+                                                    @if ((int)Model.PageStatus == 3)
+                                                    {
                                                         <option value="Unpublished" selected>Unpublished</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="Unpublished">Unpublished</option>
                                                     }
-                                                    @if((int)Model.PageStatus == 4){
+                                                    @if ((int)Model.PageStatus == 4)
+                                                    {
                                                         <option value="Archived" selected>Archived</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="Archived">Archived</option>
                                                     }
                                                 </select>
@@ -121,22 +121,28 @@
                                             <div>
                                                 <label>Visibility</label>
                                                 <select class="form-control" asp-for="PageType">
-                                                    @if((int)Model.PageType == 0){
+                                                    @if ((int)Model.PageType == 0)
+                                                    {
                                                         <option value="Public" selected>Public</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="Public">Public</option>
                                                     }
-                                                    @if((int)Model.PageType == 1){
+                                                    @if ((int)Model.PageType == 1)
+                                                    {
                                                         <option value="Private" selected>Private</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="Private">Private</option>
                                                     }
-                                                    @if((int)Model.PageType == 2){
+                                                    @if ((int)Model.PageType == 2)
+                                                    {
                                                         <option value="PasswordProtected" selected>PasswordProtected</option>
                                                     }
-                                                    else{
+                                                    else
+                                                    {
                                                         <option value="PasswordProtected">PasswordProtected</option>
                                                     }
                                                 </select>
@@ -151,11 +157,14 @@
                                             </div>
                                         </div>
                                         <div class="panel-footer">
-                                            @*<div class="pull-left">
-                                                <button id="saveDraft" class="btn btn-sm btn-default" type="button">Save Draft</button>
-                                            </div>*@
+                                            @if (Model.Id == 0)
+                                            {
+                                                <div class="pull-left">
+                                                    <button id="saveDraft" class="btn btn-sm btn-info" type="button">Save Draft</button>
+                                                </div>
+                                            }
                                             <div class="pull-right">
-                                                <button id="update" class="btn btn-sm btn-primary" type="button">Update</button>
+                                                <button id="publish" class="btn btn-sm btn-primary" type="button">Publish</button>
                                             </div>
                                             <div style="clear:both;"></div>
                                         </div>
@@ -203,9 +212,108 @@
 </div>
 @section Scripts{
     <script>
-    KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
+        KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
     </script>
     <script src="~/lib/ckeditor/ckeditor.js"></script>
-    <link href="/NetCoreCMS.Modules.Cms/css/page.css" rel="stylesheet" />
-    <script src="/NetCoreCMS.Modules.Cms/js/page.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            CKEDITOR.replace('PageContent', {
+                toolbar: [
+                    { name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
+                    { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                    { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                    { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                    { name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
+                    { name: 'editing1', items: ['SpellChecker', 'Scayt'] },
+                    { name: 'styles', items: ['Styles'] },
+                    { name: 'styles1', items: ['Format'] },
+                    { name: 'styles2', items: ['Font'] },
+                    { name: 'styles3', items: ['FontSize'] },
+                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                    { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                    //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
+                    { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                    { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                    { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
+                    { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                    //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
+                    { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                    { name: 'insert', items: ['Image', /*'Flash',*/ 'Table'] },
+                    //'/',
+                    { name: 'colors', items: ['TextColor', 'BGColor'] },
+                    { name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
+                    { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                    { name: 'tools', items: [/*'Maximize', */'ShowBlocks'] }
+                ],
+            });
+
+            $("#Title").change(function () {
+                $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+            });
+
+            function ClearForm() {
+                if ($("#Id").val() == 0) {
+                    $("#pageCreateEditForm").trigger("reset");
+                    CKEDITOR.instances["PageContent"].setData("");
+                }
+            }
+
+            $("#publish").click(function () {
+
+                NccPageMask.ShowLoadingMask();
+                $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
+                var form = $("#pageCreateEditForm");
+
+                $.ajax({
+                    type: "post",
+                    url: form.action,
+                    data: form.serialize(),
+                    contentType: "application/x-www-form-urlencoded",
+                    success: function (rsp, textStatus, jqXHR) {
+                        NccPageMask.HideLoadingMask();
+                        if (rsp.isSuccess) {
+                            NccAlert.ShowSuccess(rsp.message);
+                            ClearForm();
+                        }
+                        else {
+                            NccAlert.ShowError("Error: " + rsp.message);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        NccPageMask.HideLoadingMask();
+                        NccAlert.ShowError("Error. Please try again.");
+                    }
+                });
+            });
+
+            $("#update").click(function () {
+
+                NccPageMask.ShowLoadingMask();
+                $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
+                var form = $("#pageEditForm");
+
+                $.ajax({
+                    type: "post",
+                    url: form.action,
+                    data: form.serialize(),
+                    contentType: "application/x-www-form-urlencoded",
+                    success: function (rsp, textStatus, jqXHR) {
+                        NccPageMask.HideLoadingMask();
+                        if (rsp.isSuccess) {
+                            NccAlert.ShowSuccess(rsp.message);
+                            //ClearForm();
+                        }
+                        else {
+                            NccAlert.ShowError("Error: " + rsp.message);
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        NccPageMask.HideLoadingMask();
+                        NccAlert.ShowError("Error. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
 }
