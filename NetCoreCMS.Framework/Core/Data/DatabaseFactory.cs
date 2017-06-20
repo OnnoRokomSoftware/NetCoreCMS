@@ -31,7 +31,7 @@ namespace NetCoreCMS.Framework.Core.Data
         {
             switch (engine)
             {
-                case DatabaseEngine.MsSql:
+                case DatabaseEngine.MSSQL:
                     if (string.IsNullOrEmpty(dbInfo.DatabasePort))
                         return string.Format(_msSqlConString, dbInfo.DatabaseHost, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                     else
@@ -64,7 +64,7 @@ namespace NetCoreCMS.Framework.Core.Data
         {
             switch (database)
             {
-                case DatabaseEngine.MsSql:
+                case DatabaseEngine.MSSQL:
                     break;
                 case DatabaseEngine.MsSqlLocalStorage:
                     break;
@@ -94,18 +94,23 @@ namespace NetCoreCMS.Framework.Core.Data
         internal static DbContextOptions GetDbContextOptions()
         {
             DatabaseEngine dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
+            var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
+
             switch (dbe)
             {
-                case DatabaseEngine.MsSql:
+                case DatabaseEngine.MSSQL:                    
+                    optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    return optionBuilder.Options;
                     break;
                 case DatabaseEngine.MsSqlLocalStorage:
                     break;
-                case DatabaseEngine.MySql:
+                case DatabaseEngine.MySql:                    
+                    optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    return optionBuilder.Options;
                     break;
                 case DatabaseEngine.PgSql:
                     break;
-                case DatabaseEngine.SqLite:
-                    var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
+                case DatabaseEngine.SqLite:                    
                     optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                     return optionBuilder.Options;
             }
@@ -116,7 +121,26 @@ namespace NetCoreCMS.Framework.Core.Data
         public static bool InitilizeDatabase(DatabaseEngine database, string connectionString)
         {
             var builder = new DbContextOptionsBuilder<NccDbContext>();
-            builder.UseSqlite(connectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));
+            
+            switch (database)
+            {
+                case DatabaseEngine.MSSQL:
+                    builder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    break;
+                case DatabaseEngine.MsSqlLocalStorage:
+                    break;
+                case DatabaseEngine.MySql:
+                    builder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    break;
+                case DatabaseEngine.SqLite:
+                    builder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    break;
+                case DatabaseEngine.PgSql:
+                    break;
+            }
+            //builder.UseSqlite(connectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));
+
+
             var dbContext = new NccDbContext(builder.Options);
             dbContext.Database.Migrate();
             return dbContext.Database.EnsureCreated();

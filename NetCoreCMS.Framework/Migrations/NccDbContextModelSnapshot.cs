@@ -93,8 +93,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
-                    b.Property<int>("MenuFor");
-
                     b.Property<string>("MenuIconCls");
 
                     b.Property<int>("MenuOrder");
@@ -105,7 +103,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("Position");
+                    b.Property<string>("Position");
 
                     b.Property<int>("Status");
 
@@ -233,7 +231,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<bool>("AddToNavigationMenu");
 
-                    b.Property<byte[]>("Content");
+                    b.Property<string>("Content")
+                        .HasMaxLength(2147483647);
 
                     b.Property<long>("CreateBy");
 

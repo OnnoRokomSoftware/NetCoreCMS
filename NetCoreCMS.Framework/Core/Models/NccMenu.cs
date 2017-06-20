@@ -32,24 +32,9 @@ namespace NetCoreCMS.Framework.Core.Models
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }
         public int Status { get; set; }
-        public MenuPosition Position { get; set; }
+        public string Position { get; set; }
         public string MenuIconCls { get; set; }
-        public List<NccMenuItem> MenuItems { get; set; }
-        public NccMenuFor MenuFor { get; set; }
-        public int MenuOrder { get; set; }
-
-        public enum MenuPosition
-        {
-            Top,
-            Navigation,
-            Left,
-            Right,
-            Footer
-        }
-        public enum NccMenuFor
-        {
-            Site,
-            Admin
-        }
+        public List<NccMenuItem> MenuItems { get; set; }        
+        public int MenuOrder { get; set; }        
     }   
 }

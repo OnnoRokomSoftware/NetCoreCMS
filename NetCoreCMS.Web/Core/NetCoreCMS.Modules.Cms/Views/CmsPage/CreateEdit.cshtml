@@ -45,7 +45,7 @@
 
                             <div>
                                 <label>Page Content</label>
-                                <textarea id="PageContent" name="PageContent" class="form-control" data-val="false">@System.Text.Encoding.UTF8.GetString(Model.Content)</textarea>
+                                <textarea id="PageContent" name="PageContent" class="form-control" data-val="false">@Model.Content</textarea>
                                 <span asp-validation-for="Content" class="text-danger"></span>
                             </div>
 

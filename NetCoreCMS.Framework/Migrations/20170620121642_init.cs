@@ -30,13 +30,12 @@ namespace NetCoreCMS.Framework.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
-                    MenuFor = table.Column<int>(nullable: false),
                     MenuIconCls = table.Column<string>(nullable: true),
                     MenuOrder = table.Column<int>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    Position = table.Column<int>(nullable: false),
+                    Position = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     VersionNumber = table.Column<int>(nullable: false)
                 },
@@ -52,19 +51,24 @@ namespace NetCoreCMS.Framework.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AntiForgery = table.Column<bool>(nullable: false),
+                    Author = table.Column<string>(nullable: true),
+                    Category = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Dependencies = table.Column<string>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
                     ModuleId = table.Column<string>(nullable: true),
                     ModuleStatus = table.Column<int>(nullable: false),
+                    ModuleTitle = table.Column<string>(nullable: true),
                     Name = table.Column<string>(nullable: true),
                     NetCoreCMSVersion = table.Column<string>(nullable: true),
                     Path = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),
                     Version = table.Column<string>(nullable: true),
-                    VersionNumber = table.Column<int>(nullable: false)
+                    VersionNumber = table.Column<int>(nullable: false),
+                    WebSite = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -78,7 +82,7 @@ namespace NetCoreCMS.Framework.Migrations
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     AddToNavigationMenu = table.Column<bool>(nullable: false),
-                    Content = table.Column<byte[]>(nullable: true),
+                    Content = table.Column<string>(maxLength: 2147483647, nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Layout = table.Column<string>(nullable: true),

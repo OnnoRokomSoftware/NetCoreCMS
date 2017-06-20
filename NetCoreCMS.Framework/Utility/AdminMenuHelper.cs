@@ -8,7 +8,7 @@ namespace NetCoreCMS.Framework.Utility
 {
     public class AdminMenuHelper
     {
-        public static string MenuHtml(NccMenu.MenuPosition position)
+        public static string MenuHtml(string position)
         {
             var menus = GlobalConfig.Menus.Where( x => x.Position == position);
             var menuTxt = "";

@@ -98,10 +98,25 @@ namespace NetCoreCMS.Web
 
             if (SetupHelper.IsDbCreateComplete)
             {
-                _services.AddDbContext<NccDbContext>(options =>
-                    options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
-                );
-
+                if(SetupHelper.SelectedDatabase == "SqLite")
+                {
+                    _services.AddDbContext<NccDbContext>(options =>
+                        options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                    );
+                }
+                else if (SetupHelper.SelectedDatabase == "MSSQL")
+                {
+                    _services.AddDbContext<NccDbContext>(options =>
+                        options.UseSqlServer(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                    );
+                }
+                else if (SetupHelper.SelectedDatabase == "MySql")
+                {
+                    _services.AddDbContext<NccDbContext>(options =>
+                        options.UseMySql(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                    );
+                }
+                
                 _services.AddCustomizedIdentity();
                 // Add application services.
                 _startup.RegisterDatabase(_services);

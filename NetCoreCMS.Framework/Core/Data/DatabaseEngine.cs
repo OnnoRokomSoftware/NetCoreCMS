@@ -16,7 +16,7 @@ namespace NetCoreCMS.Framework.Core.Data
         SqLite,
         MsSqlLocalStorage,
         MySql,        
-        MsSql,
+        MSSQL,
         PgSql
     }
 }

@@ -215,8 +215,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 Controller = item.Controller,
                 Data = item.Data,
                 Id = item.Id,
-                MenuActionType = TypeConverter.TryParseActionTypeEnum(item.Type),
-                MenuFor = NccMenuItem.MenuItemFor.Site,
+                MenuActionType = TypeConverter.TryParseActionTypeEnum(item.Type),                
                 MenuOrder = int.Parse(item.Order),
                 Module = "",
                 Name = item.Title,
@@ -229,10 +228,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             return new NccMenu()
             {
-                Id = menu.Id,
-                MenuFor = NccMenu.NccMenuFor.Site,
+                Id = menu.Id,                
                 Name = menu.Name,
-                Position = (NccMenu.MenuPosition)Enum.Parse(typeof(NccMenu.MenuPosition), menu.Position, true),
+                Position = menu.Position,
                 MenuOrder = 1, //TODO:Load last order and incrase and set here
             };
         }

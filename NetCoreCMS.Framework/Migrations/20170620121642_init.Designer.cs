@@ -9,8 +9,8 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20170612100904_columnadded")]
-    partial class columnadded
+    [Migration("20170620121642_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -94,8 +94,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
-                    b.Property<int>("MenuFor");
-
                     b.Property<string>("MenuIconCls");
 
                     b.Property<int>("MenuOrder");
@@ -106,7 +104,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int>("Position");
+                    b.Property<string>("Position");
 
                     b.Property<int>("Status");
 
@@ -186,6 +184,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<bool>("AntiForgery");
 
+                    b.Property<string>("Author");
+
                     b.Property<string>("Category");
 
                     b.Property<long>("CreateBy");
@@ -204,6 +204,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("ModuleStatus");
 
+                    b.Property<string>("ModuleTitle");
+
                     b.Property<string>("Name");
 
                     b.Property<string>("NetCoreCMSVersion");
@@ -215,6 +217,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<string>("Version");
 
                     b.Property<int>("VersionNumber");
+
+                    b.Property<string>("WebSite");
 
                     b.HasKey("Id");
 
@@ -228,7 +232,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<bool>("AddToNavigationMenu");
 
-                    b.Property<byte[]>("Content");
+                    b.Property<string>("Content")
+                        .HasMaxLength(2147483647);
 
                     b.Property<long>("CreateBy");
 

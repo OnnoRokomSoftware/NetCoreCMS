@@ -13,7 +13,7 @@
                 <div class="col-sm-4">
                     <select id="menuLocation" class="form-control input-sm">
                         <option value="">Menu Location</option>
-                        @if (currentMenu.Id > 0 && currentMenu.Position.ToString() == "Top")
+                        @if (currentMenu.Id > 0 && currentMenu.Position == "Top")
                         {
                             <option value="Top" selected>Top</option>
                         }
@@ -21,7 +21,7 @@
                         {
                             <option value="Top">Top</option>
                         }
-                        @if (currentMenu.Position.ToString() == "Navigation")
+                        @if (currentMenu.Position == "Navigation")
                         {
                             <option value="Navigation" selected>Navigation</option>
                         }
@@ -29,7 +29,7 @@
                         {
                             <option value="Navigation">Navigation</option>
                         }
-                        @if (currentMenu.Position.ToString() == "Left")
+                        @if (currentMenu.Position == "Left")
                         {
                             <option value="Left" selected>Left</option>
                         }
@@ -37,7 +37,7 @@
                         {
                             <option value="Left">Left</option>
                         }
-                        @if (currentMenu.Position.ToString() == "Right")
+                        @if (currentMenu.Position == "Right")
                         {
                             <option value="Right" selected>Right</option>
                         }
@@ -45,7 +45,7 @@
                         {
                             <option value="Right">Right</option>
                         }
-                        @if (currentMenu.Position.ToString() == "Footer")
+                        @if (currentMenu.Position == "Footer")
                         {
                             <option value="Footer" selected>Footer</option>
                         }

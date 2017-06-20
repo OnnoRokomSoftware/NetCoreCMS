@@ -58,7 +58,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         public ActionResult CreateEdit(long Id = 0)
         {
             NccPage page = new NccPage();
-            page.Content = Encoding.UTF8.GetBytes("");
+            page.Content = "";
             if (Id > 0)
             {
                 page = _pageService.Get(Id);
@@ -74,7 +74,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             {
                 try
                 {
-                    model.Content = Encoding.UTF8.GetBytes(PageContent);
+                    model.Content = PageContent;
                     if (ModelState.IsValid)
                     {
                         _pageService.Update(model);
@@ -93,7 +93,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             {
                 try
                 {
-                    model.Content = Encoding.UTF8.GetBytes(PageContent);
+                    model.Content = PageContent;
                     if (ModelState.IsValid)
                     {
                         _pageService.Save(model);

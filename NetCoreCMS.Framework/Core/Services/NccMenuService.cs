@@ -95,8 +95,7 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = BaseModel.GetCurrentUserId();
             oldEntity.Name = entity.Name;            
-            oldEntity.Status = entity.Status;
-            oldEntity.MenuFor = entity.MenuFor;
+            oldEntity.Status = entity.Status;            
             oldEntity.MenuIconCls = entity.MenuIconCls;
             oldEntity.Position = entity.Position;
             oldEntity.Status = entity.Status;            
@@ -105,8 +104,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<NccMenu> LoadAllSiteMenus()
         {
             var list =  _entityRepository.Query()
-                .Include("MenuItems")
-                .Where(x => x.MenuFor == NccMenu.NccMenuFor.Site).ToList();
+                .Include("MenuItems").ToList();
             foreach (var item in list)
             {
                 RecursiveChieldLoad(item.MenuItems);

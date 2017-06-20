@@ -38,7 +38,8 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Slug { get; set; }
         public string MetaDescription { get; set; }
         public string MetaKeyword { get; set; }
-        public byte[] Content { get; set; }
+        [MaxLength(int.MaxValue)]        
+        public string Content { get; set; }
         public List<NccPage> LinkedPages { get; set; }
         public bool AddToNavigationMenu { get; set; }
         public NccPageStatus PageStatus { get; set; }

@@ -82,7 +82,26 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             SetupHelper.InitilizeDatabase();
 
             var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
-            optionBuilder.UseSqlite(SetupHelper.ConnectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));
+
+            DatabaseEngine dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
+
+            switch (dbe)
+            {
+                case DatabaseEngine.MSSQL:
+                    optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));                    
+                    break;
+                case DatabaseEngine.MsSqlLocalStorage:
+                    break;
+                case DatabaseEngine.MySql:
+                    optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));                    
+                    break;                
+                case DatabaseEngine.SqLite:
+                    optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    break;
+                case DatabaseEngine.PgSql:
+                    break;
+            }
+            
             var nccDbConetxt = new NccDbContext(optionBuilder.Options);
 
             var userStore = new NccUserStore(nccDbConetxt);

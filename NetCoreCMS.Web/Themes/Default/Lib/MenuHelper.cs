@@ -9,7 +9,7 @@ namespace NetCoreCMS.Themes.Default.Lib
 {
     public class MenuHelper
     {
-        public static string PrepareMenuHtml(NccMenu.MenuPosition position)
+        public static string PrepareMenuHtml(string position)
         {
             var menus = GlobalConfig.Menus.Where( x => x.Position == position);
             var menuTxt = "";
