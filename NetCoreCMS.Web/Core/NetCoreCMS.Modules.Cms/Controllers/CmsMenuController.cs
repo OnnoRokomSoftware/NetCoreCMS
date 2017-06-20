@@ -9,6 +9,7 @@ using NetCoreCMS.Modules.Cms.Models.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 
@@ -34,11 +35,42 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             if (isManage)
                 ViewBag.IsManage = true;
             ViewBag.CurrentMenu = new NccMenu();
+            ViewBag.CurrentMenuItems = "";
             if (menuId > 0)
             {
-                ViewBag.CurrentMenu = _menuService.Get(menuId);
+                NccMenu nccMenu = _menuService.Get(menuId);
+                ViewBag.CurrentMenu = nccMenu;
+                string finalMenuList = "";
+                foreach (var menuItem in nccMenu.MenuItems)
+                {
+                    finalMenuList += menuItemToString(menuItem, 1);
+                }
+                ViewBag.CurrentMenuItems = finalMenuList;
+                //ViewBag.CurrentMenu = GlobalConfig.Menus.Where(x => x.Id == menuId).FirstOrDefault();
             }
             return View();
+        }
+
+        private string menuItemToString(NccMenuItem menuItem, int level)
+        {
+            string menuStart = @"<li class='list-group-item no-boarder' ncc-menu-item-id='" + menuItem.Id + @"' ncc-menu-item-action-type='Url' ncc-menu-item-controller='" + menuItem.Controller + @"' ncc-menu-item-action='" + menuItem.Action + @"' ncc-menu-item-action-data='' ncc-menu-item-url='" + menuItem.Url + @"' ncc-menu-item-target='" + menuItem.Target + @"' ncc-menu-item-order='" + menuItem.MenuOrder + @"' ncc-menu-item-title='" + menuItem.Name + @"'>
+                            <div class='menu-item-content'>
+                                <div class='pull-left' style='padding: 5px 5px;'>
+                                    <i class='glyphicon glyphicon-move margin-right-10'></i>
+                                    <span class='ncc-menu-title'>" + menuItem.Name + @"</span>
+                                </div>
+                                <input type='button' class='closeMenuItem pull-right' value='X' onclick='RemoveMenuItem(this)' />
+                            </div>";
+            string menuCenter = "";
+            if (menuItem.Childrens.Count > 0)
+            {
+                foreach (var menuItemChild in menuItem.Childrens)
+                {
+                    menuCenter = "<ul>" + menuItemToString(menuItemChild, level + 1) + "</ul>";
+                }
+            }
+            string menuEnd = @"</li>";
+            return menuStart + menuCenter + menuEnd;
         }
 
         [HttpPost]
