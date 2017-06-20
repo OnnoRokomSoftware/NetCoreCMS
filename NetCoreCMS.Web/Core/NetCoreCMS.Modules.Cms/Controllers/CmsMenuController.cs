@@ -214,7 +214,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 Action = item.Action,
                 Controller = item.Controller,
                 Data = item.Data,
-                //Id = item.Id,
+                Id = item.Id,
                 MenuActionType = TypeConverter.TryParseActionTypeEnum(item.Type),                
                 MenuOrder = int.Parse(item.Order),
                 Module = "",
