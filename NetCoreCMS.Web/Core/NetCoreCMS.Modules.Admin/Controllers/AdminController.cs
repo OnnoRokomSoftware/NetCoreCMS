@@ -23,6 +23,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         {
             _webSiteService = nccWebSiteService;
         }
+
         public ActionResult Index()
         {
             var webSite = new NccWebSite();
@@ -35,8 +36,20 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(webSite);
         }
 
+        public ActionResult Settings()
+        {
+            var webSite = new NccWebSite();
+            var webSites = _webSiteService.LoadAll();
+
+            if (webSites != null && webSites.Count > 0)
+            {
+                webSite = webSites.FirstOrDefault();
+            }
+            return View(webSite);
+        }
+
         [HttpPost]
-        public ActionResult Index(NccWebSite website)
+        public ActionResult Settings(NccWebSite website)
         {
             if (ModelState.IsValid)
             {
