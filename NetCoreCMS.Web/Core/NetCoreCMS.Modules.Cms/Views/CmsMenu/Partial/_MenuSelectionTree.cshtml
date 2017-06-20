@@ -6,7 +6,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">
             <div class="col-sm-12">
-                <div class="col-sm-6" style="padding-right:0px;">
+                <div class="col-sm-4" style="padding-right:0px;">
                     <input type="hidden" id="menuId" name="menuId" value="@currentMenu.Id" />
                     <input type="text" id="menuName" class="form-control input-sm" placeholder="Enter Menu Name" value="@currentMenu.Name" />
                 </div>
@@ -55,9 +55,14 @@
                         }
                     </select>
                 </div>
-                <div class="col-sm-2">
-                    <input type="button" id="saveMenuBtn" value="Save Menu" class="btn btn-sm btn-default pull-right" />
+                <div class="col-sm-4">
+                    <input type="button" id="saveMenuBtn" value="Save Menu" class="btn btn-sm btn-default pull-right" />                    
+                    @if (currentMenu.Id > 0)
+                    {
+                        <a class="btn btn-sm btn-success pull-right" style="margin-right:5px;" href="/CmsMenu">New Menu</a>
+                    }
                 </div>
+
                 <div style="clear:both;"></div>
             </div>
             <div style="clear:both;"></div>
@@ -67,7 +72,7 @@
             <ul id="selectedMenuTree">
                 @if (currentMenu.Id > 0)
                 {
-                    @ViewBag.CurrentMenuItems
+                    @Html.Raw(ViewBag.CurrentMenuItems)
                 }
                 else
                 {

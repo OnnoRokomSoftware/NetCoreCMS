@@ -38,15 +38,18 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             ViewBag.CurrentMenuItems = "";
             if (menuId > 0)
             {
-                NccMenu nccMenu = _menuService.Get(menuId);
-                ViewBag.CurrentMenu = nccMenu;
-                string finalMenuList = "";
-                foreach (var menuItem in nccMenu.MenuItems)
+                //NccMenu nccMenu = _menuService.Get(menuId);
+                NccMenu nccMenu = GlobalConfig.Menus.Where(x => x.Id == menuId).FirstOrDefault();
+                if (nccMenu != null)
                 {
-                    finalMenuList += menuItemToString(menuItem, 1);
+                    ViewBag.CurrentMenu = nccMenu;
+                    string finalMenuList = "";
+                    foreach (var menuItem in nccMenu.MenuItems)
+                    {
+                        finalMenuList += menuItemToString(menuItem, 1);
+                    }
+                    ViewBag.CurrentMenuItems = finalMenuList;
                 }
-                ViewBag.CurrentMenuItems = finalMenuList;
-                //ViewBag.CurrentMenu = GlobalConfig.Menus.Where(x => x.Id == menuId).FirstOrDefault();
             }
             return View();
         }
@@ -82,46 +85,62 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var r = new ApiResponse();
             if (menu != null)
             {
-                if (menu.Id > 0)
+                if (menu.Name.Trim() == "")
                 {
-
+                    r.IsSuccess = false;
+                    r.Message = "Please enter a menu name.";
+                }
+                else if (menu.Position.Trim() == "")
+                {
+                    r.IsSuccess = false;
+                    r.Message = "Please select a menu position.";
+                }
+                else if (menu.Items.Count == 0)
+                {
+                    r.IsSuccess = false;
+                    r.Message = "You cannot save an empty menu.";
                 }
                 else
                 {
-                    if (menu.Name.Trim() == "")
+                    if (menu.Id > 0)
                     {
-                        r.IsSuccess = false;
-                        r.Message = "Please enter a menu name.";
-                    }
-                    else if (menu.Position.Trim() == "")
-                    {
-                        r.IsSuccess = false;
-                        r.Message = "Please select a menu position.";
-                    }
-                    else if (_menuService.LoadAllByName(menu.Name).Count > 0)
-                    {
-                        r.IsSuccess = false;
-                        r.Message = "This menu name already exists.";
-                    }
-                    else if (menu.Items.Count == 0)
-                    {
-                        r.IsSuccess = false;
-                        r.Message = "You cannot save an empty menu.";
+                        if (_menuService.LoadAllByName(menu.Name).Count > 0 && _menuService.LoadAllByName(menu.Name).FirstOrDefault().Id != menu.Id)
+                        {
+                            r.IsSuccess = false;
+                            r.Message = "This menu name already used.";
+                        }
+                        else
+                        {
+                            NccMenu menuModel = CreateMenuObject(menu);
+                            CreateMenuItems(menuModel, menu);
+                            _menuService.Update(menuModel);
+
+                            r.IsSuccess = true;
+                            r.Message = "Menu updated successfully.";
+                        }
                     }
                     else
                     {
-                        NccMenu menuModel = CreateMenuObject(menu);
-                        CreateMenuItems(menuModel, menu);
-                        _menuService.Save(menuModel);
+                        if (_menuService.LoadAllByName(menu.Name).Count > 0)
+                        {
+                            r.IsSuccess = false;
+                            r.Message = "This menu name already exists.";
+                        }
+                        else
+                        {
+                            NccMenu menuModel = CreateMenuObject(menu);
+                            CreateMenuItems(menuModel, menu);
+                            _menuService.Save(menuModel);
 
-                        r.IsSuccess = true;
-                        r.Message = "Menu added successfully.";
+                            r.IsSuccess = true;
+                            r.Message = "Menu added successfully.";
+                        }
                     }
                 }
             }
 
             GlobalConfig.Menus = _menuService.LoadAllSiteMenus();
-
+            ViewBag.MenuList = _menuService.LoadAll();
             //ApiResponse rsp = new ApiResponse();
             //rsp.IsSuccess = false;
             //rsp.Message = "Error occoured. Please fill up all field correctly.";
@@ -140,16 +159,16 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 _menuService.DeletePermanently(menuId);
                 TempData["SuccessMessage"] = "Delete successful";
-                return RedirectToAction("Index", new { isManage = true });
+                //return RedirectToAction("Index", new { isManage = true });
             }
             catch (Exception ex)
             {
                 //TODO: log error
+                TempData["ErrorMessage"] = "Delete Failed";
             }
 
             GlobalConfig.Menus = _menuService.LoadAllSiteMenus();
 
-            TempData["ErrorMessage"] = "Delete Failed";
             return RedirectToAction("Index", new { isManage = true });
         }
 
@@ -158,27 +177,27 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             foreach (var item in menu.Items)
             {
                 NccMenuItem mi = MakeNccMenuItem(item);
-                if(mi != null)
+                if (mi != null)
                 {
                     menuModel.MenuItems.Add(mi);
                 }
             }
-            
+
             return new List<NccMenuItem>();
         }
-        
+
         private NccMenuItem MakeNccMenuItem(NccMenuItemViewModel miViewModel)
         {
             NccMenuItem parentMenuItem = null;
             if (miViewModel != null)
             {
-                parentMenuItem = CreateNccMenuItemObject(miViewModel);                
+                parentMenuItem = CreateNccMenuItemObject(miViewModel);
                 if (miViewModel.Childrens != null)
                 {
                     foreach (NccMenuItemViewModel menuItem in miViewModel.Childrens)
                     {
                         var cMi = MakeNccMenuItem(menuItem);
-                        if(cMi != null)
+                        if (cMi != null)
                         {
                             parentMenuItem.Childrens.Add(cMi);
                         }
@@ -210,9 +229,10 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             return new NccMenu()
             {
+                Id = menu.Id,
                 MenuFor = NccMenu.NccMenuFor.Site,
                 Name = menu.Name,
-                Position = (NccMenu.MenuPosition)Enum.Parse(typeof(NccMenu.MenuPosition),menu.Position,true),
+                Position = (NccMenu.MenuPosition)Enum.Parse(typeof(NccMenu.MenuPosition), menu.Position, true),
                 MenuOrder = 1, //TODO:Load last order and incrase and set here
             };
         }
