@@ -44,12 +44,6 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             TempData["Message"] = "Page not found";
             return Redirect("/CmsHome/ResourceNotFound");
         }
-
-        [HttpPost]
-        public ActionResult Index(NccPage model)
-        {
-            return View();
-        }
         
         public ActionResult Manage()
         {
@@ -59,6 +53,8 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
         public ActionResult CreateEdit(long Id = 0)
         {
+            ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + Request.Host + "/CmsPage/";
+
             ViewBag.Layouts = GlobalConfig.ActiveTheme.Layouts;
             ViewBag.AllPages = _pageService.LoadAll().Where(p => p.Status == (int)NccPage.NccPageStatus.Published && p.Id != Id);
             NccPage page = new NccPage();
