@@ -55,7 +55,7 @@
                                 <td>@page.PageStatus</td>
                                 <td>@page.Layout</td>
                                 <td>@page.PageType</td>
-                                <td>@page.PublishDate</td>
+                                <td>@page.PublishDate.ToString("yyyy-MM-dd hh:mm tt")</td>
                                 <td>@page.PageOrder</td>
                                 <td>
                                     <a asp-controller="CmsPage" asp-action="CreateEdit" asp-route-id="@page.Id">Edit</a> |

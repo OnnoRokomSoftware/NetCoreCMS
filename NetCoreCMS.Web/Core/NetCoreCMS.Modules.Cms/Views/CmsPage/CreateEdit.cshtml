@@ -80,7 +80,7 @@
                                         <div class="panel-body">
                                             <div>
                                                 <label>Status</label>
-                                                <select class="form-control" asp-for="PageStatus">
+                                                <select class="form-control" asp-for="PageStatus" id="PageStatus">
                                                     @if ((int)Model.PageStatus == 0)
                                                     {
                                                         <option value="Draft" selected>Draft</option>
@@ -170,7 +170,7 @@
                                             </div>
                                             <div>
                                                 <label>Schedule Date</label>
-                                                <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate" />
+                                                <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("yyyy-MM-dd hh:mm tt")" />
                                             </div>
                                             <div>
                                                 <label>Add to Navigation Menu</label>
@@ -178,14 +178,12 @@
                                             </div>
                                         </div>
                                         <div class="panel-footer">
-                                            @if (Model.Id == 0)
-                                            {
-                                                <div class="pull-left">
-                                                    <button id="saveDraft" class="btn btn-sm btn-info" type="button">Save Draft</button>
-                                                </div>
-                                            }
+                                            <input type="hidden" name="SubmitType" id="SubmitType" value="Save" />
+                                            <div class="pull-left">
+                                                <button id="save" class="btn btn-sm btn-primary" type="button">Save</button>
+                                            </div>
                                             <div class="pull-right">
-                                                <button id="publish" class="btn btn-sm btn-primary" type="button">Publish</button>
+                                                <button id="publish" class="btn btn-sm btn-success" type="button">Publish</button>
                                             </div>
                                             <div style="clear:both;"></div>
                                         </div>
@@ -280,67 +278,29 @@
                 $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
             });
 
-            function ClearForm() {
-                if ($("#Id").val() == 0) {
-                    $("#pageCreateEditForm").trigger("reset");
-                    CKEDITOR.instances["PageContent"].setData("");
-                }
-            }
-
             $("#publish").click(function () {
+                var element = document.getElementById('PageStatus');
+                element.value = "Published";
+                console.log($("#Slug").val());
+                if ($("#Slug").val() == "") {
+                    document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
+                    console.log($("#Slug").val());
+                }
+                document.getElementById("SubmitType").value = "publish";
+                //$("#SubmitType").value = "publish";
 
-                NccPageMask.ShowLoadingMask();
                 $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
-                var form = $("#pageCreateEditForm");
-
-                $.ajax({
-                    type: "post",
-                    url: form.action,
-                    data: form.serialize(),
-                    contentType: "application/x-www-form-urlencoded",
-                    success: function (rsp, textStatus, jqXHR) {
-                        NccPageMask.HideLoadingMask();
-                        if (rsp.isSuccess) {
-                            NccAlert.ShowSuccess(rsp.message);
-                            ClearForm();
-                        }
-                        else {
-                            NccAlert.ShowError("Error: " + rsp.message);
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        NccPageMask.HideLoadingMask();
-                        NccAlert.ShowError("Error. Please try again.");
-                    }
-                });
+                document.getElementById("pageCreateEditForm").submit();
             });
 
-            $("#update").click(function () {
+            $("#save").click(function () {
+                if ($("#Slug").val() == "") {
+                    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+                }
+                $("#SubmitType").val("Save");
 
-                NccPageMask.ShowLoadingMask();
                 $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
-                var form = $("#pageEditForm");
-
-                $.ajax({
-                    type: "post",
-                    url: form.action,
-                    data: form.serialize(),
-                    contentType: "application/x-www-form-urlencoded",
-                    success: function (rsp, textStatus, jqXHR) {
-                        NccPageMask.HideLoadingMask();
-                        if (rsp.isSuccess) {
-                            NccAlert.ShowSuccess(rsp.message);
-                            //ClearForm();
-                        }
-                        else {
-                            NccAlert.ShowError("Error: " + rsp.message);
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        NccPageMask.HideLoadingMask();
-                        NccAlert.ShowError("Error. Please try again.");
-                    }
-                });
+                document.getElementById("pageCreateEditForm").submit();
             });
         });
     </script>
