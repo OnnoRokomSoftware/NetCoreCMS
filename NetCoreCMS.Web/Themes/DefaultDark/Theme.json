@@ -2,9 +2,9 @@
   "ThemeId": "D9C60705-FC10-401B-A974-307990B1CB7E", //Must be unique string
   "ThemeName": "DefaultDark",
   "Type": "Site",
-  "Author": "Xonaki",
+  "Author": "TecRT",
   "Email": "netcorecms@xonaki.com",
-  "Website": "http://xonaki.com",
+  "Website": "http://tecrt.com",
   "Description": "Builtin Content Management System Site Theme.",
   "Version": "0.1.1",
   "NetCoreCMSVersion": "0.1.1",

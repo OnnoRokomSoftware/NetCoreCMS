@@ -3,8 +3,13 @@
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "Page";
-    ViewData["PageSubtitle"] = "Create or edit page";
+    ViewData["PageTitle"] = "Page Create";
+    ViewData["PageSubtitle"] = "Create a new page";
+    if (Model.Id > 0)
+    {
+        ViewData["PageTitle"] = "Page Edit";
+        ViewData["PageSubtitle"] = "Update information of a page";
+    }
 }
 
 

@@ -3,7 +3,7 @@
   "ModuleName": "NetCoreCMS.Modules.HelloWorld",
   "ModuleTitle": "NetCoreCMS HelloWorld Module",
   "Author": "TecRT",
-  "Website": "http://xonaki.com",
+  "Website": "http://tecrt.com",
   "AntiForgery": true,
   "Description": "Builtin Content Management Example Module.",
   "Version": "0.1.1",
