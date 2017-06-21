@@ -90,12 +90,12 @@ namespace NetCoreCMS.Framework.Setup
             NccRole subscriber = new NccRole() { Name = NccCmsRoles.Subscriber, NormalizedName = NccCmsRoles.Subscriber };
             //NccRole reader = new NccRole() { Name = NccCmsRoles.Reader, NormalizedName = NccCmsRoles.Reader };
 
-            roleManager.CreateAsync(superAdmin);
-            roleManager.CreateAsync(administrator);
-            roleManager.CreateAsync(author);
-            roleManager.CreateAsync(contributor);
-            roleManager.CreateAsync(editor);
-            roleManager.CreateAsync(subscriber);
+            var sa = roleManager.CreateAsync(superAdmin).Result;
+            var a = roleManager.CreateAsync(administrator).Result;
+            var au = roleManager.CreateAsync(author).Result;
+            var c = roleManager.CreateAsync(contributor).Result;
+            var e = roleManager.CreateAsync(editor).Result;
+            var s = roleManager.CreateAsync(subscriber).Result;
             //roleManager.CreateAsync(reader);
         }
 

@@ -142,7 +142,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             var signInLogger = _loggerFactory.CreateLogger<SignInManager<NccUser>>();
             var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger);
             
-            nccDbConetxt.Database.Migrate();
+            //nccDbConetxt.Database.Migrate();
 
             var setupInfo = new WebSiteInfo()
             {

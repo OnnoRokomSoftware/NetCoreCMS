@@ -8,6 +8,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
@@ -23,7 +24,7 @@ namespace NetCoreCMS.Framework.Core.Models
             MenuItems = new List<NccMenuItem>();
         }
 
-        [Key]
+        [Key]        
         public long Id { get; set; }
         public int VersionNumber { get; set; }
         public string Name { get; set; }

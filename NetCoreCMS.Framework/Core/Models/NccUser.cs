@@ -7,6 +7,8 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
@@ -18,6 +20,9 @@ namespace NetCoreCMS.Framework.Core.Models
             ModificationDate = DateTime.Now;
         }
 
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public override long Id { get; set; }
         public string Slug { get; set; }
         public string FullName { get; set; }
         public string Mobile { get; set; }

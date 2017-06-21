@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetCoreCMS.Framework.Migrations
 {
-    public partial class init : Migration
+    public partial class initiMySql : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,7 +27,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     MenuIconCls = table.Column<string>(nullable: true),
@@ -49,7 +49,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AntiForgery = table.Column<bool>(nullable: false),
                     Author = table.Column<string>(nullable: true),
                     Category = table.Column<string>(nullable: true),
@@ -80,7 +80,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AddToNavigationMenu = table.Column<bool>(nullable: false),
                     Content = table.Column<string>(maxLength: 2147483647, nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
@@ -117,7 +117,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AntiForgery = table.Column<bool>(nullable: false),
                     Author = table.Column<string>(nullable: true),
                     Category = table.Column<string>(nullable: true),
@@ -147,7 +147,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
@@ -169,7 +169,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Key = table.Column<string>(nullable: true),
@@ -190,7 +190,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
@@ -215,7 +215,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AccessFailedCount = table.Column<int>(nullable: false),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
@@ -251,7 +251,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AllowRegistration = table.Column<bool>(nullable: false),
                     Copyrights = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
@@ -286,7 +286,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     Action = table.Column<string>(nullable: true),
                     Controller = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
@@ -344,7 +344,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     Content = table.Column<byte[]>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
@@ -376,7 +376,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     RoleId = table.Column<long>(nullable: false)
@@ -397,7 +397,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Description = table.Column<string>(nullable: true),
@@ -428,7 +428,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true),
                     UserId = table.Column<long>(nullable: false)
@@ -493,7 +493,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     LayoutName = table.Column<string>(nullable: true),
@@ -527,7 +527,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     Dependencies = table.Column<string>(nullable: true),
@@ -558,7 +558,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CategoryImage = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
@@ -590,7 +590,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AllowComment = table.Column<bool>(nullable: false),
                     AuthorId = table.Column<long>(nullable: true),
                     Content = table.Column<byte[]>(nullable: true),
@@ -643,7 +643,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AuthorId = table.Column<long>(nullable: true),
                     Content = table.Column<byte[]>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
@@ -678,7 +678,7 @@ namespace NetCoreCMS.Framework.Migrations
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),

@@ -9,8 +9,8 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20170620121642_init")]
-    partial class init
+    [Migration("20170621062421_initiMySql")]
+    partial class initiMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
