@@ -25,7 +25,7 @@ namespace NetCoreCMS.Modules.Cms.Lib
                 }
                 else if (module.ModuleStatus == NccModule.NccModuleStatus.Active)
                 {
-                    actionText = "<a href=\"/CmsModule/DeactivateModule/?id=" + module.Id + "\">Dectivate</a>";
+                    actionText = "<a href=\"/CmsModule/DeactivateModule/?id=" + module.Id + "\">Deactivate</a>";
                 }
                 else if (module.ModuleStatus == NccModule.NccModuleStatus.Deleted || module.ModuleStatus == NccModule.NccModuleStatus.Duplicate || module.ModuleStatus == NccModule.NccModuleStatus.InCompatible)
                 {
