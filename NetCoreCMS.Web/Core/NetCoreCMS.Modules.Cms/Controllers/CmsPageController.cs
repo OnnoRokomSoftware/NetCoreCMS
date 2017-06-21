@@ -31,11 +31,12 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _logger = factory.CreateLogger<CmsPageController>();
         }
 
-        public ActionResult Index(string id)
+        [AllowAnonymous]
+        public ActionResult Index(string slug)
         {            
-            if(!string.IsNullOrEmpty(id))
+            if(!string.IsNullOrEmpty(slug))
             {
-                var page = _pageService.GetBySlugs(id);
+                var page = _pageService.GetBySlugs(slug);
                 if (page != null)
                 {
                     return View(page);

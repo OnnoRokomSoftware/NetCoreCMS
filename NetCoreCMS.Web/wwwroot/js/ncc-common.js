@@ -104,8 +104,8 @@ NccGlobalAlert = new function () {
 NccUtil = new function () {
     this.GetSafeSlug = function(string){
         return string
-            .toLowerCase()
+            //.toLowerCase()
             .replace(/ /g, '-')
-            .replace(/[^\w-]+/g, '');
+            .replace(/[.,\/#!$%\^&\*;:{}=\+_`~()]/g, "");
     }
 }

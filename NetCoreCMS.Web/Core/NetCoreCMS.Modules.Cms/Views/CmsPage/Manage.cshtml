@@ -58,6 +58,7 @@
                                 <td>@page.PublishDate.ToString("yyyy-MM-dd hh:mm tt")</td>
                                 <td>@page.PageOrder</td>
                                 <td>
+                                    <a asp-controller="CmsPage" asp-action="Index" asp-route-slug="@page.Slug" target="_blank">View</a> |
                                     <a asp-controller="CmsPage" asp-action="CreateEdit" asp-route-id="@page.Id">Edit</a> |
                                     <a asp-controller="CmsPage" asp-action="Delete" asp-route-id="@page.Id">Delete</a>
                                 </td>
