@@ -65,7 +65,7 @@ namespace NetCoreCMS.Framework.Core.Data
 
         private static void ScanEntities(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
         {
-            var entityTypes = typeToRegisters.Where(x => x.GetTypeInfo().IsSubclassOf(typeof(BaseModel)) && !x.GetTypeInfo().IsAbstract);
+            var entityTypes = typeToRegisters.Where(x => x.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IBaseModel<long>)) && !x.GetTypeInfo().IsAbstract);
             foreach (var type in entityTypes)
             {
                 modelBuilder.Entity(type);

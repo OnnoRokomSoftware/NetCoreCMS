@@ -16,7 +16,8 @@ namespace NetCoreCMS.Modules.Cms.Lib
             {
                 if (module.ModuleStatus == NccModule.NccModuleStatus.New || module.ModuleStatus == NccModule.NccModuleStatus.UnInstalled)
                 {
-                    actionText = "<a href=\"/CmsModule/InstallModule/?id=" + module.Id + "\" >Install</a>";
+                    actionText = "<a href=\"/CmsModule/InstallModule/?id=" + module.Id + "\" >Install | </a>";
+                    actionText += "<a href=\"/CmsModule/RemoveModule/?id=" + module.Id + "\">Remove</a>";
                 }
                 else if (module.ModuleStatus == NccModule.NccModuleStatus.Installed || module.ModuleStatus == NccModule.NccModuleStatus.Inactive)
                 {

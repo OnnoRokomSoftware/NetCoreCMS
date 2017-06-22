@@ -90,8 +90,15 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             if (entity != null)
             {
                 var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                module.Inactivate();
-                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+                if(module != null)
+                {
+                    module.Inactivate();
+                    TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Module did not loaded.";
+                }
             }
             else
             {
@@ -138,7 +145,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         public ActionResult RemoveModule(string id)
         {
             var nId = long.Parse(id);
-            _moduleService.Remove(nId);
+            _moduleService.DeletePermanently(nId);
             TempData["SuccessMessage"] = "Operation Successful. Restart Site";
             return RedirectToAction("Index"); 
         }

@@ -1,0 +1,13 @@
+﻿{
+  "ModuleId": "4345348AD-174A-4FF7-9B1D-FCE234143E8A6",
+  "ModuleName": "NetCoreCMS.Notice",
+  "ModuleTitle": "NetCoreCMS Notice Module",
+  "Author": "TecRT",
+  "Website": "http://tecrt.com",
+  "AntiForgery": true,
+  "Description": "Builtin Content Management Example Module.",
+  "Version": "0.1.1",
+  "NetCoreCMSVersion": "0.1.1",
+  "Dependencies": [],
+  "Category": "Core,Example"
+}
