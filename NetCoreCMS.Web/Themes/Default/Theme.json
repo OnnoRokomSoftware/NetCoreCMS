@@ -18,9 +18,9 @@
       "PreviewImage": "SiteLayoutScreenShot.png",
       "LayoutZones": [
         "TopBar",
-        "Slider",
+        "FullWidthSlider",
         "Featured",
-        "LeftSidebarar",
+        "LeftSidebar",
         "RightSidebar",
         "Footer"
       ]
