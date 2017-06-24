@@ -1,5 +1,5 @@
 {
-  "ThemeId": "com.tecrt.themes.default", //Must be unique string
+  "ThemeId": "com.tecrt.themes.default",
   "ThemeName": "Default",
   "Type": "Site",
   "Author": "TecRT",
@@ -10,8 +10,7 @@
   "NetCoreCMSVersion": "0.1.1",
   "Category": "Default",
   "PreviewImage": "screenshot.png",
-  "IsActive": true,
-  "MenuLocations": ["Top","Navigation","LeftColumn","RightColumn","Footer"],
+  "IsActive": false,
   "Layouts": [
     {
       "Name": "SiteLayout",
@@ -65,5 +64,12 @@
         "Footer"
       ]
     }
+  ],
+  "MenuLocations": [
+    "Top",
+    "Navigation",
+    "LeftColumn",
+    "RightColumn",
+    "Footer"
   ]
 }

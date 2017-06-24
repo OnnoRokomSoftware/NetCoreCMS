@@ -1,7 +1,84 @@
-﻿.topMargin {
-    margin-top: 50px;
-}
-.home{
-    border:solid 1px;
+﻿.home {
+    border: solid 1px;
 }
 
+/*Side design*/
+.topHeader {
+    height: 100px;
+}
+/*.topMenu {
+    display: block;
+}*/
+.navbar-brand-with-top-menu {
+    display: none;
+}
+
+.userMenu {
+    display: none;
+}
+
+.topWidgetZone {
+    float: right;
+    max-height: 80px;
+    max-width: 60%;
+    overflow: hidden;
+}
+
+.topLogo {
+    float: left;
+}
+
+    .topLogo h4 {
+        padding-left: 100px;
+        color: gray;
+    }
+
+@media only screen and (max-width: 766px) {
+    .topMenu {
+        display: none;
+    }
+    /*.navbar-brand-with-top-menu {
+        display: block;
+    }*/
+    .userMenu {
+        display: block;
+    }
+
+    .topWidgetZone {
+        display: none;
+    }
+
+    .topLogo {
+        width: 100%;
+        text-align: center;
+    }
+
+        .topLogo h1 {
+            text-align: center;
+        }
+
+        .topLogo h4 {
+            padding-left: initial;
+            color: gray;
+        }
+}
+
+.mainBody {
+    /*min-height: 100vh;*/
+    padding: 0px;
+}
+
+.fullWidthSlider {
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.copyright {
+    float: left;
+}
+
+.poweredby {
+    float: right;
+    text-align: right;
+}
+/*site design*/

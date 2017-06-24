@@ -45,72 +45,8 @@
         <div id="loadingMask" class="loader loader-double"></div>
 
         <!-- Zone TOP Start-->
-        <!-- Header -->
-        <div class="container-fluid topHeader">
-            <div class="container">
-                <div class="topLogo">
-                    <a asp-area="" asp-controller="CmsHome" asp-action="Index"></a><h1>@WebSite.Name</h1>
-                    <h4>@WebSite.Tagline</h4>
-                </div>
-                <div id="topMenu" class="topMenu pull-right">
-                    @{
-                        var menus = GlobalConfig.Menus.Where(x => x.Position == "Top");
-                        foreach (var item in menus)
-                        {
-                            foreach (var menuItem in item.MenuItems)
-                            {
-                                <a href="@menuItem.Url">@menuItem.Name</a><span> | </span>
-                            }
-                        }
-                        if (SignInManager.IsSignedIn(User))
-                        {
-                            <a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a><span> | </span>
-                            <a asp-area="" asp-controller="ManageAccount" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a><span> | </span>
-                            <a asp-area="" asp-controller="Admin" asp-action="Logout">Log out</a>
-                        }
-                        else
-                        {
-                            <a asp-area="" asp-controller="Account" asp-action="Register">Register</a><span> | </span>
-                            <a asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
-                        }
-                    }
-                </div>
-                <div class="topWidgetZone">
-                    @{
-                        var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "TopBar" && x.LayoutName == "SiteLayout").ToList();
-                        if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
-                        {
-                            <div style="width:100%;">
-                                @foreach (var item in zoneTopWidgets)
-                                {
-                                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                                    foreach (var widget in widgets)
-                                    {
-                                        widget.Init();
-                                        <div>
-                                            <div class='panel panel-default'>
-                                                @*<div class='panel-heading'>
-                                                    @Html.Raw(widget.RenderTitle())
-                                                </div>*@
-                                                <div class='panel-body'>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div>
-                                                @*<div class='panel-footer'>
-                                                    @Html.Raw(widget.RenderFooter())
-                                                </div>*@
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                        }
-                    }
-                </div>
-            </div>
-        </div>
-
         <!-- Navbar -->
-        <nav id="mainNavbar" class="navbar navbar-inverse">
+        <nav id="mainNavbar" class="navbar navbar-inverse navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -120,22 +56,20 @@
                         <span class="icon-bar"></span>
                     </button>
                     @*<a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">@WebSite.Name</a>*@
-                    <div id="navbarWebsiteName" class="navbar-brand navbar-brand-with-top-menu">@WebSite.Name</div>
+                    <div class="navbar-brand">@WebSite.Name</div>
                 </div>
                 <div class="navbar-collapse collapse">
                     @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation"))
-                    <div class="userMenu">
-                        @await Html.PartialAsync("_SiteLoginPartial")
-                    </div>
+                    @await Html.PartialAsync("_SiteLoginPartial")
                 </div>
             </div>
         </nav>        
         <!-- Zone TOP End-->
-        
+        <div style="margin-top:70px;"></div>
         <!-- Full Width Slider Start -->
         <div>
             @{
-                var fullWidthSlider = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FullWidthSlider" && x.LayoutName == "SiteLayout").ToList();
+                var fullWidthSlider = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FullWidthSlider" && x.LayoutName == "NoTopLayout").ToList();
                 if (fullWidthSlider != null && fullWidthSlider.Count > 0)
                 {
                     <div class="fullWidthSlider">
@@ -171,7 +105,7 @@
             <!-- Left Column start -->
             @{
                 var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
-                var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == "SiteLayout").ToList();
+                var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == "NoTopLayout").ToList();
                 if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
                 {
                     hasLeftColumn = true;
@@ -183,7 +117,7 @@
                         <!-- Left Menu Start -->
                         @if (menusLeft != null && menusLeft.Count > 0)
                         {
-                            <div class="col-md-12">
+                            <div class="row">
                                 @foreach (var item in menusLeft)
                                 {
                                     foreach (var menuItem in item.MenuItems)
@@ -204,7 +138,6 @@
                                     }
                                 }
                             </div>
-                            <div class="clearfix"></div>
                         }
                         <!-- Left Menu End -->
 
@@ -245,7 +178,7 @@
             <!-- Right Column start -->
             @{
                 var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
-                var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == "SiteLayout").ToList();
+                var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == "NoTopLayout").ToList();
                 if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
                 {
                     hasRightColumn = true;
@@ -257,7 +190,7 @@
                         <!-- Right Menu Start -->
                         @if (menusRight != null && menusRight.Count > 0)
                         {
-                            <div class="col-md-12">
+                            <div class="row">
                                 @foreach (var item in menusRight)
                                 {
                                     foreach (var menuItem in item.MenuItems)
@@ -278,7 +211,6 @@
                                     }
                                 }
                             </div>
-                            <div class="clearfix"></div>
                         }
                         <!-- Right Menu End -->
 
@@ -321,7 +253,7 @@
                 <!-- Featured Start -->
                 <div class="Featured">
                     @{
-                        var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == "SiteLayout").ToList();
+                        var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == "NoTopLayout").ToList();
                         if (featured != null && featured.Count > 0)
                         {
                             <div style="width:100%;">
@@ -374,7 +306,7 @@
                     @{
                         bool hasFooter = false;
                         var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer").ToList();
-                        var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == "SiteLayout").ToList();
+                        var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == "NoTopLayout").ToList();
                         if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
                         {
                             hasFooter = true;
@@ -387,16 +319,16 @@
                                 {
                                     foreach (var menuItem in item.MenuItems)
                                     {
-                                        <a href="@menuItem.Url">@menuItem.Name</a><br />
+                                <a href="@menuItem.Url">@menuItem.Name</a><br />
                                         foreach (var mi2 in menuItem.Childrens)
                                         {
-                                            <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                                <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
                                             foreach (var mi3 in mi2.Childrens)
                                             {
-                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
                                                 foreach (var mi4 in mi3.Childrens)
                                                 {
-                                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
                                                 }
                                             }
                                         }
@@ -453,33 +385,6 @@
 
         @RenderSection("Scripts", required: false)
 
-        <script type="text/javascript">
-            $(document).ready(function () {
-                var didScroll = true;
-
-                $(window).scroll(function () {
-                    didScroll = true;
-                });
-                setInterval(function () {
-                    if (didScroll) {
-                        didScroll = false;
-                        var scroll = $(window).scrollTop();
-                        //console.log(scroll);
-                        //Same that all the if else statements
-                        switch (true) {
-                            case (scroll >= 100):
-                                $("#mainNavbar").addClass("navbar-fixed-top");
-                                $("#navbarWebsiteName").removeClass("navbar-brand-with-top-menu");
-                                break;
-                            default: //scroll<=590
-                                $("#mainNavbar").removeClass("navbar-fixed-top");
-                                $("#navbarWebsiteName").addClass("navbar-brand-with-top-menu");
-                        }
-                    }
-                }, 50);
-
-            });
-        </script>
     </body>
 </html>
 
