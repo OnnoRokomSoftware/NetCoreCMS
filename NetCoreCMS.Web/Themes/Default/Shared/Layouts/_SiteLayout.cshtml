@@ -183,7 +183,7 @@
                         <!-- Left Menu Start -->
                         @if (menusLeft != null && menusLeft.Count > 0)
                         {
-                            <div class="row">
+                            <div class="col-md-12">
                                 @foreach (var item in menusLeft)
                                 {
                                     foreach (var menuItem in item.MenuItems)
@@ -204,6 +204,7 @@
                                     }
                                 }
                             </div>
+                            <div class="clearfix"></div>
                         }
                         <!-- Left Menu End -->
 
@@ -256,7 +257,7 @@
                         <!-- Right Menu Start -->
                         @if (menusRight != null && menusRight.Count > 0)
                         {
-                            <div class="row">
+                            <div class="col-md-12">
                                 @foreach (var item in menusRight)
                                 {
                                     foreach (var menuItem in item.MenuItems)
@@ -277,6 +278,7 @@
                                     }
                                 }
                             </div>
+                            <div class="clearfix"></div>
                         }
                         <!-- Right Menu End -->
 
@@ -385,16 +387,16 @@
                                 {
                                     foreach (var menuItem in item.MenuItems)
                                     {
-                                <a href="@menuItem.Url">@menuItem.Name</a><br />
+                                        <a href="@menuItem.Url">@menuItem.Name</a><br />
                                         foreach (var mi2 in menuItem.Childrens)
                                         {
-                                <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                                            <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
                                             foreach (var mi3 in mi2.Childrens)
                                             {
-                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
                                                 foreach (var mi4 in mi3.Childrens)
                                                 {
-                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
                                                 }
                                             }
                                         }

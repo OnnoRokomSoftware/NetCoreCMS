@@ -139,7 +139,7 @@
                     <!-- Left Menu Start -->
                     @if (menusLeft != null && menusLeft.Count > 0)
                     {
-                        <div class="row">
+                        <div class="col-md-12">
                             @foreach (var item in menusLeft)
                             {
                                 foreach (var menuItem in item.MenuItems)
@@ -160,6 +160,7 @@
                                 }
                             }
                         </div>
+                        <div class="clearfix"></div>
                     }
                     <!-- Left Menu End -->
                     var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == "LeftColumnLayout").ToList();                    

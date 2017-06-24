@@ -55,6 +55,15 @@
         "RightSidebar",
         "Footer"
       ]
+    },
+    {
+      "Name": "FullWidthLayout",
+      "PreviewImage": "FullWidthLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "Footer"
+      ]
     }
   ]
 }
