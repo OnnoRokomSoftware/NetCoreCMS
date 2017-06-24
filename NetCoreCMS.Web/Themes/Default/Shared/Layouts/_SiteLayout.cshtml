@@ -167,6 +167,7 @@
         </div>
         <!-- Full Width Slider End -->
 
+        <!--  Main Body Start -->
         <div class="container mainBody">   
             <!-- Left Column start -->
             @{
@@ -362,35 +363,92 @@
             <!-- Main content End -->
 
         </div>
+        <!--  Main Body End -->
+
+        <!--  Footer Start -->
         <footer>
-            <div class="container row">
-                <hr />
-
-                @{
-                    var zoneFooterMenuWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FooterMenu" && x.LayoutName == "SiteLayout").ToList();
-                    if (zoneFooterMenuWidgets != null && zoneFooterMenuWidgets.Count > 0)
-                    {
-
-                        @foreach (var item in zoneFooterMenuWidgets)
-                        {
-                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                            foreach (var widget in widgets)
-                            {
-                                widget.Init();
-                                <div>
-                                    @Html.Raw(widget.RenderBody())
-                                </div>
-                            }
-                        }
-
-                    }
-                }
-
-            </div>
+            <hr />
             <div class="container">
-                <p> Copyrights &copy; @Html.Raw(WebSite.Copyrights) @DateTime.Now.Year</p>
+                <div class="row">
+                    @{
+                        bool hasFooter = false;
+                        var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer").ToList();
+                        var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == "SiteLayout").ToList();
+                        if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
+                        {
+                            hasFooter = true;
+                        }
+                        <!-- Footer Menu Start -->
+                        if (menusFooter != null && menusFooter.Count > 0)
+                        {
+                            <div class="col-md-6">
+                                @foreach (var item in menusFooter)
+                                {
+                                    foreach (var menuItem in item.MenuItems)
+                                    {
+                                <a href="@menuItem.Url">@menuItem.Name</a><br />
+                                        foreach (var mi2 in menuItem.Childrens)
+                                        {
+                                <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                                            foreach (var mi3 in mi2.Childrens)
+                                            {
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                                foreach (var mi4 in mi3.Childrens)
+                                                {
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            </div>
+                        }
+                        <!-- Footer Menu End -->
+
+                        <!-- Footer Widgets Start -->
+                        if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
+                        {
+                            <div class="col-md-6">
+                                @foreach (var item in zoneFooterWidgets)
+                                {
+                                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                                    foreach (var widget in widgets)
+                                    {
+                                        widget.Init();
+                                <div>
+                                    <div class='panel panel-default'>
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.RenderTitle())
+                                        </div>
+                                        <div class='panel-body'>
+                                            @Html.Raw(widget.RenderBody())
+                                        </div>
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.RenderFooter())
+                                        </div>
+                                    </div>
+                                </div>
+                                    }
+                                }
+                            </div>
+                        }
+                        <!-- Footer Widgets End -->
+                    }
+
+                </div>
+            </div>
+            @if (hasFooter)
+            {
+                <hr />
+            }
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 copyright"> Copyrights &copy; @Html.Raw(WebSite.Copyrights) @DateTime.Now.Year</div>
+                    <div class="col-md-6 poweredby"> Powered by <a href="http://tecrt.com" target="_blank">TecRT.com</a></div>
+                </div>
             </div>
         </footer>
+        <!--  Footer End -->
 
         @RenderSection("Scripts", required: false)
 

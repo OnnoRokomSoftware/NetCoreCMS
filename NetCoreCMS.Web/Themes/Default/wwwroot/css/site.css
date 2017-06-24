@@ -62,4 +62,11 @@
     /*min-height: 100vh;*/
     padding: 0px;
 }
+.copyright{
+    float:left;
+}
+.poweredby{
+    float:right;
+    text-align:right;
+}
 /*site design*/
