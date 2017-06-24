@@ -9,7 +9,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Shared\Layouts\_TwoColumnLayout.cshtml">
+    <Content Include="Shared\Layouts\_RightColumnLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\_LeftColumnLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\_NoTopLayout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Shared\_SiteLoginPartial.cshtml">

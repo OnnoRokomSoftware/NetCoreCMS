@@ -26,16 +26,34 @@
       ]
     },
     {
-      "Name": "TwoColumnLayout",
-      "PreviewImage": "TwoColumnLayoutScreenShot.png",
+      "Name": "NoTopLayout",
+      "PreviewImage": "NoTopLayoutScreenShot.png",
       "LayoutZones": [
-        "Top",
-        "NavBar",
-        "Slider",
+        "FullWidthSlider",
         "Featured",
-        "LeftMenu",
-        "RightMenu",
-        "FooterMenu"
+        "LeftSidebar",
+        "RightSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "LeftColumnLayout",
+      "PreviewImage": "LeftColumnLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "LeftSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "RightColumnLayout",
+      "PreviewImage": "RightColumnLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "RightSidebar",
+        "Footer"
       ]
     }
   ]

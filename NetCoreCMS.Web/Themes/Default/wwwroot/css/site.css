@@ -9,7 +9,7 @@
 /*.topMenu {
     display: block;
 }*/
-.navbar-brand {
+.navbar-brand-with-top-menu{
     display:none;
 }
 .userMenu{
@@ -33,9 +33,9 @@
     .topMenu {
         display: none;
     }
-    .navbar-brand {
+    /*.navbar-brand-with-top-menu {
         display: block;
-    }
+    }*/
     .userMenu {
         display: block;
     }

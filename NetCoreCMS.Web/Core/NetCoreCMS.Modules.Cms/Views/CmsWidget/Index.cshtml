@@ -59,7 +59,7 @@
                             var tabName = "#tab_" + layout.Name.Replace(' ', '_');
 
                             <li class="@active">
-                                <a href="@tabName" data-toggle="tab" @ariaExpanded  > @layout.Name </a>
+                                <a href="@tabName" data-toggle="tab" @ariaExpanded  > @layout.Name.Replace("Layout", "") </a>
                             </li> 
 
                             active = "";
