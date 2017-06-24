@@ -202,7 +202,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: "POST",
-            url: "/CmsMenu/CreateMenu",
+            url: "/CmsMenu/CreateEditMenu",
             data: { model : menuJson },
             success: function (rsp, textStatus, jqXHR) {
                 NccPageMask.HideLoadingMask();
