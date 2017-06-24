@@ -145,78 +145,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             ViewBag.Layouts = GlobalConfig.ActiveTheme.Layouts;
             ViewBag.AllPages = _pageService.LoadAll().Where(p => p.Status == (int)NccPage.NccPageStatus.Published && p.Id != model.Id);
             return View(model);
-        }
-        //[HttpPost]
-        //public ActionResult CreateEdit(NccPage model, string PageContent, long ParentId)
-        //{
-        //    ApiResponse rsp = new ApiResponse();
-        //    rsp.IsSuccess = false;
-        //    rsp.Message = "Error occoured. Please fill up all field correctly.";
-
-        //    model.Content = PageContent;
-        //    if (ModelState.IsValid)
-        //    {
-        //        if (model.Title.Trim() == "")
-        //        {
-        //            rsp.Message = "Please enter page title.";
-        //        }
-        //        else if (model.Slug.Trim() == "")
-        //        {
-        //            rsp.Message = "Please do not delete slug. Slug is required.";
-        //        }
-        //        else
-        //        {
-        //            var slugPage = _pageService.GetBySlugs(model.Slug);
-        //            if (model.Id > 0)
-        //            {
-        //                try
-        //                {
-        //                    var parrent = _pageService.Get(ParentId);
-        //                    model.Parent = parrent;
-        //                }
-        //                catch (Exception) { }
-        //                if (slugPage != null && slugPage.Id!=model.Id)
-        //                {
-        //                    rsp.Message = "This slug is already used in another page.";
-        //                }
-        //                else
-        //                {
-        //                    try
-        //                    {
-        //                        _pageService.Update(model);
-        //                        rsp.IsSuccess = true;
-        //                        rsp.Message = "Page updated successful";
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        _logger.LogError("Page create error.", ex.ToString());
-        //                    }
-        //                }
-        //            }
-        //            else
-        //            {
-        //                if (slugPage != null)
-        //                {
-        //                    rsp.Message = "Duplicate slug is found.";
-        //                }
-        //                else
-        //                {
-        //                    try
-        //                    {
-        //                        _pageService.Save(model);
-        //                        rsp.IsSuccess = true;
-        //                        rsp.Message = "Page save successful";
-        //                    }
-        //                    catch (Exception ex)
-        //                    {
-        //                        _logger.LogError("Page create error.", ex.ToString());
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //    return Json(rsp);
-        //}
+        }        
 
         public ActionResult Delete(long Id)
         {

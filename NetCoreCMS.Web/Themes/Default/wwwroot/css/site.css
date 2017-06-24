@@ -5,3 +5,55 @@
     border:solid 1px;
 }
 
+/*Side design*/
+.topHeader {
+    height: 100px;
+}    
+.topMenu {
+    display: block;
+}
+.navbar-brand {
+    display:none;
+}
+.topLogo {
+    float: left;
+}
+    .topLogo h4 {
+        padding-left: 100px;
+        color: gray;
+    }
+@media only screen and (max-width: 766px) {
+    .topMenu {
+        display: none;
+    }
+    .navbar-brand {
+        display: block;
+    }
+
+    .topLogo {
+        width:100%;
+        text-align: center;
+    }
+
+        .topLogo h1 {
+            text-align:center;
+        }
+
+        .topLogo h4 {
+            padding-left: initial;
+            color: gray;
+        }
+}
+.userMenu{
+    display:none;
+}
+@media only screen and (max-width: 766px) {
+    .userMenu {
+        display: block;
+    }
+}
+.mainBody {
+    /*min-height: 100vh;*/
+    padding: 0px;
+}
+/*site design*/

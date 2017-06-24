@@ -34,7 +34,7 @@ namespace NetCoreCMS.Themes.Default.Lib
                 if (hasChildren)
                 {
                     var subMenuText = "<li class=\""+menuItemCls+"\">";
-                    subMenuText += "<a href=\"#\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > "+item.Name+"</a>";
+                    subMenuText += "<a href=\""+item.Url+"\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > "+item.Name+"</a>";
                     subMenuText += PrepareMenu(item.Childrens, "dropdown-menu multi-level", "dropdown-submenu");
                     menuTxt += subMenuText + "</li>";                    
                 }
@@ -68,7 +68,8 @@ namespace NetCoreCMS.Themes.Default.Lib
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Page)
             {
-                urlPrefix = "/CmsHome/CmsPage/View/";
+                urlPrefix = "";/*/CmsHome/CmsPage/View/*/
+                return "<li><a href=\"" + item.Url  + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
             {

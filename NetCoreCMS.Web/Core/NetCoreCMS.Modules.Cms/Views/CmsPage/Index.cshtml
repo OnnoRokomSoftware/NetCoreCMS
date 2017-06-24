@@ -9,9 +9,10 @@
     if (!string.IsNullOrEmpty(Model.Layout) && GlobalConfig.ActiveTheme.Layouts.Where(x=>x.Name == Model.Layout).FirstOrDefault() != null) {
         Layout = "_" + Model.Layout;
     }
-
-    ViewData["PageTitle"] = "Page Manage";
-    ViewData["PageSubtitle"] = "Manage pages";
+    else
+    {
+        Layout = "_DefaultLayout";
+    }
     ViewData["Title"] = Model.Title;
 }
  

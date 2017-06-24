@@ -26,6 +26,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             _pageService = pageService;
             _menuService = menuService;
         }
+
         public ActionResult Index(bool isManage = false, long menuId = 0)
         {
             ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);

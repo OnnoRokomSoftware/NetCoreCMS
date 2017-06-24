@@ -138,6 +138,14 @@ namespace NetCoreCMS.Web.Controllers
 
         //
         // POST: /Account/Logout
+        [HttpGet]
+        public async Task<IActionResult> Logout(string val="")
+        {
+            await _signInManager.SignOutAsync();
+            _logger.LogInformation(4, "User logged out.");
+            return RedirectToAction("Index", "CmsHome");
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()

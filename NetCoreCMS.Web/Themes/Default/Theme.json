@@ -1,9 +1,9 @@
 {
-  "ThemeId": "DE726CA6-C191-43CD-8665-DAED8248941D", //Must be unique string
+  "ThemeId": "com.tecrt.themes.default", //Must be unique string
   "ThemeName": "Default",
   "Type": "Site",
   "Author": "TecRT",
-  "Email": "netcorecms@xonaki.com",
+  "Email": "netcorecms@tribhuj.com",
   "Website": "http://tecrt.com",
   "Description": "Builtin Content Management System Site Theme.",
   "Version": "0.1.1",
@@ -17,11 +17,12 @@
       "Name": "SiteLayout",
       "PreviewImage": "SiteLayoutScreenShot.png",
       "LayoutZones": [
-        "Top",
-        "NavBar",
-        "LeftMenu",
-        "RightMenu",
-        "FooterMenu"
+        "TopBar",
+        "Slider",
+        "Featured",
+        "LeftSidebarar",
+        "RightSidebar",
+        "Footer"
       ]
     },
     {

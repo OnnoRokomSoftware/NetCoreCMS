@@ -98,7 +98,7 @@ $(document).ready(function () {
                 menuItem = menuItem.replace("{CONTROLLER}", "CmsPage");
                 menuItem = menuItem.replace("{ACTION}", "Index");
                 menuItem = menuItem.replace("{DATA}", $(this).attr("value"));
-                menuItem = menuItem.replace("{URL}", "");
+                menuItem = menuItem.replace("{URL}", $(this).attr("ncc-page-slug"));
                 menuItem = menuItem.replace("{TARGET}", "_self");
                 menuItem = menuItem.replace("{ORDER}", 0);
                 menuItem = menuItem.replace(/\{TITLE}/g, $(this).attr("ncc-page-title"));

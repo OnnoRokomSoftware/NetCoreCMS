@@ -26,7 +26,7 @@
                                     @foreach (var page in ViewBag.RecentPages)
                                     {
                                         <div class="checkbox">
-                                            <label><input type="checkbox" class="recentPagesCheckBoxList" value="@page.Id" ncc-page-title="@page.Title">@page.Title</label>
+                                            <label><input type="checkbox" class="recentPagesCheckBoxList" value="@page.Id" ncc-page-title="@page.Title" ncc-page-slug="@page.Slug">@page.Title</label>
                                         </div>
                                     }
                                 </div>
@@ -39,7 +39,7 @@
                                     @foreach (var page in ViewBag.AllPages)
                                     {
                                         <div class="checkbox">
-                                            <label><input type="checkbox" class="recentPagesCheckBoxList" value="@page.Id" ncc-page-title="@page.Title">@page.Title</label>
+                                            <label><input type="checkbox" class="recentPagesCheckBoxList" value="@page.Id" ncc-page-title="@page.Title" ncc-page-slug="@page.Slug">@page.Title</label>
                                         </div>
                                     }
                                 </div>

@@ -90,6 +90,10 @@ namespace NetCoreCMS.Framework.Core.Services
             var entity = _entityRepository.Query().Include(x=>x.MenuItems).FirstOrDefault(x => x.Id == entityId);
             if (entity != null)
             {
+                //foreach (var menuItem in entity.MenuItems)
+                //{
+                //    RecursiveNccMenuItemDelete(menuItem);
+                //}
                 _entityRepository.Remove(entity);
                 _entityRepository.SaveChange();
             }
