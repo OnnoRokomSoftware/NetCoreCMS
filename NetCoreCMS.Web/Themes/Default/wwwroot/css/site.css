@@ -62,8 +62,12 @@
     /*min-height: 100vh;*/
     padding: 0px;
 }
-.copyright{
-    float:left;
+.fullWidthSlider {
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+.copyright {
+    float: left;
 }
 .poweredby{
     float:right;
