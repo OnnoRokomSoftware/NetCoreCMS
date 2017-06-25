@@ -6,12 +6,9 @@
 */
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-
+using NetCoreCMS.HelloWorld.Models;
 
 namespace NetCoreCMS.Core.Modules.Cms.Models
 {

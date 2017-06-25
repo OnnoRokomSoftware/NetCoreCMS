@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Migrations
 {

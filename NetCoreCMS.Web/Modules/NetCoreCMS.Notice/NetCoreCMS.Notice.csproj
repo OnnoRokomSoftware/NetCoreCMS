@@ -20,10 +20,5 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
-  
-  <ItemGroup>
-    <Folder Include="Repository\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
 
 </Project>

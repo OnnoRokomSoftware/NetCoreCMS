@@ -36,15 +36,15 @@ namespace NetCoreCMS.Framework.Core.Data
                 typeToRegisters.AddRange(module.Assembly.DefinedTypes.Select(t => t.AsType()));
             }
             
-            ScanEntities(modelBuilder, typeToRegisters);
-            SetTableNameByConvention(modelBuilder);
+            //ScanEntities(modelBuilder, typeToRegisters);
+            //SetTableNameByConvention(modelBuilder);
             base.OnModelCreating(modelBuilder);
-            RegisterModelMappings(modelBuilder, typeToRegisters);
-            RegisterIdentityModules(modelBuilder);
+            RegisterUserModuleModels(modelBuilder, typeToRegisters);
+            RegisterCoreModels(modelBuilder);
             
         }
 
-        private void RegisterIdentityModules(ModelBuilder modelBuilder)
+        private void RegisterCoreModels(ModelBuilder modelBuilder)
         {
             CoreModelBuilder imb = new CoreModelBuilder();
             imb.Build(modelBuilder);
@@ -56,23 +56,23 @@ namespace NetCoreCMS.Framework.Core.Data
             {
                 if (entity.ClrType.Namespace != null)
                 {
-                    var nameParts = entity.ClrType.Namespace.Split('.');
-                    var tableName = string.Concat(nameParts[2], "_", entity.ClrType.Name);
-                    modelBuilder.Entity(entity.Name).ToTable(tableName);
+                    //var nameParts = entity.ClrType.Namespace.Split('.');
+                    //var tableName = string.Concat(nameParts[2], "_", entity.ClrType.Name);
+                    modelBuilder.Entity(entity.Name).ToTable(entity.ClrType.Name);
                 }
             }
         }
 
         private static void ScanEntities(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
         {
-            var entityTypes = typeToRegisters.Where(x => x.GetTypeInfo().ImplementedInterfaces.Contains(typeof(IBaseModel<long>)) && !x.GetTypeInfo().IsAbstract);
+            var entityTypes = typeToRegisters.Where(x => typeof(IBaseModel<long>).IsAssignableFrom(x) && x.GetTypeInfo().IsClass && !x.GetTypeInfo().IsAbstract);
             foreach (var type in entityTypes)
             {
                 modelBuilder.Entity(type);
             }
         }
 
-        private static void RegisterModelMappings(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
+        private static void RegisterUserModuleModels(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
         {
             var customModelBuilderTypes = typeToRegisters.Where(x => typeof(INccModuleBuilder).IsAssignableFrom(x));
             foreach (var builderType in customModelBuilderTypes)
