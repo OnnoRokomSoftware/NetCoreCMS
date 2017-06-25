@@ -7,21 +7,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{BDDA
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Themes", "Themes", "{0C40B021-EF98-444C-9CCB-38B35ED10100}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Web", "NetCoreCMS.Web\NetCoreCMS.Web.csproj", "{A19A3DF3-6EE4-4DCA-BB2B-B589BC43794C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Web", "NetCoreCMS.Web\NetCoreCMS.Web.csproj", "{A19A3DF3-6EE4-4DCA-BB2B-B589BC43794C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6F492190-BD43-43F1-8512-26701469FB7E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.HelloWorld", "NetCoreCMS.Web\Modules\NetCoreCMS.HelloWorld\NetCoreCMS.HelloWorld.csproj", "{B66CD2A3-F119-4159-B764-857511F10452}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.HelloWorld", "NetCoreCMS.Web\Modules\NetCoreCMS.HelloWorld\NetCoreCMS.HelloWorld.csproj", "{B66CD2A3-F119-4159-B764-857511F10452}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Framework", "NetCoreCMS.Framework\NetCoreCMS.Framework.csproj", "{7049C7EE-7B0B-4818-A2C7-A84EB3B1DFFB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Modules.Cms", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Cms\NetCoreCMS.Modules.Cms.csproj", "{031BD144-8B96-499F-9A9F-D443223A4F28}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Admin", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Admin\NetCoreCMS.Modules.Admin.csproj", "{4C2A5474-E42C-4330-9E14-AD640C53D857}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Modules.Admin", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Admin\NetCoreCMS.Modules.Admin.csproj", "{4C2A5474-E42C-4330-9E14-AD640C53D857}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Media", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Media\NetCoreCMS.Modules.Media.csproj", "{67554FCE-6694-4794-9F65-E57FAEB21D07}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Modules.Media", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Media\NetCoreCMS.Modules.Media.csproj", "{67554FCE-6694-4794-9F65-E57FAEB21D07}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Modules.Blog", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Blog\NetCoreCMS.Modules.Blog.csproj", "{F2550C70-13E5-416F-8E36-C0A6C1594A68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Modules.Blog", "NetCoreCMS.Web\Core\NetCoreCMS.Modules.Blog\NetCoreCMS.Modules.Blog.csproj", "{F2550C70-13E5-416F-8E36-C0A6C1594A68}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Default", "NetCoreCMS.Web\Themes\Default\Default.csproj", "{999CC508-BFAB-43BF-A8D4-F51804C997F6}"
 EndProject

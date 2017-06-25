@@ -1,0 +1,30 @@
+﻿@using NetCoreCMS.Framework.Utility
+@using System.Collections
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Media Gallary";
+    ViewData["PageSubtitle"] = "Manage existing media";
+}
+
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Upload" class="btn btn-outline btn-primary btn-xs">Upload</a></div>
+            </div>
+            <div class="panel-body">
+                    
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+}
