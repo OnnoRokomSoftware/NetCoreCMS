@@ -71,7 +71,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 foreach (var menuItemChild in menuItem.Childrens)
                 {
-                    menuCenter = "<ul>" + menuItemToString(menuItemChild, level + 1) + "</ul>";
+                    menuCenter += "<ul>" + menuItemToString(menuItemChild, level + 1) + "</ul>";
                 }
             }
             string menuEnd = @"</li>";
@@ -79,7 +79,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         }
 
         [HttpPost]
-        public JsonResult CreateMenu(string model)
+        public JsonResult CreateEditMenu(string model)
         {
             var query = Request.Query;
             var menu = JsonConvert.DeserializeObject<NccMenuViewModel>(model);

@@ -1,7 +1,4 @@
-﻿.topMargin {
-    margin-top: 0px;
-}
-.home{
+﻿.home{
     border:solid 1px;
 }
 
@@ -9,11 +6,20 @@
 .topHeader {
     height: 100px;
 }    
-.topMenu {
+/*.topMenu {
     display: block;
-}
-.navbar-brand {
+}*/
+.navbar-brand-with-top-menu{
     display:none;
+}
+.userMenu{
+    display:none;
+}
+.topWidgetZone{
+    float:right;
+    max-height:80px;
+    max-width: 60%;
+    overflow:hidden;
 }
 .topLogo {
     float: left;
@@ -22,12 +28,19 @@
         padding-left: 100px;
         color: gray;
     }
+
 @media only screen and (max-width: 766px) {
     .topMenu {
         display: none;
     }
-    .navbar-brand {
+    /*.navbar-brand-with-top-menu {
         display: block;
+    }*/
+    .userMenu {
+        display: block;
+    }
+    .topWidgetZone {
+        display:none;
     }
 
     .topLogo {
@@ -44,16 +57,20 @@
             color: gray;
         }
 }
-.userMenu{
-    display:none;
-}
-@media only screen and (max-width: 766px) {
-    .userMenu {
-        display: block;
-    }
-}
+
 .mainBody {
     /*min-height: 100vh;*/
     padding: 0px;
+}
+.fullWidthSlider {
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+.copyright {
+    float: left;
+}
+.poweredby{
+    float:right;
+    text-align:right;
 }
 /*site design*/

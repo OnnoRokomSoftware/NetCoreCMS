@@ -1,5 +1,5 @@
 {
-  "ThemeId": "com.tecrt.themes.default", //Must be unique string
+  "ThemeId": "com.tecrt.themes.default",
   "ThemeName": "Default",
   "Type": "Site",
   "Author": "TecRT",
@@ -11,32 +11,65 @@
   "Category": "Default",
   "PreviewImage": "screenshot.png",
   "IsActive": true,
-  "MenuLocations": ["Top","Navigation","LeftColumn","RightColumn","Footer"],
   "Layouts": [
     {
       "Name": "SiteLayout",
       "PreviewImage": "SiteLayoutScreenShot.png",
       "LayoutZones": [
         "TopBar",
-        "Slider",
+        "FullWidthSlider",
         "Featured",
-        "LeftSidebarar",
+        "LeftSidebar",
         "RightSidebar",
         "Footer"
       ]
     },
     {
-      "Name": "TwoColumnLayout",
-      "PreviewImage": "TwoColumnLayoutScreenShot.png",
+      "Name": "NoTopLayout",
+      "PreviewImage": "NoTopLayoutScreenShot.png",
       "LayoutZones": [
-        "Top",
-        "NavBar",
-        "Slider",
+        "FullWidthSlider",
         "Featured",
-        "LeftMenu",
-        "RightMenu",
-        "FooterMenu"
+        "LeftSidebar",
+        "RightSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "LeftColumnLayout",
+      "PreviewImage": "LeftColumnLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "LeftSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "RightColumnLayout",
+      "PreviewImage": "RightColumnLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "RightSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "FullWidthLayout",
+      "PreviewImage": "FullWidthLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "Footer"
       ]
     }
+  ],
+  "MenuLocations": [
+    "Top",
+    "Navigation",
+    "LeftColumn",
+    "RightColumn",
+    "Footer"
   ]
 }

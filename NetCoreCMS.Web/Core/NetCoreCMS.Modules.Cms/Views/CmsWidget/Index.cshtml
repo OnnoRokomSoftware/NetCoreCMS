@@ -9,7 +9,7 @@
 <div class="row">
 
     <div class="col-lg-12">
-        <div class="col-lg-8">
+        <div class="col-lg-7">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     Widgets
@@ -42,7 +42,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="col-lg-5">
 
             <div class="panel with-nav-tabs panel-default">
                 <div class="panel-heading">
@@ -59,7 +59,7 @@
                             var tabName = "#tab_" + layout.Name.Replace(' ', '_');
 
                             <li class="@active">
-                                <a href="@tabName" data-toggle="tab" @ariaExpanded  > @layout.Name </a>
+                                <a href="@tabName" data-toggle="tab" @ariaExpanded  > @layout.Name.Replace("Layout", "") </a>
                             </li> 
 
                             active = "";

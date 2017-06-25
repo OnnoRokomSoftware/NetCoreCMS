@@ -25,7 +25,7 @@
                     {
                         <a asp-controller="CmsPage" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>
                     }
-                    <a asp-controller="CmsPage" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Back to Manage</a>
+                    <a asp-controller="CmsPage" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Page</a>
                 </div> 
             </div>
             <div class="panel-body">
@@ -122,23 +122,7 @@
                                                         <option value="Archived">Archived</option>
                                                     }
                                                 </select>
-                                            </div>
-                                            <div>
-                                                <label>Layout</label>
-                                                <select class="form-control" asp-for="Layout">
-                                                    @foreach (var themeLayout in ViewBag.Layouts)
-                                                    {
-                                                        if (Model.Layout == themeLayout.Name)
-                                                        {
-                                                            <option value="@themeLayout.Name" selected>@themeLayout.Name</option>
-                                                        }
-                                                        else
-                                                        {
-                                                            <option value="@themeLayout.Name">@themeLayout.Name</option>
-                                                        }
-                                                    }
-                                                </select>
-                                            </div>
+                                            </div>                                            
                                             <div>
                                                 <label>Visibility</label>
                                                 <select class="form-control" asp-for="PageType">
@@ -171,6 +155,22 @@
                                             <div>
                                                 <label>Schedule Date</label>
                                                 <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("yyyy-MM-dd hh:mm tt")" />
+                                            </div>
+                                            <div>
+                                                <label>Layout</label>
+                                                <select class="form-control" asp-for="Layout">
+                                                    @foreach (var themeLayout in ViewBag.Layouts)
+                                                    {
+                                                        if (Model.Layout == themeLayout.Name)
+                                                        {
+                                                            <option value="@themeLayout.Name" selected>@themeLayout.Name</option>
+                                                        }
+                                                        else
+                                                        {
+                                                            <option value="@themeLayout.Name">@themeLayout.Name</option>
+                                                        }
+                                                    }
+                                                </select>
                                             </div>
                                             <div>
                                                 <label>Add to Navigation Menu</label>

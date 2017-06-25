@@ -1,9 +1,9 @@
 {
-  "ThemeId": "D9C60705-FC10-401B-A974-307990B1CB7E", //Must be unique string
+  "ThemeId": "com.tecrt.themes.defaultDark",
   "ThemeName": "DefaultDark",
   "Type": "Site",
   "Author": "TecRT",
-  "Email": "netcorecms@xonaki.com",
+  "Email": "netcorecms@tecrt.com",
   "Website": "http://tecrt.com",
   "Description": "Builtin Content Management System Site Theme.",
   "Version": "0.1.1",
@@ -11,31 +11,65 @@
   "Category": "Default",
   "PreviewImage": "screenshot.png",
   "IsActive": false,
-  "MenuLocations": [ "Top", "Navigation", "LeftColumn", "RightColumn", "Footer" ],
   "Layouts": [
     {
       "Name": "SiteLayout",
       "PreviewImage": "SiteLayoutScreenShot.png",
       "LayoutZones": [
-        "Top",
-        "NavBar",
-        "LeftMenu",
-        "RightMenu",
-        "FooterMenu"
+        "TopBar",
+        "FullWidthSlider",
+        "Featured",
+        "LeftSidebar",
+        "RightSidebar",
+        "Footer"
       ]
     },
     {
-      "Name": "TwoColumnLayout",
-      "PreviewImage": "TwoColumnLayoutScreenShot.png",
+      "Name": "NoTopLayout",
+      "PreviewImage": "NoTopLayoutScreenShot.png",
       "LayoutZones": [
-        "Top",
-        "NavBar",
-        "Slider",
+        "FullWidthSlider",
         "Featured",
-        "LeftMenu",
-        "RightMenu",
-        "FooterMenu"
+        "LeftSidebar",
+        "RightSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "LeftColumnLayout",
+      "PreviewImage": "LeftColumnLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "LeftSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "RightColumnLayout",
+      "PreviewImage": "RightColumnLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "RightSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "FullWidthLayout",
+      "PreviewImage": "FullWidthLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
+        "Featured",
+        "Footer"
       ]
     }
+  ],
+  "MenuLocations": [
+    "Top",
+    "Navigation",
+    "LeftColumn",
+    "RightColumn",
+    "Footer"
   ]
 }

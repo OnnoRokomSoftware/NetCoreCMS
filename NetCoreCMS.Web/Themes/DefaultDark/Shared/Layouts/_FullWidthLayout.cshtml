@@ -1,7 +1,7 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 @using NetCoreCMS.Framework.Utility
 @using NetCoreCMS.Framework.Core.Models
-@using NetCoreCMS.Themes.Default.Lib
+@using NetCoreCMS.Themes.DefaultDark.Lib
 @using NetCoreCMS.Core.Modules.Cms
 @using NetCoreCMS.Core.Modules.Cms.Models
 @using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels
@@ -14,9 +14,6 @@
 @inject UserManager<NccUser> UserManager
 
 @{
-    int bodyClassWidth = 12;
-    bool hasLeftColumn = false;
-    bool hasRightColumn = false;
     var WebSite = GlobalConfig.WebSite;
 }
 
@@ -31,7 +28,7 @@
         <script src="~/js/ncc-common.js" asp-append-version="true"></script>
 
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/Themes/Default/css/site.css" />
+        <link rel="stylesheet" href="~/Themes/DefaultDark/css/site.css" />
         <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
 
 
@@ -77,7 +74,7 @@
                 </div>
                 <div class="topWidgetZone">
                     @{
-                        var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "TopBar" && x.LayoutName == "SiteLayout").ToList();
+                        var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "TopBar" && x.LayoutName == "RightColumnLayout").ToList();
                         if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
                         {
                             <div style="width:100%;">
@@ -110,7 +107,7 @@
         </div>
 
         <!-- Navbar -->
-        <nav id="mainNavbar" class="navbar navbar-default">
+        <nav id="mainNavbar" class="navbar navbar-inverse">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -131,197 +128,15 @@
             </div>
         </nav>        
         <!-- Zone TOP End-->
-        
-        <!-- Full Width Slider Start -->
-        <div>
-            @{
-                var fullWidthSlider = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FullWidthSlider" && x.LayoutName == "SiteLayout").ToList();
-                if (fullWidthSlider != null && fullWidthSlider.Count > 0)
-                {
-                    <div class="fullWidthSlider">
-                        @foreach (var item in fullWidthSlider)
-                        {
-                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                            foreach (var widget in widgets)
-                            {
-                                widget.Init();
-                                @*<div>
-                                    <div class='panel panel-default'>
-                                        <div class='panel-heading'>
-                                            @Html.Raw(widget.RenderTitle())
-                                        </div>
-                                        <div class='panel-body'>*@
-                                            @Html.Raw(widget.RenderBody())
-                                        @*</div>
-                                        <div class='panel-footer'>
-                                            @Html.Raw(widget.RenderFooter())
-                                        </div>
-                                    </div>
-                                </div>*@
-                            }
-                        }
-                    </div>
-                }
-            }
-        </div>        
-        <!-- Full Width Slider End -->
 
         <!--  Main Body Start -->
-        <div class="container mainBody">   
-            <!-- Left Column start -->
-            @{
-                var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
-                var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == "SiteLayout").ToList();
-                if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
-                {
-                    hasLeftColumn = true;
-                    bodyClassWidth = bodyClassWidth - 2;
-                }
-                if (hasLeftColumn)
-                {                    
-                    <div class="col-sm-2 pull-left">
-                        <!-- Left Menu Start -->
-                        @if (menusLeft != null && menusLeft.Count > 0)
-                        {
-                            <div class="col-md-12">
-                                @foreach (var item in menusLeft)
-                                {
-                                    foreach (var menuItem in item.MenuItems)
-                                    {
-                                        <a href="@menuItem.Url">@menuItem.Name</a><br />
-                                        foreach (var mi2 in menuItem.Childrens)
-                                        {
-                                            <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                                            foreach (var mi3 in mi2.Childrens)
-                                            {
-                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
-                                                foreach (var mi4 in mi3.Childrens)
-                                                {
-                                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                            <div class="clearfix"></div>
-                        }
-                        <!-- Left Menu End -->
-
-                        <!-- Left Sidebar Start -->
-                        @if (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0)
-                        {
-                            <div class="row">
-                                @foreach (var item in zoneLeftWidgets)
-                                {
-                                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                                    foreach (var widget in widgets)
-                                    {
-                                        widget.Init();
-                                        <div>
-                                            <div class='panel panel-default'>
-                                                <div class='panel-heading'>
-                                                    @Html.Raw(widget.RenderTitle())
-                                                </div>
-                                                <div class='panel-body'>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div>
-                                                <div class='panel-footer'>
-                                                    @Html.Raw(widget.RenderFooter())
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                        }
-                        <!-- Left Sidebar End -->
-                    </div>
-                }
-
-            }
-            <!-- Left Column end -->
-
-            <!-- Right Column start -->
-            @{
-                var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
-                var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == "SiteLayout").ToList();
-                if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
-                {
-                    hasRightColumn = true;
-                    bodyClassWidth = bodyClassWidth - 2;
-                }
-                if (hasRightColumn)
-                {
-                    <div class="col-sm-2 pull-right">
-                        <!-- Right Menu Start -->
-                        @if (menusRight != null && menusRight.Count > 0)
-                        {
-                            <div class="col-md-12">
-                                @foreach (var item in menusRight)
-                                {
-                                    foreach (var menuItem in item.MenuItems)
-                                    {
-                                        <a href="@menuItem.Url">@menuItem.Name</a><br />
-                                        foreach (var mi2 in menuItem.Childrens)
-                                        {
-                                            <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                                            foreach (var mi3 in mi2.Childrens)
-                                            {
-                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
-                                                foreach (var mi4 in mi3.Childrens)
-                                                {
-                                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                            <div class="clearfix"></div>
-                        }
-                        <!-- Right Menu End -->
-
-                        <!-- Right Sidebar Start -->
-                        @if (zoneRightWidgets != null && zoneRightWidgets.Count > 0)
-                        {
-                            <div class="row">
-                                @foreach (var item in zoneRightWidgets)
-                                {
-                                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                                    foreach (var widget in widgets)
-                                    {
-                                        widget.Init();
-                                        <div>
-                                            <div class='panel panel-default'>
-                                                <div class='panel-heading'>
-                                                    @Html.Raw(widget.RenderTitle())
-                                                </div>
-                                                <div class='panel-body'>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div>
-                                                <div class='panel-footer'>
-                                                    @Html.Raw(widget.RenderFooter())
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
-                                }
-                            </div>
-                        }
-                        <!-- Right Sidebar End -->
-                    </div>
-                }
-
-            }
-            <!-- Right Column end -->
-
+        <div class="container mainBody"> 
             <!-- Main content Start -->
-            <div class="col-md-@bodyClassWidth">
+            <div class="col-md-12">
                 <!-- Featured Start -->
                 <div class="Featured">
                     @{
-                        var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == "SiteLayout").ToList();
+                        var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == "RightColumnLayout").ToList();
                         if (featured != null && featured.Count > 0)
                         {
                             <div style="width:100%;">
@@ -362,7 +177,6 @@
                 @RenderBody()
             </div>
             <!-- Main content End -->
-
         </div>
         <!--  Main Body End -->
 
@@ -374,7 +188,7 @@
                     @{
                         bool hasFooter = false;
                         var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer").ToList();
-                        var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == "SiteLayout").ToList();
+                        var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == "RightColumnLayout").ToList();
                         if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
                         {
                             hasFooter = true;
@@ -416,19 +230,19 @@
                                     foreach (var widget in widgets)
                                     {
                                         widget.Init();
-                                <div>
-                                    <div class='panel panel-default'>
-                                        <div class='panel-heading'>
-                                            @Html.Raw(widget.RenderTitle())
+                                        <div>
+                                            <div class='panel panel-default'>
+                                                <div class='panel-heading'>
+                                                    @Html.Raw(widget.RenderTitle())
+                                                </div>
+                                                <div class='panel-body'>
+                                                    @Html.Raw(widget.RenderBody())
+                                                </div>
+                                                <div class='panel-footer'>
+                                                    @Html.Raw(widget.RenderFooter())
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class='panel-body'>
-                                            @Html.Raw(widget.RenderBody())
-                                        </div>
-                                        <div class='panel-footer'>
-                                            @Html.Raw(widget.RenderFooter())
-                                        </div>
-                                    </div>
-                                </div>
                                     }
                                 }
                             </div>

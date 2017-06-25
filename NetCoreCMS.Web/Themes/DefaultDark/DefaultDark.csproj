@@ -9,10 +9,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="Shared\_SiteLoginPartial.cshtml">
+    <Content Include="Shared\Layouts\_FullWidthLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\_LeftColumnLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\_NoTopLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\_RightColumnLayout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Shared\Layouts\_SiteLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\_SiteLoginPartial.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Views\_ViewImports.cshtml">
@@ -21,6 +33,10 @@
     <Content Include="Views\_ViewStart.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
 
 </Project>
