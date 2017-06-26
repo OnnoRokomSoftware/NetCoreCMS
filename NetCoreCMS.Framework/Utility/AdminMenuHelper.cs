@@ -3,45 +3,71 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using System.Reflection;
 
 namespace NetCoreCMS.Framework.Utility
 {
     public class AdminMenuHelper
     {
-        public static string MenuHtml(string position)
+        public static string ModulesAdminMenuHtml()
         {
-            var menus = GlobalConfig.Menus.Where( x => x.Position == position);
-            var menuTxt = "";
-            
-            foreach (var item in menus)
-            {   
-                menuTxt += PrepareMenu(item.MenuItems);                
-            }
+            string menuStr = "";
+            Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic = new Dictionary<AdminMenu, List<AdminMenuItem>>();
 
-            return menuTxt;
-        }
-
-        public static string PrepareMenu(List<NccMenuItem> menuItem)
-        {
-            var menuTxt = "<ul class=\"nav navbar-nav\">";
-            foreach (var item in menuItem)
+            foreach (var module in GlobalConfig.Modules)
             {
-                if(item.Childrens.Count > 0)
+                var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
+                foreach (var controller in controllers)
                 {
+                    try
+                    {
+                        var atrib = controller.GetTypeInfo().GetCustomAttribute<AdminMenu>();
+                        if (atrib != null)
+                        {
+                            var key = adminMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
-                }
-                else
-                {
-                    menuTxt += ListItemHtml(item);
+                            if ( key == null )
+                            {
+                                adminMenuDic.Add(atrib, new List<AdminMenuItem>());
+                                key = atrib;
+                            }
+                            var actions = controller.GetMethods();
+                            foreach (var item in actions)
+                            {
+                                var menuItem = item.GetCustomAttribute<AdminMenuItem>();
+                                if(menuItem != null)
+                                {
+                                    adminMenuDic[key].Add(menuItem);
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        //TODO: Log error. Raise global error message.
+                    }
                 }
             }
-            menuTxt += "</ul>";
-            return menuTxt;
-        }
 
-        private static string ListItemHtml(NccMenuItem item)
-        {
-            throw new NotImplementedException();
+
+            foreach (var item in adminMenuDic)
+            {
+                menuStr += "<li><a href=\"#\"><i class=\"fa fa-gears fa-fw\"></i> "+ item.Key.Name +" <span class=\"fa arrow\"></span></a>"
+                            + "<ul class=\"nav nav-second-level\">";
+                foreach (var subItem in item.Value.OrderBy(x=>x.Order))
+                {
+                    var qStr = "";
+                    if (!string.IsNullOrEmpty(subItem.QueryString))
+                    {
+                        qStr = "/?" + subItem.QueryString;
+                    }
+                    menuStr += "<li><a href=\""+subItem.Url + qStr + "\" ><i class=\"fa fa-gear fa-fw\"></i>" + subItem.Name + "</a></li>";
+                }
+                menuStr += "</ul></li>";
+            }
+
+            return menuStr;
         }
     }
 }

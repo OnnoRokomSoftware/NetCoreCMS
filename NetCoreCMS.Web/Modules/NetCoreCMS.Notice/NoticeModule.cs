@@ -13,6 +13,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.HelloWorld.Widgets;
+using NetCoreCMS.HelloWorld.Repository;
+using NetCoreCMS.HelloWorld.Services;
 
 namespace NetCoreCMS.Modules.Notice
 {
@@ -57,7 +59,8 @@ namespace NetCoreCMS.Modules.Notice
 
         public void Init(IServiceCollection services)
         {
-            
+            services.AddTransient<NccNoticeRepository>();
+            services.AddTransient<NccNoticeService>();
         }
 
         public bool Install()

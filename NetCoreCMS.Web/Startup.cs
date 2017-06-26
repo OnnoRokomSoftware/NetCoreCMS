@@ -96,6 +96,13 @@ namespace NetCoreCMS.Web
             var themesFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
             ThemeManager.RegisterThemes(_mvcBuilder, _services, themesFolder);
 
+            var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
+            var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
+            var coreModules = _moduleManager.LoadModules(coreModuleFolder);
+            var userModules = _moduleManager.LoadModules(moduleFolder);
+            
+            GlobalConfig.Modules.AddRange(userModules);
+
             if (SetupHelper.IsDbCreateComplete)
             {
                 if(SetupHelper.SelectedDatabase == "SqLite")
@@ -133,12 +140,7 @@ namespace NetCoreCMS.Web
                 _services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
 
                 _serviceProvider = _services.Build(Configuration, _hostingEnvironment);
-
-                var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
-                var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
-                _moduleManager.LoadModules(coreModuleFolder);
-                _moduleManager.LoadModules(moduleFolder);
-
+                
                 GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services, _serviceProvider);
 
                 _serviceProvider = _services.Build(Configuration, _hostingEnvironment);

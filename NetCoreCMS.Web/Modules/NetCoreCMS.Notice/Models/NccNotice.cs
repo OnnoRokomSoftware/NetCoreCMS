@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace NetCoreCMS.Framework.Core.Models
+namespace NetCoreCMS.HelloWorld.Models
 {
     public class NccNotice : IBaseModel<long>
     {
@@ -41,7 +41,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public NccNoticeType NoticeType { get; set; }
         public DateTime PublishDate { get; set; }
         public DateTime ExpireDate { get; set; }
-        public int PageOrder { get; set; }
+        public int NoticeOrder { get; set; }
 
         public enum NccNoticeStatus
         {
