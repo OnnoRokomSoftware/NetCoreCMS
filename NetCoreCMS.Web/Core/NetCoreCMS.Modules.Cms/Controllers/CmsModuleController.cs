@@ -62,7 +62,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Active);
             if (entity != null)
             { 
-                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+                TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
             {
@@ -93,7 +93,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 if(module != null)
                 {
                     module.Inactivate();
-                    TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+                    TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
                 }
                 else
                 {
@@ -116,7 +116,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
                 //module.Install();
-                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+                TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
             {
@@ -133,7 +133,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
                 //module.Uninstall();
-                TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+                TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
             {
@@ -146,7 +146,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             var nId = long.Parse(id);
             _moduleService.DeletePermanently(nId);
-            TempData["SuccessMessage"] = "Operation Successful. Restart Site";
+            TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             return RedirectToAction("Index"); 
         }
     }
