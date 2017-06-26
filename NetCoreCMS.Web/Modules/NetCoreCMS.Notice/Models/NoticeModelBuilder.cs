@@ -8,7 +8,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.HelloWorld.Models;
+using NetCoreCMS.Notice.Models;
 
 namespace NetCoreCMS.Core.Modules.Cms.Models
 {

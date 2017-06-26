@@ -1,8 +1,8 @@
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Repository;
-using NetCoreCMS.HelloWorld.Models;
+using NetCoreCMS.Notice.Models;
 
-namespace NetCoreCMS.HelloWorld.Repository
+namespace NetCoreCMS.Notice.Repository
 {
     public class NccNoticeRepository : BaseRepository<NccNotice, long>
     {

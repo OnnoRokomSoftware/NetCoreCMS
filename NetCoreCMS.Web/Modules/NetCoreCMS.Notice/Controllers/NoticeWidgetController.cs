@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetCoreCMS.HelloWorld.Controllers
+namespace NetCoreCMS.Notice.Controllers
 {
     public class NoticeWidgetController : NccController
     {

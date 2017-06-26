@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
-using NetCoreCMS.HelloWorld.Repository;
-using NetCoreCMS.HelloWorld.Models;
+using NetCoreCMS.Notice.Repository;
+using NetCoreCMS.Notice.Models;
 
-namespace NetCoreCMS.HelloWorld.Services
+namespace NetCoreCMS.Notice.Services
 {
     public class NccNoticeService : IBaseService<NccNotice>
     {

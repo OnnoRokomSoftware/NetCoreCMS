@@ -12,9 +12,9 @@ using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Modules.Widgets;
-using NetCoreCMS.HelloWorld.Widgets;
-using NetCoreCMS.HelloWorld.Repository;
-using NetCoreCMS.HelloWorld.Services;
+using NetCoreCMS.Notice.Widgets;
+using NetCoreCMS.Notice.Repository;
+using NetCoreCMS.Notice.Services;
 
 namespace NetCoreCMS.Modules.Notice
 {

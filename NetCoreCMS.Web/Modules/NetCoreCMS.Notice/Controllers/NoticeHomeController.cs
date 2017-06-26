@@ -8,13 +8,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.HelloWorld.Models;
-using NetCoreCMS.HelloWorld.Services;
+using NetCoreCMS.Notice.Models;
+using NetCoreCMS.Notice.Services;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace NetCoreCMS.HelloWorld.Controllers
+namespace NetCoreCMS.Notice.Controllers
 {
 
     [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
@@ -27,25 +28,46 @@ namespace NetCoreCMS.HelloWorld.Controllers
             _nccNoticeService = nccNoticeService;
         }
 
-        [AllowAnonymous]        
+        [AllowAnonymous]
         public ActionResult Index()
         {
             return View();
         }
 
-        [AdminMenuItem(Name = "New Notice", Url = "/NoticeHome/Create", Order = 1)]
-        public ActionResult Create()
+        [AdminMenuItem(Name = "New Notice", Url = "/NoticeHome/CreateEdit", Order = 1)]
+        public ActionResult CreateEdit(long Id = 0)
         {
-            return View(new NccNotice());
+            NccNotice notice = new NccNotice();
+            notice.PublishDate = DateTime.Today;
+            notice.ExpireDate = DateTime.Today.AddDays(30);
+            if (Id > 0)
+            {
+                notice = _nccNoticeService.Get(Id);
+            }
+            return View(notice);
         }
 
         [HttpPost]
-        public ActionResult Create(NccNotice notice)
+        public ActionResult CreateEdit(NccNotice notice)
         {
+            ViewBag.MessageType = "ErrorMessage";
+            ViewBag.Message = "Error occoured. Please fill up all field correctly.";
+
             if (ModelState.IsValid)
             {
-                _nccNoticeService.Save(notice);
-                TempData["SuccessMessage"] = "Notice save successfull.";
+                if (notice.Id > 0)
+                {
+                    _nccNoticeService.Update(notice);
+                    ViewBag.MessageType = "SuccessMessage";
+                    ViewBag.Message = "Notice updated successfull.";
+                }
+                else
+                {
+                    _nccNoticeService.Save(notice);
+                    ViewBag.MessageType = "SuccessMessage";
+                    ViewBag.Message = "Notice save successfull.";
+                }
+                //TempData["SuccessMessage"] = "Notice save successfull.";
             }
 
             return View(notice);
@@ -54,7 +76,24 @@ namespace NetCoreCMS.HelloWorld.Controllers
         [AdminMenuItem(Name = "Manage", Url = "/NoticeHome/Manage", Order = 2)]
         public ActionResult Manage()
         {
-            return View();
+            var allNotices = _nccNoticeService.LoadAll().OrderByDescending(n => n.Id).ToList();
+            return View(allNotices);
+        }
+
+        public ActionResult Delete(long Id)
+        {
+            NccNotice notice = _nccNoticeService.Get(Id);
+            //page.
+            return View(notice);
+        }
+
+        [HttpPost]
+        public ActionResult Delete(long Id, int status)
+        {
+            _nccNoticeService.DeletePermanently(Id);
+            ViewBag.MessageType = "SuccessMessage";
+            ViewBag.Message = "Page deleted successful";
+            return RedirectToAction("Manage");
         }
     }
 }

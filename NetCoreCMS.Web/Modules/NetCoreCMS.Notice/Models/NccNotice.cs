@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace NetCoreCMS.HelloWorld.Models
+namespace NetCoreCMS.Notice.Models
 {
     public class NccNotice : IBaseModel<long>
     {

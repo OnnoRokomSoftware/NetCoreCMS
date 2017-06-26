@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace NetCoreCMS.HelloWorld.Widgets
+namespace NetCoreCMS.Notice.Widgets
 {
     public class NoticeNavBarWidget : IWidget
     {
