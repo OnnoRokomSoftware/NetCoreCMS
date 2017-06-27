@@ -16,6 +16,7 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels
         public string ItemSize { get; set; }
         public string ItemDim { get; set; }
         public string FullPath { get; set; }
+        public string ParrentDir { get; set; }
         public DateTime CreationTime { get; set; }
     }
 }

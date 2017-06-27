@@ -1,0 +1,29 @@
+﻿@using NetCoreCMS.Framework.Utility
+@using System.Collections
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Media Upload";
+    ViewData["PageSubtitle"] = "Image upload to gallary";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Index" class="btn btn-outline btn-primary btn-xs">Manage</a></div>
+            </div>
+            <div class="panel-body">
+                <form method="post" asp-action="Upload" asp-controller="CmsMedia" enctype="multipart/form-data">
+                    <input type="file" name="files" class="form-control" multiple /><br />
+                    <input type="submit" class="btn btn-success " value="Upload" />
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+
+}

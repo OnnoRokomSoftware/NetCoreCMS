@@ -170,28 +170,28 @@
                             {
                                 <div class="alert alert-success alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @TempData["SuccessMessage"]@ViewBag.Message<a href="#" class="alert-link"></a>.
+                                    @Html.Raw(TempData["SuccessMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
                                 </div>
                             }
                             @if (TempData.ContainsKey("InfoMessage") || ViewBag.MessageType == "InfoMessage")
                             {
                                 <div class="alert alert-info alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @TempData["InfoMessage"]<a href="#" class="alert-link"></a>.
+                                    @Html.Raw(TempData["InfoMessage"])<a href="#" class="alert-link"></a>.
                                 </div>
                             }
                             @if (TempData.ContainsKey("WarningMessage") || ViewBag.MessageType == "WarningMessage")
                             {
                                 <div class="alert alert-warning alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @TempData["WarningMessage"]<a href="#" class="alert-link"></a>.
+                                    @Html.Raw(TempData["WarningMessage"])<a href="#" class="alert-link"></a>.
                                 </div>
                             }
                             @if (TempData.ContainsKey("ErrorMessage") || ViewBag.MessageType == "ErrorMessage")
                             {
                                 <div class="alert alert-danger alert-dismissable">
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @TempData["ErrorMessage"]@ViewBag.Message<a href="#" class="alert-link"></a>.
+                                    @Html.Raw(TempData["ErrorMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
                                 </div>
                             }
                         </div>
