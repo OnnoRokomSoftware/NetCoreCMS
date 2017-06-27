@@ -5,6 +5,11 @@
     Layout = Constants.AdminLayoutName;
     ViewData["PageTitle"] = "Image Delete";
     ViewData["PageSubtitle"] = "Delete image";
+    if (ViewBag.IsFile)
+    {
+        ViewData["PageTitle"] = "File Delete";
+        ViewData["PageSubtitle"] = "Delete file";
+    }
 }
 
 <div class="row">
@@ -19,8 +24,9 @@
                             <div class="col-md-12">
                                 <input type="hidden" id="fullPath" name="fullPath" value="@Model.FullPath" />
                                 <input type="hidden" id="parrentDir" name="parrentDir" value="@Model.ParrentDir" />
+                                <input type="hidden" id="isFile" name="isFile" value=@ViewBag.IsFile />
                                 <input type="hidden" id="status" name="status" value="1" />
-                                <a class="btn btn-default" asp-action="Index" asp-route-sq="@Model.ParrentDir">No</a>
+                                <a class="btn btn-default" asp-action="Index" asp-route-sq="@Model.ParrentDir" asp-route-isFile="@ViewBag.IsFile">No</a>
                                 <button id="delete" class="btn btn-danger" type="submit">Delete</button>
                             </div>                            
                         </div>

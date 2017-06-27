@@ -5,8 +5,13 @@
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "Media Gallary";
-    ViewData["PageSubtitle"] = "Manage existing media";
+    ViewData["PageTitle"] = "Image Gallary";
+    ViewData["PageSubtitle"] = "Manage existing image media";
+    if (ViewBag.IsFile)
+    {
+        ViewData["PageTitle"] = "File Storage";
+        ViewData["PageSubtitle"] = "Manage existing files";
+    }
 }
 
 @section Styles{
@@ -19,14 +24,14 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 @ViewData["PageSubtitle"]
-                <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Upload" class="btn btn-outline btn-primary btn-xs">Upload</a></div>
+                <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Upload" asp-route-isFile="@ViewBag.IsFile" class="btn btn-outline btn-primary btn-xs">Upload</a></div>
             </div>
             <div class="panel-body">
                 @foreach (var item in Model)
                 {
                     if (item.IsDir)
                     {
-                        <a asp-controller="CmsMedia" asp-action="Index" asp-route-sq="@item.FullPath">
+                        <a asp-controller="CmsMedia" asp-action="Index" asp-route-sq="@item.FullPath" asp-route-isFile="@ViewBag.IsFile">
                             <div style="float:left; margin:5px;padding:5px; width:200px; height:200px; text-align:center; border:1px solid; overflow:hidden; display:table;">
                                 <span style="vertical-align:middle;  display: table-cell;">
                                     <strong>@item.FileName</strong> <br />
@@ -34,9 +39,13 @@
                                     {
                                         <span>Dir(@item.TotalSubDir)</span><br />
                                     }
-                                    @if (item.TotalFile > 0)
+                                    @if (item.TotalFile > 0 && ViewBag.IsFile==true)
                                     {
-                                        <span>Image(@item.TotalFile) </span>
+                                        <span>Total File(@item.TotalFile) </span>
+                                    }
+                                    else if (item.TotalFile > 0)
+                                    {
+                                        <span>Total Image(@item.TotalFile) </span>
                                     }
                                 </span>
                             </div>
@@ -63,7 +72,7 @@
                             <span>Ct: @item.CreationTime.ToString("yyyy-MM-dd hh:mm tt")</span>
                             <hr style="padding:2px;margin:1px;" />
                             @*<a asp-controller="CmsMedia" asp-action="Rename" asp-route-fullPath="@item.FullPath" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-primary">Rename</a>*@
-                            <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-danger">Delete</a>
+                            <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" asp-route-isFile="@ViewBag.IsFile" class="btn btn-xs btn-outline btn-danger">Delete</a>
                         </div>
                     }
                     else
@@ -86,7 +95,7 @@
                             <span>Ct: @item.CreationTime.ToString("yyyy-MM-dd hh:mm tt")</span>
                             <hr style="padding:2px;margin:1px;" />
                             @*<a asp-controller="CmsMedia" asp-action="Rename" asp-route-fullPath="@item.FullPath" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-primary">Rename</a>*@
-                            <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-danger">Delete</a>
+                            <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" asp-route-isFile="@ViewBag.IsFile" class="btn btn-xs btn-outline btn-danger">Delete</a>
                         </div>
                     }
                 }

@@ -4,20 +4,63 @@
 @{
     Layout = Constants.AdminLayoutName;
     ViewData["PageTitle"] = "Media Upload";
-    ViewData["PageSubtitle"] = "Image upload to gallary";
+    ViewData["PageSubtitle"] = "Upload images online";
+    if (ViewBag.IsFile)
+    {
+        ViewData["PageTitle"] = "File Upload";
+        ViewData["PageSubtitle"] = "Upload files online";
+    }
 }
-
+@if(ViewBag.UploadPath!="")
+{
+    <div style="width:100%; text-align:center;">
+        <a asp-controller="CmsMedia" asp-action="Index" asp-route-isFile="@ViewBag.IsFile" asp-route-sq="@ViewBag.UploadPath" class="btn btn-outline btn-info">Go to upload dir</a> 
+    </div>
+    <br />
+}
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
                 @ViewData["PageSubtitle"]
-                <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Index" class="btn btn-outline btn-primary btn-xs">Manage</a></div>
+                <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Index" asp-route-isFile="@ViewBag.IsFile" class="btn btn-outline btn-primary btn-xs">Manage</a></div>
             </div>
             <div class="panel-body">
                 <form method="post" asp-action="Upload" asp-controller="CmsMedia" enctype="multipart/form-data">
-                    <input type="file" name="files" class="form-control" multiple /><br />
-                    <input type="submit" class="btn btn-success " value="Upload" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-1"><label>File type : </label></div>
+                            <div class="col-md-11">
+                                <select name="isFile" class="form-control" style="max-width:200px">
+                                    <option value=0>Image</option>
+                                    @if(ViewBag.IsFile == true)
+                                    {
+                                        <option value=true selected>File</option>
+                                    }
+                                    else
+                                    {
+                                        <option value=true>File</option>
+                                    }
+                                </select>
+                            </div>
+                            <br />
+                            <br />
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-1"><label>Select files : </label></div>
+                            <div class="col-md-11">
+                                <input type="file" name="files" class="form-control" multiple />
+                            </div>
+                            <br />
+                            <br />
+                        </div>
+                        <div class="col-md-12">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-11">
+                                <input type="submit" class="btn btn-success " value="Upload" />
+                            </div>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>

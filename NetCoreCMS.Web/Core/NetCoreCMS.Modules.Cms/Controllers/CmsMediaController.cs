@@ -34,6 +34,10 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         private readonly string _imagePathPrefix = "/media/Images/";
         private readonly string _imageUploadPrefix = "media\\Images\\";
         string[] _allowedImageExtentions = { ".jpg", ".jpeg", ".bmp", ".png", ".gif", };
+
+        private readonly string _fileRoot = "\\media\\Files\\";
+        private readonly string _filePathPrefix = "/media/Files/";
+        private readonly string _fileUploadPrefix = "media\\Files\\";
         public CmsMediaController(ILoggerFactory factory, IHostingEnvironment env)
         {
             _logger = factory.CreateLogger<CmsMediaController>();
@@ -41,11 +45,11 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         }
         #endregion
 
-
         #region Operations
         #region Manage Operation
-        public ActionResult Index(string sq = "", string successMessage = "", string errorMessage = "")
+        public ActionResult Index(bool isFile = false, string sq = "", string successMessage = "", string errorMessage = "")
         {
+            ViewBag.IsFile = isFile;
             var dirFileList = new List<NccMediaViewModel>();
             if (successMessage.Trim() != "")
                 TempData["SuccessMessage"] = successMessage;
@@ -53,16 +57,21 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 TempData["ErrorMessage"] = errorMessage;
             if (sq == null) { sq = ""; }
 
+            string fileRoot = _env.WebRootPath + _imageRoot;
+            if (isFile)
+            {
+                fileRoot = _env.WebRootPath + _fileRoot;
+            }
             try
             {
-                DirectoryInfo Dir = new DirectoryInfo(Path.Combine(_env.WebRootPath + _imageRoot, sq));
+                DirectoryInfo Dir = new DirectoryInfo(Path.Combine(fileRoot, sq));
 
                 #region Back Link Generation
                 if (Dir.Parent.FullName.StartsWith(_env.WebRootPath + "\\media") && Dir.Parent.FullName.Length > (_env.WebRootPath + "\\media").Length)
                 {
                     dirFileList.Add(new NccMediaViewModel
                     {
-                        FileName = "Back",
+                        FileName = "Up",
                         FullPath = Dir.Parent.FullName,
                         IsDir = true,
                         CreationTime = Dir.CreationTime
@@ -77,18 +86,22 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                     DirectoryInfo SubDir = new DirectoryInfo(Path.Combine(di.FullName));
                     int SubDirCount = SubDir.GetDirectories("*", SearchOption.TopDirectoryOnly).Count();
 
-                    int ImageCount = SubDir.GetFiles("*.*", SearchOption.AllDirectories)
-                                                 .Where(f => f.Name.EndsWith(".jpg") == true ||
-                                                    f.Name.EndsWith(".jpeg") == true ||
-                                                    f.Name.EndsWith(".bmp") == true ||
-                                                    f.Name.EndsWith(".png") == true ||
-                                                    f.Name.EndsWith(".gif") == true)
-                                                 .Count();
+                    int ImageCount = SubDir.GetFiles("*.*", SearchOption.AllDirectories).Count();
+                    if (isFile == false)
+                    {
+                        ImageCount = SubDir.GetFiles("*.*", SearchOption.AllDirectories)
+                                         .Where(f => f.Name.EndsWith(".jpg") == true ||
+                                            f.Name.EndsWith(".jpeg") == true ||
+                                            f.Name.EndsWith(".bmp") == true ||
+                                            f.Name.EndsWith(".png") == true ||
+                                            f.Name.EndsWith(".gif") == true)
+                                         .Count();
+                    }
 
                     dirFileList.Add(new NccMediaViewModel
                     {
                         FileName = di.Name,
-                        FullPath = di.FullName.Replace(_env.WebRootPath + _imageRoot, ""),
+                        FullPath = di.FullName.Replace(fileRoot, ""),
                         TotalSubDir = SubDirCount,
                         TotalFile = ImageCount,
                         IsDir = true,
@@ -105,16 +118,21 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                                             f.Name.EndsWith(".png") == true ||
                                             f.Name.EndsWith(".gif") == true)
                                          .ToArray();
+                if (isFile)
+                {
+                    FileList = Dir.GetFiles("*.*", SearchOption.TopDirectoryOnly).ToArray();
+                }
+
                 foreach (FileInfo fi in FileList)
                 {
                     dirFileList.Add(new NccMediaViewModel
                     {
                         FileName = fi.Name,
-                        FullPath = _imagePathPrefix + sq.Replace("\\", "/") + "/" + fi.Name,
-                        ParrentDir = fi.Directory.FullName.Replace(_env.WebRootPath + _imageRoot, ""),
+                        FullPath = ((isFile == false ? _imageRoot : _fileRoot) + sq).Replace("\\", "/") + "/" + fi.Name,
+                        ParrentDir = fi.Directory.FullName.Replace(fileRoot, ""),
                         ItemSize = BytesToString(fi.Length),
                         IsDir = false,
-                        IsImage = true,
+                        IsImage = !isFile,
                         CreationTime = fi.CreationTime
                     });
                 }
@@ -130,18 +148,25 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         #endregion
 
         #region Upload operation
-        public ActionResult Upload()
+        public ActionResult Upload(bool isFile = false)
         {
+            ViewBag.IsFile = isFile;
+            ViewBag.UploadPath = "";
             return View();
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Upload(ICollection<IFormFile> files)
+        public async Task<IActionResult> Upload(ICollection<IFormFile> files, bool isFile)
         {
             string responseSuccess = "";
             string responseError = "";
             string uploadPath = _imageUploadPrefix + DateTime.Now.Year.ToString() + "/" + (DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month.ToString() : DateTime.Now.Month.ToString());
+
+            if (isFile)
+            {
+                uploadPath = _fileUploadPrefix + DateTime.Now.Year.ToString() + "/" + (DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month.ToString() : DateTime.Now.Month.ToString());
+            }
             var uploads = Path.Combine(_env.WebRootPath, uploadPath);
 
             if (!Directory.Exists(uploads))
@@ -151,7 +176,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
             foreach (var file in files)
             {
-                if (file.Length > 0 && _allowedImageExtentions.Any(x => file.FileName.ToLower().EndsWith(x)))
+                if (file.Length > 0 && (isFile || _allowedImageExtentions.Any(x => file.FileName.ToLower().EndsWith(x))))
                 {
                     string fileName = file.FileName.ToLower().Substring(0, file.FileName.LastIndexOf("."));
                     string fileExt = file.FileName.ToLower().Substring(file.FileName.LastIndexOf("."), 4);
@@ -183,13 +208,18 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             }
 
             if (responseSuccess != "")
-                responseSuccess += " uploaded successfully.";
+                TempData["SuccessMessage"] += " uploaded successfully.";
             if (responseError != "")
-                responseError += " invalid image formate.";
+                TempData["ErrorMessage"] += " invalid formate.";
 
-            TempData["SuccessMessage"] = responseSuccess;
-            TempData["ErrorMessage"] = responseError;
 
+            ViewBag.IsFile = isFile;
+            string fileRoot = _imageUploadPrefix;
+            if (isFile)
+            {
+                fileRoot = _fileUploadPrefix;
+            }
+            ViewBag.UploadPath = uploadPath.Replace(fileRoot, "");
             return View();
         }
         #endregion

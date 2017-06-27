@@ -120,10 +120,11 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-image fa-fw"></i> Media<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-folder-open-o fa-fw"></i> Media<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
-                                <li><a asp-controller="CmsMedia" asp-action="Upload"><i class="fa fa-pencil-square-o fa-fw"></i> Upload</a></li>
-                                <li><a asp-controller="CmsMedia" asp-action="Index"><i class="fa fa-th-list fa-fw"></i> Manage</a></li>
+                                <li><a asp-controller="CmsMedia" asp-action="Upload"><i class="fa fa-upload fa-fw"></i> Upload</a></li>
+                                <li><a asp-controller="CmsMedia" asp-action="Index"><i class="fa fa-image fa-fw"></i> Manage Gallary</a></li>
+                                <li><a asp-controller="CmsMedia" asp-action="Index" asp-route-isFile=true><i class="fa fa-files-o fa-fw"></i> Manage Files</a></li>
                             </ul>
                         </li>
                         <li>
