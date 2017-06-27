@@ -9,6 +9,10 @@
     ViewData["PageSubtitle"] = "Manage existing media";
 }
 
+@section Styles{
+    <link href="~/lib/lightbox2/src/css/lightbox.css" rel="stylesheet" />
+}  
+
 
 <div class="row">
     <div class="col-lg-12">
@@ -18,63 +22,6 @@
                 <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Upload" class="btn btn-outline btn-primary btn-xs">Upload</a></div>
             </div>
             <div class="panel-body">
-                @*<table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
-            <thead>
-                <tr>
-                    <th>Sl</th>
-                    <th>File Name</th>
-                    <th>Size</th>
-                    <th>Description</th>
-                    <th>Creation Time</th>
-                    <th>Full Path</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    i = i + 1;
-                    <tr>
-                        <td>@i</td>
-                        <td>
-                            @if (item.IsDir == true)
-                            {
-                                <a asp-controller="CmsMedia" asp-action="Index" asp-route-sq="@item.FullPath">@item.FileName</a>
-                            }
-                            else
-                            {
-                                <a href="@item.FullPath" target="_blank">@item.FileName</a>
-                            }
-                        </td>
-                        <td>@item.ItemSize</td>
-                        <td>
-                            @if (item.IsDir == true)
-                            {
-                                @if (item.TotalSubDir > 0)
-                                {
-                                    <span>Dir(@item.TotalSubDir)&nbsp;</span>
-                                }
-                                @if (item.TotalFile > 0)
-                                {
-                                    <span>Image(@item.TotalFile) </span>
-                                }
-                            }
-                            else
-                            {
-
-                            }
-                        </td>
-                        <td>@item.CreationTime.ToString("yyyy-MM-dd hh:mm tt")</td>
-                        <td>@item.FullPath</td>
-                        <td>
-                        <a asp-controller="CmsPage" asp-action="Index" asp-route-slug="@item.Slug" target="_blank">View</a> |
-                        <a asp-controller="CmsPage" asp-action="CreateEdit" asp-route-id="@item.Id">Edit</a> |
-                        <a asp-controller="CmsPage" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                    </td>
-                    </tr>
-                }
-            </tbody>
-        </table>*@
-
                 @foreach (var item in Model)
                 {
                     if (item.IsDir)
@@ -95,12 +42,12 @@
                             </div>
                         </a>
                     }
-                    else
+                    else if(item.IsImage)
                     {
-
                         <div style="float:left; margin:5px;padding:5px; width:200px; height:200px; text-align:center; border:1px solid; overflow:hidden;">
-                            <a href="@item.FullPath" target="_blank">
+                            <a href="@item.FullPath" data-lightbox="image-gallary" data-title="@item.FileName">
                                 <img src="@item.FullPath" width="188px" height="120px" title="@item.FileName" />
+                                @*<img id="myImg"  src="~/Images/docs-icon.png" width="188px" height="120px" title="@item.FileName" />*@
                                 @if (item.FileName.Length > 11)
                                 {
                                     <span>@item.FileName.Substring(0, 11)</span>
@@ -118,7 +65,29 @@
                             @*<a asp-controller="CmsMedia" asp-action="Rename" asp-route-fullPath="@item.FullPath" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-primary">Rename</a>*@
                             <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-danger">Delete</a>
                         </div>
-
+                    }
+                    else
+                    {
+                        <div style="float:left; margin:5px;padding:5px; width:200px; height:200px; text-align:center; border:1px solid; overflow:hidden;">
+                            <a href="@item.FullPath" target="_blank">
+                                <img src="~/Images/docs-icon.png" width="188px" height="120px" title="@item.FileName" />
+                                @if (item.FileName.Length > 11)
+                                {
+                                    <span>@item.FileName.Substring(0, 11)</span>
+                                    <span> ~ </span>
+                                    <span>@item.FileName.Substring(item.FileName.LastIndexOf("."), 4)</span>
+                                }
+                                else
+                                {
+                                    <span>@item.FileName</span>
+                                }
+                                (@item.ItemSize)<br />
+                            </a>
+                            <span>Ct: @item.CreationTime.ToString("yyyy-MM-dd hh:mm tt")</span>
+                            <hr style="padding:2px;margin:1px;" />
+                            @*<a asp-controller="CmsMedia" asp-action="Rename" asp-route-fullPath="@item.FullPath" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-primary">Rename</a>*@
+                            <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-danger">Delete</a>
+                        </div>
                     }
                 }
             </div>
@@ -128,8 +97,14 @@
     </div>
 </div>
 
+               <!-- The Modal -->
+               <div id="myModal" class="modal">
+                   <span class="close">&times;</span>
+                   <img class="modal-content" id="img01">
+                   <div id="caption"></div>
+               </div>
 
 
 @section Scripts{
-
+    <script src="~/lib/lightbox2/src/js/lightbox.js"></script>
 }
