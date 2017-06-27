@@ -24,7 +24,14 @@
                             <div class="col-md-12">
                                 <input type="hidden" id="fullPath" name="fullPath" value="@Model.FullPath" />
                                 <input type="hidden" id="parrentDir" name="parrentDir" value="@Model.ParrentDir" />
-                                <input type="hidden" id="isFile" name="isFile" value=@ViewBag.IsFile />
+                                @if (ViewBag.IsFile)
+                                {
+                                    <input type="hidden" id="isFile" name="isFile" value="true" />
+                                }
+                                else
+                                {
+                                    <input type="hidden" id="isFile" name="isFile" value="false" />
+                                }
                                 <input type="hidden" id="status" name="status" value="1" />
                                 <a class="btn btn-default" asp-action="Index" asp-route-sq="@Model.ParrentDir" asp-route-isFile="@ViewBag.IsFile">No</a>
                                 <button id="delete" class="btn btn-danger" type="submit">Delete</button>

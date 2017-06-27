@@ -225,28 +225,30 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         #endregion
 
         #region Delete Operation
-        public ActionResult Delete(string fullPath, string parrentDir)
+        public ActionResult Delete(string fullPath, string parrentDir, bool isFile = false)
         {
-            var isFile = new NccMediaViewModel
+            ViewBag.IsFile = isFile;
+            var file = new NccMediaViewModel
             {
                 FileName = fullPath.Substring(fullPath.LastIndexOf("\\") + 1),
                 FullPath = fullPath,
                 ParrentDir = parrentDir
             };
-            string deletePath = Path.Combine(_env.WebRootPath , fullPath.Substring(1));
+            string deletePath = Path.Combine(_env.WebRootPath, fullPath.Substring(1));
             //isFile.FullPath = deletePath;
             if (!System.IO.File.Exists(deletePath))
             {
                 //ViewBag.MessageType = "ErrorMessage";
                 //ViewBag.Message = "File does not exists";
-                return RedirectToAction("Index", new { sq = parrentDir, errorMessage = "File does not exists." });
+                return RedirectToAction("Index", new { sq = parrentDir, errorMessage = "File does not exists.", isFile = isFile });
             }
-            return View(isFile);
+            return View(file);
         }
 
         [HttpPost]
-        public ActionResult Delete(string fullPath, string parrentDir, int status)
+        public ActionResult Delete(string fullPath, string parrentDir, int status, bool isFile)
         {
+            ViewBag.IsFile = isFile;
             string deletePath = Path.Combine(_env.WebRootPath, fullPath.Substring(1));
             if (System.IO.File.Exists(deletePath))
             {
@@ -254,7 +256,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             }
             //ViewBag.MessageType = "SuccessMessage";
             //ViewBag.Message = "File deleted successful";
-            return RedirectToAction("Index", new { sq = parrentDir, successMessage = "File deleted successfully." });
+            return RedirectToAction("Index", new { sq = parrentDir, successMessage = "File deleted successfully.", isFile = isFile });
         }
         #endregion 
         #endregion
