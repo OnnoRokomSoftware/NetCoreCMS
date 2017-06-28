@@ -45,6 +45,7 @@ namespace NetCoreCMS.Notice.Models
 
         public enum NccNoticeStatus
         {
+            Drafted,
             Published,
             UnPublished,
             Expired

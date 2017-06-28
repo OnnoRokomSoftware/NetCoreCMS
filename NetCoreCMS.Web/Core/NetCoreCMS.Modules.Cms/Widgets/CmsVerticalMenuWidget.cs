@@ -1,4 +1,6 @@
-﻿using NetCoreCMS.Framework.Modules.Widgets;
+﻿using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.Modules.Cms.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {
-    public class CmsHorizontalMenuWidget : IWidget
+    public class CmsVerticalMenuWidget : IWidget
     {
         string _title;
         string _body;
@@ -14,8 +16,9 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _configJson;
         string _description;
         string _viewFileName;
+        IViewRenderService _viewRenderService;
 
-        public string WidgetId { get { return "NetCoreCMS.Modules.Cms.CmsHorizontalMenuWidget"; } }
+        public string WidgetId { get { return "NetCoreCMS.Modules.Cms.CmsVerticalMenuWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -28,27 +31,22 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public string ConfigJson { get { return _configJson; } }
         public string ViewFileName { get { return _viewFileName; } }
 
-        public CmsHorizontalMenuWidget()
+        public CmsVerticalMenuWidget(IViewRenderService viewRenderService)
         {
-
+            _viewRenderService = viewRenderService;
         }
 
         public void Init()
         {
-            _title = "Horizontal Menu";
-            _description = "Horizontal nevigation menu";
-            _body = "<ul>" +
-                        "<li><a href='/CmsHome'>Home</a></li>" +
-                        "<li><a href='/CmsPage'>Pages</a></li>" +
-                        "<li><a href='/CmsBlog'>Posts</a></li>" +
-                        "<li><a href='/CmsPage/View/?Id=About'>About</a></li>" +
-                        "<li><a href='/CmsPage/View/?Id=Contact'>Contact</a></li>" +
-                    "</ul>";
+            _title = "Vertical Menu";
+            _description = "Vertical nevigation menu";
             _footer = "Footer";
+            _viewFileName = "Widgets/CmsVerticalMenu";
         }
 
         public string RenderBody()
-        {            
+        {
+            _body = _viewRenderService.RenderToStringAsync<CmsWidgetController>(_viewFileName, null).Result;
             return _body;
         }
 

@@ -409,26 +409,16 @@
                         <!-- Footer Widgets Start -->
                         if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
                         {
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 @foreach (var item in zoneFooterWidgets)
                                 {
                                     var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                                     foreach (var widget in widgets)
                                     {
                                         widget.Init();
-                                <div>
-                                    <div class='panel panel-default'>
-                                        <div class='panel-heading'>
-                                            @Html.Raw(widget.RenderTitle())
-                                        </div>
-                                        <div class='panel-body'>
+                                        <div>
                                             @Html.Raw(widget.RenderBody())
                                         </div>
-                                        <div class='panel-footer'>
-                                            @Html.Raw(widget.RenderFooter())
-                                        </div>
-                                    </div>
-                                </div>
                                     }
                                 }
                             </div>

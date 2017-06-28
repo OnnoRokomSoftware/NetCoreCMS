@@ -1,4 +1,6 @@
-﻿using NetCoreCMS.Framework.Modules.Widgets;
+﻿using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.HelloWorld.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,8 +15,9 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _configJson;
         string _description;
         string _viewFileName;
+        IViewRenderService _viewRenderService;
 
-        public string WidgetId { get { return "76983E5A-0E4C-4753-B8BC-1C63F6733GFC"; } }
+        public string WidgetId { get { return "NetCoreCMS.HelloWorld.Widgets.FooterMenuWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -25,22 +28,25 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public string Footer { get { return _footer; } }
 
         public string ConfigJson { get { return _configJson; } }
-        public string ViewFileName { get { return _viewFileName; } }
-        public FooterMenuWidget()
-        {
 
+        public string ViewFileName { get { return _viewFileName; } }
+
+        public FooterMenuWidget(IViewRenderService viewRenderService)
+        {
+            _viewRenderService = viewRenderService;
         }
 
         public void Init()
         {
             _title = "Footer menu";
             _description = "This is a sample widget which will show an image.";
-            _body = "<div style='height:40px; width:100%; text-align:center; padding: 5px 10px;'> <a href='/CmsHome'>Home</a> | <a href='/CmsHome/About'>About</a> |<a href='/CmsHome/Contact'>Contact</a> |<a href='/Admin'>Admin</a>   </div>";
             _footer = "Footer";
+            _viewFileName = "Widgets/FooterMenu";
         }
 
         public string RenderBody()
         {
+            _body = _viewRenderService.RenderToStringAsync<HelloWidgetController>(_viewFileName, null).Result;
             return _body;
         }
 

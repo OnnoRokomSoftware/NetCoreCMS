@@ -48,7 +48,19 @@ namespace NetCoreCMS.Notice.Services
             
             return entity;
         }
-        
+
+        internal List<NccNotice> LoadByStatusAndPage(NccNotice.NccNoticeStatus noticeStatus, NccNotice.NccNoticeType noticeType, int page, int pageSize)
+        {
+            return _entityRepository.Query().Where(
+                x => x.NoticeStatus == noticeStatus
+                && x.NoticeType == noticeType
+            ).OrderByDescending(x => x.PublishDate)
+            .OrderBy(x => x.NoticeOrder)
+            .Skip(page * pageSize)
+            .Take(pageSize)
+            .ToList();
+        }
+
         public void Remove(long entityId)
         {
             var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId );
@@ -58,6 +70,17 @@ namespace NetCoreCMS.Notice.Services
                 _entityRepository.Edit(entity);
                 _entityRepository.SaveChange();
             }
+        }
+
+        public List<NccNotice> LoadTopNoticesForWebSite(int top)
+        {
+            return _entityRepository.Query().Where(
+                x => x.NoticeStatus == NccNotice.NccNoticeStatus.Published
+                && x.NoticeType == NccNotice.NccNoticeType.Site    
+            ).OrderByDescending( x => x.PublishDate)
+            .OrderBy( x => x.NoticeOrder)            
+            .Take(top)
+            .ToList();
         }
 
         public List<NccNotice> LoadAll()

@@ -1,6 +1,23 @@
-﻿@{ 
+﻿@using NetCoreCMS.Notice.Models
+@using System.Collections
+@{ 
     Layout = Constants.SiteLayoutName;
 }
-<h1> Holaaaaaaaaa !!! It's a sample notice module</h1>
+@model List<NccNotice>
 
-<hr/>
+<div>
+    @foreach (var item in Model)
+    {
+        var len = item.Content.Length;
+        if (len > 200)
+        {
+            len = 200;
+        }
+
+        <div style="border: dashed 1px gray;">
+            <div><h3>@item.Title</h3></div>
+            <div>@item.Content.Substring(0,len) ... <a href="~/NoticeHome/Details/?Id=@item.Id">More</a></div>
+        </div>
+        <br/>
+    }
+</div>

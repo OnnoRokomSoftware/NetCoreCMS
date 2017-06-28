@@ -1,11 +1,14 @@
-﻿using NetCoreCMS.Framework.Modules.Widgets;
+﻿using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.Notice.Controllers;
+using NetCoreCMS.Notice.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace NetCoreCMS.Notice.Widgets
 {
-    public class NoticeNavBarWidget : IWidget
+    public class NoticeHorizontalWidget : IWidget
     {
         string _title;
         string _body;
@@ -13,8 +16,10 @@ namespace NetCoreCMS.Notice.Widgets
         string _configJson;
         string _description;
         string _viewFileName;
+        IViewRenderService _viewRenderService;
+        NccNoticeService _noticeService;
 
-        public string WidgetId { get { return "23983E5A-3E4C-472E-B8BC-045D643565"; } }
+        public string WidgetId { get { return "NetCoreCMS.Notice.Widgets.NoticeHorizontalWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -25,25 +30,27 @@ namespace NetCoreCMS.Notice.Widgets
         public string Footer { get { return _footer; } }
 
         public string ConfigJson { get { return _configJson; } }
+
         public string ViewFileName { get { return _viewFileName; } }
 
-        public NoticeNavBarWidget()
+        public NoticeHorizontalWidget(IViewRenderService viewRenderService, NccNoticeService noticeService)
         {
-
+            _viewRenderService = viewRenderService;
+            _noticeService = noticeService;
         }
 
         public void Init()
         {
-            _title = "NavBar Widget";
-            _description = "This is a sample widget which will show an image.";
-            _body = "<div style='height:20px; width:100%; text-align:center; padding: 5px 10px;'> " +
-                "<marquee behavior=\"scroll\" direction=\"left\"><img src=\"http://www.html.am/images/html-codes/marquees/fish-swimming.gif\" width=\"74\" height=\"30\" alt=\"Swimming fish\" /></marquee>" +
-                "</div>";
+            _title = "Notice Horizontal Widget";
+            _description = "This is a sample widget which will scroll notices.";
             _footer = "Footer";
+            _viewFileName = "Widgets/NoticeHorizontal";
         }
 
         public string RenderBody()
         {
+            var notices = _noticeService.LoadTopNoticesForWebSite(10);
+            _body = _viewRenderService.RenderToStringAsync<NoticeWidgetController>(_viewFileName, notices).Result;
             return _body;
         }
 

@@ -1,4 +1,6 @@
-﻿using NetCoreCMS.Framework.Modules.Widgets;
+﻿using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.HelloWorld.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,8 +15,9 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _configJson;
         string _description;
         string _viewFileName;
+        IViewRenderService _viewRenderService;
 
-        public string WidgetId { get { return "26983E5A-3E4C-472E-B8BC-0CD3D6F33FCF"; } }
+        public string WidgetId { get { return "NetCoreCMS.HelloWorld.Widgets.NavBarWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -25,25 +28,25 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public string Footer { get { return _footer; } }
 
         public string ConfigJson { get { return _configJson; } }
+
         public string ViewFileName { get { return _viewFileName; } }
 
-        public NavBarWidget()
+        public NavBarWidget(IViewRenderService viewRenderService)
         {
-
+            _viewRenderService = viewRenderService;
         }
 
         public void Init()
         {
             _title = "NavBar Widget";
             _description = "This is a sample widget which will show an image.";
-            _body = "<div style='height:20px; width:100%; text-align:center; padding: 5px 10px;'> " +
-                "<marquee behavior=\"scroll\" direction=\"left\"><img src=\"http://www.html.am/images/html-codes/marquees/fish-swimming.gif\" width=\"74\" height=\"30\" alt=\"Swimming fish\" /></marquee>" +
-                "</div>";
             _footer = "Footer";
+            _viewFileName = "Widgets/NavBar";
         }
 
         public string RenderBody()
         {
+            _body = _viewRenderService.RenderToStringAsync<HelloWidgetController>(_viewFileName, null).Result;
             return _body;
         }
 

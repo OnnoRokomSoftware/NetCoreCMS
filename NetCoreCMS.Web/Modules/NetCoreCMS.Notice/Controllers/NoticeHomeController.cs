@@ -29,9 +29,19 @@ namespace NetCoreCMS.Notice.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Index()
+        public ActionResult Index(int page = 0, int pageSize = 10)
         {
-            return View();
+            var all = _nccNoticeService.LoadByStatusAndPage(NccNotice.NccNoticeStatus.Published, NccNotice.NccNoticeType.Site, page, pageSize);
+            return View(all);
+        }
+
+        [AllowAnonymous]
+        public ActionResult Details(long id)
+        {
+            var notice = _nccNoticeService.Get(id);
+            if (notice == null)
+                return RedirectToAction("/Home/Error");
+            return View(notice);
         }
 
         [AdminMenuItem(Name = "New Notice", Url = "/NoticeHome/CreateEdit", Order = 1)]
