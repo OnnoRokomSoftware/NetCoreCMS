@@ -34,16 +34,19 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccMenu Update(NccMenu entity)
         {
-            var oldEntity = _entityRepository.Query().Include(x=>x.MenuItems).FirstOrDefault(x => x.Id == entity.Id);
-            //foreach (var mi in oldEntity.MenuItems)
-            //{
-            //    RecursiveNccMenuItemDelete(mi);
-            //}
-            //oldEntity = _entityRepository.Query().Include(x => x.MenuItems).FirstOrDefault(x => x.Id == entity.Id);
+            var oldEntity = _entityRepository.Query().Include("MenuItems").FirstOrDefault(x => x.Id == entity.Id);
+            
             if (oldEntity != null)
             {
+                RecursiveLoad(oldEntity);
+                
                 using (var txn = _entityRepository.BeginTransaction())
                 {
+                    foreach (var mi in oldEntity.MenuItems)
+                    {
+                        RecursiveNccMenuItemDelete(mi);
+                    }
+                    _menuItemRepository.SaveChange();
                     CopyNewData(oldEntity, entity);
                     _entityRepository.Edit(oldEntity);
                     _entityRepository.SaveChange();
@@ -118,7 +121,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 RecursiveNccMenuItemDelete(mi);
             }
             _menuItemRepository.DeletePermanently(nccMenuItem);
-            _menuItemRepository.SaveChange();
+            //_menuItemRepository.SaveChange();
         }
 
         public List<NccMenu> LoadAllSiteMenus()
