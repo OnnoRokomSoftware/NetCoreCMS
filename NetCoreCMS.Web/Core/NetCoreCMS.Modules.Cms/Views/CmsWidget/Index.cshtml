@@ -136,16 +136,17 @@
         ev.preventDefault();
         var targetDiv = ev.target;
         var divId = ev.dataTransfer.getData("widgetId");
-        targetDiv.appendChild(document.getElementById(divId));
-        var moduleId = $("#" + divId).attr("data-module-id");
+        var div = document.getElementById(divId);
+        targetDiv.appendChild(div);
+        var moduleId = $(div).attr("data-module-id");
         var zone = $(targetDiv).attr("data-layout-zone");
         var layout = $(targetDiv).attr("data-layout-name");
         var theme = $(targetDiv).attr("data-theme-id");
-        var widgetId = $("#" + divId).attr("data-widget-id");
+        var widgetId = $(div).attr("data-widget-id");
 
-        $("#" + divId).attr("data-theme-id", theme);
-        $("#" + divId).attr("data-layout-name", layout);
-        $("#" + divId).attr("data-layout-zone", zone);
+        $(div).attr("data-theme-id", theme);
+        $(div).attr("data-layout-name", layout);
+        $(div).attr("data-layout-zone", zone);
         NccPageMask.ShowLoadingMask();
         $.ajax({
             method: 'POST',
@@ -186,21 +187,21 @@
         ev.preventDefault();
         var targetDiv = ev.target;
         var divId = ev.dataTransfer.getData("widgetId");
-
+        var div = document.getElementById(divId);
         var destModuleId = $(targetDiv).attr("data-module-id");
-        var srcModuleId = $("#" + divId).attr("data-module-id");
+        var srcModuleId = $(div).attr("data-module-id");
 
         if (srcModuleId != destModuleId) {
             NccGlobalAlert.ShowError("Different module widget. Drop into it's module panel.");
         }
         else {
 
-            var zone = $("#" + divId).attr("data-layout-zone");
-            var layout = $("#" + divId).attr("data-layout-name");
-            var theme = $("#" + divId).attr("data-theme-id");
-            var widgetId = $("#" + divId).attr("data-widget-id");
+            var zone = $(div).attr("data-layout-zone");
+            var layout = $(div).attr("data-layout-name");
+            var theme = $(div).attr("data-theme-id");
+            var widgetId = $(div).attr("data-widget-id");
 
-            targetDiv.appendChild(document.getElementById(divId));
+            targetDiv.appendChild(div);
             removeWidget(destModuleId, theme, layout, zone, widgetId);
         }
     }
