@@ -5,6 +5,8 @@ using System.Reflection;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Core.Modules.Media
 {
@@ -45,7 +47,8 @@ namespace NetCoreCMS.Core.Modules.Media
 
         public void Init(IServiceCollection services)
         {
-            
+            services.AddTransient<NccPostRepository>();
+            services.AddTransient<NccPostService>();
         }
 
         public bool Install()

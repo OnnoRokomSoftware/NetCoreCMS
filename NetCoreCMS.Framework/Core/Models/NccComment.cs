@@ -11,9 +11,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccTag : IBaseModel<long>
+    public class NccComment : IBaseModel<long>
     {
-        public NccTag()
+        public NccComment()
         {
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
@@ -31,7 +31,10 @@ namespace NetCoreCMS.Framework.Core.Models
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }
         public int Status { get; set; }
-
-        public List<NccPostTag> Tags { get; set; }
+        public NccPost Post { get; set; }
+        public string Title { get; set; }
+        public string Content { get; set; }
+        public NccUser Author { get; set; }
+        
     }
 }

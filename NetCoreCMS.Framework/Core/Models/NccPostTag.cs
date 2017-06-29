@@ -4,11 +4,11 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPostCategory
+    public class NccPostTag
     {
         public long PostId { get; set; }
         public NccPost Post { get; set; }
-        public long CategoryId { get; set; }
-        public NccCategory Category { get; set; }
+        public long TagId { get; set; }
+        public NccTag Tag { get; set; }
     }
 }

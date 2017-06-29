@@ -26,34 +26,42 @@ namespace NetCoreCMS.Framework.Core.Models
         public long Id { get; set; }
         public int VersionNumber { get; set; }
         public string Name { get; set; }
+
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
+        public DateTime PublishDate { get; set; }
+
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }
         public int Status { get; set; }
-        public NccPost Parent { get; set; }
+        
         public string Title { get; set; }
         public string Slug { get; set; }
         public string MetaDescription { get; set; }
         public string MetaKeyword { get; set; }
-        public byte[] Content { get; set; }
+        public string Content { get; set; }
         public bool IsFeatured { get; set; }
         public bool IsStiky { get; set; }
         public bool AllowComment { get; set; }
         public string ThumImage { get; set; }
+        public string Layout { get; set; }
+        public string RelatedPosts { get; set; }
+
+        public NccPost Parent { get; set; }
         public NccUser Author { get; set; }
         public NccPostStatus PostStatus { get; set; }
-        public List<NccPostCategory> Categories { get; set; }
-        public List<NccTag> Tags { get; set; }
-        public List<NccPostComment> PostComments { get; set; }
         public NccPostType PostType { get; set; }
-        public string Layout { get; set; }
-        public DateTime PublishDate { get; set; }
+
+        public List<NccPostCategory> Categories { get; set; }
+        public List<NccPostTag> Tags { get; set; }
+        public List<NccComment> Comments { get; set; }
+        
+        
 
         public enum NccPostStatus
         {
             Draft,
-            Review,
+            Reviewed,
             Published,
             UnPublished,
             Archived
@@ -61,7 +69,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public enum NccPostType
         {
             Public,
-            Privet,
+            Private,
             PasswordProtected
         }
 

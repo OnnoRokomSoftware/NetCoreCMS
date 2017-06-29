@@ -9,8 +9,8 @@ using NetCoreCMS.Framework.Core.Models;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20170621062421_initiMySql")]
-    partial class initiMySql
+    [Migration("20170629151821_initMySql")]
+    partial class initMySql
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -83,6 +83,80 @@ namespace NetCoreCMS.Framework.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("Ncc_UserToken");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccCategory", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CategoryImage");
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<string>("MetaDescription");
+
+                    b.Property<string>("MetaKeyword");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long?>("ParentId");
+
+                    b.Property<string>("Slug");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Title");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ParentId");
+
+                    b.ToTable("Ncc_PostCategory");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccComment", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long?>("AuthorId");
+
+                    b.Property<string>("Content");
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long?>("PostId");
+
+                    b.Property<int>("Status");
+
+                    b.Property<string>("Title");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("PostId");
+
+                    b.ToTable("Ncc_PostComment");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccMenu", b =>
@@ -333,7 +407,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<long?>("AuthorId");
 
-                    b.Property<byte[]>("Content");
+                    b.Property<string>("Content");
 
                     b.Property<long>("CreateBy");
 
@@ -355,8 +429,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long?>("NccPostCategoryId");
-
                     b.Property<long?>("ParentId");
 
                     b.Property<int>("PostStatus");
@@ -364,6 +436,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<int>("PostType");
 
                     b.Property<DateTime>("PublishDate");
+
+                    b.Property<string>("RelatedPosts");
 
                     b.Property<string>("Slug");
 
@@ -379,8 +453,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.HasIndex("AuthorId");
 
-                    b.HasIndex("NccPostCategoryId");
-
                     b.HasIndex("ParentId");
 
                     b.ToTable("Ncc_NccPost");
@@ -388,80 +460,28 @@ namespace NetCoreCMS.Framework.Migrations
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostCategory", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<long>("PostId");
 
-                    b.Property<string>("CategoryImage");
+                    b.Property<long>("CategoryId");
 
-                    b.Property<long>("CreateBy");
+                    b.HasKey("PostId", "CategoryId");
 
-                    b.Property<DateTime>("CreationDate");
+                    b.HasIndex("CategoryId");
 
-                    b.Property<string>("MetaDescription");
-
-                    b.Property<string>("MetaKeyword");
-
-                    b.Property<DateTime>("ModificationDate");
-
-                    b.Property<long>("ModifyBy");
-
-                    b.Property<string>("Name");
-
-                    b.Property<long?>("NccPostId");
-
-                    b.Property<long?>("ParentId");
-
-                    b.Property<string>("Slug");
-
-                    b.Property<int>("Status");
-
-                    b.Property<string>("Title");
-
-                    b.Property<int>("VersionNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NccPostId");
-
-                    b.HasIndex("ParentId");
-
-                    b.ToTable("Ncc_PostCategory");
+                    b.ToTable("NccPostCategory");
                 });
 
-            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostComment", b =>
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostTag", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<long>("PostId");
 
-                    b.Property<long?>("AuthorId");
+                    b.Property<long>("TagId");
 
-                    b.Property<byte[]>("Content");
+                    b.HasKey("PostId", "TagId");
 
-                    b.Property<long>("CreateBy");
+                    b.HasIndex("TagId");
 
-                    b.Property<DateTime>("CreationDate");
-
-                    b.Property<DateTime>("ModificationDate");
-
-                    b.Property<long>("ModifyBy");
-
-                    b.Property<string>("Name");
-
-                    b.Property<long?>("PostId");
-
-                    b.Property<int>("Status");
-
-                    b.Property<string>("Title");
-
-                    b.Property<int>("VersionNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorId");
-
-                    b.HasIndex("PostId");
-
-                    b.ToTable("Ncc_PostComment");
+                    b.ToTable("NccPostTag");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccRole", b =>
@@ -544,15 +564,11 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<long?>("NccPostId");
-
                     b.Property<int>("Status");
 
                     b.Property<int>("VersionNumber");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("NccPostId");
 
                     b.ToTable("Ncc_Tag");
                 });
@@ -917,6 +933,24 @@ namespace NetCoreCMS.Framework.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccCategory", b =>
+                {
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccCategory", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccComment", b =>
+                {
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
+
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPost", "Post")
+                        .WithMany("Comments")
+                        .HasForeignKey("PostId");
+                });
+
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccMenuItem", b =>
                 {
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccMenu")
@@ -949,10 +983,6 @@ namespace NetCoreCMS.Framework.Migrations
                         .WithMany()
                         .HasForeignKey("AuthorId");
 
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPostCategory")
-                        .WithMany("Posts")
-                        .HasForeignKey("NccPostCategoryId");
-
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccPost", "Parent")
                         .WithMany()
                         .HasForeignKey("ParentId");
@@ -960,31 +990,28 @@ namespace NetCoreCMS.Framework.Migrations
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostCategory", b =>
                 {
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPost")
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccCategory", "Category")
                         .WithMany("Categories")
-                        .HasForeignKey("NccPostId");
-
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPostCategory", "Parent")
-                        .WithMany()
-                        .HasForeignKey("ParentId");
-                });
-
-            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostComment", b =>
-                {
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "Author")
-                        .WithMany()
-                        .HasForeignKey("AuthorId");
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccPost", "Post")
-                        .WithMany("PostComments")
-                        .HasForeignKey("PostId");
+                        .WithMany("Categories")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccTag", b =>
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostTag", b =>
                 {
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPost")
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPost", "Post")
                         .WithMany("Tags")
-                        .HasForeignKey("NccPostId");
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccTag", "Tag")
+                        .WithMany("Tags")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccThemeLayout", b =>

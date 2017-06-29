@@ -11,9 +11,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPostComment : IBaseModel<long>
+    public class NccCategory : IBaseModel<long>
     {
-        public NccPostComment()
+        public NccCategory()
         {
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
@@ -31,10 +31,13 @@ namespace NetCoreCMS.Framework.Core.Models
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }
         public int Status { get; set; }
-        public NccPost Post { get; set; }
+        public NccCategory Parent { get; set; }
         public string Title { get; set; }
-        public byte[] Content { get; set; }
-        public NccUser Author { get; set; }
-        
+        public string Slug { get; set; }
+        public string MetaDescription { get; set; }
+        public string MetaKeyword { get; set; }
+        public string CategoryImage{ get; set; }
+
+        public List<NccPostCategory> Categories { get; set; }
     }
 }

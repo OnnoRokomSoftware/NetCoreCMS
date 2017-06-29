@@ -41,22 +41,56 @@ namespace NetCoreCMS.Framework.Core.Models
                 b.HasOne(p => p.Parent);
                 b.HasOne(p => p.Author);
                 b.HasMany(p => p.Categories);
-                b.HasMany(p => p.PostComments);
-                b.HasMany(p => p.Tags);
+                b.HasMany(p => p.Comments);
+                b.HasMany(p => p.Tags);                
             });
-            modelBuilder.Entity<NccPostCategory>(b => {
+            
+            modelBuilder.Entity<NccCategory>(b => {
                 b.ToTable("Ncc_PostCategory");
                 b.HasOne(p => p.Parent);
-                b.HasMany(p => p.Posts);
+                b.HasMany(p => p.Categories);
             });
-            modelBuilder.Entity<NccPostComment>(b => {
+
+            modelBuilder.Entity<NccPostCategory>()
+            .HasKey(t => new { t.PostId, t.CategoryId});
+
+            modelBuilder.Entity<NccPostCategory>()
+                .HasOne(pt => pt.Post)
+                .WithMany(p => p.Categories)
+                .HasForeignKey(pt => pt.PostId);
+
+            modelBuilder.Entity<NccPostCategory>()
+                .HasOne(pt => pt.Category)
+                .WithMany(t => t.Categories)
+                .HasForeignKey(pt => pt.CategoryId);
+
+            modelBuilder.Entity<NccComment>(b => {
                 b.ToTable("Ncc_PostComment");
                 b.HasOne(p => p.Post);
                 b.HasOne(p => p.Author);
             });
+
+            modelBuilder.Entity<NccTag>(b => {
+                b.ToTable("Ncc_Tag");
+                b.HasMany(p => p.Tags);
+            });
+
+            modelBuilder.Entity<NccPostTag>()
+            .HasKey(t => new { t.PostId, t.TagId });
+
+            modelBuilder.Entity<NccPostTag>()
+                .HasOne(pt => pt.Post)
+                .WithMany(p => p.Tags)
+                .HasForeignKey(pt => pt.PostId);
+
+            modelBuilder.Entity<NccPostTag>()
+                .HasOne(pt => pt.Tag)
+                .WithMany(t => t.Tags)
+                .HasForeignKey(pt => pt.TagId);
+
             modelBuilder.Entity<NccRole>().ToTable("Ncc_Role");
             modelBuilder.Entity<NccSettings>().ToTable("Ncc_Settings");
-            modelBuilder.Entity<NccTag>().ToTable("Ncc_Tag");
+            
             modelBuilder.Entity<NccTheme>(b => {
                 b.ToTable("Ncc_Theme");
             });

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NetCoreCMS.Framework.Migrations
 {
-    public partial class initiMySql : Migration
+    public partial class initMySql : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -20,6 +20,37 @@ namespace NetCoreCMS.Framework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ncc_UserToken", x => new { x.UserId, x.LoginProvider, x.Name });
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ncc_PostCategory",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
+                    CategoryImage = table.Column<string>(nullable: true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    MetaDescription = table.Column<string>(nullable: true),
+                    MetaKeyword = table.Column<string>(nullable: true),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    ParentId = table.Column<long>(nullable: true),
+                    Slug = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    Title = table.Column<string>(nullable: true),
+                    VersionNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_PostCategory", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ncc_PostCategory_Ncc_PostCategory_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Ncc_PostCategory",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,6 +214,25 @@ namespace NetCoreCMS.Framework.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ncc_Settings", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Ncc_Tag",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    VersionNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_Tag", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -465,6 +515,53 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ncc_NccPost",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("MySql:ValueGeneratedOnAdd", true),
+                    AllowComment = table.Column<bool>(nullable: false),
+                    AuthorId = table.Column<long>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
+                    CreateBy = table.Column<long>(nullable: false),
+                    CreationDate = table.Column<DateTime>(nullable: false),
+                    IsFeatured = table.Column<bool>(nullable: false),
+                    IsStiky = table.Column<bool>(nullable: false),
+                    Layout = table.Column<string>(nullable: true),
+                    MetaDescription = table.Column<string>(nullable: true),
+                    MetaKeyword = table.Column<string>(nullable: true),
+                    ModificationDate = table.Column<DateTime>(nullable: false),
+                    ModifyBy = table.Column<long>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
+                    ParentId = table.Column<long>(nullable: true),
+                    PostStatus = table.Column<int>(nullable: false),
+                    PostType = table.Column<int>(nullable: false),
+                    PublishDate = table.Column<DateTime>(nullable: false),
+                    RelatedPosts = table.Column<string>(nullable: true),
+                    Slug = table.Column<string>(nullable: true),
+                    Status = table.Column<int>(nullable: false),
+                    ThumImage = table.Column<string>(nullable: true),
+                    Title = table.Column<string>(nullable: true),
+                    VersionNumber = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_NccPost", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Ncc_NccPost_Ncc_User_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Ncc_User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Ncc_NccPost_Ncc_NccPost_ParentId",
+                        column: x => x.ParentId,
+                        principalTable: "Ncc_NccPost",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ncc_UserRole",
                 columns: table => new
                 {
@@ -554,98 +651,13 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ncc_PostCategory",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGeneratedOnAdd", true),
-                    CategoryImage = table.Column<string>(nullable: true),
-                    CreateBy = table.Column<long>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: false),
-                    MetaDescription = table.Column<string>(nullable: true),
-                    MetaKeyword = table.Column<string>(nullable: true),
-                    ModificationDate = table.Column<DateTime>(nullable: false),
-                    ModifyBy = table.Column<long>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    NccPostId = table.Column<long>(nullable: true),
-                    ParentId = table.Column<long>(nullable: true),
-                    Slug = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    Title = table.Column<string>(nullable: true),
-                    VersionNumber = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ncc_PostCategory", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ncc_PostCategory_Ncc_PostCategory_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Ncc_PostCategory",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Ncc_NccPost",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGeneratedOnAdd", true),
-                    AllowComment = table.Column<bool>(nullable: false),
-                    AuthorId = table.Column<long>(nullable: true),
-                    Content = table.Column<byte[]>(nullable: true),
-                    CreateBy = table.Column<long>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: false),
-                    IsFeatured = table.Column<bool>(nullable: false),
-                    IsStiky = table.Column<bool>(nullable: false),
-                    Layout = table.Column<string>(nullable: true),
-                    MetaDescription = table.Column<string>(nullable: true),
-                    MetaKeyword = table.Column<string>(nullable: true),
-                    ModificationDate = table.Column<DateTime>(nullable: false),
-                    ModifyBy = table.Column<long>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    NccPostCategoryId = table.Column<long>(nullable: true),
-                    ParentId = table.Column<long>(nullable: true),
-                    PostStatus = table.Column<int>(nullable: false),
-                    PostType = table.Column<int>(nullable: false),
-                    PublishDate = table.Column<DateTime>(nullable: false),
-                    Slug = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    ThumImage = table.Column<string>(nullable: true),
-                    Title = table.Column<string>(nullable: true),
-                    VersionNumber = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ncc_NccPost", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ncc_NccPost_Ncc_User_AuthorId",
-                        column: x => x.AuthorId,
-                        principalTable: "Ncc_User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ncc_NccPost_Ncc_PostCategory_NccPostCategoryId",
-                        column: x => x.NccPostCategoryId,
-                        principalTable: "Ncc_PostCategory",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Ncc_NccPost_Ncc_NccPost_ParentId",
-                        column: x => x.ParentId,
-                        principalTable: "Ncc_NccPost",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Ncc_PostComment",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("MySql:ValueGeneratedOnAdd", true),
                     AuthorId = table.Column<long>(nullable: true),
-                    Content = table.Column<byte[]>(nullable: true),
+                    Content = table.Column<string>(nullable: true),
                     CreateBy = table.Column<long>(nullable: false),
                     CreationDate = table.Column<DateTime>(nullable: false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
@@ -674,29 +686,51 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Ncc_Tag",
+                name: "NccPostCategory",
                 columns: table => new
                 {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGeneratedOnAdd", true),
-                    CreateBy = table.Column<long>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: false),
-                    ModificationDate = table.Column<DateTime>(nullable: false),
-                    ModifyBy = table.Column<long>(nullable: false),
-                    Name = table.Column<string>(nullable: true),
-                    NccPostId = table.Column<long>(nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    VersionNumber = table.Column<int>(nullable: false)
+                    PostId = table.Column<long>(nullable: false),
+                    CategoryId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ncc_Tag", x => x.Id);
+                    table.PrimaryKey("PK_NccPostCategory", x => new { x.PostId, x.CategoryId });
                     table.ForeignKey(
-                        name: "FK_Ncc_Tag_Ncc_NccPost_NccPostId",
-                        column: x => x.NccPostId,
+                        name: "FK_NccPostCategory_Ncc_PostCategory_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Ncc_PostCategory",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NccPostCategory_Ncc_NccPost_PostId",
+                        column: x => x.PostId,
                         principalTable: "Ncc_NccPost",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "NccPostTag",
+                columns: table => new
+                {
+                    PostId = table.Column<long>(nullable: false),
+                    TagId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NccPostTag", x => new { x.PostId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_NccPostTag_Ncc_NccPost_PostId",
+                        column: x => x.PostId,
+                        principalTable: "Ncc_NccPost",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NccPostTag_Ncc_Tag_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Ncc_Tag",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -713,6 +747,21 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "IX_Ncc_UserLogin_UserId",
                 table: "Ncc_UserLogin",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ncc_PostCategory_ParentId",
+                table: "Ncc_PostCategory",
+                column: "ParentId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ncc_PostComment_AuthorId",
+                table: "Ncc_PostComment",
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Ncc_PostComment_PostId",
+                table: "Ncc_PostComment",
+                column: "PostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ncc_MenuItem_NccMenuId",
@@ -745,45 +794,25 @@ namespace NetCoreCMS.Framework.Migrations
                 column: "AuthorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_NccPost_NccPostCategoryId",
-                table: "Ncc_NccPost",
-                column: "NccPostCategoryId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Ncc_NccPost_ParentId",
                 table: "Ncc_NccPost",
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_PostCategory_NccPostId",
-                table: "Ncc_PostCategory",
-                column: "NccPostId");
+                name: "IX_NccPostCategory_CategoryId",
+                table: "NccPostCategory",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_PostCategory_ParentId",
-                table: "Ncc_PostCategory",
-                column: "ParentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_PostComment_AuthorId",
-                table: "Ncc_PostComment",
-                column: "AuthorId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_PostComment_PostId",
-                table: "Ncc_PostComment",
-                column: "PostId");
+                name: "IX_NccPostTag_TagId",
+                table: "NccPostTag",
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "RoleNameIndex",
                 table: "Ncc_Role",
                 column: "NormalizedName",
                 unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_Tag_NccPostId",
-                table: "Ncc_Tag",
-                column: "NccPostId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ncc_ThemeLayout_ThemeId",
@@ -820,26 +849,10 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "IX_Ncc_WidgetSections_NccThemeLayoutId",
                 table: "Ncc_WidgetSections",
                 column: "NccThemeLayoutId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Ncc_PostCategory_Ncc_NccPost_NccPostId",
-                table: "Ncc_PostCategory",
-                column: "NccPostId",
-                principalTable: "Ncc_NccPost",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Ncc_NccPost_Ncc_User_AuthorId",
-                table: "Ncc_NccPost");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Ncc_NccPost_Ncc_PostCategory_NccPostCategoryId",
-                table: "Ncc_NccPost");
-
             migrationBuilder.DropTable(
                 name: "Ncc_RoleClaim");
 
@@ -853,6 +866,9 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_UserToken");
 
             migrationBuilder.DropTable(
+                name: "Ncc_PostComment");
+
+            migrationBuilder.DropTable(
                 name: "Ncc_MenuItem");
 
             migrationBuilder.DropTable(
@@ -862,13 +878,13 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_Page");
 
             migrationBuilder.DropTable(
-                name: "Ncc_PostComment");
+                name: "NccPostCategory");
+
+            migrationBuilder.DropTable(
+                name: "NccPostTag");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Settings");
-
-            migrationBuilder.DropTable(
-                name: "Ncc_Tag");
 
             migrationBuilder.DropTable(
                 name: "Ncc_UserRole");
@@ -886,6 +902,15 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_NccMenu");
 
             migrationBuilder.DropTable(
+                name: "Ncc_PostCategory");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_NccPost");
+
+            migrationBuilder.DropTable(
+                name: "Ncc_Tag");
+
+            migrationBuilder.DropTable(
                 name: "Ncc_Role");
 
             migrationBuilder.DropTable(
@@ -898,16 +923,10 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_ThemeLayout");
 
             migrationBuilder.DropTable(
-                name: "Ncc_Theme");
-
-            migrationBuilder.DropTable(
                 name: "Ncc_User");
 
             migrationBuilder.DropTable(
-                name: "Ncc_PostCategory");
-
-            migrationBuilder.DropTable(
-                name: "Ncc_NccPost");
+                name: "Ncc_Theme");
         }
     }
 }

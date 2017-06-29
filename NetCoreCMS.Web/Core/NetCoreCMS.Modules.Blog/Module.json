@@ -1,14 +1,13 @@
 ﻿{
-  "ModuleId": "B5526BED-976C-4029-8E23-A0C75C23DBBB",
-  "ModuleName": "NetCoreCMS.Modules.Blog",
+  "ModuleId": "NetCoreCMS.Core.Modules.Blog",
+  "ModuleName": "NetCoreCMS Blog Module",
   "ModuleTitle": "Blog",
   "Author": "TecRT",
   "Website": "http://tecrt.com",
   "AntiForgery": true,
-  "Description": "Builtin Content Management Module.",
+  "Description": "Builtin Blog Module.",
   "Version": "0.1.1",
   "NetCoreCMSVersion": "0.1.1",
   "Dependencies": [],
   "Category": "Core"
-  
 }
