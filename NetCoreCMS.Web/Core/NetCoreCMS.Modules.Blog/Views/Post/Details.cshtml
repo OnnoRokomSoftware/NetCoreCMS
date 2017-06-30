@@ -1,0 +1,14 @@
+﻿@using NetCoreCMS.Framework.Utility
+@model NccPost
+
+@{
+    Layout = Constants.SiteLayoutName;
+}
+
+<h3>@Model.Title</h3>
+<h5>Author: @Model.Author.FullName</h5>
+<hr />
+<p>
+    @Html.Raw(@Model.Content)
+</p>
+

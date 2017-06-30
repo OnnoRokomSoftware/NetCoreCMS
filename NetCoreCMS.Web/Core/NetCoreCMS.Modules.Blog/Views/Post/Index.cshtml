@@ -1,0 +1,39 @@
+﻿@using NetCoreCMS.Framework.Utility
+@using System.Collections
+@model List<NccPost>
+@{
+    Layout = Constants.SiteLayoutName;
+    ViewData["PageTitle"] = "Post Manage";
+    ViewData["PageSubtitle"] = "Manage existing Posts";
+}
+
+<script src="~/lib/ckeditor/ckeditor.js"></script>
+<link href="/NetCoreCMS.Modules.Cms/css/page.css" rel="stylesheet" />
+<script src="/NetCoreCMS.Modules.Cms/js/managePage.js"></script>
+
+
+<div class="row">
+    <div class="col-lg-12">
+         
+        @foreach (var page in Model)
+        {
+            <div style="border: dashed 1px gray;padding:10px 10px;">
+                <h3>@page.Title</h3>
+                <p>Author: @page.Author.FullName | Date: @page.PublishDate.ToString("yyyy-MM-dd hh:mm tt")</p>
+                
+                <hr/>
+                    @{
+                        var len = page.Content.Length;
+                        if(len > 200)
+                        {
+                            len = 200;
+                        }
+                        var content = page.Content.Substring(0,len);
+                        <p>@Html.Raw(content) ...<a href="/Post/Details/?Slug=@page.Slug">More</a></p> 
+                    } 
+            </div>
+            <br/>
+        } 
+             
+    </div>
+</div>

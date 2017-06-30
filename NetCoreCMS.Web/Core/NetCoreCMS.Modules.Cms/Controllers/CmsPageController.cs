@@ -10,17 +10,14 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
-using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Modules.Cms.Models.ViewModels;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="SuperAdmin,Administrator,Editor")]
     public class CmsPageController : Controller
     {
         NccPageService _pageService;

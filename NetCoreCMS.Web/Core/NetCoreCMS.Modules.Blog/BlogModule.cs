@@ -49,6 +49,8 @@ namespace NetCoreCMS.Core.Modules.Media
         {
             services.AddTransient<NccPostRepository>();
             services.AddTransient<NccPostService>();
+            services.AddTransient<NccUserRepository>();
+            services.AddTransient<NccUserService>();
         }
 
         public bool Install()

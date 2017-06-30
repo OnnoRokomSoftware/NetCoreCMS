@@ -5,6 +5,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using System;
+using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -24,7 +25,13 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccPost GetBySlugs(string slug)
         {
-           return _entityRepository.Query().FirstOrDefault(x => x.Slug == slug.ToLower());
+           return _entityRepository
+                .Query()
+                .Include("Author")
+                .Include("Comments")
+                .Include("Categories")
+                .Include("Tags")
+                .FirstOrDefault(x => x.Slug == slug.ToLower());
         }
 
         public List<NccPost> LoadRecentPages(int count)
@@ -77,6 +84,7 @@ namespace NetCoreCMS.Framework.Core.Services
             var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId );
             if (entity != null)
             {
+                entity.PostStatus = NccPost.NccPostStatus.UnPublished;
                 entity.Status = EntityStatus.Deleted;
                 _entityRepository.Edit(entity);
                 _entityRepository.SaveChange();
@@ -93,9 +101,15 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Query().Where(x => x.Status == status).ToList();
         }
 
-        public List<NccPost> LoadAllByPageStatus(NccPost.NccPostStatus status)
+        public List<NccPost> LoadAllByPostStatusAndDate(NccPost.NccPostStatus status)
         {
-            return _entityRepository.Query().Where(x => x.PostStatus == status).ToList();
+            return _entityRepository
+                .Query()
+                .Include("Author")
+                .Include("Comments")
+                .Include("Categories")
+                .Include("Tags")
+                .Where(x => x.PostStatus == status && x.PublishDate <= DateTime.Now).ToList();
         }
 
         public List<NccPost> LoadAllByName(string name)
