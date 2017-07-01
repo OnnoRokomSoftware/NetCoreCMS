@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NetCoreCMS.Notice.Widgets
 {
-    public class NoticeHorizontalWidget : IWidget
+    public class NoticeVerticalWidget : IWidget
     {
         string _title;
         string _body;
@@ -19,7 +19,7 @@ namespace NetCoreCMS.Notice.Widgets
         IViewRenderService _viewRenderService;
         NccNoticeService _noticeService;
 
-        public string WidgetId { get { return "NetCoreCMS.Modules.Notice.Widgets.NoticeHorizontalWidget"; } }
+        public string WidgetId { get { return "NetCoreCMS.Modules.Notice.Widgets.NoticeVerticalWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -33,7 +33,7 @@ namespace NetCoreCMS.Notice.Widgets
 
         public string ViewFileName { get { return _viewFileName; } }
 
-        public NoticeHorizontalWidget(IViewRenderService viewRenderService, NccNoticeService noticeService)
+        public NoticeVerticalWidget(IViewRenderService viewRenderService, NccNoticeService noticeService)
         {
             _viewRenderService = viewRenderService;
             _noticeService = noticeService;
@@ -41,10 +41,10 @@ namespace NetCoreCMS.Notice.Widgets
 
         public void Init()
         {
-            _title = "Notice Horizontal Widget";
+            _title = "Notice Vertical Widget";
             _description = "This is a sample widget which will scroll notices.";
             _footer = "Footer";
-            _viewFileName = "Widgets/NoticeHorizontal";
+            _viewFileName = "Widgets/NoticeVertical";
         }
 
         public string RenderBody()

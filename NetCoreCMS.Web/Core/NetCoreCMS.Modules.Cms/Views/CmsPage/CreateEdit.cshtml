@@ -245,6 +245,12 @@
         $(document).ready(function () {
 
             CKEDITOR.replace('PageContent', {
+                filebrowserBrowseUrl: '/media/files',
+                filebrowserUploadUrl: '/media/files',
+                filebrowserImageBrowseUrl: '/media/Images',
+                filebrowserImageUploadUrl: '/media/Images',
+                //filebrowserWindowWidth: 800,
+                //filebrowserWindowHeight: 500,
                 toolbar: [
                     { name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
                     { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },

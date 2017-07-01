@@ -29,8 +29,8 @@
                 <form method="post" asp-action="Upload" asp-controller="CmsMedia" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-12">
-                            <div class="col-md-1"><label>File type : </label></div>
-                            <div class="col-md-11">
+                            <div class="col-md-2"><label>File type : </label></div>
+                            <div class="col-md-10">
                                 <select name="isFile" class="form-control" style="max-width:200px">
                                     <option value=0>Image</option>
                                     @if(ViewBag.IsFile == true)
@@ -47,16 +47,16 @@
                             <br />
                         </div>
                         <div class="col-md-12">
-                            <div class="col-md-1"><label>Select files : </label></div>
-                            <div class="col-md-11">
+                            <div class="col-md-2"><label>Select files : </label></div>
+                            <div class="col-md-10">
                                 <input type="file" name="files" class="form-control" multiple />
                             </div>
                             <br />
                             <br />
                         </div>
                         <div class="col-md-12">
-                            <div class="col-md-1"></div>
-                            <div class="col-md-11">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10">
                                 <input type="submit" class="btn btn-success " value="Upload" />
                             </div>
                         </div>
