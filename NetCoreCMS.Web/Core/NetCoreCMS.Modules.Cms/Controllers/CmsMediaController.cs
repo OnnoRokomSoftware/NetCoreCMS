@@ -186,11 +186,11 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                         await file.CopyToAsync(fileStream);
                         if (responseSuccess == "")
                         {
-                            responseSuccess = "<strong>" + file.FileName + "</strong>";
+                            responseSuccess = "<strong>" + file.FileName + "</strong> URL: " + uploadPath.Replace('\\', '/') + "/" + fullFileName;
                         }
                         else
                         {
-                            responseSuccess += ",<br /><strong>" + file.FileName + "</strong>";
+                            responseSuccess += ",<br /><strong>" + file.FileName + "</strong> URL: " + uploadPath.Replace('\\', '/') + "/" + fullFileName;
                         }
                     }
                 }
@@ -208,9 +208,9 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             }
 
             if (responseSuccess != "")
-                TempData["SuccessMessage"] += " uploaded successfully.";
+                TempData["SuccessMessage"] = responseSuccess + "<br /><b>Upload successfully.</b>";
             if (responseError != "")
-                TempData["ErrorMessage"] += " invalid formate.";
+                TempData["ErrorMessage"] = responseError + " <br /><b>Invalid formate.</b>";
 
 
             ViewBag.IsFile = isFile;

@@ -32,7 +32,7 @@
                     if (item.IsDir)
                     {
                         <a asp-controller="CmsMedia" asp-action="Index" asp-route-sq="@item.FullPath" asp-route-isFile="@ViewBag.IsFile">
-                            <div style="float:left; margin:5px;padding:5px; width:200px; height:200px; text-align:center; border:1px solid; overflow:hidden; display:table;">
+                            <div style="float:left; margin:5px;padding:5px; width:200px; height:230px; text-align:center; border:1px solid; overflow:hidden; display:table;">
                                 <span style="vertical-align:middle;  display: table-cell;">
                                     <strong>@item.FileName</strong> <br />
                                     @if (item.TotalSubDir > 0)
@@ -53,7 +53,7 @@
                     }
                     else if(item.IsImage)
                     {
-                        <div style="float:left; margin:5px;padding:5px; width:200px; height:200px; text-align:center; border:1px solid; overflow:hidden;">
+                        <div style="float:left; margin:5px;padding:5px; width:200px; height:235px; text-align:center; border:1px solid; overflow:hidden;">
                             <a href="@item.FullPath" data-lightbox="image-gallary" data-title="@item.FileName">
                                 <img src="@item.FullPath" width="188px" height="120px" title="@item.FileName" />
                                 @*<img id="myImg"  src="~/Images/docs-icon.png" width="188px" height="120px" title="@item.FileName" />*@
@@ -69,7 +69,8 @@
                                 }
                                 (@item.ItemSize)<br />
                             </a>
-                            <span>Ct: @item.CreationTime.ToString("yyyy-MM-dd hh:mm tt")</span>
+                            <span>Cr: @item.CreationTime.ToString("yyyy-MM-dd hh:mm tt")</span>
+                            <input type="text" class="form-control" value="@item.FullPath" />
                             <hr style="padding:2px;margin:1px;" />
                             @*<a asp-controller="CmsMedia" asp-action="Rename" asp-route-fullPath="@item.FullPath" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-primary">Rename</a>*@
                             <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" asp-route-isFile="@ViewBag.IsFile" class="btn btn-xs btn-outline btn-danger">Delete</a>

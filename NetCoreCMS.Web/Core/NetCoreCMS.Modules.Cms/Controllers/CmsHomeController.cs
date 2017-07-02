@@ -20,8 +20,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             {
                 return View();
             }
-            return Redirect("/SetupHome/Index");
-            
+            return Redirect("/SetupHome/Index");            
         }
         
         public IActionResult About()
