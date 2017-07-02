@@ -29,10 +29,12 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
                 ViewBag.Content = "";
+                ViewBag.Layout = "";
                 var page = _pageService.GetBySlugs("Home");
                 if (page != null)
                 {
                     ViewBag.Content = page.Content;
+                    ViewBag.Layout = page.Layout;
                 }
                 return View();
             }
