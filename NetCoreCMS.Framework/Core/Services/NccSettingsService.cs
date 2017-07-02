@@ -8,33 +8,51 @@ using NetCoreCMS.Framework.Core.Repository;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccModuleService : IBaseService<NccModule>
+    public class NccSettingsService : IBaseService<NccSettings>
     {
-        private readonly NccModuleRepository _entityRepository;
+        private readonly NccSettingsRepository _entityRepository;
          
-        public NccModuleService(NccModuleRepository entityRepository)
+        public NccSettingsService(NccSettingsRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
          
-        public NccModule Get(long entityId)
+        public NccSettings Get(long entityId)
         {
             return _entityRepository.Get(entityId);
         }
 
-        internal NccModule GetByModuleId(string moduleId)
+        public NccSettings GetByKey(string key)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.ModuleId == moduleId);
+            return _entityRepository.Query().FirstOrDefault(x => x.Key == key);
         }
 
-        public NccModule Save(NccModule entity)
+        public NccSettings SetByKey(string key, string value)
+        {
+            var settings = _entityRepository.Query().FirstOrDefault(x => x.Key == key);
+            if(settings != null)
+            {
+                settings.Value = value;
+                _entityRepository.Edit(settings);
+            }
+            else
+            {
+                settings = new NccSettings() { Key = key, Value = value };
+                _entityRepository.Add(settings);
+            }
+            _entityRepository.SaveChange();
+
+            return settings;
+        }
+
+        public NccSettings Save(NccSettings entity)
         {
             _entityRepository.Add(entity);
             _entityRepository.SaveChange();
             return entity;
         }
 
-        public NccModule Update(NccModule entity)
+        public NccSettings Update(NccSettings entity)
         {
             var oldEntity = _entityRepository.Get(entity.Id);
             if(oldEntity != null)
@@ -62,22 +80,22 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccModule> LoadAll()
+        public List<NccSettings> LoadAll()
         {
             return _entityRepository.LoadAll();
         }
 
-        public List<NccModule> LoadAllByStatus(int status)
+        public List<NccSettings> LoadAllByStatus(int status)
         {
             return _entityRepository.LoadAllByStatus(status);
         }
 
-        public List<NccModule> LoadAllByName(string name)
+        public List<NccSettings> LoadAllByName(string name)
         {
             return _entityRepository.LoadAllByName(name);
         }
 
-        public List<NccModule> LoadAllByNameContains(string name)
+        public List<NccSettings> LoadAllByNameContains(string name)
         {
             return _entityRepository.LoadAllByNameContains(name);
         }
@@ -92,29 +110,19 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        private void CopyNewData(NccModule oldEntity, NccModule entity)
-        {
-             
+        private void CopyNewData(NccSettings oldEntity, NccSettings entity)
+        {             
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;
             oldEntity.Name = entity.Name; 
-            oldEntity.Status = entity.Status;
-
-            oldEntity.AntiForgery = entity.AntiForgery;
-            oldEntity.ModuleId = entity.ModuleId;
+            oldEntity.Status = entity.Status; 
             oldEntity.CreateBy = entity.CreateBy;
-            oldEntity.CreationDate = entity.CreationDate;
-            oldEntity.Dependencies = entity.Dependencies;
+            oldEntity.CreationDate = entity.CreationDate;  
             
-            oldEntity.ModuleStatus = entity.ModuleStatus;
-            oldEntity.NetCoreCMSVersion = entity.NetCoreCMSVersion;
-            oldEntity.Path = entity.Path;
-            
-            oldEntity.Status = entity.Status;
-            oldEntity.Version = entity.Version;
+            oldEntity.Status = entity.Status; 
             oldEntity.VersionNumber = entity.VersionNumber;
-            
-        }
-        
+            oldEntity.Key = entity.Key;
+            oldEntity.Value = entity.Value;
+        }        
     }
 }

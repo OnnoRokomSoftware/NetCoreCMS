@@ -62,7 +62,7 @@ namespace NetCoreCMS.Framework.Core.Services
          
         public NccPost Update(NccPost entity)
         {
-            var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
+            var oldEntity = _entityRepository.Get(entity.Id);
             if(oldEntity != null)
             {
                 oldEntity.ModificationDate = DateTime.Now;
@@ -81,7 +81,7 @@ namespace NetCoreCMS.Framework.Core.Services
         
         public void Remove(long entityId)
         {
-            var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId );
+            var entity = _entityRepository.Get( entityId );
             if (entity != null)
             {
                 entity.PostStatus = NccPost.NccPostStatus.UnPublished;
@@ -93,12 +93,12 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public List<NccPost> LoadAll()
         {
-            return _entityRepository.Query().ToList();
+            return _entityRepository.LoadAll();
         }
 
         public List<NccPost> LoadAllByStatus(int status)
         {
-            return _entityRepository.Query().Where(x => x.Status == status).ToList();
+            return _entityRepository.LoadAllByStatus(status);
         }
 
         public List<NccPost> LoadAllByPostStatusAndDate(NccPost.NccPostStatus status)
@@ -114,17 +114,17 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public List<NccPost> LoadAllByName(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name == name).ToList();
+            return _entityRepository.LoadAllByName(name);
         }
 
         public List<NccPost> LoadAllByNameContains(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
+            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
         {
-            var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
+            var entity = _entityRepository.Get(entityId);
             if (entity != null)
             {
                 _entityRepository.Remove(entity);

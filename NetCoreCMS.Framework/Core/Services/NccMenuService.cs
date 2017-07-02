@@ -22,7 +22,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccMenu Get(long entityId)
         {
-            return _entityRepository.Query().Include(x => x.MenuItems).FirstOrDefault(x => x.Id == entityId);
+            return _entityRepository.Get(entityId);
         }
 
         public NccMenu Save(NccMenu entity)
@@ -59,7 +59,7 @@ namespace NetCoreCMS.Framework.Core.Services
         
         public void Remove(long entityId)
         {
-            var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId );
+            var entity = _entityRepository.Get(entityId );
             if (entity != null)
             {
                 entity.Status = EntityStatus.Deleted;
@@ -70,27 +70,27 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public List<NccMenu> LoadAll()
         {
-            return _entityRepository.Query().ToList();
+            return _entityRepository.LoadAll();
         }
 
         public List<NccMenu> LoadAllByStatus(int status)
         {
-            return _entityRepository.Query().Where(x => x.Status == status).ToList();
+            return _entityRepository.LoadAllByStatus(status);
         }
 
         public List<NccMenu> LoadAllByName(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name == name).ToList();
+            return _entityRepository.LoadAllByName(name);
         }
 
         public List<NccMenu> LoadAllByNameContains(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
+            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
         {
-            var entity = _entityRepository.Query().Include(x=>x.MenuItems).FirstOrDefault(x => x.Id == entityId);
+            var entity = _entityRepository.Get(entityId);
             if (entity != null)
             {
                 //foreach (var menuItem in entity.MenuItems)

@@ -19,7 +19,7 @@ namespace NetCoreCMS.Framework.Core.Services
          
         public NccUser Get(long entityId)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
+            return _entityRepository.Get(entityId);
         }
 
         public NccUser GetByUserName(string userName)
@@ -36,7 +36,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccUser Update(NccUser entity)
         {
-            var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
+            var oldEntity = _entityRepository.Get(entity.Id);
             if(oldEntity != null)
             {
                 using (var txn = _entityRepository.BeginTransaction())
@@ -53,7 +53,7 @@ namespace NetCoreCMS.Framework.Core.Services
         
         public void Remove(long entityId)
         {
-            var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId );
+            var entity = _entityRepository.Get(entityId );
             if (entity != null)
             {
                 entity.Status = EntityStatus.Deleted;
@@ -64,27 +64,27 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public List<NccUser> LoadAll()
         {
-            return _entityRepository.Query().ToList();
+            return _entityRepository.LoadAll();
         }
 
         public List<NccUser> LoadAllByStatus(int status)
         {
-            return _entityRepository.Query().Where(x => x.Status == status).ToList();
+            return _entityRepository.LoadAllByStatus(status).ToList();
         }
 
         public List<NccUser> LoadAllByName(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name == name).ToList();
+            return _entityRepository.LoadAllByName(name);
         }
 
         public List<NccUser> LoadAllByNameContains(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
+            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
         {
-            var entity = _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
+            var entity = _entityRepository.Get(entityId);
             if (entity != null)
             {
                 _entityRepository.Remove(entity);
