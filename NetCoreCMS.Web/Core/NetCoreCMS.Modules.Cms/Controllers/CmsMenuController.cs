@@ -46,7 +46,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 {
                     ViewBag.CurrentMenu = nccMenu;
                     string finalMenuList = "";
-                    foreach (var menuItem in nccMenu.MenuItems)
+                    foreach (var menuItem in nccMenu.MenuItems.OrderBy(m => m.MenuOrder))
                     {
                         finalMenuList += menuItemToString(menuItem, 1);
                     }
@@ -217,7 +217,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 Controller = item.Controller,
                 Data = item.Data,
                 Id = item.Id,
-                MenuActionType = TypeConverter.TryParseActionTypeEnum(item.Type),                
+                MenuActionType = TypeConverter.TryParseActionTypeEnum(item.Type),
                 MenuOrder = int.Parse(item.Order),
                 Module = "",
                 Name = item.Title,
@@ -230,7 +230,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             return new NccMenu()
             {
-                Id = menu.Id,                
+                Id = menu.Id,
                 Name = menu.Name,
                 Position = menu.Position,
                 MenuOrder = 1, //TODO:Load last order and incrase and set here
