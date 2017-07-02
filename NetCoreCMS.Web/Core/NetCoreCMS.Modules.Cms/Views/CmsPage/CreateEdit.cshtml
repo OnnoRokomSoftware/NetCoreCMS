@@ -180,10 +180,22 @@
                                         <div class="panel-footer">
                                             <input type="hidden" name="SubmitType" id="SubmitType" value="Save" />
                                             <div class="pull-left">
-                                                <button id="save" class="btn btn-sm btn-primary" type="button">Save</button>
+                                                <button id="save" class="btn btn-sm btn-primary" type="button">
+                                                    @if (Model.Id > 0)
+                                                    {
+                                                        <span>Update</span>                                                    
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Save</span>                                                    
+                                                    }
+                                                </button>
                                             </div>
                                             <div class="pull-right">
-                                                <button id="publish" class="btn btn-sm btn-success" type="button">Publish</button>
+                                                @if ((int)Model.PageStatus != 2)
+                                                {
+                                                    <button id="publish" class="btn btn-sm btn-success" type="button">Publish</button>
+                                                }                                                
                                             </div>
                                             <div style="clear:both;"></div>
                                         </div>

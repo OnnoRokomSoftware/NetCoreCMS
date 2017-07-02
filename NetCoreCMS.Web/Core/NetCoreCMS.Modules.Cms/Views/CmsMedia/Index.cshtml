@@ -70,7 +70,7 @@
                                 (@item.ItemSize)<br />
                             </a>
                             <span>Cr: @item.CreationTime.ToString("yyyy-MM-dd hh:mm tt")</span>
-                            <input type="text" class="form-control" value="@item.FullPath" />
+                            <input type="text" class="form-control" onClick="this.select();" value="@item.FullPath" />
                             <hr style="padding:2px;margin:1px;" />
                             @*<a asp-controller="CmsMedia" asp-action="Rename" asp-route-fullPath="@item.FullPath" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-primary">Rename</a>*@
                             <a asp-controller="CmsMedia" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" asp-route-isFile="@ViewBag.IsFile" class="btn btn-xs btn-outline btn-danger">Delete</a>
