@@ -84,7 +84,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             ViewBag.Pages = _pageService.LoadAllActive();
             ViewBag.Posts = _postService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published, DateTime.Now);
             ViewBag.Categories = _categoryService.LoadAllActive();
-            ViewBag.ModuleSiteMenus = MenuHelper.ModulesSiteMenus().Select(x=>x.Key).ToList();
+            ViewBag.ModuleSiteMenus = AdminMenuHelper.ModulesSiteMenus().Select(x=>x.Key).ToList();
 
             return View();
         }
