@@ -96,12 +96,17 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.LoadAll();
         }
 
+        public List<NccPost> LoadAllActive()
+        {
+            return _entityRepository.LoadAllActive();
+        }
+
         public List<NccPost> LoadAllByStatus(int status)
         {
             return _entityRepository.LoadAllByStatus(status);
         }
 
-        public List<NccPost> LoadAllByPostStatusAndDate(NccPost.NccPostStatus status)
+        public List<NccPost> LoadAllByPostStatusAndDate(NccPost.NccPostStatus status, DateTime dateTime)
         {
             return _entityRepository
                 .Query()
@@ -109,7 +114,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 .Include("Comments")
                 .Include("Categories")
                 .Include("Tags")
-                .Where(x => x.PostStatus == status && x.PublishDate <= DateTime.Now).ToList();
+                .Where(x => x.PostStatus == status && x.PublishDate <= dateTime).ToList();
         }
 
         public List<NccPost> LoadAllByName(string name)

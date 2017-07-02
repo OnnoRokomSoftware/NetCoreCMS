@@ -81,6 +81,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.LoadAll();
         }
 
+        public List<NccWebSiteWidget> LoadAllActive()
+        {
+            return _entityRepository.LoadAllActive();
+        }
+
         public List<NccWebSiteWidget> LoadAllByStatus(int status)
         {
             return _entityRepository.LoadAllByStatus(status);

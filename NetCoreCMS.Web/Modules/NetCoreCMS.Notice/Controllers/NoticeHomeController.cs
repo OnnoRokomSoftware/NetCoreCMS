@@ -7,6 +7,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Notice.Models;
 using NetCoreCMS.Notice.Services;
