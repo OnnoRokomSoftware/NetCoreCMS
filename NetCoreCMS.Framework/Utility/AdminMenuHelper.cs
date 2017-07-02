@@ -9,7 +9,7 @@ using NetCoreCMS.Framework.Themes;
 
 namespace NetCoreCMS.Framework.Utility
 {
-    public class MenuHelper
+    public class AdminMenuHelper
     {
         public static Dictionary<AdminMenu, List<AdminMenuItem>> ModulesAdminMenus()
         {
@@ -94,7 +94,7 @@ namespace NetCoreCMS.Framework.Utility
             return siteMenuDic;
         }
 
-        public static string GetAdminMenuHtml(Dictionary<SiteMenu, List<SiteMenuItem>> adminMenuDic)
+        public static string GetAdminMenuHtml(Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic)
         {
             var menuStr = "";
             foreach (var item in adminMenuDic)
