@@ -18,6 +18,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
     [Authorize]
     public class CmsMenuController : NccController
     {
+        #region Initialization
         NccMenuService _menuService;
         NccPageService _pageService;
 
@@ -26,7 +27,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             _pageService = pageService;
             _menuService = menuService;
         }
+        #endregion
 
+        #region Operations
         public ActionResult Index(bool isManage = false, long menuId = 0)
         {
             ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
@@ -54,28 +57,6 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 }
             }
             return View();
-        }
-
-        private string menuItemToString(NccMenuItem menuItem, int level)
-        {
-            string menuStart = @"<li class='list-group-item no-boarder' ncc-menu-item-id='" + menuItem.Id + @"' ncc-menu-item-action-type='Url' ncc-menu-item-controller='" + menuItem.Controller + @"' ncc-menu-item-action='" + menuItem.Action + @"' ncc-menu-item-action-data='' ncc-menu-item-url='" + menuItem.Url + @"' ncc-menu-item-target='" + menuItem.Target + @"' ncc-menu-item-order='" + menuItem.MenuOrder + @"' ncc-menu-item-title='" + menuItem.Name + @"'>
-                            <div class='menu-item-content'>
-                                <div class='pull-left' style='padding: 5px 5px;'>
-                                    <i class='glyphicon glyphicon-move margin-right-10'></i>
-                                    <span class='ncc-menu-title'>" + menuItem.Name + @"</span>
-                                </div>
-                                <input type='button' class='closeMenuItem pull-right' value='X' onclick='RemoveMenuItem(this)' />
-                            </div>";
-            string menuCenter = "";
-            if (menuItem.Childrens.Count > 0)
-            {
-                foreach (var menuItemChild in menuItem.Childrens)
-                {
-                    menuCenter += "<ul>" + menuItemToString(menuItemChild, level + 1) + "</ul>";
-                }
-            }
-            string menuEnd = @"</li>";
-            return menuStart + menuCenter + menuEnd;
         }
 
         [HttpPost]
@@ -173,6 +154,69 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
             return RedirectToAction("Index", new { isManage = true });
         }
+        #endregion
+
+        #region Helper Ajax
+        [HttpPost]
+        public JsonResult LoadPages(string name)
+        {
+            var response = new ApiResponse();
+
+            response.IsSuccess = false;
+            response.Message = "No data found";
+            if (!string.IsNullOrEmpty(name))
+            {
+                //name = name.ToLower();
+                var pages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);//.ToList().Where(p => p.Name.ToLower().Contains(name.ToLower()));
+                if (pages != null)
+                {
+                    //List<NccPage> selectedList = new List<NccPage>();
+                    //foreach (var p in pages)
+                    //{
+                    //    if (name.IndexOf(p.Name, StringComparison.OrdinalIgnoreCase) >= 0)
+                    //    {
+                    //        selectedList.Add(p);
+                    //    }
+                    //}
+                    //if (selectedList.Count > 0)
+                    //{
+                        response.Data = pages;
+                        response.IsSuccess = true;
+                        response.Message = "successfull";
+                    //}
+                }
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = "Empty name";
+            }
+            return Json(response);
+        }
+        #endregion
+
+        #region Helper
+        private string menuItemToString(NccMenuItem menuItem, int level)
+        {
+            string menuStart = @"<li class='list-group-item no-boarder' ncc-menu-item-id='" + menuItem.Id + @"' ncc-menu-item-action-type='Url' ncc-menu-item-controller='" + menuItem.Controller + @"' ncc-menu-item-action='" + menuItem.Action + @"' ncc-menu-item-action-data='' ncc-menu-item-url='" + menuItem.Url + @"' ncc-menu-item-target='" + menuItem.Target + @"' ncc-menu-item-order='" + menuItem.MenuOrder + @"' ncc-menu-item-title='" + menuItem.Name + @"'>
+                            <div class='menu-item-content'>
+                                <div class='pull-left' style='padding: 5px 5px;'>
+                                    <i class='glyphicon glyphicon-move margin-right-10'></i>
+                                    <span class='ncc-menu-title'>" + menuItem.Name + @"</span>
+                                </div>
+                                <input type='button' class='closeMenuItem pull-right' value='X' onclick='RemoveMenuItem(this)' />
+                            </div>";
+            string menuCenter = "";
+            if (menuItem.Childrens.Count > 0)
+            {
+                foreach (var menuItemChild in menuItem.Childrens)
+                {
+                    menuCenter += "<ul>" + menuItemToString(menuItemChild, level + 1) + "</ul>";
+                }
+            }
+            string menuEnd = @"</li>";
+            return menuStart + menuCenter + menuEnd;
+        }
 
         private List<NccMenuItem> CreateMenuItems(NccMenu menuModel, NccMenuViewModel menu)
         {
@@ -236,5 +280,6 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 MenuOrder = 1, //TODO:Load last order and incrase and set here
             };
         }
+        #endregion
     }
 }

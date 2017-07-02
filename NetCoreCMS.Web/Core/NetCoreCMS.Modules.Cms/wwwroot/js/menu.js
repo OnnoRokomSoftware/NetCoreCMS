@@ -181,6 +181,41 @@ $(document).ready(function () {
         return menuItemList;
     }
 
+    var searchPageLastKey = "";
+    $("#searchPage").on("change keyup paste", function () {
+        //console.log("typing...");
+        var searchKey = $("#searchPage").val();
+        //console.log(searchKey);
+        setTimeout(function () {
+            var searchKey1 = $("#searchPage").val();
+            //console.log(searchKey1);
+            if (searchKey != "" && searchKey == searchKey1 && searchKey != searchPageLastKey) {
+                searchPageLastKey = searchKey;
+                $("#searchPagesCheckBoxList").html("");
+                $.ajax({
+                    type: "POST",
+                    url: "/CmsMenu/LoadPages",
+                    data: { name: searchKey },
+                    success: function (rsp) {
+                        //console.log(rsp);
+                        if (rsp.isSuccess) {
+                            //NccAlert.ShowSuccess(rsp.message);
+                            $.each(rsp.data, function (i, v) {
+                                $('#searchPagesCheckBoxList').append($('<div class="checkbox"><label><input type="checkbox" class="recentPagesCheckBoxList" value="' + v.id + '" ncc-page-title="' + v.title + '" ncc-page-slug="' + v.slug + '">' + v.title + '</label></div>'));
+                            });
+                        }
+                        else {
+                            //NccAlert.ShowError("Error: " + rsp.message);
+                        }
+                    },
+                    error: function (errorThrown) {
+                        //NccAlert.ShowError("Error. Please try again.");
+                    }
+                });
+            }
+        }, 1000);
+    });
+
     $("#saveMenuBtn").on("click", function () {
 
         var menuItemTree = getMenuTree($("ul#selectedMenuTree"), null, 1);
