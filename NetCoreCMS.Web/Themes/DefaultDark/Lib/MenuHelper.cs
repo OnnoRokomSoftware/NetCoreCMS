@@ -49,37 +49,34 @@ namespace NetCoreCMS.Themes.DefaultDark.Lib
             return menuTxt;
         }
 
+
         private static string ListItemHtml(NccMenuItem item)
         {
             var url = "/";
             var urlPrefix = "";
             var data = "";
 
-            if(item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
+            if (item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
             {
-                urlPrefix = "/CmsBlog/Blog/Category/";
+                urlPrefix = "/Blog/Category/";
             }
-            else if(item.MenuActionType == NccMenuItem.ActionType.BlogPost)
+            else if (item.MenuActionType == NccMenuItem.ActionType.BlogPost)
             {
-                urlPrefix = "/CmsBlog/Blog/Posts/";
+                urlPrefix = "/Post/Details/";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Module)
             {
-                urlPrefix = "/" + item.Module + "/" + item.Controller + "/" + item.Action + "/";
+                urlPrefix = "/" + item.Controller + "/" + item.Action + "/";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Page)
             {
                 urlPrefix = "";/*/CmsHome/CmsPage/View/*/
                 item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
-                return "<li><a href=\"" + item.Url  + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+                return "<li><a href=\"" + item.Url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
             {
-                urlPrefix = "/CmsBlog/Tag/Index/";
-            }
-            else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
-            {
-                urlPrefix = "/CmsBlog/Tag/Index/";
+                urlPrefix = "/Blog/Tag/Index/";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Url)
             {
@@ -92,7 +89,7 @@ namespace NetCoreCMS.Themes.DefaultDark.Lib
             }
 
             url = urlPrefix + item.Url + data;
-            var li = "<li><a href=\""+ url + "\" target=\""+item.Target+"\">" + item.Name + "  </a></li>";
+            var li = "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
             return li;
         }
     }

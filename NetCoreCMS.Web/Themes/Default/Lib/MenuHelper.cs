@@ -11,9 +11,9 @@ namespace NetCoreCMS.Themes.Default.Lib
     {
         public static string PrepareMenuHtml(string position)
         {
-            var menus = GlobalConfig.Menus.Where( x => x.Position == position).OrderBy(x => x.MenuOrder).ToList();
+            var menus = GlobalConfig.Menus.Where(x => x.Position == position).OrderBy(x => x.MenuOrder).ToList();
             var menuTxt = "";
-            
+
             foreach (var item in menus)
             {
                 menuTxt += "<div class=\"ncc-main-menu\">";
@@ -24,7 +24,7 @@ namespace NetCoreCMS.Themes.Default.Lib
             return menuTxt;
         }
 
-        public static string PrepareMenu(List<NccMenuItem> menuItem, string upperSubMenuCls = "nav navbar-nav", string menuItemCls= "")
+        public static string PrepareMenu(List<NccMenuItem> menuItem, string upperSubMenuCls = "nav navbar-nav", string menuItemCls = "")
         {
             var menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
 
@@ -34,10 +34,10 @@ namespace NetCoreCMS.Themes.Default.Lib
                 var hasChildren = item.Childrens.Count > 0;
                 if (hasChildren)
                 {
-                    var subMenuText = "<li class=\""+menuItemCls+"\">";
-                    subMenuText += "<a href=\""+item.Url+"\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > "+item.Name+"</a>";
+                    var subMenuText = "<li class=\"" + menuItemCls + "\">";
+                    subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
                     subMenuText += PrepareMenu(item.Childrens, "dropdown-menu multi-level", "dropdown-submenu");
-                    menuTxt += subMenuText + "</li>";                    
+                    menuTxt += subMenuText + "</li>";
                 }
                 else
                 {
@@ -55,31 +55,27 @@ namespace NetCoreCMS.Themes.Default.Lib
             var urlPrefix = "";
             var data = "";
 
-            if(item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
+            if (item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
             {
-                urlPrefix = "/CmsBlog/Blog/Category/";
+                urlPrefix = "/Blog/Category/";
             }
-            else if(item.MenuActionType == NccMenuItem.ActionType.BlogPost)
+            else if (item.MenuActionType == NccMenuItem.ActionType.BlogPost)
             {
-                urlPrefix = "/CmsBlog/Blog/Posts/";
+                urlPrefix = "/Post/Details/";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Module)
             {
-                urlPrefix = "/" + item.Module + "/" + item.Controller + "/" + item.Action + "/";
+                urlPrefix = "/" + item.Controller + "/" + item.Action + "/";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Page)
             {
                 urlPrefix = "";/*/CmsHome/CmsPage/View/*/
                 item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
-                return "<li><a href=\"" + item.Url  + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+                return "<li><a href=\"" + item.Url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
             {
-                urlPrefix = "/CmsBlog/Tag/Index/";
-            }
-            else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
-            {
-                urlPrefix = "/CmsBlog/Tag/Index/";
+                urlPrefix = "/Blog/Tag/Index/";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Url)
             {
@@ -92,7 +88,7 @@ namespace NetCoreCMS.Themes.Default.Lib
             }
 
             url = urlPrefix + item.Url + data;
-            var li = "<li><a href=\""+ url + "\" target=\""+item.Target+"\">" + item.Name + "  </a></li>";
+            var li = "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
             return li;
         }
     }
