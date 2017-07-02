@@ -4,10 +4,13 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Themes;
+using NetCoreCMS.Framework.Utility;
+using System;
 
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {
-
+    [SiteMenu(Name = "Blog", Order = 1)]
     public class PostController : NccController
     {
         NccPostService _nccPostService;
@@ -24,18 +27,19 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
         }
 
         [AllowAnonymous]
+        [SiteMenuItem(Name = "Index", Url = "~/Post/Index", Order = 1)]
         public ActionResult Index(int page = 0)
         {
-            var allPost = _nccPostService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published);
+            var allPost = _nccPostService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published, DateTime.Now);
             return View(allPost); 
         }
 
-        [AllowAnonymous]
+        [AllowAnonymous]        
         public ActionResult Details(string slug)
         {
             var post = _nccPostService.GetBySlugs(slug);
             if (post == null)
-                return Redirect("/Home/Error");
+                return Redirect(Constants.NotFoundUrl);
             return View(post);
         }
         

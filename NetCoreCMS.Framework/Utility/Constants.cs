@@ -19,6 +19,7 @@ namespace NetCoreCMS.Framework.Utility
 
         public static string SiteUrl { get;} = "CmsHome";
         public static string AdminUrl { get;} = "Admin";
+        public static string NotFoundUrl { get; } = "~/CmsHome/ResourceNotFound";
 
     }
 }

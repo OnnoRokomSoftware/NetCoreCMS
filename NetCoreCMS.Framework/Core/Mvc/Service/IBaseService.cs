@@ -9,6 +9,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Services
     {
         EntityT Get(long entityId);
         List<EntityT> LoadAll();
+        List<EntityT> LoadAllActive();
         List<EntityT> LoadAllByStatus(int status);
         List<EntityT> LoadAllByName(string name);
         List<EntityT> LoadAllByNameContains(string name);

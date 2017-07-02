@@ -11,10 +11,7 @@ namespace NetCoreCMS.Notice.Services
     public class NccNoticeService : IBaseService<NccNotice>
     {
         private readonly NccNoticeRepository _entityRepository;
-
-        public NccNoticeService()
-        {
-        }
+ 
         public NccNoticeService(NccNoticeRepository entityRepository)
         {
             _entityRepository = entityRepository;
@@ -88,6 +85,11 @@ namespace NetCoreCMS.Notice.Services
             return _entityRepository.Query().ToList();
         }
 
+        public List<NccNotice> LoadAllActive()
+        {
+            return _entityRepository.LoadAllActive();
+        }
+
         public List<NccNotice> LoadAllByStatus(int status)
         {
             return _entityRepository.Query().Where(x => x.Status == status).ToList();
@@ -125,9 +127,7 @@ namespace NetCoreCMS.Notice.Services
             oldEntity.NoticeType = entity.NoticeType;
             oldEntity.NoticeOrder = entity.NoticeOrder;
             oldEntity.PublishDate = entity.PublishDate;
-            oldEntity.Title = entity.Title;
-            
-        }
-        
+            oldEntity.Title = entity.Title; 
+        } 
     }
 }

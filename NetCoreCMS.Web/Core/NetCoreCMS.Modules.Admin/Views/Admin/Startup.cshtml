@@ -1,0 +1,35 @@
+﻿@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Startup";
+    ViewData["PageSubtitle"] = "Set Startup Page";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" asp-controller="Admin" asp-action="Startup" method="post">
+            
+            <div>
+                <input type="radio" name="startupOption" value="Default" checked />
+            </div>
+
+            <div>
+                <input type="radio" name="startupOption" value="Page" />     
+                
+            </div>
+            
+            <div>
+                <input type="radio" name="startupOption" value="Category" />
+            </div>
+            
+            <div>
+                <input type="radio" name="startupOption" value="Post" />
+            </div>
+
+            <div>
+                <input type="radio" name="startupOption" value="Module" />
+            </div>
+
+        </form>
+    </div>    
+</div>
+     

@@ -19,5 +19,6 @@ namespace NetCoreCMS.Framework.Setup
         public bool IsAdminCreateComplete { get; set; }
         public string SelectedDatabase { get; set; }
         public string ConnectionString { get; set; }
+        public string StartupUrl { get; set; } = "~/CmsHome";
     }
 }

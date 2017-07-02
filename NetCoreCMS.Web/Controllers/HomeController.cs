@@ -19,7 +19,13 @@ namespace NetCoreCMS.Web.Controllers
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                return Redirect("/CmsHome/Index");
+                var setupConfig = SetupHelper.LoadSetup();
+                if(setupConfig == null)
+                {
+                    TempData["Message"] = "Setup config file is missed. Please reinstall.";
+                    return Redirect("~/CmsHome/ResourceNotFound");
+                }
+                return RedirectPermanent(setupConfig.StartupUrl);
             }
             return Redirect("/SetupHome/Index");
         }
