@@ -1,17 +1,15 @@
 ﻿@using NetCoreCMS.Framework.Utility
 @{
     Layout = Constants.SiteLayoutName;
+    if(ViewBag.Layout.Trim() != "")
+    {
+        Layout = "_"+ViewBag.Layout;
+    }
 }
 
 @if (ViewBag.Content.Trim() != "")
 {
-    <div class="row">
-        <div class="col-lg-12">
-            <p>
-                @Html.Raw(ViewBag.Content)
-            </p>
-        </div>
-    </div>
+    @Html.Raw(ViewBag.Content)    
 }
 else
 {
