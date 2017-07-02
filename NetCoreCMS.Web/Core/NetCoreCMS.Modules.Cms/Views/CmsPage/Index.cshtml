@@ -16,12 +16,13 @@
     ViewData["Title"] = Model.Title;
 }
  
+@section Styles{
+    <style>
+       @Html.Raw("        div{            color:green !important;        }");
+    </style>
+}
 <div class="row">
-    <div class="col-lg-12"> 
-        <p>
-            @Html.Raw(Model.Content)
-        </p> 
-    </div>
+    @Html.Raw(Model.Content)
 </div>
  
 @section Scripts{
