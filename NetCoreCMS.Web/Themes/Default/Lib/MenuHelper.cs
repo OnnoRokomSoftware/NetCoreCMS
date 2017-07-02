@@ -11,7 +11,7 @@ namespace NetCoreCMS.Themes.Default.Lib
     {
         public static string PrepareMenuHtml(string position)
         {
-            var menus = GlobalConfig.Menus.Where( x => x.Position == position);
+            var menus = GlobalConfig.Menus.Where( x => x.Position == position).OrderBy(x => x.MenuOrder).ToList();
             var menuTxt = "";
             
             foreach (var item in menus)
@@ -28,6 +28,7 @@ namespace NetCoreCMS.Themes.Default.Lib
         {
             var menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
 
+            menuItem = menuItem.OrderByDescending(m => m.MenuOrder).ToList();
             foreach (var item in menuItem)
             {
                 var hasChildren = item.Childrens.Count > 0;
@@ -69,6 +70,7 @@ namespace NetCoreCMS.Themes.Default.Lib
             else if (item.MenuActionType == NccMenuItem.ActionType.Page)
             {
                 urlPrefix = "";/*/CmsHome/CmsPage/View/*/
+                item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
                 return "<li><a href=\"" + item.Url  + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
