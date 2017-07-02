@@ -28,7 +28,7 @@ namespace NetCoreCMS.Themes.DefaultDark.Lib
         {
             var menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
 
-            menuItem = menuItem.OrderByDescending(m => m.MenuOrder).ToList();
+            menuItem = menuItem.OrderBy(m => m.MenuOrder).ToList();
             foreach (var item in menuItem)
             {
                 var hasChildren = item.Childrens.Count > 0;
