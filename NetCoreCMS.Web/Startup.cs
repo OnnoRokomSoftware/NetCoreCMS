@@ -84,9 +84,11 @@ namespace NetCoreCMS.Web
             _services.AddTransient<ISmsSender, AuthMessageSender>();
             _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             _services.TryAddSingleton<IActionContextAccessor, ActionContextAccessor>();
-            _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
+            _services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();            
             _services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
 
+            _services.AddTransient<NccSettingsRepository>();
+            _services.AddTransient<NccSettingsService>();
             _services.AddTransient<NccModuleRepository>();
             _services.AddTransient<NccModuleService>();
             

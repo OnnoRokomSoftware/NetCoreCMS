@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Repository
@@ -38,6 +39,36 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             Context.Entry(entity).State = EntityState.Modified;
 
             return entity;
+        }
+
+        public EntityT Get(IdT id)
+        {
+            return DbSet.FirstOrDefault(x => x.Id.Equals(id));
+        }
+
+        public List<EntityT> LoadAll()
+        {
+            return DbSet.ToList();
+        }
+
+        public List<EntityT> LoadAllActive()
+        {
+            return DbSet.Where(x=> x.Status >= EntityStatus.New).ToList();
+        }
+
+        public List<EntityT> LoadAllByStatus(int status)
+        {
+            return DbSet.Where(x => x.Status == status).ToList();
+        }
+
+        public List<EntityT> LoadAllByName(string name)
+        {
+            return DbSet.Where(x => x.Name == name).ToList();
+        }
+
+        public List<EntityT> LoadAllByNameContains(string name)
+        {
+            return DbSet.Where(x => x.Name.Contains(name)).ToList();
         }
 
         public IDbContextTransaction BeginTransaction()
