@@ -27,7 +27,7 @@ namespace NetCoreCMS.Framework.Utility
                         {
                             var key = adminMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
-                            if ( key == null )
+                            if (key == null)
                             {
                                 adminMenuDic.Add(atrib, new List<AdminMenuItem>());
                                 key = atrib;
@@ -36,7 +36,7 @@ namespace NetCoreCMS.Framework.Utility
                             foreach (var item in actions)
                             {
                                 var menuItem = item.GetCustomAttribute<AdminMenuItem>();
-                                if(menuItem != null)
+                                if (menuItem != null)
                                 {
                                     adminMenuDic[key].Add(menuItem);
                                 }
@@ -48,7 +48,7 @@ namespace NetCoreCMS.Framework.Utility
                         //TODO: Log error. Raise global error message.
                     }
                 }
-            }            
+            }
             return adminMenuDic;
         }
 
@@ -99,16 +99,26 @@ namespace NetCoreCMS.Framework.Utility
             var menuStr = "";
             foreach (var item in adminMenuDic)
             {
-                menuStr += "<li><a href=\"#\"><i class=\"fa fa-gears fa-fw\"></i> " + item.Key.Name + " <span class=\"fa arrow\"></span></a>"
+                string icon = "fa-gears";
+                if (!string.IsNullOrEmpty(item.Key.IconCls))
+                {
+                    icon = item.Key.IconCls;
+                }
+                menuStr += "<li><a href=\"#\"><i class=\"fa " + icon + " fa-fw\"></i> " + item.Key.Name + " <span class=\"fa arrow\"></span></a>"
                             + "<ul class=\"nav nav-second-level\">";
                 foreach (var subItem in item.Value.OrderBy(x => x.Order))
                 {
+                    icon = "fa-gear";
+                    if (!string.IsNullOrEmpty(subItem.IconCls))
+                    {
+                        icon = subItem.IconCls;
+                    }
                     var qStr = "";
                     if (!string.IsNullOrEmpty(subItem.QueryString))
                     {
                         qStr = "/?" + subItem.QueryString;
                     }
-                    menuStr += "<li><a href=\"" + subItem.Url + qStr + "\" ><i class=\"fa fa-gear fa-fw\"></i>" + subItem.Name + "</a></li>";
+                    menuStr += "<li><a href=\"" + subItem.Url + qStr + "\" ><i class=\"fa " + icon + " fa-fw\"></i>" + subItem.Name + "</a></li>";
                 }
                 menuStr += "</ul></li>";
             }
