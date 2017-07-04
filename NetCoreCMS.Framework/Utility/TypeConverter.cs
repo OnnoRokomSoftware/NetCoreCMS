@@ -1,10 +1,4 @@
-﻿/*
- * Author: TecRT
- * Website: http://tecrt.com
- * Copyright (c) tecrt.com
- * License: BSD (3 Clause)
-*/
-using Microsoft.EntityFrameworkCore.Storage;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 using NetCoreCMS.Framework.Core.Data;
 using System;
 using System.Collections.Generic;

@@ -1,10 +1,4 @@
-﻿/*
- * Author: TecRT
- * Website: http://tecrt.com
- * Copyright (c) tecrt.com
- * License: BSD (3 Clause)
-*/
-using Autofac;
+﻿using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;

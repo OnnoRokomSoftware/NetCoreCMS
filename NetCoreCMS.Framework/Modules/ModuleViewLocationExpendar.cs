@@ -1,10 +1,4 @@
-﻿/*
- * Author: TecRT
- * Website: http://tecrt.com
- * Copyright (c) tecrt.com
- * License: BSD (3 Clause)
-*/
-using Microsoft.AspNetCore.Mvc.Razor;
+﻿using Microsoft.AspNetCore.Mvc.Razor;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;

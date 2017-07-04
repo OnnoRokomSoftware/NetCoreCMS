@@ -1,11 +1,4 @@
-﻿/*
-*Author: TecRT
-*Website: http://tecrt.com
-*Copyright (c) tecrt.com
-*License: BSD (3 Clause)
-*/
-
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using NetCoreCMS.Framework.Core.Data;

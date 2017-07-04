@@ -1,11 +1,4 @@
-﻿/*
- * Author: TecRT
- * Website: http://tecrt.com
- * Copyright (c) tecrt.com
- * License: BSD (3 Clause)
-*/
-
-namespace NetCoreCMS.Framework.Core.Data
+﻿namespace NetCoreCMS.Framework.Core.Data
 {
     public class DatabaseInfo
     {

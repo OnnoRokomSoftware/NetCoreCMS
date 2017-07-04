@@ -1,10 +1,4 @@
-﻿/*
- * Author: TecRT
- * Website: http://tecrt.com
- * Copyright (c) tecrt.com
- * License: BSD (3 Clause)
-*/
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Models

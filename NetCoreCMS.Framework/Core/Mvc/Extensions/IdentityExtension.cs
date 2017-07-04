@@ -1,10 +1,4 @@
-﻿/*
- * Author: TecRT
- * Website: http://tecrt.com
- * Copyright (c) tecrt.com
- * License: BSD (3 Clause)
-*/
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Extensions
 {

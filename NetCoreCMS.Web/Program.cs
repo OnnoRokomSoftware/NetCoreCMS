@@ -1,11 +1,4 @@
-﻿/*
- * Author: TecRT
- * Website: http://tecrt.com
- * Copyright (c) tecrt.com
- * License: BSD (3 Clause)
-*/
-
-using System.IO;
+﻿using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading;
 
