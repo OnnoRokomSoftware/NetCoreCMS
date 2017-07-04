@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 
-namespace NetCoreCMS.Modules.Cms.Models.ViewModels
+namespace NetCoreCMS.Core.Modules.Media.Models
 {
     public class NccMediaViewModel
     {

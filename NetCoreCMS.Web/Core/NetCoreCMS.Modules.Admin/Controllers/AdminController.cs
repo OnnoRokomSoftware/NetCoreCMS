@@ -40,6 +40,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             _logger = loggarFactory.CreateLogger<AdminController>();
         }
 
+        //[AdminMenuItem(Name = "Dashboard", Url = "/Admin", IconCls = "fa-dashboard", Order = 1)]
         public ActionResult Index()
         {
             var webSite = new NccWebSite();
