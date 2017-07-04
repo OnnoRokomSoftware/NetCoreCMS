@@ -166,8 +166,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             response.Message = "No data found";
             if (!string.IsNullOrEmpty(name))
             {
-                //name = name.ToLower();
-                var pages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);//.ToList().Where(p => p.Name.ToLower().Contains(name.ToLower()));
+                name = name.ToLower();
+                var pages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published).Where(p => p.Title.ToLower().Contains(name));
                 if (pages != null)
                 {
                     //List<NccPage> selectedList = new List<NccPage>();
