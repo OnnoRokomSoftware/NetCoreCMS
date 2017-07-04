@@ -5,6 +5,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Text;
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Administrator")]
+    [AdminMenu(Name = "Appearance", IconCls = "fa-tasks", Order = 5)]
     public class CmsWidgetController : NccController
     {
         NccWebSiteWidgetService _nccWebSiteWidgetService;
@@ -29,6 +31,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             _nccWebSiteService = nccWebSiteService;
         }
 
+        [AdminMenuItem(Name = "Widget", Url = "/CmsWidget", IconCls = "fa-magic", Order = 2)]
         public ActionResult Index()
         {
             ViewBag.Modules = GlobalConfig.Modules;

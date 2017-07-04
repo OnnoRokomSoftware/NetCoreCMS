@@ -118,7 +118,7 @@ namespace NetCoreCMS.Framework.Utility
                     {
                         qStr = "/?" + subItem.QueryString;
                     }
-                    menuStr += "<li><a href=\"" + subItem.Url + qStr + "\" ><i class=\"fa " + icon + " fa-fw\"></i>" + subItem.Name + "</a></li>";
+                    menuStr += "<li><a href=\"" + subItem.Url + qStr + "\" ><i class=\"fa " + icon + " fa-fw\"></i> " + subItem.Name + "</a></li>";
                 }
                 menuStr += "</ul></li>";
             }

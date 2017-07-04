@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Themes;
@@ -10,11 +11,11 @@ using System;
 using System.Linq;
 
 
-namespace NetCoreCMS.Core.Modules.Cms.Controllers
+namespace NetCoreCMS.Modules.Cms.Controllers
 {
-    [Authorize(Roles ="SuperAdmin,Administrator")]/*,Editor*/
+    [Authorize(Roles ="SuperAdmin,Administrator,Editor")]
     [AdminMenu(Name = "Page", IconCls = "fa-file-text-o", Order = 3)]
-    public class CmsPageController : Controller
+    public class CmsPageController : NccController
     {
         #region Initialization
         NccPageService _pageService;

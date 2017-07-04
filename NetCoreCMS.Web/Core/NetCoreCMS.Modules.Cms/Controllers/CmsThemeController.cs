@@ -13,6 +13,7 @@ using System.IO;
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Administrator")]
+    [AdminMenu(Name = "Appearance", IconCls = "fa-tasks", Order = 5)]
     public class CmsThemeController : NccController
     {
         ThemeManager _themeManager;
@@ -25,6 +26,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             ILoggerFactory _loggerFactory = factory;
             _logger = _loggerFactory.CreateLogger<CmsThemeController>();
         }
+
+        [AdminMenuItem(Name = "Theme", Url = "/CmsTheme", IconCls = "fa-laptop", Order = 3)]
         public ActionResult Index()
         {
             SetThemeViewData();

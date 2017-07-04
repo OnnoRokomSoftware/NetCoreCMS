@@ -4,6 +4,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Cms.Models.ViewModels;
 using Newtonsoft.Json;
@@ -16,6 +17,7 @@ using System.Text;
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Administrator")]
+    [AdminMenu(Name = "Appearance", IconCls = "fa-tasks", Order = 5)]
     public class CmsMenuController : NccController
     {
         #region Initialization
@@ -30,6 +32,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         #endregion
 
         #region Operations
+        [AdminMenuItem(Name = "Menu", Url = "/CmsMenu", IconCls = "fa-list", Order = 1)]
         public ActionResult Index(bool isManage = false, long menuId = 0)
         {
             ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
