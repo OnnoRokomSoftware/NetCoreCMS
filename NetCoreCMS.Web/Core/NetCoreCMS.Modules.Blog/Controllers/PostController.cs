@@ -28,10 +28,20 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
 
         [AllowAnonymous]
         [SiteMenuItem(Name = "Index", Url = "/Post/Index", Order = 1)]
-        public ActionResult Index(int page = 0)
+        public ActionResult Index(string slug="", int page = 0)
         {
-            var allPost = _nccPostService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published, DateTime.Now);
-            return View(allPost); 
+            if (!string.IsNullOrEmpty(slug))
+            {
+                var post = _nccPostService.GetBySlugs(slug);
+                if (post == null)
+                    return Redirect(Constants.NotFoundUrl);
+                return View("Details", post);
+            }
+            else
+            {
+                var allPost = _nccPostService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published, DateTime.Now);
+                return View(allPost);
+            }
         }
 
         [AllowAnonymous]        

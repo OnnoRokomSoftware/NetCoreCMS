@@ -142,13 +142,13 @@
                                 <li><a href="#"><i class="fa fa-th-list fa-fw"></i> Manage</a></li>   
                             </ul>
                         </li>
-                        <li>
+                        @*<li>
                             <a href="#"><i class="fa fa-gears fa-fw"></i> Settings<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li><a asp-controller="Admin" asp-action="Settings"><i class="fa fa-gear fa-fw"></i> General</a></li>
                                 <li><a href="#"><i class="fa fa-user fa-fw"></i> Profile</a></li>
                             </ul>
-                        </li> 
+                        </li>*@ 
                         @Html.Raw(AdminMenuHelper.GetAdminMenuHtml(AdminMenuHelper.ModulesAdminMenus())); 
                     </ul>
                 </div>

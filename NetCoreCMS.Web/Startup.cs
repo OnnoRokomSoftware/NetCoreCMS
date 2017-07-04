@@ -205,7 +205,7 @@ namespace NetCoreCMS.Web
                     defaults: new { controller = "CmsPage", action = "Index" });
                 routes.MapRoute(
                     name: "blogPost",
-                    template: "{slug}",
+                    template: "Post/{slug}",
                     defaults: new { controller = "Post", action = "Index" });
                 routes.MapRoute(
                     name: "blogCategory",

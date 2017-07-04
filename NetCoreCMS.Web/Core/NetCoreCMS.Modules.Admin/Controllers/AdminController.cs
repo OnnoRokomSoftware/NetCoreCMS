@@ -52,6 +52,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(webSite);
         }
 
+        [AdminMenuItem(Name = "Site", Url = "/Admin/Settings", Order = 2)]
         public ActionResult Settings()
         {
             var webSite = new NccWebSite();
