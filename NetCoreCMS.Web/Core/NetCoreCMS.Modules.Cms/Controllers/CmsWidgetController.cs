@@ -13,7 +13,7 @@ using System.Text;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "SuperAdmin,Administrator")]
     public class CmsWidgetController : NccController
     {
         NccWebSiteWidgetService _nccWebSiteWidgetService;

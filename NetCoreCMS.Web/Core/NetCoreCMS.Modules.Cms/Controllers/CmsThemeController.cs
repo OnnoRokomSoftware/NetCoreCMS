@@ -12,7 +12,7 @@ using System.IO;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "SuperAdmin,Administrator")]
     public class CmsThemeController : NccController
     {
         ThemeManager _themeManager;

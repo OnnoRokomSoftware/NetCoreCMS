@@ -6,6 +6,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,11 @@ using System.Text;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "SuperAdmin,Administrator")]
+    [AdminMenu(Name = "Module", IconCls = "fa-th-large", Order = 7)]
     public class CmsModuleController : NccController
     {
+        #region Initialization
         NccModuleService _moduleService;
         ModuleManager moduleManager;
         List<IModule> _coreModules;
@@ -29,7 +32,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             _hostingEnvironment = hostingEnvironment;
             moduleManager = new ModuleManager();
         }
-
+        #endregion
+        
+        [AdminMenuItem(Name = "Manage", Url = "/CmsModule", IconCls = "fa-th-list", Order = 1)]
         public ActionResult Index()
         {
             var publicModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);

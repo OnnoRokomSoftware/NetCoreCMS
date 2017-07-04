@@ -40,6 +40,8 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             _logger = loggarFactory.CreateLogger<AdminController>();
         }
 
+
+        [Authorize]
         //[AdminMenuItem(Name = "Dashboard", Url = "/Admin", IconCls = "fa-dashboard", Order = 1)]
         public ActionResult Index()
         {
@@ -53,7 +55,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(webSite);
         }
 
-        [AdminMenuItem(Name = "Site", Url = "/Admin/Settings", Order = 2)]
+        [AdminMenuItem(Name = "General", Url = "/Admin/Settings", IconCls = "fa-gear", Order = 2)]
         public ActionResult Settings()
         {
             var webSite = new NccWebSite();
@@ -81,7 +83,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(website);
         }
 
-        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", Order = 3)]
+        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", IconCls = "fa-gear", Order = 3)]
         public ActionResult Startup()
         {
             var model = PrepareStartupViewData();            

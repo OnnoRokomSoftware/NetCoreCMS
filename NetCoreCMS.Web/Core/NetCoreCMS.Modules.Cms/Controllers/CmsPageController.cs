@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Linq;
@@ -11,9 +12,11 @@ using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
-    [Authorize(Roles ="SuperAdmin,Administrator,Editor")]
+    [Authorize(Roles ="SuperAdmin,Administrator")]/*,Editor*/
+    [AdminMenu(Name = "Page", IconCls = "fa-file-text-o", Order = 3)]
     public class CmsPageController : Controller
     {
+        #region Initialization
         NccPageService _pageService;
         private readonly ILogger _logger;
         public CmsPageController(NccPageService pageService, ILoggerFactory factory)
@@ -21,11 +24,13 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _pageService = pageService;
             _logger = factory.CreateLogger<CmsPageController>();
         }
+        #endregion
 
+        #region Public View
         [AllowAnonymous]
         public ActionResult Index(string slug)
-        {            
-            if(!string.IsNullOrEmpty(slug))
+        {
+            if (!string.IsNullOrEmpty(slug))
             {
                 var page = _pageService.GetBySlugs(slug);
                 if (page != null)
@@ -36,13 +41,10 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             TempData["Message"] = "Page not found";
             return Redirect("/CmsHome/ResourceNotFound");
         }
-        
-        public ActionResult Manage()
-        {
-            var allPages = _pageService.LoadAll().OrderByDescending(p => p.Id).ToList();
-            return View(allPages);
-        }
+        #endregion
 
+
+        [AdminMenuItem(Name = "New page", Url = "/CmsPage/CreateEdit", IconCls = "fa-pencil-square-o", Order = 1)]
         public ActionResult CreateEdit(long Id = 0)
         {
             ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + Request.Host + "/CmsPage/";
@@ -137,6 +139,13 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             ViewBag.AllPages = _pageService.LoadAll().Where(p => p.Status == (int)NccPage.NccPageStatus.Published && p.Id != model.Id);
             return View(model);
         }        
+
+        [AdminMenuItem(Name = "Manage", Url = "/CmsPage/Manage", IconCls = "fa-th-list", Order = 3)]
+        public ActionResult Manage()
+        {
+            var allPages = _pageService.LoadAll().OrderByDescending(p => p.Id).ToList();
+            return View(allPages);
+        }
 
         public ActionResult Delete(long Id)
         {
