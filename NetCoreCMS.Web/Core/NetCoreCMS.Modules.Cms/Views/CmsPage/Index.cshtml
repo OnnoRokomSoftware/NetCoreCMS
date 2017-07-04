@@ -9,10 +9,6 @@
     if (!string.IsNullOrEmpty(Model.Layout) && GlobalConfig.ActiveTheme.Layouts.Where(x=>x.Name == Model.Layout).FirstOrDefault() != null) {
         Layout = "_" + Model.Layout;
     }
-    else
-    {
-        Layout = "_DefaultLayout";
-    }
     ViewData["Title"] = Model.Title;
 }
  

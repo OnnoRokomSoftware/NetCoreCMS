@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Utility;
+using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
@@ -28,11 +30,15 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 if (page != null)
                 {
                     ViewBag.Content = page.Content;
-                    ViewBag.Layout = page.Layout;
+                    if (GlobalConfig.ActiveTheme.Layouts.Where(l => l.Name.Contains(page.Layout)).Count() > 0)
+                    {
+                        ViewBag.Layout = page.Layout;
+                    }
+
                 }
                 return View();
             }
-            return Redirect("/SetupHome/Index");            
+            return Redirect("/SetupHome/Index");
         }
         
         public IActionResult About()
