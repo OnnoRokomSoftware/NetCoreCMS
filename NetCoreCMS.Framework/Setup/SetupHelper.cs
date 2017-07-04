@@ -93,6 +93,23 @@ namespace NetCoreCMS.Framework.Setup
             //roleManager.CreateAsync(reader);
         }
 
+        public static void UpdateSetup(SetupConfig setupConfig)
+        {
+            var rootDir = GlobalConfig.ContentRootPath;
+            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(file))
+                {
+                    var content = JsonConvert.SerializeObject( setupConfig, Formatting.Indented);
+
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        sw.Write(content.ToCharArray());
+                    }
+                }
+            }             
+        }
+
         internal static DbContextOptions GetDbContextOptions()
         {
             return DatabaseFactory.GetDbContextOptions();            

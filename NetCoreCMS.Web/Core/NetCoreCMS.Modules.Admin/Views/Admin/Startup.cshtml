@@ -1,4 +1,7 @@
-﻿@{
+﻿@using NetCoreCMS.Modules.Admin.Models.ViewModels
+@model StartupViewModel
+
+@{
     Layout = Constants.AdminLayoutName;
     ViewData["PageTitle"] = "Startup";
     ViewData["PageSubtitle"] = "Set Startup Page";
@@ -9,26 +12,38 @@
         <form class="form-horizontal" asp-controller="Admin" asp-action="Startup" method="post">
             
             <div>
-                <input type="radio" name="startupOption" value="Default" checked />
+                <input type="radio" name="StartupType" value="Default" @ViewBag.DefaultChecked />
+                <input type="text" name="Default" value="@Model.Default" />                
             </div>
 
             <div>
-                <input type="radio" name="startupOption" value="Page" />     
-                
+                <input type="radio" name="StartupType" value="Page" @ViewBag.PageChecked/>     
+                <select asp-for="PageSlug" asp-items="@Model.Pages">
+                    <option>Please select one</option>
+                </select>
             </div>
             
             <div>
-                <input type="radio" name="startupOption" value="Category" />
+                <input type="radio" name="StartupType" value="Category" @ViewBag.CategoryChecked />
+                <select asp-for="CategorySlug" asp-items="@Model.Categories">
+                    <option>Please select one</option>
+                </select>
             </div>
             
             <div>
-                <input type="radio" name="startupOption" value="Post" />
+                <input type="radio" name="StartupType" value="Post" @ViewBag.PostChecked/>
+                <select asp-for="PostSlug" asp-items="@Model.Posts">
+                    <option>Please select one</option>
+                </select>
             </div>
 
             <div>
-                <input type="radio" name="startupOption" value="Module" />
+                <input type="radio" name="StartupType" value="Module" @ViewBag.ModuleChecked />
+                <select asp-for="ModuleSiteMenuUrl" asp-items="@Model.ModuleSiteMenus">
+                    <option>Please select one</option>
+                </select>
             </div>
-
+            <input type="submit" value="Update" />
         </form>
     </div>    
 </div>

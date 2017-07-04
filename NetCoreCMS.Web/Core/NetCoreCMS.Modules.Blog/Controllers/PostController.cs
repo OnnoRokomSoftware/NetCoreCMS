@@ -27,7 +27,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
         }
 
         [AllowAnonymous]
-        [SiteMenuItem(Name = "Index", Url = "~/Post/Index", Order = 1)]
+        [SiteMenuItem(Name = "Index", Url = "/Post/Index", Order = 1)]
         public ActionResult Index(int page = 0)
         {
             var allPost = _nccPostService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published, DateTime.Now);

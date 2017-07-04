@@ -25,7 +25,7 @@ namespace NetCoreCMS.Web.Controllers
                     TempData["Message"] = "Setup config file is missed. Please reinstall.";
                     return Redirect("~/CmsHome/ResourceNotFound");
                 }
-                return RedirectPermanent(setupConfig.StartupUrl);
+                return Redirect(setupConfig.StartupUrl);
             }
             return Redirect("/SetupHome/Index");
         }

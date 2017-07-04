@@ -1,17 +1,23 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Modules.Admin.Models.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
 {
-    [Authorize("SuperAdmin")]
+    [Authorize(Roles ="SuperAdmin,Administrator")]
+    [AdminMenu(Name ="Settings", Order = 10)]
     public class AdminController : NccController
     {
         NccWebSiteService _webSiteService;
@@ -73,19 +79,107 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(website);
         }
 
+        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", Order = 3)]
         public ActionResult Startup()
         {
-            ViewBag.Pages = _pageService.LoadAllActive();
-            ViewBag.Posts = _postService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published, DateTime.Now);
-            ViewBag.Categories = _categoryService.LoadAllActive();
-            ViewBag.ModuleSiteMenus = AdminMenuHelper.ModulesSiteMenus().Select(x=>x.Key).ToList();
+            var model = PrepareStartupViewData();            
+            return View(model);
+        }
 
-            return View();
+        [HttpPost]
+        public ActionResult Startup(StartupViewModel vmodel)
+        {
+            var setupConfig = SetupHelper.LoadSetup();
+            setupConfig.StartupType = vmodel.StartupType;
+
+            if (vmodel.StartupType == StartupTypes.Page)
+            {
+                setupConfig.StartupUrl = "/" + vmodel.PageSlug;
+            }
+
+            if (vmodel.StartupType == StartupTypes.Post)
+            {
+                setupConfig.StartupUrl = "/Post/" + vmodel.PostSlug;
+            }
+
+            if (vmodel.StartupType == StartupTypes.Category)
+            {
+                setupConfig.StartupUrl = "/Category/" + vmodel.PageSlug;
+            }
+
+            if (vmodel.StartupType == StartupTypes.Module)
+            {
+                setupConfig.StartupUrl = vmodel.ModuleSiteMenuUrl;
+            }
+
+            SetupHelper.UpdateSetup(setupConfig);
+            var model = PrepareStartupViewData();
+
+            return View(model);
         }
 
         //public ContentResult StartupModuleMenuItemByMenu(string menuId)
         //{
 
         //}
+
+        public StartupViewModel PrepareStartupViewData()
+        {
+            var setupConfig = SetupHelper.LoadSetup();
+            var model = new StartupViewModel();
+            var moduleSiteMenuList = new List<SiteMenuItem>();
+
+            model.Default = setupConfig.StartupUrl;
+            model.StartupType = setupConfig.StartupType;
+
+            model.Pages = new SelectList(_pageService.LoadAllActive(), "Slug", "Title", GetSlug(setupConfig.StartupUrl));
+            model.Posts = new SelectList(_postService.LoadAllByPostStatusAndDate(NccPost.NccPostStatus.Published, DateTime.Now), "Slug", "Title", GetSlug(setupConfig.StartupUrl));
+            model.Categories = new SelectList(_categoryService.LoadAllActive(), "Slug", "Title", GetSlug(setupConfig.StartupUrl));
+            AdminMenuHelper.ModulesSiteMenus().Select(x => x.Value).ToList().ForEach(x => moduleSiteMenuList.AddRange(x));
+            model.ModuleSiteMenus = new SelectList(moduleSiteMenuList, "Url", "Url", setupConfig.StartupUrl);
+
+            ViewBag.DefaultChecked = "";
+            ViewBag.PageChecked = "";
+            ViewBag.CategoryChecked = "";
+            ViewBag.PostChecked = "";
+            ViewBag.ModuleChecked = "";
+
+            if (setupConfig.StartupType == StartupTypes.Page)
+            {
+                ViewBag.PageChecked = "checked";
+            }
+            else if (setupConfig.StartupType == StartupTypes.Post)
+            {
+                ViewBag.PostChecked = "checked";
+            }
+            else if (setupConfig.StartupType == StartupTypes.Category)
+            {
+                ViewBag.CategoryChecked = "checked";
+            }
+            else if (setupConfig.StartupType == StartupTypes.Module)
+            {
+                ViewBag.ModuleChecked = "checked";
+            }
+            else
+            {
+                ViewBag.DefaultChecked = "checked";
+            }
+
+            return model;
+        }
+
+        public string GetSlug(string url)
+        {
+            var slug = "";            
+            if (!string.IsNullOrEmpty(url))
+            {
+                var parts = url.Split("/".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length > 1)
+                {
+                    slug = parts[parts.Length-1];
+                }
+            }
+            return slug;
+        }
     }
 }
