@@ -14,7 +14,7 @@ namespace NetCoreCMS.Notice.Controllers
 {
 
     [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
-    [AdminMenu(Name = "Notice", Order = 1)]
+    [AdminMenu(Name = "Notice", Order = 100)]
     public class NoticeHomeController : NccController
     {
         private NccNoticeService _nccNoticeService;

@@ -8,7 +8,7 @@ using System.Text;
 
 namespace NetCoreCMS.HelloWorld.Controllers
 {
-    [AdminMenu(Name = "Hello Module", Order = 1)]
+    [AdminMenu(Name = "Hello Module", Order = 100)]
     public class HelloHomeController : NccController
     {
         [AdminMenuItem(Name = "Index", Url = "/HelloHome/Index", Order = 1)]

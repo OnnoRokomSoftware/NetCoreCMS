@@ -15,7 +15,7 @@ using NetCoreCMS.Framework.Themes;
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {
     [Authorize(Roles ="SuperAdmin,Adimistrator,Editor")]
-    [AdminMenu(Name ="Blog", Order = 1)]
+    [AdminMenu(Name ="Blog", Order = 5)]
     public class BlogController : NccController
     {
         NccPostService _nccPostService;

@@ -10,7 +10,7 @@ using System;
 
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {
-    [SiteMenu(Name = "Blog", Order = 1)]
+    [SiteMenu(Name = "Blog", Order = 3)]
     public class PostController : NccController
     {
         NccPostService _nccPostService;
