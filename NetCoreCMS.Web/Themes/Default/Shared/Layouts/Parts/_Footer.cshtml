@@ -1,0 +1,79 @@
+﻿@{
+    var WebSite = GlobalConfig.WebSite;
+}
+
+
+<!--  Footer Start -->
+<footer>
+    <hr />
+    <div class="container">
+        <div class="row">
+            @{
+                bool hasFooter = false;
+                var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer").ToList();
+                var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+                if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
+                {
+                    hasFooter = true;
+                }
+                <!-- Footer Menu Start -->
+                if (menusFooter != null && menusFooter.Count > 0)
+                {
+                    <div class="col-md-6">
+                        @foreach (var item in menusFooter)
+                        {
+                            foreach (var menuItem in item.MenuItems)
+                            {
+                                <a href="@menuItem.Url">@menuItem.Name</a><br />
+                                foreach (var mi2 in menuItem.Childrens)
+                                {
+                                    <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                                    foreach (var mi3 in mi2.Childrens)
+                                    {
+                                        <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                        foreach (var mi4 in mi3.Childrens)
+                                        {
+                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+                }
+                <!-- Footer Menu End -->
+
+                <!-- Footer Widgets Start -->
+                if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
+                {
+                    <div class="col-md-12">
+                        @foreach (var item in zoneFooterWidgets)
+                        {
+                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                            foreach (var widget in widgets)
+                            {
+                                widget.Init();
+                                <div>
+                                    @Html.Raw(widget.RenderBody())
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+                <!-- Footer Widgets End -->
+            }
+
+        </div>
+    </div>
+    @if (hasFooter)
+    {
+        <hr />
+    }
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 copyright"> Copyrights &copy; @Html.Raw(WebSite.Copyrights) @DateTime.Now.Year</div>
+            <div class="col-md-6 poweredby"> Powered by <a href="#" target="_blank">NetCoreCMS</a></div>
+        </div>
+    </div>
+</footer>
+<!--  Footer End -->

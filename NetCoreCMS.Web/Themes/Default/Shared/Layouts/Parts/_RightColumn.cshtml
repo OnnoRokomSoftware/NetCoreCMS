@@ -1,0 +1,60 @@
+﻿@{
+    var WebSite = GlobalConfig.WebSite;
+}
+<div class="col-sm-2 pull-right">
+    <!-- Right Menu Start -->
+    @if (menusRight != null && menusRight.Count > 0)
+    {
+        <div class="col-md-12">
+            @foreach (var item in menusRight)
+            {
+                foreach (var menuItem in item.MenuItems)
+                {
+                    <a href="@menuItem.Url">@menuItem.Name</a><br />
+                    foreach (var mi2 in menuItem.Childrens)
+                    {
+                        <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                        foreach (var mi3 in mi2.Childrens)
+                        {
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                            foreach (var mi4 in mi3.Childrens)
+                            {
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                            }
+                        }
+                    }
+                }
+            }
+        </div>
+                            <div class="clearfix"></div>
+    }
+    <!-- Right Menu End -->
+    <!-- Right Sidebar Start -->
+    @if (zoneRightWidgets != null && zoneRightWidgets.Count > 0)
+    {
+        <div class="row">
+            @foreach (var item in zoneRightWidgets)
+            {
+                var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                foreach (var widget in widgets)
+                {
+                    widget.Init();
+                    <div>
+                        <div class='panel panel-default'>
+                            <div class='panel-heading'>
+                                @Html.Raw(widget.RenderTitle())
+                            </div>
+                            <div class='panel-body'>
+                                @Html.Raw(widget.RenderBody())
+                            </div>
+                            <div class='panel-footer'>
+                                @Html.Raw(widget.RenderFooter())
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    }
+    <!-- Right Sidebar End -->
+</div>

@@ -1,0 +1,28 @@
+﻿<script type="text/javascript">
+$(document).ready(function () {
+    var didScroll = true;
+
+    $(window).scroll(function () {
+        didScroll = true;
+    });
+    setInterval(function () {
+        if (didScroll) {
+            didScroll = false;
+            var scroll = $(window).scrollTop();
+            //console.log(scroll);
+            //Same that all the if else statements
+            switch (true) {
+                case (scroll >= 130):
+                    $("#mainNavbar").addClass("navbar-fixed-top");
+                    $("#navbarWebsiteName").removeClass("navbar-brand-with-top-menu");
+                    break;
+                default: //scroll<=590
+                    $("#mainNavbar").removeClass("navbar-fixed-top");
+                    $("#navbarWebsiteName").addClass("navbar-brand-with-top-menu");
+            }
+        }
+    }, 50);
+
+});
+</script>
+    
