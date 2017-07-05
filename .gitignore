@@ -11,3 +11,4 @@ config
 /NetCoreCMS.Web/setup.json
 /NetCoreCMS.Web/Data/NetCoreCMS.Database.SqLite.db
 /NetCoreCMS.Web/Data/.db
+*.pubxml
