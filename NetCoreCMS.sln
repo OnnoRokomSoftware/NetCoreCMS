@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{BDDA4695-6AA7-4A2D-A82E-33C64576477D}"
 EndProject
@@ -28,6 +28,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultDark", "NetCoreCMS.Web\Themes\DefaultDark\DefaultDark.csproj", "{3210BDB2-2156-4B3C-A42E-51C804984B2D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Notice", "NetCoreCMS.Web\Modules\NetCoreCMS.Notice\NetCoreCMS.Notice.csproj", "{910BC005-D1B1-4734-B305-A2919F2BF6C5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.UmsbdResult", "..\OSL.NetCore.CMS\NetCoreCMS.Web\Modules\NetCoreCMS.UmsbdResult\NetCoreCMS.UmsbdResult.csproj", "{6F82ABD8-AAF0-4489-B2F0-10ABE54004B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +77,10 @@ Global
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F82ABD8-AAF0-4489-B2F0-10ABE54004B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F82ABD8-AAF0-4489-B2F0-10ABE54004B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F82ABD8-AAF0-4489-B2F0-10ABE54004B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F82ABD8-AAF0-4489-B2F0-10ABE54004B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,5 +94,6 @@ Global
 		{999CC508-BFAB-43BF-A8D4-F51804C997F6} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 		{3210BDB2-2156-4B3C-A42E-51C804984B2D} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
+		{6F82ABD8-AAF0-4489-B2F0-10ABE54004B1} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
 	EndGlobalSection
 EndGlobal
