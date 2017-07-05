@@ -97,7 +97,9 @@ namespace NetCoreCMS.Framework.Utility
         public static string GetAdminMenuHtml(Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic)
         {
             var menuStr = "";
-            foreach (var item in adminMenuDic)
+            var orderdMenu = adminMenuDic.OrderBy(x => x.Key.Order);
+
+            foreach (var item in orderdMenu)
             {
                 string icon = "fa-gears";
                 if (!string.IsNullOrEmpty(item.Key.IconCls))
