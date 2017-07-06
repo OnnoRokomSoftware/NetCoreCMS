@@ -105,11 +105,7 @@
                 <!-- Featured End -->
 
                 <!-- Container for showing global messages. -->
-                <div class="row">
-                    <div id="globalMessageContainer" class="ncc-global-message">
-
-                    </div>
-                </div>
+                @Html.Partial("Parts/_GlobalMessage")
 
                 @RenderBody()
             </div>
@@ -121,8 +117,6 @@
         @Html.Partial("Parts/_Footer")
 
         @RenderSection("Scripts", required: false)
-
-        @Html.Partial("Parts/_FooterScripts")
     </body>
 </html>
 
