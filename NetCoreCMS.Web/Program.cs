@@ -22,7 +22,7 @@ namespace NetCoreCMS.Web
 
         public static void Shutdown()
         {
-            cancelTokenSource.CancelAfter(5000);            
+            cancelTokenSource.CancelAfter(500);            
         }
     }
 }

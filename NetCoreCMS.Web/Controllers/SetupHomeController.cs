@@ -64,6 +64,16 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             return View();
         }
 
+        public ActionResult Back()
+        {
+            if (SetupHelper.IsDbCreateComplete)
+            {
+                SetupHelper.IsDbCreateComplete = false;
+                SetupHelper.DeleteSetup();
+            }
+            return RedirectToAction("Index");
+        }
+
         public ActionResult CreateAdmin()
         {
             return View();

@@ -74,6 +74,11 @@ namespace NetCoreCMS.Framework.Setup
             return user;
         }
 
+        public static void DeleteSetup()
+        {
+            File.Delete(_configFileName);
+        }
+
         private static void CreateCmsDefaultRoles(RoleManager<NccRole> roleManager)
         {
             NccRole superAdmin = new NccRole() { Name = NccCmsRoles.SuperAdmin, NormalizedName = NccCmsRoles.SuperAdmin};
