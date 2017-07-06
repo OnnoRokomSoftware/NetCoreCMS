@@ -9,16 +9,28 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Shared\Layouts\Parts\**" />
-    <EmbeddedResource Remove="Shared\Layouts\Parts\**" />
-    <None Remove="Shared\Layouts\Parts\**" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <Content Include="Shared\Layouts\Parts\_Featured.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\Parts\_NavbarPart.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\Parts\_Head.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\Parts\_Footer.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="Shared\Layouts\_FullWidthLayout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Shared\Layouts\_HomeLayout.cshtml">
+    <Content Include="Shared\Layouts\_RightColumnLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\_LeftColumnLayout.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Shared\Layouts\_NoTopLayout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Shared\_SiteLoginPartial.cshtml">

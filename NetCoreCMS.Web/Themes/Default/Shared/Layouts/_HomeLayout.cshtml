@@ -4,7 +4,7 @@
     bool hasRightColumn = false;
     //var WebSite = GlobalConfig.WebSite;
     ViewBag.WebSite = GlobalConfig.WebSite;
-    ViewBag.CurrentLayout = "SiteLayout";
+    ViewBag.CurrentLayout = "HomeLayout";
 
     /*Special Calculation for left and right column show hide*/
     var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
@@ -134,6 +134,40 @@
             </div>
         </nav>        
         <!-- Zone TOP End-->
+        
+        <!-- Full Width Slider Start -->
+        <div>
+            @{
+                var fullWidthSlider = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FullWidthSlider" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+                if (fullWidthSlider != null && fullWidthSlider.Count > 0)
+                {
+                    <div class="fullWidthSlider">
+                        @foreach (var item in fullWidthSlider)
+                {
+                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                    foreach (var widget in widgets)
+                    {
+                        widget.Init();
+                                @*<div>
+                                <div class='panel panel-default'>
+                                    <div class='panel-heading'>
+                                        @Html.Raw(widget.RenderTitle())
+                                    </div>
+                                    <div class='panel-body'>*@
+                                @Html.Raw(widget.RenderBody())
+                                @*</div>
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.RenderFooter())
+                                        </div>
+                                    </div>
+                                </div>*@
+                            }
+                        }
+                    </div>
+                }
+            }
+        </div>
+        <!-- Full Width Slider End -->
 
         <!--  Main Body Start -->
         <div class="container mainBody">   
@@ -265,7 +299,7 @@
 
             <!-- Main content Start -->
             <div class="col-md-@bodyClassWidth">
-                <!-- Featured -->
+                <!-- Featured Start -->
                 <div class="Featured">
                     @{
                         var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == ViewBag.CurrentLayout).ToList();
@@ -297,13 +331,7 @@
                         }
                     }
                 </div>
-
-                <!-- Container for showing global messages. -->
-                <div class="row">
-                    <div id="globalMessageContainer" class="ncc-global-message">
-
-                    </div>
-                </div>
+                <!-- Featured End -->
 
                 @RenderBody()
             </div>

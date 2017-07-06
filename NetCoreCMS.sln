@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DefaultDark", "NetCoreCMS.W
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Notice", "NetCoreCMS.Web\Modules\NetCoreCMS.Notice\NetCoreCMS.Notice.csproj", "{910BC005-D1B1-4734-B305-A2919F2BF6C5}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NccSeventeen", "NetCoreCMS.Web\Themes\NccSeventeen\NccSeventeen.csproj", "{686E8D14-408B-4FBC-9BF2-A9086BFB3234}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{686E8D14-408B-4FBC-9BF2-A9086BFB3234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{686E8D14-408B-4FBC-9BF2-A9086BFB3234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{686E8D14-408B-4FBC-9BF2-A9086BFB3234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{686E8D14-408B-4FBC-9BF2-A9086BFB3234}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -88,5 +94,6 @@ Global
 		{999CC508-BFAB-43BF-A8D4-F51804C997F6} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 		{3210BDB2-2156-4B3C-A42E-51C804984B2D} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 		{910BC005-D1B1-4734-B305-A2919F2BF6C5} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
+		{686E8D14-408B-4FBC-9BF2-A9086BFB3234} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 	EndGlobalSection
 EndGlobal
