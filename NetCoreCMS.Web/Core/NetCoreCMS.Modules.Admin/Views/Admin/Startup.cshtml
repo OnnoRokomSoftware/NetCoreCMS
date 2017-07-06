@@ -11,39 +11,39 @@
     <div class="col-sm-12">
         <form class="form-horizontal" asp-controller="Admin" asp-action="Startup" method="post">
             
-            <div>
+            <div class="form-group">
                 <input type="radio" name="StartupType" value="Default" @ViewBag.DefaultChecked />
-                <input type="text" name="Default" value="@Model.Default" />                
+                <input type="text" name="Default" value="@Model.Default" />
             </div>
 
-            <div>
+            <div class="form-group">
                 <input type="radio" name="StartupType" value="Page" @ViewBag.PageChecked/>     
                 <select asp-for="PageSlug" asp-items="@Model.Pages">
-                    <option>Please select one</option>
+                    <option>Select a page</option>
                 </select>
             </div>
             
-            <div>
+            <div class="form-group">
                 <input type="radio" name="StartupType" value="Category" @ViewBag.CategoryChecked />
                 <select asp-for="CategorySlug" asp-items="@Model.Categories">
-                    <option>Please select one</option>
+                    <option>Select a category</option>
                 </select>
             </div>
             
-            <div>
+            <div class="form-group">
                 <input type="radio" name="StartupType" value="Post" @ViewBag.PostChecked/>
                 <select asp-for="PostSlug" asp-items="@Model.Posts">
-                    <option>Please select one</option>
+                    <option>Select a post</option>
                 </select>
             </div>
 
-            <div>
+            <div class="form-group">
                 <input type="radio" name="StartupType" value="Module" @ViewBag.ModuleChecked />
                 <select asp-for="ModuleSiteMenuUrl" asp-items="@Model.ModuleSiteMenus">
-                    <option>Please select one</option>
+                    <option>Select module menu</option>
                 </select>
             </div>
-            <input type="submit" value="Update" />
+            <input class="btn btn-primary" type="submit" value="Update" />
         </form>
     </div>    
 </div>
