@@ -12,13 +12,13 @@
     <Content Include="Shared\Layouts\Parts\_Featured.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
+    <Content Include="Shared\Layouts\Parts\_GlobalMessage.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
     <Content Include="Shared\Layouts\Parts\_Head.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Shared\Layouts\Parts\_Footer.cshtml">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Include="Shared\Layouts\Parts\_FooterScripts.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Shared\Layouts\_FullWidthLayout.cshtml">
