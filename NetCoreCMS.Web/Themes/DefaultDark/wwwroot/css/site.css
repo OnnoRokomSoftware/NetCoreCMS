@@ -1,4 +1,7 @@
-﻿.home {
+﻿body {
+    background-color: #E2E2E2;
+}
+.home {
     border: solid 1px;
 }
 
@@ -74,8 +77,12 @@
 
 .mainBody {
     /*min-height: 100vh;*/
-    padding: 0px;
+    margin-top: -20px;
+    margin-bottom: -20px;
+    padding: 20px;
+    /*padding: 0px;*/
     word-wrap: break-word;
+    background-color: #FFF;
 }
 
 .fullWidthSlider {

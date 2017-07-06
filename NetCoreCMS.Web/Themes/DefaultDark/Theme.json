@@ -17,7 +17,6 @@
       "PreviewImage": "SiteLayoutScreenShot.png",
       "LayoutZones": [
         "TopBar",
-        "FullWidthSlider",
         "Featured",
         "LeftSidebar",
         "RightSidebar",
@@ -25,32 +24,13 @@
       ]
     },
     {
-      "Name": "NoTopLayout",
-      "PreviewImage": "NoTopLayoutScreenShot.png",
+      "Name": "HomeLayout",
+      "PreviewImage": "HomeLayoutScreenShot.png",
       "LayoutZones": [
+        "TopBar",
         "FullWidthSlider",
         "Featured",
         "LeftSidebar",
-        "RightSidebar",
-        "Footer"
-      ]
-    },
-    {
-      "Name": "LeftColumnLayout",
-      "PreviewImage": "LeftColumnLayoutScreenShot.png",
-      "LayoutZones": [
-        "TopBar",
-        "Featured",
-        "LeftSidebar",
-        "Footer"
-      ]
-    },
-    {
-      "Name": "RightColumnLayout",
-      "PreviewImage": "RightColumnLayoutScreenShot.png",
-      "LayoutZones": [
-        "TopBar",
-        "Featured",
         "RightSidebar",
         "Footer"
       ]
