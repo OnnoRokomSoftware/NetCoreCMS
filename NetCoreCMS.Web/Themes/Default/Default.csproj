@@ -12,7 +12,7 @@
     <Content Include="Shared\Layouts\Parts\_Featured.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
-    <Content Include="Shared\Layouts\Parts\_GlobalMessage.cshtml">
+    <Content Include="Shared\Layouts\Parts\_NavbarPart.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
     <Content Include="Shared\Layouts\Parts\_Head.cshtml">

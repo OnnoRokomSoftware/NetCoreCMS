@@ -1,24 +1,28 @@
-﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-@using NetCoreCMS.Framework.Utility
-@using NetCoreCMS.Framework.Core.Models
-@using NetCoreCMS.Themes.Default.Lib
-@using NetCoreCMS.Core.Modules.Cms
-@using NetCoreCMS.Core.Modules.Cms.Models
-@using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels
-@using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels
-@using Microsoft.AspNetCore.Identity
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
-
-@inject SignInManager<NccUser> SignInManager
-@inject UserManager<NccUser> UserManager
-
-@{
+﻿@{
     int bodyClassWidth = 12;
     bool hasLeftColumn = false;
     bool hasRightColumn = false;
-    var WebSite = GlobalConfig.WebSite;
+    //var WebSite = GlobalConfig.WebSite;
+    ViewBag.WebSite = GlobalConfig.WebSite;
     ViewBag.CurrentLayout = "SiteLayout";
+
+    /*Special Calculation for left and right column show hide*/
+    var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
+    var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+    if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
+    {
+        hasLeftColumn = true;
+        bodyClassWidth = bodyClassWidth - 2;
+    }
+
+    var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
+    var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+    if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
+    {
+        hasRightColumn = true;
+        bodyClassWidth = bodyClassWidth - 2;
+    }
+    /*Special Calculation for left and right column show hide*/
 }
 
 <!DOCTYPE html>
@@ -29,8 +33,6 @@
         @RenderSection("Styles", required: false)
     </head>
     <body id="body">
-        <div id="loadingMask" class="loader loader-double"></div>
-
         <!-- Zone TOP Start-->
         <!-- Header -->
         @Html.Partial("Parts/_Header")    
@@ -39,14 +41,7 @@
         <nav id="mainNavbar" class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @*<a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">@WebSite.Name</a>*@
-                    <div id="navbarWebsiteName" class="navbar-brand navbar-brand-with-top-menu">@WebSite.Name</div>
+                    @Html.Partial("Parts/_NavbarPart")
                 </div>
                 <div class="navbar-collapse collapse">
                     @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation"))
@@ -65,36 +60,16 @@
         <!--  Main Body Start -->
         <div class="container mainBody">   
             <!-- Left Column start -->
-            @{
-                var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
-                var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-                if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
-                {
-                    hasLeftColumn = true;
-                    bodyClassWidth = bodyClassWidth - 2;
-                }
-                if (hasLeftColumn)
-                {
-                    Html.Partial("Parts/_LeftColumn");
-                }
-
+            @if (hasLeftColumn)
+            {
+                @Html.Partial("Parts/_LeftColumn");
             }
             <!-- Left Column end -->
 
             <!-- Right Column start -->
-            @{
-                var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
-                var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-                if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
-                {
-                    hasRightColumn = true;
-                    bodyClassWidth = bodyClassWidth - 2;
-                }
-                if (hasRightColumn)
-                {
-                    Html.Partial("Parts/_RightColumn");
-                }
-
+            @if (hasRightColumn)
+            {
+                @Html.Partial("Parts/_RightColumn");
             }
             <!-- Right Column end -->
 
@@ -104,9 +79,6 @@
                 @Html.Partial("Parts/_Featured")
                 <!-- Featured End -->
 
-                <!-- Container for showing global messages. -->
-                @Html.Partial("Parts/_GlobalMessage")
-
                 @RenderBody()
             </div>
             <!-- Main content End -->
@@ -115,7 +87,6 @@
         <!--  Main Body End -->
 
         @Html.Partial("Parts/_Footer")
-
         @RenderSection("Scripts", required: false)
     </body>
 </html>
