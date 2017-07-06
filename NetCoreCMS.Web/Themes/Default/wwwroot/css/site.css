@@ -24,6 +24,16 @@
 .topLogo {
     float: left;
 }
+    .topLogo a {
+        color: inherit;
+    }
+        .topLogo a:hover {
+            text-decoration: none;
+        }
+        .topLogo a:visited {
+            color: inherit;
+            text-decoration: none;
+        }
     .topLogo h4 {
         padding-left: 100px;
         color: gray;
