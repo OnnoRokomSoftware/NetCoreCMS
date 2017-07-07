@@ -17,6 +17,17 @@
       "PreviewImage": "SiteLayoutScreenShot.png",
       "LayoutZones": [
         "TopBar",
+        "Featured",
+        "LeftSidebar",
+        "RightSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "HomeLayout",
+      "PreviewImage": "HomeLayoutScreenShot.png",
+      "LayoutZones": [
+        "TopBar",
         "FullWidthSlider",
         "Featured",
         "LeftSidebar",

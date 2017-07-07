@@ -1,0 +1,31 @@
+﻿@using NetCoreCMS.Framework.Utility
+@using System.Collections
+@using System.Text
+@using System.Linq
+
+@model NccPage
+@{
+
+    if (!string.IsNullOrEmpty(Model.Layout) && GlobalConfig.ActiveTheme.Layouts.Where(x=>x.Name == Model.Layout).FirstOrDefault() != null) {
+        Layout = "_" + Model.Layout;
+    }
+    ViewData["Title"] = Model.Title;
+    ViewData["MetaDescription"] = Model.MetaDescription;
+    ViewData["MetaKeyword"] = Model.MetaKeyword;
+}
+ 
+@section Styles{
+    <style>
+        p{
+            color:#0094ff;
+        }
+    </style>
+}
+<div class="row">
+    @*@MediaServices.SaveImage("Navigation")*@
+    @Html.Raw(Model.Content)
+</div>
+ 
+@section Scripts{
+
+}

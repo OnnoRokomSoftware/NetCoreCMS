@@ -4,7 +4,7 @@
     bool hasRightColumn = false;
     //var WebSite = GlobalConfig.WebSite;
     ViewBag.WebSite = GlobalConfig.WebSite;
-    ViewBag.CurrentLayout = "SiteLayout";
+    ViewBag.CurrentLayout = "HomeLayout";
 
     /*Special Calculation for left and right column show hide*/
     var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
@@ -52,6 +52,10 @@
             </div>
         </nav>        
         <!-- Zone TOP End-->
+        
+        <!-- Full Width Slider Start -->
+        @Html.Partial("Parts/_FullWidthSlider")
+        <!-- Full Width Slider End -->
 
         <!--  Main Body Start -->
         <div class="container mainBody">   

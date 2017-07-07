@@ -1,0 +1,13 @@
+﻿{
+  "ModuleId": "com.NetCoreCMS.ImageSlider",
+  "ModuleName": "NetCoreCMS.ImageSlider",
+  "ModuleTitle": "NetCoreCMS ImageSlider Module",
+  "Author": "NetCoreCMS",
+  "Website": "http://NetCoreCMS.com",
+  "AntiForgery": true,
+  "Description": "Builtin ImageSlider Module.",
+  "Version": "1.0",
+  "NetCoreCMSVersion": "0.1.1",
+  "Dependencies": [],
+  "Category": "Image,Slider,Media"
+}
