@@ -39,8 +39,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             _categoryService = categoryService;
             _logger = loggarFactory.CreateLogger<AdminController>();
         }
-
-
+        
         [Authorize]
         //[AdminMenuItem(Name = "Dashboard", Url = "/Admin", IconCls = "fa-dashboard", Order = 1)]
         public ActionResult Index()
@@ -54,6 +53,8 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             }
             return View(webSite);
         }
+
+        #region Settings
 
         [AdminMenuItem(Name = "General", Url = "/Admin/Settings", IconCls = "fa-gear", Order = 2)]
         public ActionResult Settings()
@@ -121,12 +122,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
 
             return View(model);
         }
-
-        //public ContentResult StartupModuleMenuItemByMenu(string menuId)
-        //{
-
-        //}
-
+         
         public StartupViewModel PrepareStartupViewData()
         {
             var setupConfig = SetupHelper.LoadSetup();
@@ -172,6 +168,16 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return model;
         }
 
+        public ActionResult ManageUsers()
+        {
+
+            return View();
+        }
+
+        #endregion
+
+        #region Privet Methods
+
         public string GetSlug(string url)
         {
             var slug = "";            
@@ -185,5 +191,8 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             }
             return slug;
         }
+
+        #endregion
+
     }
 }

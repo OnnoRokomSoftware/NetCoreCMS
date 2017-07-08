@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
@@ -24,10 +25,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         NccMenuService _menuService;
         NccPageService _pageService;
 
-        public CmsMenuController(NccMenuService menuService, NccPageService pageService)
+        public CmsMenuController(NccMenuService menuService, NccPageService pageService, ILoggerFactory factory)
         {
             _pageService = pageService;
             _menuService = menuService;
+            _logger = factory.CreateLogger<CmsMenuController>();
         }
         #endregion
 

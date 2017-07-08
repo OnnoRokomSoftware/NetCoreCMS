@@ -1,0 +1,66 @@
+﻿@using NetCoreCMS.Modules.Admin.Models.ViewModels
+@model UserViewModel
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "New Users";
+    ViewData["PageSubtitle"] = "User";
+    var chk = "";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" asp-controller="Users" asp-action="CreateEditPost" method="post">
+
+            <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            <div class="form-group">
+                <label for="UserName" >User Name</label>
+                <input  type="text" name="UserName" value="@Model.UserName" />
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" name="FullName" value="@Model.FullName"/>
+            </div>
+            
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" name="Password" value="@Model.Password" />
+            </div>
+            
+            <div class="form-group">
+                <label>Confirm Password</label>
+                <input type="password" name="ConfirmPassword" value="@Model.ConfirmPassword" />
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="Email" value="@Model.Email" />
+            </div>
+
+            <div class="form-group">
+                <label>Mobile</label>
+                <input type="text" name="Mobile" value="@Model.Mobile" />
+            </div>
+
+            <div class="form-group">
+                <label>Role</label>
+                <select asp-for="Role" asp-items="@UserViewModel.GetRolesDropdown()">
+                    <option>Select Role</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Send Email</label>
+                 
+                @if(Model.SendEmailNotification == true){
+                    chk = "checked";
+                }
+                <input type="checkbox" name="SendEmail" @chk />
+            </div>
+            <input class="btn btn-primary" type="submit" value="Update" />
+        </form>
+    </div>    
+</div>
+     

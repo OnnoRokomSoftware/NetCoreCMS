@@ -19,7 +19,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
     public class MediaHomeController : NccController
     {
         #region Initialization
-        private readonly ILogger _logger;
+        
         private IHostingEnvironment _env;
         private readonly string _imageRoot = "\\media\\Images\\";
         private readonly string _imagePathPrefix = "/media/Images/";

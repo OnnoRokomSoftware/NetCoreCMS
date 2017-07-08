@@ -19,7 +19,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
     {
         #region Initialization
         NccPageService _pageService;
-        private readonly ILogger _logger;
+        
         public CmsPageController(NccPageService pageService, ILoggerFactory factory)
         {
             _pageService = pageService;

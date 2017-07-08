@@ -5,12 +5,18 @@ using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.HelloWorld.Controllers
 {
     [AdminMenu(Name = "Hello Module", Order = 100)]
     public class HelloHomeController : NccController
     {
+        public HelloHomeController(ILoggerFactory loggerFactory)
+        {
+            _logger = loggerFactory.CreateLogger<HelloHomeController>();
+        }
+
         [AdminMenuItem(Name = "Index", Url = "/HelloHome/Index", Order = 1)]
         public ActionResult Index()
         {

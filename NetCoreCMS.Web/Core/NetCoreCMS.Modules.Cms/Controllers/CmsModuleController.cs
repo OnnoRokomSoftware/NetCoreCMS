@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
@@ -26,10 +27,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         List<IModule> _publicModules;
         IHostingEnvironment _hostingEnvironment;
 
-        public CmsModuleController(NccModuleService moduleService, IHostingEnvironment hostingEnvironment)
+        public CmsModuleController(NccModuleService moduleService, IHostingEnvironment hostingEnvironment, ILoggerFactory factory)
         {
             _moduleService = moduleService;
             _hostingEnvironment = hostingEnvironment;
+            _logger = factory.CreateLogger<CmsModuleController>();
             moduleManager = new ModuleManager();
         }
         #endregion

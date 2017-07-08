@@ -13,7 +13,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
     public class CmsHomeController : NccController
     {
         private NccPageService _pageService;
-        private readonly ILogger _logger;
+        
         public CmsHomeController(NccPageService pageService, ILoggerFactory factory)
         {
             _pageService = pageService;
