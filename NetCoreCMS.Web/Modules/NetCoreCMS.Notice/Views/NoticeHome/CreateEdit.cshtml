@@ -49,12 +49,12 @@
 
                             <div>
                                 <label>Publish Date</label>
-                                <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("yyyy-MM-dd HH:mm")"></input>
+                                <input type="datetime" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("yyyy-MM-dd HH:mm")"></input>
                             </div>
 
                             <div>
                                 <label>Expire Date</label>
-                                <input type="text" class="form-control" asp-for="ExpireDate" value="@Model.ExpireDate.ToString("yyyy-MM-dd HH:mm")"></input>
+                                <input type="datetime" class="form-control" asp-for="ExpireDate" value="@Model.ExpireDate.ToString("yyyy-MM-dd HH:mm")"></input>
                             </div>
 
                             <div>
@@ -64,12 +64,18 @@
 
                             <div>
                                 <label>Notice Type</label>
-                                <input type="text" class="form-control" asp-for="NoticeType"></input>
+                                @*<input type="text" class="form-control" asp-for="NoticeType">*@</input>
+                                <select class="form-control" asp-for="NoticeType" asp-items="@ViewBag.NoticeType">
+                                    <option>Select notice type</option>
+                                </select>
                             </div>
 
                             <div>
                                 <label>Notice Status</label>
-                                <input type="text" class="form-control" asp-for="NoticeStatus"></input>
+                                @*<input type="text" class="form-control" asp-for="NoticeStatus">*@</input>
+                                <select class="form-control" asp-for="NoticeStatus" asp-items="@ViewBag.NoticeStatus">
+                                    <option>Select notice status</option>
+                                </select>
                             </div>
 
                             <div>

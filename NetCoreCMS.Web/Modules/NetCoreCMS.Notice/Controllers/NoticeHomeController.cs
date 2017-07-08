@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
@@ -9,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static NetCoreCMS.Notice.Models.NccNotice;
 
 namespace NetCoreCMS.Notice.Controllers
 {
@@ -45,6 +47,21 @@ namespace NetCoreCMS.Notice.Controllers
             NccNotice notice = new NccNotice();
             notice.PublishDate = DateTime.Today;
             notice.ExpireDate = DateTime.Today.AddDays(30);
+
+            var NoticeStatus = Enum.GetValues(typeof(NccNoticeStatus)).Cast<NccNoticeStatus>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewBag.NoticeStatus = new SelectList(NoticeStatus, "Value", "Text", (int)notice.NoticeStatus);
+
+            var NoticeType = Enum.GetValues(typeof(NccNoticeType)).Cast<NccNoticeType>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewBag.NoticeType = new SelectList(NoticeType, "Value", "Text", (int)notice.NoticeType);
+
             if (Id > 0)
             {
                 notice = _nccNoticeService.Get(Id);
