@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
@@ -9,7 +10,7 @@ using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Linq;
-
+using static NetCoreCMS.Framework.Core.Models.NccPage;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
@@ -50,16 +51,33 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + Request.Host + "/CmsPage/";
 
-            ViewBag.Layouts = GlobalConfig.ActiveTheme.Layouts;
-            ViewBag.AllPages = _pageService.LoadAll().Where(p => p.Status == (int)NccPage.NccPageStatus.Published && p.Id != Id);
             NccPage page = new NccPage();
             page.Content = "";
             page.PublishDate = DateTime.Now;
             page.PageStatus = NccPage.NccPageStatus.Draft;
+
             if (Id > 0)
             {
                 page = _pageService.Get(Id);
             }
+
+            ViewBag.Layouts = new SelectList(GlobalConfig.ActiveTheme.Layouts, "Name", "Name", page.Layout);
+            ViewBag.AllPages = new SelectList(_pageService.LoadAll().Where(p => p.PageStatus == NccPageStatus.Published && p.Id != Id), "Id", "Title", page.Parent != null ? page.Parent.Id : 0);
+
+            var PageStatus = Enum.GetValues(typeof(NccPageStatus)).Cast<NccPageStatus>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewBag.PageStatus = new SelectList(PageStatus, "Value", "Text", (int)page.PageStatus);
+
+            var PageType = Enum.GetValues(typeof(NccPageType)).Cast<NccPageType>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewBag.PageType = new SelectList(PageType, "Value", "Text", (int)page.PageType);
+
             return View(page);
         }
 

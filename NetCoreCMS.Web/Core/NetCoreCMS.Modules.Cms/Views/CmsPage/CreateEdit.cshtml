@@ -80,77 +80,11 @@
                                         <div class="panel-body">
                                             <div>
                                                 <label>Status</label>
-                                                <select class="form-control" asp-for="PageStatus" id="PageStatus">
-                                                    @if ((int)Model.PageStatus == 0)
-                                                    {
-                                                        <option value="Draft" selected>Draft</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="Draft">Draft</option>
-                                                    }
-                                                    @if ((int)Model.PageStatus == 1)
-                                                    {
-                                                        <option value="Review" selected>Review</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="Review">Review</option>
-                                                    }
-                                                    @if ((int)Model.PageStatus == 2)
-                                                    {
-                                                        <option value="Published" selected>Published</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="Published">Published</option>
-                                                    }
-                                                    @if ((int)Model.PageStatus == 3)
-                                                    {
-                                                        <option value="Unpublished" selected>Unpublished</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="Unpublished">Unpublished</option>
-                                                    }
-                                                    @if ((int)Model.PageStatus == 4)
-                                                    {
-                                                        <option value="Archived" selected>Archived</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="Archived">Archived</option>
-                                                    }
-                                                </select>
+                                                <select class="form-control" asp-for="PageStatus" id="PageStatus" asp-items="@ViewBag.PageStatus"></select>
                                             </div>                                            
                                             <div>
                                                 <label>Visibility</label>
-                                                <select class="form-control" asp-for="PageType">
-                                                    @if ((int)Model.PageType == 0)
-                                                    {
-                                                        <option value="Public" selected>Public</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="Public">Public</option>
-                                                    }
-                                                    @if ((int)Model.PageType == 1)
-                                                    {
-                                                        <option value="Private" selected>Private</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="Private">Private</option>
-                                                    }
-                                                    @if ((int)Model.PageType == 2)
-                                                    {
-                                                        <option value="PasswordProtected" selected>PasswordProtected</option>
-                                                    }
-                                                    else
-                                                    {
-                                                        <option value="PasswordProtected">PasswordProtected</option>
-                                                    }
-                                                </select>
+                                                <select class="form-control" asp-for="PageType" asp-items="@ViewBag.PageType"></select>                                                
                                             </div>
                                             <div>
                                                 <label>Schedule Date</label>
@@ -158,19 +92,7 @@
                                             </div>
                                             <div>
                                                 <label>Layout</label>
-                                                <select class="form-control" asp-for="Layout">
-                                                    @foreach (var themeLayout in ViewBag.Layouts)
-                                                    {
-                                                        if (Model.Layout == themeLayout.Name)
-                                                        {
-                                                            <option value="@themeLayout.Name" selected>@themeLayout.Name</option>
-                                                        }
-                                                        else
-                                                        {
-                                                            <option value="@themeLayout.Name">@themeLayout.Name</option>
-                                                        }
-                                                    }
-                                                </select>
+                                                <select class="form-control" asp-for="Layout" asp-items="@ViewBag.Layouts"></select>
                                             </div>
                                             <div>
                                                 <label>Add to Navigation Menu</label>
@@ -214,19 +136,8 @@
                                         <div class="panel-body">
                                             <div>
                                                 <label>Parent Page:</label>
-                                                <select class="form-control" name="ParentId">
+                                                <select class="form-control" asp-for="Parent" name="ParentId" asp-items="@ViewBag.AllPages">
                                                     <option value="0">Select Parent</option>
-                                                    @foreach (var page in ViewBag.AllPages)
-                                                    {
-                                                        if (Model.Parent != null && Model.Parent.Id == page.Id)
-                                                        {
-                                                            <option value="@page.Id" selected>@page.Title</option>
-                                                        }
-                                                        else
-                                                        {
-                                                            <option value="@page.Id">@page.Title</option>
-                                                        }
-                                                    }
                                                 </select>
                                             </div>
                                             <div>
@@ -298,7 +209,7 @@
 
             $("#publish").click(function () {
                 var element = document.getElementById('PageStatus');
-                element.value = "Published";
+                element.value = "2";
                 console.log($("#Slug").val());
                 if ($("#Slug").val() == "") {
                     document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
