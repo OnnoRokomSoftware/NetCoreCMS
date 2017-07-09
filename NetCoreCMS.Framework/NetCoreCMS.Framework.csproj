@@ -9,7 +9,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageReleaseNotes>Beta release</PackageReleaseNotes>
     <Copyright>Copyright 2017 (c) NetCoreCMS. All rights reserved.</Copyright>
-    <PackageTags></PackageTags>
+    <PackageTags>Dot Net Core, CMS, Framework</PackageTags>
   </PropertyGroup>
   
   <PropertyGroup>

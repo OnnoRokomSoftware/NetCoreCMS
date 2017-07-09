@@ -154,8 +154,22 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 return RedirectToAction("Manage");
             }
-            ViewBag.Layouts = GlobalConfig.ActiveTheme.Layouts;
-            ViewBag.AllPages = _pageService.LoadAll().Where(p => p.Status == (int)NccPage.NccPageStatus.Published && p.Id != model.Id);
+            ViewBag.Layouts = new SelectList(GlobalConfig.ActiveTheme.Layouts, "Name", "Name", model.Layout);
+            ViewBag.AllPages = new SelectList(_pageService.LoadAll().Where(p => p.PageStatus == NccPageStatus.Published && p.Id != model.Id), "Id", "Title", model.Parent != null ? model.Parent.Id : 0);
+
+            var PageStatus = Enum.GetValues(typeof(NccPageStatus)).Cast<NccPageStatus>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewBag.PageStatus = new SelectList(PageStatus, "Value", "Text", (int)model.PageStatus);
+
+            var PageType = Enum.GetValues(typeof(NccPageType)).Cast<NccPageType>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewBag.PageType = new SelectList(PageType, "Value", "Text", (int)model.PageType);
             return View(model);
         }        
 
