@@ -93,7 +93,12 @@ namespace NetCoreCMS.Framework.Core.Models
                 b.HasOne(t => t.Theme);
                 b.HasMany(t => t.WidgetSections);
             });            
-            modelBuilder.Entity<NccUser>().ToTable("Ncc_User");
+
+            modelBuilder.Entity<NccUser>(b =>
+            {
+                b.HasMany(ur => ur.Roles);
+                b.ToTable("Ncc_User");             
+            });
             modelBuilder.Entity<NccUserRole>(b =>
             {
                 b.HasKey(ur => new { ur.UserId, ur.RoleId });

@@ -14,52 +14,64 @@
 
             <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
             <input type="hidden" name="Id" value="@Model.Id" />
-
+            @if (Model.Id == 0)
+            {
             <div class="form-group">
-                <label for="UserName" >User Name</label>
-                <input  type="text" name="UserName" value="@Model.UserName" />
+                <div class="col-sm-2 text-right"><label for="UserName">User Name: </label></div>
+                <div class="col-sm-6"><input type="text" name="UserName" value="@Model.UserName" class="form-control" /></div>
+                
+            </div>
+            }
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Full Name: </label></div>
+                <div class="col-sm-6"><input type="text" name="FullName" value="@Model.FullName"  class="form-control"/></div>
+            </div>
+            @if (Model.Id == 0)
+            {
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Password: </label></div>
+                <div class="col-sm-6"><input type="password" name="Password" value="@Model.Password"  class="form-control"/></div>
             </div>
 
             <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" name="FullName" value="@Model.FullName"/>
+                <div class="col-sm-2 text-right"><label>Confirm Password: </label></div>
+                <div class="col-sm-6"><input type="password" name="ConfirmPassword" value="@Model.ConfirmPassword"  class="form-control"/></div>
             </div>
-            
+            }
             <div class="form-group">
-                <label>Password</label>
-                <input type="password" name="Password" value="@Model.Password" />
-            </div>
-            
-            <div class="form-group">
-                <label>Confirm Password</label>
-                <input type="password" name="ConfirmPassword" value="@Model.ConfirmPassword" />
+                <div class="col-sm-2 text-right"><label>Email: </label></div>
+                <div class="col-sm-6"><input type="email" name="Email" value="@Model.Email"  class="form-control"/></div>
             </div>
 
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" name="Email" value="@Model.Email" />
+                <div class="col-sm-2 text-right"><label>Mobile: </label></div>
+                <div class="col-sm-6"><input type="text" name="Mobile" value="@Model.Mobile"  class="form-control"/></div>
             </div>
 
+            @if (Model.Id == 0)
+            {
             <div class="form-group">
-                <label>Mobile</label>
-                <input type="text" name="Mobile" value="@Model.Mobile" />
+                <div class="col-sm-2  text-right"><label>Role: </label></div>
+                <div class="col-sm-6">
+                    <select asp-for="Role" asp-items="@UserViewModel.GetRolesDropdown()"  class="form-control">
+                        <option>Select Role</option>
+                    </select>
+                </div>
             </div>
+            }
 
             <div class="form-group">
-                <label>Role</label>
-                <select asp-for="Role" asp-items="@UserViewModel.GetRolesDropdown()">
-                    <option>Select Role</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Send Email</label>
+                <div class="col-sm-2 text-right"><label>Send Email: </label></div>
                  
-                @if(Model.SendEmailNotification == true){
+                @if (Model.SendEmailNotification == true)
+                {
                     chk = "checked";
                 }
-                <input type="checkbox" name="SendEmail" @chk />
+                <div class="col-sm-6">
+                    <input type="checkbox" name="SendEmail" @chk />
+                </div>
             </div>
-            <input class="btn btn-primary" type="submit" value="Update" />
+            <div class="col-sm-2 text-right"><input class="btn btn-primary" type="submit" value="Save" /></div>
         </form>
     </div>    
 </div>

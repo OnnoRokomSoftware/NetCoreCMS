@@ -52,14 +52,32 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         [AdminMenuItem(Name = "Manage Users", Url ="/Users/Index", Order = 2, IconCls = "fa-user")]
         public ActionResult Index()
         {
-            var users = GetUsersViewModelList();
-            
+            var users = GetUsersViewModelList("");            
             return View(users);
         }
 
-        private List<UserViewModel> GetUsersViewModelList()
+        [HttpPost]
+        public ActionResult Index(string searchKey)
         {
-            var users = _userManager.Users.ToList();
+            if (string.IsNullOrEmpty(searchKey)){
+                searchKey = "";
+            }
+            var users = GetUsersViewModelList(searchKey.Trim());
+            ViewBag.SearchKey = searchKey;
+            return View(users);
+        }
+
+        private List<UserViewModel> GetUsersViewModelList(string searchKey)
+        {
+            var query = from e in _userManager.Users
+                        where 
+                            e.FullName.Contains(searchKey) 
+                            || e.Email.Contains(searchKey)
+                            || e.Mobile.Contains(searchKey)
+                            || e.PhoneNumber.Contains(searchKey)
+                            || e.UserName.Contains(searchKey)
+                        select e;
+            var users = query.ToList();
             var list = new List<UserViewModel>();
             foreach (var user in users)
             {
@@ -94,8 +112,22 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         [HttpPost]
         public ActionResult CreateEditPost(UserViewModel user, string SendEmail)
         {
-            if (ModelState.IsValid)
+            if (user.Id > 0 && !string.IsNullOrEmpty(user.Email) && !string.IsNullOrEmpty(user.FullName) && !string.IsNullOrEmpty(user.Mobile))
             {
+                var oldUser = _userManager.FindByIdAsync(user.Id.ToString()).Result;
+                oldUser.FullName = user.FullName;
+                oldUser.Email = user.Email;
+                oldUser.Mobile = user.Mobile;
+                var res = _userManager.UpdateAsync(oldUser).Result;
+                if(res.Succeeded)
+                    TempData["SuccessMessage"] = "User update successful.";
+                else
+                    TempData["ErrorMessage"] = "User update failed.";
+                return RedirectToAction("Index");
+            }
+            else if (ModelState.IsValid)
+            {
+                
                 if(user.Password == user.ConfirmPassword)
                 {
                     var nccUser = new NccUser() { Email = user.Email, FullName = user.FullName, UserName = user.UserName, Mobile = user.Mobile, Status = EntityStatus.Active };
@@ -105,7 +137,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                     if (result.Succeeded && roleResult.Succeeded)
                     {
                         TempData["SuccessMessage"] = "User crate successful.";
-                        RedirectToAction("Index");
+                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -267,13 +299,9 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         
         public ActionResult Update(long userId)
         {
-            return View();
+            var user = _userManager.FindByIdAsync(userId.ToString()).Result;            
+            return View("CreateEdit", ToUserViewModel(user));
         }
-
-        [HttpPost]
-        public ActionResult Update(UserViewModel user)
-        {
-            return View();
-        }
+ 
     }
 }
