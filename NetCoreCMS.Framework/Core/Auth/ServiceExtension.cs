@@ -17,12 +17,16 @@ namespace NetCoreCMS.Framework.Core.Auth
     {
         public static IServiceCollection AddCustomizedIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<NccUser, NccRole>(configure => {                
-                configure.Password.RequireDigit = false;
-                configure.Password.RequireLowercase = false;
-                configure.Password.RequireNonAlphanumeric = false;
-                configure.Password.RequireUppercase = false;
-                configure.Password.RequiredLength = 1;
+            services.AddIdentity<NccUser, NccRole>(
+                configure => {                
+                    configure.Password.RequireDigit = false;
+                    configure.Password.RequireLowercase = false;
+                    configure.Password.RequireNonAlphanumeric = false;
+                    configure.Password.RequireUppercase = false;
+                    configure.Password.RequiredLength = 1;
+                    configure.Lockout.MaxFailedAccessAttempts = 5;
+                    configure.SignIn.RequireConfirmedEmail = false;
+                    configure.SignIn.RequireConfirmedPhoneNumber = false;
                 }
             )
             .AddRoleStore<NccRoleStore>()

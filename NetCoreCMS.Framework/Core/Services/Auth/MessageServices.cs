@@ -1,4 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Messages;
+using NetCoreCMS.Framework.Core.Network;
+using NetCoreCMS.Framework.Utility;
+using System.Threading.Tasks;
+using MailKit.Net.Smtp;
+using MimeKit;
+using MailKit.Security;
+using MimeKit.Text;
 
 namespace NetCoreCMS.Framework.Core.Services.Auth
 {
@@ -7,16 +15,58 @@ namespace NetCoreCMS.Framework.Core.Services.Auth
     // For more details see this link https://go.microsoft.com/fwlink/?LinkID=532713
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
-        public Task SendEmailAsync(string email, string subject, string message)
-        {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
-        }
+        ILogger _logger;
+        NccSettingsService _nccSettingsService;
 
+        public AuthMessageSender(NccSettingsService settingsService, ILoggerFactory factory)
+        {
+            _nccSettingsService = settingsService;
+            _logger = factory.CreateLogger<AuthMessageSender>();
+        }
+         
         public Task SendSmsAsync(string number, string message)
         {
             // Plug in your SMS service here to send a text message.
             return Task.FromResult(0);
+        }
+
+        public Task SendEmailAsync(string email, string subject, string message)
+        {
+
+            var smtpSettings = _nccSettingsService.GetByKey<SmtpSettings>(Constants.SMTPSettingsKey);
+            if (smtpSettings == null)
+            {
+                _logger.LogError("SMTP Settings not found");
+                GlobalMessageRegistry.RegisterMessage(
+                    new GlobalMessage()
+                    {
+                        For = GlobalMessage.MessageFor.Both,
+                        Registrater = nameof(AuthMessageSender),
+                        Type = GlobalMessage.MessageType.Error,
+                        Text = "Email Send Failed. SMTP Settings not set yet."
+                    },
+                    new System.TimeSpan(0, 1, 0)
+                );
+            }
+            else
+            {
+                var emailMessage = new MimeMessage();
+
+                emailMessage.From.Add(new MailboxAddress(smtpSettings.FromName, smtpSettings.FromEmail));
+                emailMessage.To.Add(new MailboxAddress("User", email));
+                emailMessage.Subject = subject;
+                emailMessage.Body = new TextPart(TextFormat.Html) { Text = message };
+
+                using (var client = new SmtpClient())
+                {
+                    client.LocalDomain = smtpSettings.Host;
+                    client.ConnectAsync(smtpSettings.Host, smtpSettings.Port, smtpSettings.UseSSL).RunSynchronously();
+                    client.SendAsync(emailMessage).RunSynchronously();
+                    client.DisconnectAsync(true).RunSynchronously();
+                }
+            }
+
+            return Task.FromResult(0); 
         }
     }
 }

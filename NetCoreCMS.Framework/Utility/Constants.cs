@@ -15,5 +15,8 @@ namespace NetCoreCMS.Framework.Utility
         public static string AdminUrl { get;} = "Admin";
         public static string NotFoundUrl { get; } = "/CmsHome/ResourceNotFound";
 
+
+        public static string SMTPSettingsKey = "NetCoreCMS_SMTP_Settings";
+
     }
 }

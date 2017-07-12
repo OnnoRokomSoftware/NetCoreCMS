@@ -5,6 +5,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using Newtonsoft.Json;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -22,9 +23,43 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Get(entityId);
         }
 
+        public bool CreateKey(string key, string value, out string message)
+        {
+            var existingKey = _entityRepository.GetByKey(key);
+            if(existingKey != null)
+            {
+                message = "Key already exists. Please use another key";
+                return false;
+            }
+            else
+            {
+                _entityRepository.Add(new NccSettings() {Key = key, Value = value });
+                _entityRepository.SaveChange();
+                message = "Create successful";
+                return true;
+            }
+        }
+
+        public bool CreateKey<EntityT>(string key, EntityT value, out string message)
+        {
+            var existingKey = _entityRepository.GetByKey(key);
+            if (existingKey != null)
+            {
+                message = "Key already exists. Please use another key";
+                return false;
+            }
+            else
+            {
+                _entityRepository.Add(new NccSettings() { Key = key, Value = JsonConvert.SerializeObject(value) });
+                _entityRepository.SaveChange();
+                message = "Create successful";
+                return true;
+            }
+        }
+
         public NccSettings GetByKey(string key)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.Key == key);
+            return _entityRepository.GetByKey(key);
         }
 
         public NccSettings SetByKey(string key, string value)
@@ -43,6 +78,33 @@ namespace NetCoreCMS.Framework.Core.Services
             _entityRepository.SaveChange();
 
             return settings;
+        }
+
+        public NccSettings SetByKey<EntityT>(string key, EntityT value)
+        {
+            var json = JsonConvert.SerializeObject(value);
+            var settings = _entityRepository.GetByKey(key);
+            if (settings != null)
+            {
+                settings.Value = json;
+                _entityRepository.Edit(settings);
+            }
+            else
+            {
+                settings = new NccSettings() { Key = key, Value = json};
+                _entityRepository.Add(settings);
+            }
+            _entityRepository.SaveChange();
+
+            return settings;
+        }
+
+        public EntityT GetByKey<EntityT>(string key)
+        {
+            var settings = _entityRepository.GetByKey(key);
+            if (settings == null)
+                return default(EntityT);
+            return JsonConvert.DeserializeObject<EntityT>(settings.Value);
         }
 
         public NccSettings Save(NccSettings entity)

@@ -59,6 +59,18 @@ NccAlert = new function () {
             $("#" + id).hide();
         }, this.AutoHideInterval);
     }
+
+    this.ShowMessages = function (messagesObjList) {
+        for (i = 0; i < messagesObjList.length; i++) {
+            var msg = messagesObjList[i];
+            if (msg.isSuccess) {
+                this.ShowSuccess(msg.message);
+            }
+            else {
+                this.ShowError(msg.message);
+            }
+        }
+    }
 }
 
 NccGlobalAlert = new function () {

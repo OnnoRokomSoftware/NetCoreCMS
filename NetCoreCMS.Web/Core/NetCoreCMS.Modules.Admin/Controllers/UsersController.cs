@@ -14,6 +14,8 @@ using Microsoft.Extensions.Options;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using NetCoreCMS.Framework.Themes;
+using NetCoreCMS.Framework.Core.Network;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Modules.Admin.Controllers
 {
@@ -117,19 +119,161 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             }
             return View("CreateEdit",user);
         }
+        
+        [HttpPost]
+        public ActionResult BulkOperation(List<long> userIds, string operation)
+        {
+            var apiResponses = new List<ApiResponse>();
+            switch (operation)
+            {
+                case "Block":
+                    apiResponses = BlockUnBlockUsers(userIds,true);
+                    break;
+                case "UnBlock":
+                    apiResponses = BlockUnBlockUsers(userIds, false);
+                    break;
+                case "ResetPassword":
+                    apiResponses = ResetPasswords(userIds);
+                    break;
+                default:
+                    break;
+            }
+            return Json(apiResponses);
+        }
+
+        private List<ApiResponse> ResetPasswords(List<long> userIds)
+        {
+            var apiResponses = new List<ApiResponse>();
+            
+            foreach (var userId in userIds)
+            {
+                try
+                {
+                    var user = _userManager.FindByIdAsync(userId.ToString()).Result;
+                    var code = _userManager.GeneratePasswordResetTokenAsync(user).Result;
+                    var newPassword = Guid.NewGuid().ToString().Substring(0, 6);
+                    var result = _userManager.ResetPasswordAsync(user, code, newPassword).Result;
+
+                    if (result.Succeeded)
+                    {
+                        var webSite = GlobalConfig.WebSite.DomainName;
+                        if (!webSite.StartsWith("http")) {
+                            webSite = "http://" + webSite;
+                        }
+                        _emailSender.SendEmailAsync(user.Email, "Reset Password", $"Your password reset by Admin. Your new password is: " + newPassword + " <br/> For more info visit: " + webSite).Wait();
+                        apiResponses.Add(new ApiResponse()
+                        {
+                            IsSuccess = true,
+                            Message = "Password reset successful for user " + user.UserName + ".",
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    apiResponses.Add(new ApiResponse()
+                    {
+                        IsSuccess = false,
+                        Message = "Password reset failed for user ID: " + userId + ".",
+                    });
+                    _logger.LogError(ex.ToString());
+                }
+            }
+            return apiResponses;
+        }
+         
+
+        private List<ApiResponse> BlockUnBlockUsers(List<long> userIds, bool block)
+        {
+            var apiResponses = new List<ApiResponse>();
+            
+            foreach (var userId in userIds)
+            {
+                try
+                {
+                    var operation = "block";
+                    var user = _userManager.FindByIdAsync(userId.ToString()).Result;
+
+                    if (block == false)
+                    {
+                        operation = "unblock";
+                        var rsp = _userManager.ResetAccessFailedCountAsync(user).Result;
+                    }
+                    var result = _userManager.SetLockoutEnabledAsync(user, block).Result;
+                    
+                    if (result.Succeeded)
+                    {
+                        apiResponses.Add(new ApiResponse()
+                        {
+                            IsSuccess = true,
+                            Message = "Successfully "+operation+" user " + user.UserName + ".",
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    apiResponses.Add(new ApiResponse()
+                    {
+                        IsSuccess = false,
+                        Message = "Operation failed for user ID: " + userId + ".",
+                    });
+                    _logger.LogError(ex.ToString());
+                }
+            }
+            return apiResponses;
+        }
 
         [HttpPost]
-        public ActionResult ResetPassword(UserViewModel user)
+        public ActionResult ChangeRole(List<long> userIds, string role)
+        {
+            var apiResponses = new List<ApiResponse>();
+
+            foreach (var userId in userIds)
+            {
+                try
+                {
+                    var user = _userManager.FindByIdAsync(userId.ToString()).Result;
+                    var existingRoles = _userManager.GetRolesAsync(user).Result;
+                    var rRemoveResult = _userManager.RemoveFromRolesAsync(user, existingRoles).Result;
+
+                    if (rRemoveResult.Succeeded)
+                    {
+                        var result = _userManager.AddToRoleAsync(user, role).Result;
+                        if (result.Succeeded == false)
+                        {
+                            foreach (var err in result.Errors)
+                            {
+                                apiResponses.Add(new ApiResponse() { Message = err.Description, IsSuccess = false });
+                            }
+                        }
+                        else
+                        {
+                            apiResponses.Add(new ApiResponse() { Message = "Role '" + role + "' has been successfully assigned into user "+user.UserName+".", IsSuccess = true });
+                        }
+                    }
+                    else
+                    {
+                        apiResponses.Add(new ApiResponse() { Message = "Removing previous role failed for user " + user.UserName, IsSuccess = false });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message);
+                    apiResponses.Add(new ApiResponse() { Message = "Unknown Error Occoured for userId " + userId, IsSuccess = false });
+                }
+            }
+            
+            return Json(apiResponses);
+        }
+        
+        public ActionResult Update(long userId)
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult UpdateRole(List<UserViewModel> user, string role)
+        public ActionResult Update(UserViewModel user)
         {
-
             return View();
         }
-
     }
 }

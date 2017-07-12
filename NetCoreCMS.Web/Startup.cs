@@ -128,8 +128,9 @@ namespace NetCoreCMS.Web
                 {
                     options.AddPolicy("SuperAdmin", policy => policy.Requirements.Add(new AuthRequire("SuperAdmin", "")));
                     options.AddPolicy("Administrator", policy => policy.Requirements.Add(new AuthRequire("Administrator", "")));
-                    options.AddPolicy("Author", policy => policy.Requirements.Add(new AuthRequire("Author", "")));
                     options.AddPolicy("Editor", policy => policy.Requirements.Add(new AuthRequire("Editor", "")));
+                    options.AddPolicy("Author", policy => policy.Requirements.Add(new AuthRequire("Author", "")));                    
+                    options.AddPolicy("Contributor", policy => policy.Requirements.Add(new AuthRequire("Contributor", "")));
                     options.AddPolicy("Subscriber", policy => policy.Requirements.Add(new AuthRequire("Subscriber", "")));
                 });
 

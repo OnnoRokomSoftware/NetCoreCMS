@@ -12,15 +12,57 @@
 <div class="row">
     <div class="col-sm-12">
         <a href="~/Users/CreateEdit" class="btn btn-primary">New User </a>
-        <hr/>
-        <form class="form-horizontal" asp-controller="Admin" asp-action="ManageUsers" method="post">
+        <hr/> 
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="col-sm-6">
+                        <select id="dd_bulk_operation_list" class="form-control">
+                            <option value="">Select bulk operation</option>
+                            <option value="Block">Block</option>
+                            <option value="UnBlock">UnBlock</option>                            
+                            <option value="ResetPassword">Reset Password</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="button" id="btn_apply_bulk_operation" value="Apply" class="btn btn-primary" />
+                    </div>        
+                </div>
+                <div class="col-lg-6 pull-right" >
+                    <div class="col-sm-8">
+                        <input type="text" id="txt_search_text" class="form-control" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" id="btn_search_user" value="Search" class="btn btn-default" />
+                    </div>                     
+                </div>
+
+            </div>
+            <br/>
             <table class="table table-striped">
                 <tr><th>Id</th><th>User Name</th><th>Full Name</th><th>Email</th><th>Mobile</th><th>Roles</th><th>Action</th></tr>
                 @foreach(var user in Model){
-                    <tr><td>@user.Id</td><td>@user.UserName</td><td>@user.FullName</td><td>@user.Email</td><td>@user.Mobile</td><td>@user.Role</td><td>Block | Unblock | Update | Delete</td></tr>
+                    <tr> <td class="cls_user_chk"> <input type="checkbox" id="chk_@user.Id"  data-user-id="@user.Id" /> @user.Id</td><td>@user.UserName</td><td>@user.FullName</td><td>@user.Email</td><td>@user.Mobile</td><td>@user.Role</td><td><a href="~/Users/Update/Id=@user.Id">Update</a></td></tr>
                 }
             </table>
-        </form>
+            
+            <div class="row">
+                <div class="col-sm-3">
+                    <select id="dd_user_roles" class="form-control">
+                        <option value="">Select Role</option>
+                        <option value="SuperAdmin">Super Admin</option>
+                        <option value="Administrator">Administrator</option>
+                        <option value="Editor">Editor</option>
+                        <option value="Author">Author</option>
+                        <option value="Contributor">Contributor</option>
+                        <option value="Subscriber">Subscriber</option>
+                    </select>
+                </div>
+                <div class="col-sm-9">
+                    <input type="button" id="btn_update_users_role" value="Apply" class="btn btn-primary" />
+                </div>
+            </div>
     </div>    
 </div>
+
+<script src="~/NetCoreCms.Modules.Admin/js/NccUsers.js"></script>
      
