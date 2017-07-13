@@ -1,0 +1,55 @@
+﻿@using NetCoreCMS.Modules.Admin.Models.ViewModels
+@using NetCoreCMS.Framework.Core.Network
+
+@model SmtpSettings
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Email Settings";
+    ViewData["PageSubtitle"] = "Set Email SMTP Settings";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" asp-controller="Admin" asp-action="Startup" method="post">
+            
+            <div class="form-group">
+                <label>Host Address: </label>
+                <input type="text" name="Host" value="" />
+            </div>
+
+            <div class="form-group">
+                <label>Port: </label>
+                <input type="text" name="Port" value="" />
+            </div>
+            
+            <div class="form-group">
+                <label>User Name: </label>
+                <input type="text" name="UserName" value="" />
+            </div>
+            
+            <div class="form-group">
+                <label>Password: </label>
+                <input type="text" name="Password" value="" />
+            </div>
+
+            <div class="form-group">
+                <label>Use SSL: </label>
+                <input type="checkbox" name="UseSSL" />                
+            </div>
+
+            <div>
+                <label>From Name:</label>
+                <input type="text" name="FromName" value="" />
+            </div>
+
+            <div>
+                <label>From Email:</label>
+                <input type="text" name="FromEmail" value="" />
+            </div>
+
+            <input class="btn btn-primary" type="submit" value="Update" />
+        </form>
+    </div>    
+</div>
+     

@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Themes;
@@ -17,7 +18,7 @@ using System.Linq;
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
 {
     [Authorize(Roles ="SuperAdmin,Administrator")]
-    [AdminMenu(Name ="Settings", Order = 10)]
+    [AdminMenu(Name ="Settings", Order = 20)]
     public class AdminController : NccController
     {
         NccWebSiteService _webSiteService;
@@ -91,30 +92,48 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(model);
         }
 
+        [AdminMenuItem(Name = "Email", Url = "/Admin/EmailSettings", IconCls = "fa-envelope", Order = 4)]
+        public ActionResult EmailSettings()
+        {
+            var model = new SmtpSettings();
+            return View(model);
+        }
+
+        [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file", Order = 5)]
+        public ActionResult Logging()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult Startup(StartupViewModel vmodel)
         {
             var setupConfig = SetupHelper.LoadSetup();
             setupConfig.StartupType = vmodel.StartupType;
 
-            if (vmodel.StartupType == StartupTypes.Page)
+            if (vmodel.StartupType == StartupTypes.Default)
+            {
+                setupConfig.StartupUrl = "/" + vmodel.Default;
+            }
+            else if (vmodel.StartupType == StartupTypes.Page)
             {
                 setupConfig.StartupUrl = "/" + vmodel.PageSlug;
             }
-
-            if (vmodel.StartupType == StartupTypes.Post)
+            else if (vmodel.StartupType == StartupTypes.Post)
             {
                 setupConfig.StartupUrl = "/Post/" + vmodel.PostSlug;
             }
-
-            if (vmodel.StartupType == StartupTypes.Category)
+            else if (vmodel.StartupType == StartupTypes.Category)
             {
                 setupConfig.StartupUrl = "/Category/" + vmodel.PageSlug;
             }
-
-            if (vmodel.StartupType == StartupTypes.Module)
+            else if (vmodel.StartupType == StartupTypes.Module)
             {
                 setupConfig.StartupUrl = vmodel.ModuleSiteMenuUrl;
+            }
+            else
+            {
+                setupConfig.StartupUrl = "/";
             }
 
             SetupHelper.UpdateSetup(setupConfig);

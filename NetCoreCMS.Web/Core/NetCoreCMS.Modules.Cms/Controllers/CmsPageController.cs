@@ -44,8 +44,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             return Redirect("/CmsHome/ResourceNotFound");
         }
         #endregion
-
-
+        
         [AdminMenuItem(Name = "New page", Url = "/CmsPage/CreateEdit", IconCls = "fa-pencil-square-o", Order = 1)]
         public ActionResult CreateEdit(long Id = 0)
         {
