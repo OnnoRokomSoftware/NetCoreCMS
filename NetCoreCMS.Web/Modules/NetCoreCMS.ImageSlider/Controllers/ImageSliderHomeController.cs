@@ -89,7 +89,7 @@ namespace NetCoreCMS.ImageSlider.Controllers
                         loopCount++;
                         //}
                     }
-                    model.TotalSlide = loopCount;
+                    //model.TotalSlide = loopCount;
                     nccImageSlider = model;
                     _nccSettingsService.SetByKey("NccImageSlider_Settings", JsonConvert.SerializeObject(model));
 
