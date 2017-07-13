@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using NetCoreCMS.Framework.Core.Models;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -28,6 +29,13 @@ namespace NetCoreCMS.Framework.Utility
             NccMenuItem.ActionType atEnum;
             Enum.TryParse<NccMenuItem.ActionType>(input, out atEnum);
             return atEnum;
+        }
+
+        public static LogLevel TryParseLogLevel(int loggingLevel)
+        {
+            LogLevel logLevel;
+            Enum.TryParse<LogLevel>(loggingLevel.ToString(), out logLevel);
+            return logLevel;
         }
     }
 }
