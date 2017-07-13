@@ -14,6 +14,8 @@ namespace NetCoreCMS.ImageSlider.Models
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
             Status = EntityStatus.New;
             VersionNumber = 1;
+            TotalSlide = 2;
+            Interval = 6000;
         }
 
         [Key]
@@ -26,37 +28,19 @@ namespace NetCoreCMS.ImageSlider.Models
         public long ModifyBy { get; set; }
         public int Status { get; set; }
 
-
-        public string SlideFloat { get; set; }
-        public string SlideWidth { get; set; }
-        public string SlideHeight { get; set; }           
-        public List<NccImageSliderItem> Items { get; set; }
+        public string Style { get; set; }
+        public int TotalSlide { get; set; }
+        public int Interval { get; set; }
+        public List<NccImageSliderItem> ImageItems { get; set; }
     }
 
-    public class NccImageSliderItem : IBaseModel<long>
+    public class NccImageSliderItem
     {
-        public NccImageSliderItem()
-        {
-            CreationDate = DateTime.Now;
-            ModificationDate = DateTime.Now;
-            CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
-            Status = EntityStatus.New;
-            VersionNumber = 1;
-        }
-
         [Key]
         public long Id { get; set; }
-        public int VersionNumber { get; set; }
-        public string Name { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
-        public int Status { get; set; }
-
-
+        [Required]
         public string Path { get; set; }
-        public string Link { get; set; }
+        public string Description { get; set; }
         public int Order { get; set; }
     }
 }

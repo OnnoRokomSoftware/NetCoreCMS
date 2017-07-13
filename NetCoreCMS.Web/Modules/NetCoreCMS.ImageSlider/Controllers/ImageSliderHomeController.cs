@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.ImageSlider.Models;
-using NetCoreCMS.ImageSlider.Services;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,70 +16,112 @@ namespace NetCoreCMS.ImageSlider.Controllers
 {
 
     [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
-    [AdminMenu(Name = "ImageSlider", IconCls = "", Order = 100)]
-    public class ImageSliderController : NccController
+    [AdminMenu(Name = "Image Slider", IconCls = "", Order = 100)]
+    public class ImageSliderHomeController : NccController
     {
-        private NccImageSliderService _nccImageSliderService;
-        public ImageSliderController(NccImageSliderService nccImageSliderService)
+        #region Initialization
+        private NccSettingsService _nccSettingsService;
+
+        private NccImageSlider nccImageSlider;
+        private List<NccImageSliderItem> nccImageSliderItemList = new List<NccImageSliderItem>();
+
+        public ImageSliderHomeController(NccSettingsService nccSettingsService, ILoggerFactory factory)
         {
-            _nccImageSliderService = nccImageSliderService;
+            _logger = factory.CreateLogger<ImageSliderHomeController>();
+            _nccSettingsService = nccSettingsService;
+            var tempSettings = _nccSettingsService.GetByKey("NccImageSlider_Settings");
+            if (tempSettings != null)
+            {
+                nccImageSlider = JsonConvert.DeserializeObject<NccImageSlider>(tempSettings.Value);
+            }
+
+            tempSettings = _nccSettingsService.GetByKey("NccImageSlider_Items");
+            if (tempSettings != null)
+            {
+                nccImageSliderItemList = JsonConvert.DeserializeObject<List<NccImageSliderItem>>(tempSettings.Value);
+            }
         }
-        
-        [AdminMenuItem(Name = "Manage", Url = "/ImageSliderHome/Manage", IconCls = "", Order = 2)]
+        #endregion
+
+        #region Admin Panel
+        [AdminMenuItem(Name = "Slider Settings", Url = "/ImageSliderHome", IconCls = "", Order = 1)]
         public ActionResult Index()
         {
-            var all = _nccImageSliderService.LoadAll();
-            return View(all);
-        }
+            if (nccImageSlider == null)
+                nccImageSlider = new NccImageSlider();
 
+            //nccImageSliderItemList = new List<NccImageSliderItem>();
+            for (int i = nccImageSliderItemList.Count; i < nccImageSlider.TotalSlide; i++)
+            {
+                nccImageSliderItemList.Add(new NccImageSliderItem
+                {
+                    Path = "",
+                    Description = "",
+                    Order = i
+                });
+            }
+            ViewBag.NccImageSliderItemList = nccImageSliderItemList;
 
-        [AdminMenuItem(Name = "Create New", Url = "/ImageSliderHome/CreateEdit", IconCls = "", Order = 1)]
-        public ActionResult CreateEdit(long Id = 0)
-        {            
-            return View();
+            return View(nccImageSlider);
         }
 
         [HttpPost]
-        public ActionResult CreateEdit(NccImageSlider item)
+        public ActionResult Index(NccImageSlider model, string[] itemPath, string[] description)
         {
             ViewBag.MessageType = "ErrorMessage";
             ViewBag.Message = "Error occoured. Please fill up all field correctly.";
-
             if (ModelState.IsValid)
             {
-                if (item.Id > 0)
+                if (model.TotalSlide > 1)
                 {
-                    _nccImageSliderService.Update(item);
+                    nccImageSliderItemList = new List<NccImageSliderItem>();
+                    int loopCount = 0;
+                    for (int i = 0; i < itemPath.Count(); i++)
+                    {
+                        //if (path.Trim() != "")
+                        //{
+                        nccImageSliderItemList.Add(new NccImageSliderItem
+                        {
+                            Path = itemPath[i],
+                            Description = description[i],
+                            Order = i
+                        });
+                        loopCount++;
+                        //}
+                    }
+                    model.TotalSlide = loopCount;
+                    nccImageSlider = model;
+                    _nccSettingsService.SetByKey("NccImageSlider_Settings", JsonConvert.SerializeObject(model));
+
+                    _nccSettingsService.SetByKey("NccImageSlider_Items", JsonConvert.SerializeObject(nccImageSliderItemList));
                     ViewBag.MessageType = "SuccessMessage";
-                    ViewBag.Message = "Notice updated successfull.";
+                    ViewBag.Message = "Slider updated successfull.";
                 }
                 else
                 {
-                    _nccImageSliderService.Save(item);
-                    ViewBag.MessageType = "SuccessMessage";
-                    ViewBag.Message = "Notice save successfull.";
+                    ViewBag.Message = "Total slide must be greater then 1.";
                 }
-                //TempData["SuccessMessage"] = "Notice save successfull.";
+            }
+            if (nccImageSlider == null)
+                nccImageSlider = new NccImageSlider();
+
+
+            for (int i = nccImageSliderItemList.Count; i < nccImageSlider.TotalSlide; i++)
+            {
+                nccImageSliderItemList.Add(new NccImageSliderItem
+                {
+                    Path = "",
+                    Description = "",
+                    Order = i
+                });
             }
 
-            return View(item);
+            ViewBag.NccImageSliderItemList = nccImageSliderItemList;
+            return View(nccImageSlider);
         }
+        #endregion
 
-
-        public ActionResult Delete(long Id)
-        {
-            NccImageSlider item = _nccImageSliderService.Get(Id);
-            //page.
-            return View(item);
-        }
-
-        [HttpPost]
-        public ActionResult Delete(long Id, int status)
-        {
-            _nccImageSliderService.DeletePermanently(Id);
-            ViewBag.MessageType = "SuccessMessage";
-            ViewBag.Message = "Item deleted successful";
-            return RedirectToAction("Manage");
-        }
+        #region User Panel
+        #endregion
     }
 }
