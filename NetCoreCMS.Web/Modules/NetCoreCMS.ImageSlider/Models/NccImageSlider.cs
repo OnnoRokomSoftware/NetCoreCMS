@@ -15,7 +15,10 @@ namespace NetCoreCMS.ImageSlider.Models
             Status = EntityStatus.New;
             VersionNumber = 1;
             TotalSlide = 2;
-            Interval = 6000;
+            Interval = 6;
+            ShowNav = true;
+            ShowSideNav = true;
+            ImageWidth = "100%";
         }
 
         [Key]
@@ -28,9 +31,13 @@ namespace NetCoreCMS.ImageSlider.Models
         public long ModifyBy { get; set; }
         public int Status { get; set; }
 
-        public string Style { get; set; }
+        public string ContainerStyle { get; set; }
         public int TotalSlide { get; set; }
         public int Interval { get; set; }
+        public bool ShowNav { get; set; }
+        public bool ShowSideNav { get; set; }
+        public string ImageWidth { get; set; }
+        public string ImageHeight { get; set; }
         public List<NccImageSliderItem> ImageItems { get; set; }
     }
 

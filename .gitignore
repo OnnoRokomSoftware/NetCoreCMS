@@ -12,3 +12,4 @@ config
 /NetCoreCMS.Web/Data/NetCoreCMS.Database.SqLite.db
 /NetCoreCMS.Web/Data/.db
 *.pubxml
+/NetCoreCMS.Web/Logs/*.log
