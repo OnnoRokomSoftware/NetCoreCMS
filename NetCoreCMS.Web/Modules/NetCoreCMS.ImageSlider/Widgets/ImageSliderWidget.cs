@@ -1,7 +1,9 @@
 ﻿using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.ImageSlider.Controllers;
-using NetCoreCMS.ImageSlider.Services;
+using NetCoreCMS.ImageSlider.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -17,9 +19,12 @@ namespace NetCoreCMS.ImageSlider.Widgets
         string _description;
         string _viewFileName;
         IViewRenderService _viewRenderService;
-        NccImageSliderService _imageSliderService;
+        private NccSettingsService _nccSettingsService;
 
-        public string WidgetId { get { return "NetCoreCMS.Modules.ImageSlider.Widgets.NoticeVerticalWidget"; } }
+        private NccImageSlider nccImageSlider;
+        private List<NccImageSliderItem> nccImageSliderItemList = new List<NccImageSliderItem>();
+
+        public string WidgetId { get { return "NetCoreCMS.ImageSlider.Widgets.ImageSliderWidget"; } }
 
         public string Title { get { return _title; } }
 
@@ -33,10 +38,11 @@ namespace NetCoreCMS.ImageSlider.Widgets
 
         public string ViewFileName { get { return _viewFileName; } }
 
-        public ImageSliderWidget(IViewRenderService viewRenderService, NccImageSliderService imageSliderService)
+        public ImageSliderWidget(IViewRenderService viewRenderService, NccSettingsService nccSettingsService)
         {
             _viewRenderService = viewRenderService;
-            _imageSliderService = imageSliderService;
+
+            _nccSettingsService = nccSettingsService;
         }
 
         public void Init()
@@ -49,8 +55,23 @@ namespace NetCoreCMS.ImageSlider.Widgets
 
         public string RenderBody()
         {
-            var itemList = _imageSliderService.LoadAllActive();
-            _body = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(_viewFileName, itemList).Result;
+            var tempSettings = _nccSettingsService.GetByKey("NccImageSlider_Settings");
+            if (tempSettings != null)
+            {
+                nccImageSlider = JsonConvert.DeserializeObject<NccImageSlider>(tempSettings.Value);
+
+                var tempSettings2 = _nccSettingsService.GetByKey("NccImageSlider_Items");
+                if (tempSettings2 != null)
+                {
+                    nccImageSlider.ImageItems = new List<NccImageSliderItem>();
+                    nccImageSliderItemList = JsonConvert.DeserializeObject<List<NccImageSliderItem>>(tempSettings2.Value);
+                    foreach (var item in nccImageSliderItemList)
+                    {
+                        nccImageSlider.ImageItems.Add(item);
+                    }
+                }
+            }
+            _body = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(_viewFileName, nccImageSlider).Result;
             return _body;
         }
 

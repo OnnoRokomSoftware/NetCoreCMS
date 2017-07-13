@@ -7,8 +7,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.ImageSlider.Widgets;
-using NetCoreCMS.ImageSlider.Repository;
-using NetCoreCMS.ImageSlider.Services;
 
 namespace NetCoreCMS.Modules.ImageSlider
 {
@@ -53,8 +51,8 @@ namespace NetCoreCMS.Modules.ImageSlider
 
         public void Init(IServiceCollection services)
         {
-            services.AddTransient<NccImageSliderRepository>();
-            services.AddTransient<NccImageSliderService>();
+            //services.AddTransient<NccImageSliderRepository>();
+            //services.AddTransient<NccImageSliderService>();
         }
 
         public bool Install()
