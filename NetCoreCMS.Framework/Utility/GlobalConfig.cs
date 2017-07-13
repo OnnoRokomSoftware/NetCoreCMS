@@ -6,6 +6,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Themes;
 using System;
 using NetCoreCMS.Framework.Modules.Widgets;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -27,6 +28,7 @@ namespace NetCoreCMS.Framework.Utility
         public static IServiceCollection Services { get; set; }
         public static IApplicationBuilder App { get; set; }
         public static Theme ActiveTheme { get; set; }
+        
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }
         public string StartupAction { get; set; }

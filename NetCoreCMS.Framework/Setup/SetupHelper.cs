@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.Services;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Framework.Setup
 {
@@ -28,6 +29,33 @@ namespace NetCoreCMS.Framework.Setup
         public static bool IsAdminCreateComplete { get; set; }
         public static string SelectedDatabase { get; set; }
         public static string ConnectionString { get; set; }
+        public static int LoggingLevel { get; set; } = (int) LogLevel.Debug;
+
+        public static SetupConfig SaveSetup()
+        {
+            var config = new SetupConfig();
+            var rootDir = GlobalConfig.ContentRootPath;
+            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(file))
+                {
+                    var content = JsonConvert.SerializeObject(new SetupConfig()
+                    {
+                        IsDbCreateComplete = IsDbCreateComplete,
+                        IsAdminCreateComplete = IsAdminCreateComplete,
+                        SelectedDatabase = SelectedDatabase,
+                        ConnectionString = ConnectionString,
+                        LoggingLevel = LoggingLevel
+                    }, Formatting.Indented);
+
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        sw.Write(content.ToCharArray());
+                    }
+                }
+            }
+            return config;
+        }
 
         public static SetupConfig LoadSetup()
         {
@@ -44,9 +72,32 @@ namespace NetCoreCMS.Framework.Setup
                     IsAdminCreateComplete = config.IsAdminCreateComplete;
                     SelectedDatabase = config.SelectedDatabase;
                     ConnectionString = config.ConnectionString;
+                    LoggingLevel = config.LoggingLevel;
                 }
             }
             return config;
+        }
+
+        public static void UpdateSetup(SetupConfig setupConfig)
+        {
+            var rootDir = GlobalConfig.ContentRootPath;
+            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
+            {
+                using (StreamWriter sw = new StreamWriter(file))
+                {
+                    var content = JsonConvert.SerializeObject(setupConfig, Formatting.Indented);
+
+                    if (!string.IsNullOrEmpty(content))
+                    {
+                        sw.Write(content.ToCharArray());
+                    }
+                }
+            }
+        }
+
+        public static void DeleteSetup()
+        {
+            File.Delete(_configFileName);
         }
 
         public static async Task<NccUser> CreateSuperAdminUser(            
@@ -73,12 +124,7 @@ namespace NetCoreCMS.Framework.Setup
 
             return user;
         }
-
-        public static void DeleteSetup()
-        {
-            File.Delete(_configFileName);
-        }
-
+        
         private static void CreateCmsDefaultRoles(RoleManager<NccRole> roleManager)
         {
             NccRole superAdmin = new NccRole() { Name = NccCmsRoles.SuperAdmin, NormalizedName = NccCmsRoles.SuperAdmin};
@@ -97,24 +143,7 @@ namespace NetCoreCMS.Framework.Setup
             var s = roleManager.CreateAsync(subscriber).Result;
             //roleManager.CreateAsync(reader);
         }
-
-        public static void UpdateSetup(SetupConfig setupConfig)
-        {
-            var rootDir = GlobalConfig.ContentRootPath;
-            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
-            {
-                using (StreamWriter sw = new StreamWriter(file))
-                {
-                    var content = JsonConvert.SerializeObject( setupConfig, Formatting.Indented);
-
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        sw.Write(content.ToCharArray());
-                    }
-                }
-            }             
-        }
-
+        
         internal static DbContextOptions GetDbContextOptions()
         {
             return DatabaseFactory.GetDbContextOptions();            
@@ -124,32 +153,7 @@ namespace NetCoreCMS.Framework.Setup
         {
             DatabaseFactory.InitilizeDatabase((DatabaseEngine)Enum.Parse(typeof(DatabaseEngine),SelectedDatabase), ConnectionString);
         }
-
-        public static SetupConfig SaveSetup()
-        {
-            var config = new SetupConfig();
-            var rootDir = GlobalConfig.ContentRootPath;
-            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
-            {
-                using (StreamWriter sw = new StreamWriter(file))
-                {
-                    var content = JsonConvert.SerializeObject(new SetupConfig()
-                    {
-                        IsDbCreateComplete = IsDbCreateComplete,
-                        IsAdminCreateComplete = IsAdminCreateComplete,
-                        SelectedDatabase = SelectedDatabase,
-                        ConnectionString = ConnectionString
-                    }, Formatting.Indented);
-
-                    if (!string.IsNullOrEmpty(content))
-                    {
-                        sw.Write(content.ToCharArray());
-                    }
-                }
-            }
-            return config;
-        }
-
+        
         public static bool CreateDatabase(DatabaseEngine database, DatabaseInfo databaseInfo)
         {
             DatabaseFactory.CreateDatabase(database, databaseInfo);            

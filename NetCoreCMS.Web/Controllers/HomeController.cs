@@ -3,15 +3,18 @@ using NetCoreCMS.Framework.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Web.Controllers
 {
     [AllowAnonymous]
-    public class HomeController : Controller
+    public class HomeController : NccController
     {
         IHostingEnvironment _env;
-        public HomeController(IHostingEnvironment env)
+        public HomeController(IHostingEnvironment env, ILoggerFactory factory)
         {
+            _logger = factory.CreateLogger<HomeController>();
             _env = env;
         }
 

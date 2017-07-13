@@ -34,6 +34,7 @@ namespace NetCoreCMS.Web
         ThemeManager _themeManager;
         NetCoreStartup _startup;
         IMvcBuilder _mvcBuilder;
+        SetupConfig _setupConfig;
         IServiceCollection _services;
         IServiceProvider _serviceProvider;
         
@@ -58,8 +59,8 @@ namespace NetCoreCMS.Web
             GlobalConfig.ContentRootPath = env.ContentRootPath;
             GlobalConfig.WebRootPath = env.WebRootPath;
 
-            _moduleManager = new ModuleManager();            
-            var setupConfig = SetupHelper.LoadSetup();
+            _moduleManager = new ModuleManager();
+            _setupConfig = SetupHelper.LoadSetup();
             _startup = new NetCoreStartup();
         }
 
@@ -153,10 +154,8 @@ namespace NetCoreCMS.Web
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
-        {
-            loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
-            loggerFactory.AddFile("Logs\\NccLogs-{Date}.log");
+        {            
+            loggerFactory.AddFile("Logs\\NccLogs-{Date}.log", TypeConverter.TryParseLogLevel(_setupConfig.LoggingLevel));
 
             _themeManager = new ThemeManager(loggerFactory);
             var themeFolder = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
