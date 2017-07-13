@@ -21,9 +21,6 @@ namespace NetCoreCMS.ImageSlider.Widgets
         IViewRenderService _viewRenderService;
         private NccSettingsService _nccSettingsService;
 
-        private NccImageSlider nccImageSlider;
-        private List<NccImageSliderItem> nccImageSliderItemList = new List<NccImageSliderItem>();
-
         public string WidgetId { get { return "NetCoreCMS.ImageSlider.Widgets.ImageSliderWidget"; } }
 
         public string Title { get { return _title; } }
@@ -55,6 +52,8 @@ namespace NetCoreCMS.ImageSlider.Widgets
 
         public string RenderBody()
         {
+            NccImageSlider nccImageSlider=new NccImageSlider();
+            List<NccImageSliderItem> nccImageSliderItemList = new List<NccImageSliderItem>();
             var tempSettings = _nccSettingsService.GetByKey("NccImageSlider_Settings");
             if (tempSettings != null)
             {

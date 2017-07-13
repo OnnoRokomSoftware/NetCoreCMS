@@ -22,9 +22,9 @@
                     <input type="hidden" asp-for="Status" value="@Model.Status" />
                     <div class="col-sm-6 pull-left">                        
                         <div class="form-group">
-                            <label class="col-md-3 text-right">Style </label>
+                            <label class="col-md-3 text-right">Container Style </label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" asp-for="Style" placeholder="" value="@Model.Style" />
+                                <input type="text" class="form-control" asp-for="ContainerStyle" placeholder="" value="@Model.ContainerStyle" />
                             </div>
                         </div>
                         <div class="form-group">
@@ -34,9 +34,33 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 text-right">Interval </label>
+                            <label class="col-md-3 text-right">Interval(sec) </label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" asp-for="Interval" placeholder="" value="@Model.Interval" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Show Nav </label>
+                            <div class="col-md-9">
+                                <input type="checkbox" class="" asp-for="ShowNav" @Model.ShowNav />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Show Side Nav </label>
+                            <div class="col-md-9">
+                                <input type="checkbox" class="" asp-for="ShowSideNav" @Model.ShowSideNav />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Image Width </label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" asp-for="ImageWidth" placeholder="" value="@Model.ImageWidth" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Image Height </label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" asp-for="ImageHeight" placeholder="" value="@Model.ImageHeight" />
                             </div>
                         </div>
 
