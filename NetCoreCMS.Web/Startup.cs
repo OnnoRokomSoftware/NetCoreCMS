@@ -156,6 +156,7 @@ namespace NetCoreCMS.Web
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            loggerFactory.AddFile("Logs\\NccLogs-{Date}.log");
 
             _themeManager = new ThemeManager(loggerFactory);
             var themeFolder = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
