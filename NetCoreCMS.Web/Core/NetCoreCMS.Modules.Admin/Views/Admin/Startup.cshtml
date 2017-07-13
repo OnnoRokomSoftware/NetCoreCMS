@@ -8,6 +8,10 @@
 }
 
 <div class="row">
+    @if(ViewBag.Message != null)
+    {
+        <div class="alert alert-danger">@ViewBag.Message</div>
+    }
     <div class="col-sm-12">
         <form class="form-horizontal" asp-controller="Admin" asp-action="Startup" method="post">
             

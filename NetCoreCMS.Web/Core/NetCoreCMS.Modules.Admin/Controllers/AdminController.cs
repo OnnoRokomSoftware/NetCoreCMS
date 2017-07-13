@@ -25,7 +25,6 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         NccPageService _pageService;
         NccPostService _postService;
         NccCategoryService _categoryService;
-        ILogger _logger;
 
         public AdminController(
             NccWebSiteService nccWebSiteService, 
@@ -85,7 +84,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(website);
         }
 
-        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", IconCls = "fa-gear", Order = 3)]
+        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", IconCls = "fa-random", Order = 3)]
         public ActionResult Startup()
         {
             var model = PrepareStartupViewData();            
@@ -99,7 +98,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(model);
         }
 
-        [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file", Order = 5)]
+        [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file-text-o", Order = 5)]
         public ActionResult Logging()
         {
             return View();
@@ -110,10 +109,10 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         {
             var setupConfig = SetupHelper.LoadSetup();
             setupConfig.StartupType = vmodel.StartupType;
-
+            
             if (vmodel.StartupType == StartupTypes.Default)
             {
-                setupConfig.StartupUrl = "/" + vmodel.Default;
+                setupConfig.StartupUrl =  vmodel.Default;
             }
             else if (vmodel.StartupType == StartupTypes.Page)
             {
@@ -133,7 +132,13 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             }
             else
             {
-                setupConfig.StartupUrl = "/";
+                setupConfig.StartupUrl = "/CmsHome";
+            }
+
+            if (setupConfig.StartupUrl.Trim('/') == "" || setupConfig.StartupUrl.Trim().Trim('/').ToLower() == "home")
+            {
+                ViewBag.Message = "Incorrect value";
+                return View(vmodel);
             }
 
             SetupHelper.UpdateSetup(setupConfig);
