@@ -76,7 +76,7 @@ namespace NetCoreCMS.ImageSlider.Controllers
                 {
                     nccImageSliderItemList = new List<NccImageSliderItem>();
                     int loopCount = 0;
-                    for (int i = 0; i < itemPath.Count(); i++)
+                    for (int i = 0; i < itemPath.Count() && i < model.TotalSlide; i++)
                     {
                         //if (path.Trim() != "")
                         //{
