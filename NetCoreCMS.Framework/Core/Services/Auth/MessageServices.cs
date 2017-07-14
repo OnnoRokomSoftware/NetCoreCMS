@@ -60,9 +60,9 @@ namespace NetCoreCMS.Framework.Core.Services.Auth
                 using (var client = new SmtpClient())
                 {
                     client.LocalDomain = smtpSettings.Host;
-                    client.ConnectAsync(smtpSettings.Host, smtpSettings.Port, smtpSettings.UseSSL).RunSynchronously();
-                    client.SendAsync(emailMessage).RunSynchronously();
-                    client.DisconnectAsync(true).RunSynchronously();
+                    client.ConnectAsync(smtpSettings.Host, smtpSettings.Port, smtpSettings.UseSSL).Wait();
+                    client.SendAsync(emailMessage).Wait();
+                    client.DisconnectAsync(true).Wait();
                 }
             }
 

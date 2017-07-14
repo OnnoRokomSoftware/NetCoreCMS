@@ -28,18 +28,21 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         NccPageService _pageService;
         NccPostService _postService;
         NccCategoryService _categoryService;
+        NccSettingsService _settingsService;
 
         public AdminController(
             NccWebSiteService nccWebSiteService, 
             NccPageService pageService, 
             NccPostService postService, 
             NccCategoryService categoryService,
+            NccSettingsService settingsService,
             ILoggerFactory loggarFactory)
         {
             _webSiteService = nccWebSiteService;
             _pageService = pageService;
             _postService = postService;
             _categoryService = categoryService;
+            _settingsService = settingsService;
             _logger = loggarFactory.CreateLogger<AdminController>();
         }
         
@@ -97,7 +100,20 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         [AdminMenuItem(Name = "Email", Url = "/Admin/EmailSettings", IconCls = "fa-envelope", Order = 4)]
         public ActionResult EmailSettings()
         {
-            var model = new SmtpSettings();
+            var model = _settingsService.GetByKey<SmtpSettings>(Constants.SMTPSettingsKey);
+            if(model == null)
+                model = new SmtpSettings();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult EmailSettings(SmtpSettings model)
+        {
+            if (ModelState.IsValid)
+            {
+                var settings = _settingsService.SetByKey<SmtpSettings>(Constants.SMTPSettingsKey, model);
+                TempData["SuccessMessage"] = "Settings save successful.";
+            }
             return View(model);
         }
 
