@@ -78,11 +78,11 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
                         await file.CopyToAsync(fileStream);
                         if (responseSuccess == "")
                         {
-                            responseSuccess = "<strong>" + file.FileName + "</strong> URL: " + uploadPath.Replace('\\', '/') + "/" + fullFileName;
+                            responseSuccess = "<strong>" + file.FileName + "</strong> URL: /" + uploadPath.Replace('\\', '/') + "/" + fullFileName;
                         }
                         else
                         {
-                            responseSuccess += ",<br /><strong>" + file.FileName + "</strong> URL: " + uploadPath.Replace('\\', '/') + "/" + fullFileName;
+                            responseSuccess += ",<br /><strong>" + file.FileName + "</strong> URL: /" + uploadPath.Replace('\\', '/') + "/" + fullFileName;
                         }
                     }
                 }

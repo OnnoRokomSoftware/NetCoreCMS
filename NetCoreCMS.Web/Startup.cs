@@ -206,11 +206,11 @@ namespace NetCoreCMS.Web
                     defaults: new { controller = "CmsPage", action = "Index" });
                 routes.MapRoute(
                     name: "blogPost",
-                    template: "Post/{slug}",
+                    template: "Post/{slug?}",
                     defaults: new { controller = "Post", action = "Index" });
                 routes.MapRoute(
                     name: "blogCategory",
-                    template: "{slug}",
+                    template: "{slug?}",
                     defaults: new { controller = "Category", action = "Index" });
             });
             
