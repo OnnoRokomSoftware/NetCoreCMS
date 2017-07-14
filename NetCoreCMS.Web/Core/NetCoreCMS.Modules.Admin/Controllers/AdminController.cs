@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
@@ -13,6 +14,8 @@ using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Admin.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
@@ -101,7 +104,87 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file-text-o", Order = 5)]
         public ActionResult Logging()
         {
+            PrepareLogViewData();
             return View();
+        }
+
+        private void PrepareLogViewData()
+        {
+            var config = SetupHelper.LoadSetup();
+            var levels = new Dictionary<string, int>();
+
+            levels.Add("Trace", (int)LogLevel.Trace);
+            levels.Add("Debug", (int)LogLevel.Debug);
+            levels.Add("Information", (int)LogLevel.Information);
+            levels.Add("Warning", (int)LogLevel.Warning);
+            levels.Add("Error", (int)LogLevel.Error);
+            levels.Add("Critical", (int)LogLevel.Critical);
+            levels.Add("None", (int)LogLevel.None);
+
+            ViewBag.LogLevels = levels;
+            ViewBag.LogLevel = config.LoggingLevel;
+
+            ViewBag.LogFiles = ListLogFiles();
+
+        }
+
+        [HttpPost]
+        public ActionResult Logging(int logLevelValue, string logFileName, string operation)
+        {   
+            if(operation == "SetLog")
+            {
+                SetupHelper.LoadSetup();
+                SetupHelper.LoggingLevel = logLevelValue;
+                SetupHelper.SaveSetup();
+                TempData["SuccessMessage"] = "Log Levels save successful. <a href='/Home/RestartHost'> Restart Site</a> for change effect.";
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(logFileName))
+                { 
+                    try
+                    {
+                        var logFilePath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder + "\\" + logFileName;
+                        var originalFileStream = System.IO.File.Open(logFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        MemoryStream zipStream = new MemoryStream();
+                        using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+                        {
+                            var zipEntry = zip.CreateEntry(logFileName);
+                            using (var writer = new StreamWriter(zipEntry.Open()))
+                            {
+                                originalFileStream.Seek(0, SeekOrigin.Begin);
+                                originalFileStream.CopyTo(writer.BaseStream);
+                            }
+                        }
+                        zipStream.Seek(0, SeekOrigin.Begin);
+                        return File(zipStream, "application/zip", logFileName + ".zip");
+                         
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = ex.Message;
+                    }
+                    finally
+                    {
+
+                    }
+                }
+            }
+            PrepareLogViewData();
+            return View();
+        }
+
+        private Dictionary<string,string> ListLogFiles()
+        {
+            var dict = new Dictionary<string, string>();
+            var logFolderPath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder;
+            var files = Directory.GetFiles(logFolderPath);
+            foreach (var item in files)
+            {
+                var file = new FileInfo(item);
+                dict.Add(file.Name, file.Name);
+            }
+            return dict;
         }
 
         [HttpPost]

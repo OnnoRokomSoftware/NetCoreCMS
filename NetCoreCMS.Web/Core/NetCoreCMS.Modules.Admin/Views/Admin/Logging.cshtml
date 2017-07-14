@@ -9,21 +9,15 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <form class="form-horizontal" asp-controller="Admin" asp-action="Startup" method="post">
-            
+        <form id="logForm" class="form-horizontal" asp-controller="Admin" asp-action="Logging" method="post">
+            <input type="hidden" id="operation" name="operation"/>
             <div class="form-group">
                 <div class="row">
                     <div class="col-sm-3 text-right">
                         <label>Log Level: </label>
                     </div>
                     <div class="col-sm-5">
-                        <select id="logLevel" name="logLevel" class="form-control">
-                            <option value="Debug">Debug</option>
-                            <option value="Information">Info</option>
-                            <option value="Warning">Warning</option>
-                            <option value="Error">Error</option>
-                            <option value="Critical">Critical</option>
-                        </select>
+                        <select name="logLevelValue" asp-items="@( new SelectList(ViewBag.LogLevels, "Value","Key", ViewBag.LogLevel))" onchange="SubmitForm()" class="form-control"></select>
                     </div>
                 </div>                                                
             </div>
@@ -45,9 +39,7 @@
                         <label>Download single day log: </label>
                     </div>
                     <div class="col-sm-5">
-                        <select id="logFiles" name="logFiles" class="form-control">
-                            <option>Select a post</option>
-                        </select>
+                        <select name="logFileName" asp-items="@( new SelectList(ViewBag.LogFiles, "Value","Key"))" class="form-control"></select>
                     </div>
                 </div>
                 <br/>
@@ -64,3 +56,9 @@
     </div>    
 </div>
      
+<script>
+    function SubmitForm() {
+        $("#operation").val("SetLog");
+        $("#logForm").submit();
+    }
+</script>
