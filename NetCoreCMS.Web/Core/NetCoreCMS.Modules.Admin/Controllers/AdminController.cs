@@ -203,6 +203,33 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return dict;
         }
 
+        public FileResult DownloadAllLogs()
+        {
+            var dict = new Dictionary<string, string>();
+            var logFolderPath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder;
+            
+            MemoryStream zipStream = new MemoryStream();
+            using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+            {
+                var files = Directory.GetFiles(logFolderPath);
+                foreach (var item in files)
+                {
+                    var fi = new FileInfo(item);
+                    var originalFileStream = System.IO.File.Open(item, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    var zipEntry = zip.CreateEntry(fi.Name);
+                    using (var writer = new StreamWriter(zipEntry.Open()))
+                    {
+                        originalFileStream.Seek(0, SeekOrigin.Begin);
+                        originalFileStream.CopyTo(writer.BaseStream);
+                    }
+                }
+            }
+
+            zipStream.Seek(0, SeekOrigin.Begin);
+            return File(zipStream, "application/zip", "AllLogFiles.zip");
+            
+        }
+
         [HttpPost]
         public ActionResult Startup(StartupViewModel vmodel)
         {
