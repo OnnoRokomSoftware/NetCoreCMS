@@ -1,4 +1,4 @@
-﻿<div class="Featured">
+﻿<div class="row Featured">
     @{
         var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == ViewBag.CurrentLayout).ToList();
         if (featured != null && featured.Count > 0)

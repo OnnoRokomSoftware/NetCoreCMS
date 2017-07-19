@@ -24,7 +24,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">
                 @ViewData["PageSubtitle"]
-                <div class="pull-right"><a asp-controller="CmsMedia" asp-action="Upload" asp-route-isFile="@ViewBag.IsFile" class="btn btn-outline btn-primary btn-xs">Upload</a></div>
+                <div class="pull-right"><a asp-controller="MediaHome" asp-action="Upload" asp-route-isFile="@ViewBag.IsFile" class="btn btn-outline btn-primary btn-xs">Upload</a></div>
             </div>
             <div class="panel-body">
                 @foreach (var item in Model)

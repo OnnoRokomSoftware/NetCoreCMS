@@ -78,8 +78,6 @@ namespace NetCoreCMS.ImageSlider.Controllers
                     int loopCount = 0;
                     for (int i = 0; i < itemPath.Count() && i < model.TotalSlide; i++)
                     {
-                        //if (path.Trim() != "")
-                        //{
                         nccImageSliderItemList.Add(new NccImageSliderItem
                         {
                             Path = itemPath[i],
@@ -87,9 +85,7 @@ namespace NetCoreCMS.ImageSlider.Controllers
                             Order = i
                         });
                         loopCount++;
-                        //}
                     }
-                    //model.TotalSlide = loopCount;
                     nccImageSlider = model;
                     _nccSettingsService.SetByKey("NccImageSlider_Settings", JsonConvert.SerializeObject(model));
 

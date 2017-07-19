@@ -28,6 +28,10 @@ namespace NetCoreCMS.Web.Controllers
                     TempData["Message"] = "Setup config file is missed. Please reinstall.";
                     return Redirect("~/CmsHome/ResourceNotFound");
                 }
+                if(setupConfig.StartupUrl.Trim('/') == "" || setupConfig.StartupUrl.Trim().ToLower() == "/home")
+                {
+                    return View();
+                }
                 return Redirect(setupConfig.StartupUrl);
             }
             return Redirect("/SetupHome/Index");

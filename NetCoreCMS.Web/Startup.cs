@@ -155,7 +155,7 @@ namespace NetCoreCMS.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {            
-            loggerFactory.AddFile("Logs\\NccLogs-{Date}.log", TypeConverter.TryParseLogLevel(_setupConfig.LoggingLevel));
+            loggerFactory.AddFile(NccInfo.LogFolder + "\\NccLogs-{Date}.log", TypeConverter.TryParseLogLevel(_setupConfig.LoggingLevel));
 
             _themeManager = new ThemeManager(loggerFactory);
             var themeFolder = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
@@ -206,11 +206,11 @@ namespace NetCoreCMS.Web
                     defaults: new { controller = "CmsPage", action = "Index" });
                 routes.MapRoute(
                     name: "blogPost",
-                    template: "Post/{slug}",
+                    template: "Post/{slug?}",
                     defaults: new { controller = "Post", action = "Index" });
                 routes.MapRoute(
                     name: "blogCategory",
-                    template: "{slug}",
+                    template: "{slug?}",
                     defaults: new { controller = "Category", action = "Index" });
             });
             

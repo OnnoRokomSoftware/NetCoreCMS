@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
@@ -13,6 +14,8 @@ using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Admin.Models.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
@@ -25,19 +28,21 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         NccPageService _pageService;
         NccPostService _postService;
         NccCategoryService _categoryService;
-        ILogger _logger;
+        NccSettingsService _settingsService;
 
         public AdminController(
             NccWebSiteService nccWebSiteService, 
             NccPageService pageService, 
             NccPostService postService, 
             NccCategoryService categoryService,
+            NccSettingsService settingsService,
             ILoggerFactory loggarFactory)
         {
             _webSiteService = nccWebSiteService;
             _pageService = pageService;
             _postService = postService;
             _categoryService = categoryService;
+            _settingsService = settingsService;
             _logger = loggarFactory.CreateLogger<AdminController>();
         }
         
@@ -85,7 +90,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View(website);
         }
 
-        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", IconCls = "fa-gear", Order = 3)]
+        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", IconCls = "fa-random", Order = 3)]
         public ActionResult Startup()
         {
             var model = PrepareStartupViewData();            
@@ -95,14 +100,134 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         [AdminMenuItem(Name = "Email", Url = "/Admin/EmailSettings", IconCls = "fa-envelope", Order = 4)]
         public ActionResult EmailSettings()
         {
-            var model = new SmtpSettings();
+            var model = _settingsService.GetByKey<SmtpSettings>(Constants.SMTPSettingsKey);
+            if(model == null)
+                model = new SmtpSettings();
             return View(model);
         }
 
-        [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file", Order = 5)]
+        [HttpPost]
+        public ActionResult EmailSettings(SmtpSettings model)
+        {
+            if (ModelState.IsValid)
+            {
+                var settings = _settingsService.SetByKey<SmtpSettings>(Constants.SMTPSettingsKey, model);
+                TempData["SuccessMessage"] = "Settings save successful.";
+            }
+            return View(model);
+        }
+
+        [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file-text-o", Order = 5)]
         public ActionResult Logging()
         {
+            PrepareLogViewData();
             return View();
+        }
+
+        private void PrepareLogViewData()
+        {
+            var config = SetupHelper.LoadSetup();
+            var levels = new Dictionary<string, int>();
+
+            levels.Add("Trace", (int)LogLevel.Trace);
+            levels.Add("Debug", (int)LogLevel.Debug);
+            levels.Add("Information", (int)LogLevel.Information);
+            levels.Add("Warning", (int)LogLevel.Warning);
+            levels.Add("Error", (int)LogLevel.Error);
+            levels.Add("Critical", (int)LogLevel.Critical);
+            levels.Add("None", (int)LogLevel.None);
+
+            ViewBag.LogLevels = levels;
+            ViewBag.LogLevel = config.LoggingLevel;
+
+            ViewBag.LogFiles = ListLogFiles();
+
+        }
+
+        [HttpPost]
+        public ActionResult Logging(int logLevelValue, string logFileName, string operation)
+        {   
+            if(operation == "SetLog")
+            {
+                SetupHelper.LoadSetup();
+                SetupHelper.LoggingLevel = logLevelValue;
+                SetupHelper.SaveSetup();
+                TempData["SuccessMessage"] = "Log Levels save successful. <a href='/Home/RestartHost'> Restart Site</a> for change effect.";
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(logFileName))
+                { 
+                    try
+                    {
+                        var logFilePath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder + "\\" + logFileName;
+                        var originalFileStream = System.IO.File.Open(logFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                        MemoryStream zipStream = new MemoryStream();
+                        using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+                        {
+                            var zipEntry = zip.CreateEntry(logFileName);
+                            using (var writer = new StreamWriter(zipEntry.Open()))
+                            {
+                                originalFileStream.Seek(0, SeekOrigin.Begin);
+                                originalFileStream.CopyTo(writer.BaseStream);
+                            }
+                        }
+                        zipStream.Seek(0, SeekOrigin.Begin);
+                        return File(zipStream, "application/zip", logFileName + ".zip");
+                         
+                    }
+                    catch (Exception ex)
+                    {
+                        TempData["ErrorMessage"] = ex.Message;
+                    }
+                    finally
+                    {
+
+                    }
+                }
+            }
+            PrepareLogViewData();
+            return View();
+        }
+
+        private Dictionary<string,string> ListLogFiles()
+        {
+            var dict = new Dictionary<string, string>();
+            var logFolderPath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder;
+            var files = Directory.GetFiles(logFolderPath);
+            foreach (var item in files)
+            {
+                var file = new FileInfo(item);
+                dict.Add(file.Name, file.Name);
+            }
+            return dict;
+        }
+
+        public FileResult DownloadAllLogs()
+        {
+            var dict = new Dictionary<string, string>();
+            var logFolderPath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder;
+            
+            MemoryStream zipStream = new MemoryStream();
+            using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+            {
+                var files = Directory.GetFiles(logFolderPath);
+                foreach (var item in files)
+                {
+                    var fi = new FileInfo(item);
+                    var originalFileStream = System.IO.File.Open(item, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    var zipEntry = zip.CreateEntry(fi.Name);
+                    using (var writer = new StreamWriter(zipEntry.Open()))
+                    {
+                        originalFileStream.Seek(0, SeekOrigin.Begin);
+                        originalFileStream.CopyTo(writer.BaseStream);
+                    }
+                }
+            }
+
+            zipStream.Seek(0, SeekOrigin.Begin);
+            return File(zipStream, "application/zip", "AllLogFiles.zip");
+            
         }
 
         [HttpPost]
@@ -110,10 +235,10 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         {
             var setupConfig = SetupHelper.LoadSetup();
             setupConfig.StartupType = vmodel.StartupType;
-
+            
             if (vmodel.StartupType == StartupTypes.Default)
             {
-                setupConfig.StartupUrl = "/" + vmodel.Default;
+                setupConfig.StartupUrl =  vmodel.Default;
             }
             else if (vmodel.StartupType == StartupTypes.Page)
             {
@@ -133,7 +258,13 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             }
             else
             {
-                setupConfig.StartupUrl = "/";
+                setupConfig.StartupUrl = "/CmsHome";
+            }
+
+            if (setupConfig.StartupUrl.Trim('/') == "" || setupConfig.StartupUrl.Trim().Trim('/').ToLower() == "home")
+            {
+                ViewBag.Message = "Incorrect value";
+                return View(vmodel);
             }
 
             SetupHelper.UpdateSetup(setupConfig);
