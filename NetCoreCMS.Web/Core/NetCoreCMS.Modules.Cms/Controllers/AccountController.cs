@@ -270,7 +270,7 @@ namespace NetCoreCMS.Web.Controllers
         //
         // GET: /Account/ForgotPassword
         [HttpGet]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult ForgotPassword()
         {
             return View();
@@ -317,7 +317,7 @@ namespace NetCoreCMS.Web.Controllers
         //
         // GET: /Account/ResetPassword
         [HttpGet]
-        [AllowAnonymous]
+        //[AllowAnonymous]
         public IActionResult ResetPassword(string code = null)
         {
             return code == null ? View("Error") : View();
