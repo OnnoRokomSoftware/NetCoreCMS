@@ -11,6 +11,7 @@ using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Web.Controllers
 {
@@ -100,8 +101,12 @@ namespace NetCoreCMS.Web.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-            ViewData["ReturnUrl"] = returnUrl;
-            return View();
+            if (GlobalConfig.WebSite.AllowRegistration == true)
+            {
+                ViewData["ReturnUrl"] = returnUrl;
+                return View();
+            }
+            return Redirect("/");
         }
 
         //
@@ -112,7 +117,7 @@ namespace NetCoreCMS.Web.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && GlobalConfig.WebSite.AllowRegistration == true)
             {
                 var user = new NccUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
