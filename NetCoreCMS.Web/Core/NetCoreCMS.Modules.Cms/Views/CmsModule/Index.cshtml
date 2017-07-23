@@ -34,25 +34,50 @@
                     <tbody>
                         @foreach (var item in ViewBag.Modules)
                         {
-                            <tr>
-                                <td>
-                                    @item.ModuleTitle
-                                    <p>
-                                        Version: @item.Version<br/>
-                                        Author: @item.Author<br/>
-                                        Website:@item.WebSite
-                                    </p>
-                                </td>
-                                <td>@item.Description</td>
-                                <td>@item.Category</td>
-                                <td>@item.Dependencies</td>
-                                <td>@item.NetCoreCMSVersion</td>
-                                <td>@item.CreateBy</td>                                
-                                <td>@item.ModuleStatus</td>
-                                <td> 
-                                    @Html.Raw(NetCoreCMS.Modules.Cms.Lib.ModuleHelper.GetActionText(item))
-                                </td>
-                            </tr>
+                            if (item.Path.Contains("\\Core\\") == true)
+                            {
+                                <tr style="background-color:#e0e0e0;">
+                                    <td>
+                                        @item.ModuleTitle
+                                        <p>
+                                            Version: @item.Version<br />
+                                            Author: @item.Author<br />
+                                            Website:@item.WebSite
+                                        </p>
+                                    </td>
+                                    <td>@item.Description</td>
+                                    <td>@item.Category</td>
+                                    <td>@item.Dependencies</td>
+                                    <td>@item.NetCoreCMSVersion</td>
+                                    <td>@item.CreateBy</td>
+                                    <td>@item.ModuleStatus</td>
+                                    <td>
+                                        @Html.Raw(NetCoreCMS.Modules.Cms.Lib.ModuleHelper.GetActionText(item))
+                                    </td>
+                                </tr>
+                            }
+                            else{
+                                <tr>
+                                    <td>
+                                        @item.ModuleTitle
+                                        <p>
+                                            Version: @item.Version<br/>
+                                            Author: @item.Author<br/>
+                                            Website:@item.WebSite
+                                        </p>
+                                    </td>
+                                    <td>@item.Description</td>
+                                    <td>@item.Category</td>
+                                    <td>@item.Dependencies</td>
+                                    <td>@item.NetCoreCMSVersion</td>
+                                    <td>@item.CreateBy</td>                                
+                                    <td>@item.ModuleStatus</td>
+                                    <td> 
+                                        @Html.Raw(NetCoreCMS.Modules.Cms.Lib.ModuleHelper.GetActionText(item))
+                                    </td>
+                                </tr>
+                            }
+                            
                         }
                     </tbody>
                 </table>
