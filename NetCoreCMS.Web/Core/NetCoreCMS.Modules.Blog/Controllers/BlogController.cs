@@ -33,8 +33,11 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
 
         [AllowAnonymous]
         public ActionResult Index(int page = 0)
-        { 
-            return View(); 
+        {
+            ViewBag.TotalPost = _nccPostService.TotalPublishedPostCount();
+            var postList = _nccPostService.LoadPublished(page * 5, 5);
+
+            return View(postList);
         }
 
         [AllowAnonymous]

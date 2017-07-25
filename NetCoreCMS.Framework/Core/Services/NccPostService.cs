@@ -117,6 +117,29 @@ namespace NetCoreCMS.Framework.Core.Services
                 .Where(x => x.PostStatus == status && x.PublishDate <= dateTime).ToList();
         }
 
+        public List<NccPost> LoadPublished(int from = 0, int total = 10)
+        {
+            return _entityRepository
+                .Query()
+                .Include("Author")
+                .Include("Comments")
+                .Include("Categories")
+                .Include("Tags")
+                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now)
+                .OrderByDescending(x => x.PublishDate)
+                .Skip(from)
+                .Take(total)
+                .ToList();
+        }
+
+        public int TotalPublishedPostCount()
+        {
+            return _entityRepository
+                .Query()
+                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now)
+                .Count();
+        }
+
         public List<NccPost> LoadAllByName(string name)
         {
             return _entityRepository.LoadAllByName(name);
