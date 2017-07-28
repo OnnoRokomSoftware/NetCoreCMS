@@ -1,0 +1,23 @@
+language: csharp
+solution: SimplCommerce.sln
+sudo: required
+dist: trusty
+dotnet: 1.1.0
+mono: none
+os:
+  - linux
+
+branches:  
+  only:
+    - master
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+before_script:
+  - dotnet restore
+
+script:
+  - dotnet build ./NetCoreCMS.sln
