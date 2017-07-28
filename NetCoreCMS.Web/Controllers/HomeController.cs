@@ -50,6 +50,7 @@ namespace NetCoreCMS.Web.Controllers
          
         public IActionResult RestartHost()
         {
+            //TODO: need to secure this restart.
             NetCoreCmsHost.IsRestartRequired = true;
             Program.Shutdown();
             return View();
