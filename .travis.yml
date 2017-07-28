@@ -1,7 +1,7 @@
 language: csharp
 solution: NetCoreCMS.sln
 sudo: required
-dist: trusty
+dist: precise
 dotnet: 1.0.0
 mono: none
 os:
