@@ -153,7 +153,7 @@ namespace NetCoreCMS.Web
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, NccDbContext nccDbContext)
         {            
             loggerFactory.AddFile(NccInfo.LogFolder + "\\NccLogs-{Date}.log", TypeConverter.TryParseLogLevel(_setupConfig.LoggingLevel));
 
@@ -214,6 +214,8 @@ namespace NetCoreCMS.Web
                     defaults: new { controller = "Category", action = "Index" });
             });
             
+
+
         }
     }
 }

@@ -59,6 +59,7 @@ namespace NetCoreCMS.Modules.Notice
 
         public bool Install()
         {
+
             return true;
         }
           

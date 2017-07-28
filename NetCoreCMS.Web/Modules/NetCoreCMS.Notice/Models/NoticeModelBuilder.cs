@@ -10,7 +10,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Models
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NccNotice>().ToTable("Ncc_Notice");                       
+            modelBuilder.Entity<NccNotice>().ToTable("Ncc_Notice");
         }
     }
 }
