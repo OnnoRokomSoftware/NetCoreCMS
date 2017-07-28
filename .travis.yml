@@ -1,5 +1,5 @@
 language: csharp
-solution: SimplCommerce.sln
+solution: NetCoreCMS.sln
 sudo: required
 dist: trusty
 dotnet: 1.0.0
