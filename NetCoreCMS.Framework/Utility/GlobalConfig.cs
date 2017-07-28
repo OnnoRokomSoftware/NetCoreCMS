@@ -7,6 +7,7 @@ using NetCoreCMS.Framework.Themes;
 using System;
 using NetCoreCMS.Framework.Modules.Widgets;
 using Microsoft.Extensions.Logging;
+using System.Linq;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -31,6 +32,13 @@ namespace NetCoreCMS.Framework.Utility
         
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }
+
+        public static List<IModule> GetActiveModules()
+        {
+            var query = from m in Modules where m.ModuleStatus == (int) NccModule.NccModuleStatus.Active select m;
+            return query.ToList();
+        }
+
         public string StartupAction { get; set; }
 
         public static void ListWidgets()

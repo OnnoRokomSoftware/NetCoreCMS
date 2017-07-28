@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core;
+using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
@@ -22,14 +23,21 @@ namespace NetCoreCMS.Modules.Cms.Controllers
     {
         #region Initialization
         NccModuleService _moduleService;
+        NccSettingsService _settingsService;
         ModuleManager moduleManager;
         List<IModule> _coreModules;
         List<IModule> _publicModules;
         IHostingEnvironment _hostingEnvironment;
 
-        public CmsModuleController(NccModuleService moduleService, IHostingEnvironment hostingEnvironment, ILoggerFactory factory)
+        public CmsModuleController(
+            NccModuleService moduleService,
+            NccSettingsService settingsService,
+            IHostingEnvironment hostingEnvironment, 
+            ILoggerFactory factory
+            )
         {
             _moduleService = moduleService;
+            _settingsService = settingsService;
             _hostingEnvironment = hostingEnvironment;
             _logger = factory.CreateLogger<CmsModuleController>();
             moduleManager = new ModuleManager();
@@ -121,8 +129,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
             if(entity != null)
             {
-                //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                //module.Install();
+                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+
+                module.Install(_settingsService, ExecuteQuery);
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -136,10 +145,14 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         public ActionResult UninstallModule(string id)
         {
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.UnInstalled);
-            if(entity != null)
+            var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+            if (module != null)
             {
-                //var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                //module.Uninstall();
+                module.Uninstall(_settingsService, ExecuteQuery);
+            }
+
+            if (entity != null)
+            {
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -156,5 +169,12 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             return RedirectToAction("Index"); 
         }
+
+        #region PrivetMethods
+        private string ExecuteQuery(NccDbQueryText query)
+        {
+            return _moduleService.ExecuteQuery(query);
+        }
+        #endregion
     }
 }

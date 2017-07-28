@@ -34,7 +34,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         [AdminMenuItem(Name = "Widget", Url = "/CmsWidget", IconCls = "fa-magic", Order = 2)]
         public ActionResult Index()
         {
-            ViewBag.Modules = GlobalConfig.Modules;
+            ViewBag.Modules = GlobalConfig.GetActiveModules();
             ViewBag.Theme = GlobalConfig.ActiveTheme;
             ViewBag.WebsiteWidgetZones = _nccWebSiteWidgetService.LoadAll();
             return View();

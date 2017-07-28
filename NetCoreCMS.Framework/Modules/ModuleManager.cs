@@ -73,24 +73,25 @@ namespace NetCoreCMS.Framework.Modules
 
                     if (moduleInitializerType != null && moduleInitializerType != typeof(IModule))
                     {
-                        var initilizedModule = (IModule)Activator.CreateInstance(moduleInitializerType);
-                        LoadModuleInfo(initilizedModule, module);
+                        var moduleInstance = (IModule)Activator.CreateInstance(moduleInitializerType);
+                        LoadModuleInfo(moduleInstance, module);
 
-                        NccModule.NccModuleStatus moduleStatus = VerifyModuleInstallation(initilizedModule, serviceProvider);
+                        NccModule.NccModuleStatus moduleStatus = VerifyModuleInstallation(moduleInstance, serviceProvider);
 
                         if (moduleStatus == NccModule.NccModuleStatus.Active)
                         {
+                            moduleInstance.ModuleStatus = (int) moduleStatus;
                             // Register controller from modules
                             mvcBuilder.AddApplicationPart(module.Assembly);
                             // Register dependency in modules                            
-                            initilizedModule.Init(services);
-                            RegisterWidgets(initilizedModule, services, serviceProvider);
-                            instantiatedModuleList.Add(initilizedModule); 
+                            moduleInstance.Init(services);
+                            RegisterWidgets(moduleInstance, services, serviceProvider);                            
                         }
                         else if (moduleStatus == NccModule.NccModuleStatus.Duplicate)
                         {
                             //TODO: Raise duplicate error message
                         }
+                        instantiatedModuleList.Add(moduleInstance);
                     }
                 }
                 catch (Exception ex)
@@ -144,16 +145,19 @@ namespace NetCoreCMS.Framework.Modules
             var widgetList = new List<IWidget>();
             foreach (var module in instantiatedModuleList)
             {
-                module.Widgets = new List<IWidget>();
-                var widgetTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces()?.Where(y => y.Name == typeof(IWidget).Name).FirstOrDefault() != null).ToList();
-
-                foreach (var widgetType in widgetTypeList)
+                if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
                 {
-                    //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                    
-                    var widgetInstance = (IWidget)serviceProvider.GetService(widgetType);
-                    widgetInstance.Init();
-                    module.Widgets.Add(widgetInstance);
-                    widgetList.Add(widgetInstance);
+                    module.Widgets = new List<IWidget>();
+                    var widgetTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces()?.Where(y => y.Name == typeof(IWidget).Name).FirstOrDefault() != null).ToList();
+
+                    foreach (var widgetType in widgetTypeList)
+                    {
+                        //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                    
+                        var widgetInstance = (IWidget)serviceProvider.GetService(widgetType);
+                        widgetInstance.Init();
+                        module.Widgets.Add(widgetInstance);
+                        widgetList.Add(widgetInstance);
+                    }
                 }
             }
             return widgetList;
@@ -220,6 +224,7 @@ namespace NetCoreCMS.Framework.Modules
                 module.Website = loadedModule.Website;
                 module.Assembly = moduleInfo.Assembly;
                 module.Path = moduleInfo.Path;
+                module.ModuleStatus = moduleInfo.ModuleStatus;
             }
             else
             {

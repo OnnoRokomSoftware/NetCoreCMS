@@ -10,6 +10,8 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using System.IO;
 using NetCoreCMS.Framework.Utility;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Routing;
+using NetCoreCMS.Framework.Core.Data;
 
 namespace NetCoreCMS.Core.Modules.Admin
 {
@@ -36,7 +38,7 @@ namespace NetCoreCMS.Core.Modules.Admin
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        
+        public int ModuleStatus { get; set; }
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
@@ -55,12 +57,17 @@ namespace NetCoreCMS.Core.Modules.Admin
             services.AddTransient<NccWebSiteService>();
         }
 
-        public bool Install()
+        public void RegisterRoute(IRouteBuilder routes)
         {
             throw new NotImplementedException();
         }
-         
-        public bool Uninstall()
+
+        public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             throw new NotImplementedException();
         }

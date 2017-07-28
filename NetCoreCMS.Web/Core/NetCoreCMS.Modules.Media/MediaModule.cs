@@ -5,6 +5,9 @@ using System.Reflection;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Modules.Widgets;
+using Microsoft.AspNetCore.Routing;
+using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Core.Data;
 
 namespace NetCoreCMS.Core.Modules.Media
 {
@@ -30,7 +33,7 @@ namespace NetCoreCMS.Core.Modules.Media
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        
+        public int ModuleStatus { get; set; }
         public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
         public bool Activate()
         {
@@ -47,12 +50,17 @@ namespace NetCoreCMS.Core.Modules.Media
             
         }
 
-        public bool Install()
+        public void RegisterRoute(IRouteBuilder routes)
         {
             throw new NotImplementedException();
         }
- 
-        public bool Uninstall()
+
+        public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             throw new NotImplementedException();
         }

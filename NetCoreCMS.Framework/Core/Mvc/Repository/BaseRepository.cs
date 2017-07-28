@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Setup;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -92,6 +93,30 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
         public void DeletePermanently(EntityT entity)
         {
             DbSet.Remove(entity);
+        }
+
+        public int ExecuteSqlCommand(NccDbQueryText query)
+        {
+            var queryText = "";
+            if (SetupHelper.SelectedDatabase == "SqLite")
+            {
+                queryText = query.SQLite_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MSSQL")
+            {
+                queryText = query.MSSql_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MySql")
+            {
+                queryText = query.MySql_QueryText;
+            }
+            else
+            {
+                return -1;
+            }
+
+            var effRow = Context.Database.ExecuteSqlCommand(queryText);
+            return effRow;
         }
     }
 }

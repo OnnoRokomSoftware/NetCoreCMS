@@ -212,9 +212,8 @@ namespace NetCoreCMS.Web
                     name: "blogCategory",
                     template: "{slug?}",
                     defaults: new { controller = "Category", action = "Index" });
-            });
-            
-
+                
+            }); 
 
         }
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
+using NetCoreCMS.Framework.Core.Data;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,5 +22,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
         void Remove(EntityT entity);
         void DeletePermanently(EntityT entity);
         void SaveChange();
+        int ExecuteSqlCommand(NccDbQueryText query);
     }
 }

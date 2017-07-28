@@ -5,6 +5,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.Framework.Core.Data;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -67,6 +68,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.LoadAll();
         }
 
+        public List<NccModule> LoadByModuleStatus(NccModule.NccModuleStatus active)
+        {
+            return _entityRepository.LoadByModuleStatus(active);
+        }
+
         public List<NccModule> LoadAllActive()
         {
             return _entityRepository.LoadAllActive();
@@ -120,6 +126,11 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.VersionNumber = entity.VersionNumber;
             
         }
-        
+
+        public string ExecuteQuery(NccDbQueryText query)
+        {
+            var retVal = _entityRepository.ExecuteSqlCommand(query);
+            return retVal.ToString();
+        }
     }
 }
