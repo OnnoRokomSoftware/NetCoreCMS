@@ -1,6 +1,11 @@
 # NetCoreCMS
 NetCoreCMS is a Content Management System developed using ASP.Net Core 1.1. It is usable as web application framework.  
 
+## Build Status
+| Build server| Platform       | Status      |
+|-------------|----------------|-------------|
+|Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/TecRT/NetCoreCMS.svg?branch=master)](https://travis-ci.org/TecRT/NetCoreCMS) |
+
 ## Alpha
 
 The software is complete for internal testing which can be performed by people other than its developers. The testers are within the same organization or community. 
