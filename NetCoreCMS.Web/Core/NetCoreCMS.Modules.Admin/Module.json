@@ -5,7 +5,7 @@
   "Author": "NetCoreCMS",
   "Website": "http://DotNetCoreCMS.com",
   "AntiForgery": true,
-  "Description": "Builtin Content Management Module.",
+  "Description": "Builtin Administration for Content Management.",
   "Version": "0.1.1",
   "NetCoreCMSVersion": "0.1.1",
   "Dependencies": [],
