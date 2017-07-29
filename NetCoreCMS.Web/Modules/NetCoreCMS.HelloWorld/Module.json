@@ -3,7 +3,7 @@
   "ModuleName": "NetCoreCMS.Modules.HelloWorld",
   "ModuleTitle": "NetCoreCMS HelloWorld Module",
   "Author": "NetCoreCMS",
-  "Website": "http://NetCoreCMS.com",
+  "Website": "http://DotNetCoreCMS.com",
   "AntiForgery": true,
   "Description": "Builtin Content Management Example Module.",
   "Version": "0.1.1",
