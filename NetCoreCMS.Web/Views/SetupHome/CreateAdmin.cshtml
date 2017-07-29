@@ -2,199 +2,81 @@
 @model AdminViewModel
 
 @{
-    Layout = null;
+    ViewData["Title"] = "Create Admin";
+    Layout = "_SimpleLayout";
 }
-<html lang="en">
-<head>
 
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - NetCoreCMS Setup</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-    <script src="~/lib/jquery/dist/jquery.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    <link href="~/css/SetupStyle.css" rel="stylesheet" />
-    <script src="~/js/Setup.js"></script>
-
-    <script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
-    
-    <style>
-        input {
-            max-width: 800px !important;
-        }
-    </style>
-</head>
-
-
-
-<body>
-
-    <!-- Begin page content -->
-    <div class="container">
-        <div class="page-header text-center">
-            <h1>NetCoreCMS Setup</h1>
-        </div>
-        <p class="lead text-center">This is the NetCoreCMS Setup Page. Please fill the following information and press submit to complete the setup process.</p>
-        @*<hr />*@
-        <form class="form-horizontal" asp-controller="SetupHome" asp-action="CreateAdmin" method="post">
-            <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="SiteName">Site Name:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="SiteName" name="SiteName" asp-for="SiteName" placeholder="Enter Site Name" value="Website Name">
-                    <span asp-validation-for="SiteName" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="Tagline">Tagline:</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="Tagline" name="Tagline" asp-for="Tagline" placeholder="Enter Tagline" value="Website tag line">
-                    <span asp-validation-for="Tagline" class="text-danger"></span>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="AdminUserName">Admin UserName:</label>
-                <div class="col-sm-10">
-                    <input asp-for="AdminUserName" type="text" class="form-control" id="AdminUserName" name="AdminUserName" placeholder="Enter Admin UserName" value="Admin">
-                    <span asp-validation-for="AdminUserName" class="text-danger"></span>
-                </div>
-            </div> 
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="AdminPassword">Admin Password:</label>
-                <div class="col-sm-10">
-                    <input asp-for="AdminPassword" type="password" class="form-control" id="AdminPassword" name="AdminPassword" placeholder="Enter Admin Password">
-                    <span asp-validation-for="AdminPassword" class="text-danger"></span>
-                </div>
-            </div> 
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="ConfirmPassword">Confirm Password:</label>
-                <div class="col-sm-10">
-                    <input asp-for="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Enter Confirm Password">
-                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-                </div>
-            </div> 
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="Email">Email:</label>
-                <div class="col-sm-10">
-                    <input asp-for="Email" type="Email" class="form-control" id="Email" name="Email" placeholder="Enter Email" value="admin@site.com">
-                    <span asp-validation-for="Email" class="text-danger"></span>
-                </div>
-            </div>            
-            <div class="form-group">
-                <label class="control-label col-sm-2" for="SetupTemplate">Website Template:</label>
-                <div class="col-sm-10">
-                    <select asp-for="SetupTemplate" type="text" class="form-control" id="SetupTemplate" name="SetupTemplate">
-                        <option value="">Select your template</option>
-                        <option value="Basic" selected>Basic</option>
-                        @*<option value="Blog">Blog</option>
-                        <option value="PersonalProfile">Personal Profile</option>
-                        <option value="CompanyWebsite">Company Website</option>
-                        <option value="CRM">CRM</option>
-                        <option value="EcommarceSite">Ecommarce Site</option>*@
-                    </select>
-                    <span asp-validation-for="SetupTemplate" class="text-danger"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                    &nbsp;&nbsp;<a href="~/SetupHome/Back" class="btn btn-danger">Back</a>&nbsp;&nbsp;
-                    <button type="reset" class="btn btn-default">Clear</button>
-                </div>
-            </div>
-        </form>
-    </div>
-
-    <footer class="footer">
-        <div class="container">
-            <p class="text-muted text-center">Developed by <a href="@NccInfo.Website" title="@NccInfo.Author" target="_blank">@NccInfo.Author</a>.</p>
-        </div>
-    </footer>
-</body>
-</html>
-
-
-@*<link href="/NetCoreCMS.Modules.Setup/css/Style.css" rel="stylesheet" />
-<script src="/NetCoreCMS.Modules.Setup/js/Setup.js"></script>
-<script src="/lib/jquery-validation/dist/jquery.validate.js"></script>
-<h4> NetCoreCMS Setup </h4>
-<hr/>
-<form asp-controller="SetupHome" asp-action="Index" method="post">
+<div class="page-header text-center">
+    <h1>NetCoreCMS Setup</h1>
+</div>
+<p class="lead text-center">This is the NetCoreCMS Setup Page. Please fill the following information and press submit to complete the setup process.</p>
+@*<hr />*@
+<form class="form-horizontal" asp-controller="SetupHome" asp-action="CreateAdmin" method="post">
     <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
     <div class="form-group">
-        <label for="SiteName">Site Name</label>
-        <input type="text" class="form-control" id="SiteName" name="SiteName" asp-for="SiteName">
-        <span asp-validation-for="SiteName" class="text-danger"></span>
+        <label class="control-label col-sm-2" for="SiteName">Site Name:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="SiteName" name="SiteName" asp-for="SiteName" placeholder="Enter Site Name" value="Website Name">
+            <span asp-validation-for="SiteName" class="text-danger"></span>
+        </div>
     </div>
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="Tagline">Tagline:</label>
+        <div class="col-sm-10">
+            <input type="text" class="form-control" id="Tagline" name="Tagline" asp-for="Tagline" placeholder="Enter Tagline" value="Website tag line">
+            <span asp-validation-for="Tagline" class="text-danger"></span>
+        </div>
+    </div>
+            
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="AdminUserName">Admin UserName:</label>
+        <div class="col-sm-10">
+            <input asp-for="AdminUserName" type="text" class="form-control" id="AdminUserName" name="AdminUserName" placeholder="Enter Admin UserName" value="Admin">
+            <span asp-validation-for="AdminUserName" class="text-danger"></span>
+        </div>
+    </div> 
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="AdminPassword">Admin Password:</label>
+        <div class="col-sm-10">
+            <input asp-for="AdminPassword" type="password" class="form-control" id="AdminPassword" name="AdminPassword" placeholder="Enter Admin Password">
+            <span asp-validation-for="AdminPassword" class="text-danger"></span>
+        </div>
+    </div> 
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="ConfirmPassword">Confirm Password:</label>
+        <div class="col-sm-10">
+            <input asp-for="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword" placeholder="Enter Confirm Password">
+            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+        </div>
+    </div> 
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="Email">Email:</label>
+        <div class="col-sm-10">
+            <input asp-for="Email" type="Email" class="form-control" id="Email" name="Email" placeholder="Enter Email" value="admin@site.com">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+    </div>            
+    <div class="form-group">
+        <label class="control-label col-sm-2" for="SetupTemplate">Website Template:</label>
+        <div class="col-sm-10">
+            <select asp-for="SetupTemplate" type="text" class="form-control" id="SetupTemplate" name="SetupTemplate">
+                <option value="">Select your template</option>
+                <option value="Basic" selected>Basic</option>
+                @*<option value="Blog">Blog</option>
+                <option value="PersonalProfile">Personal Profile</option>
+                <option value="CompanyWebsite">Company Website</option>
+                <option value="CRM">CRM</option>
+                <option value="EcommarceSite">Ecommarce Site</option>*@
+            </select>
+            <span asp-validation-for="SetupTemplate" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            &nbsp;&nbsp;<a href="~/SetupHome/Back" class="btn btn-danger">Back</a>&nbsp;&nbsp;
+            <button type="reset" class="btn btn-default">Clear</button>
+        </div>
+    </div>
+</form>
     
-    <div class="form-group">
-        <label for="Database">Database</label>
-        <select asp-for="Database" type="text" class="form-control" id="Database" name="Database" >
-            <option value="">Select your database engine</option>
-            <option value="SQLite">SQLite</option>
-            <option value="MsSqlLocalStorage">MsSqlLocalStorage</option>
-            <option value="MsSql">MsSql</option>
-            <option value="MySql">MySql</option>
-            <option value="PgSql">PgSql</option>
-        </select>
-        <span asp-validation-for="Database" class="text-danger"></span>
-    </div>
-
-    <div id="databaseInfo" class="DatabaseInfo">
-        <div class="form-group">
-            <label for="DatabaseHost">Database Host</label>
-            <input asp-for="DatabaseHost" type="text" class="form-control" id="DatabaseHost" name="DatabaseHost">
-            <span asp-validation-for="DatabaseHost" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="siteName">Database Port</label>
-            <input asp-for="DatabasePort" type="text" class="form-control" id="DatabasePort" name="DatabasePort">
-            <span asp-validation-for="DatabasePort" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="DatabaseUserName">DatabaseUserName</label>
-            <input asp-for="DatabaseUserName" type="text" class="form-control" id="DatabaseUserName" name="DatabaseUserName">
-            <span asp-validation-for="DatabaseUserName" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="DatabasePassword">Database Password</label>
-            <input asp-for="DatabasePassword" type="text" class="form-control" id="DatabasePassword" name="DatabasePassword">
-            <span asp-validation-for="DatabasePassword" class="text-danger"></span>
-        </div>
-
-        <div class="form-group">
-            <label for="DatabaseName">Database Name</label>
-            <input asp-for="DatabaseName" type="text" class="form-control" id="DatabaseName" name="DatabaseName">
-            <span asp-validation-for="DatabaseName" class="text-danger"></span>
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="AdminUserName">Admin User Name</label>
-        <input asp-for="AdminUserName" type="text" class="form-control" id="AdminUserName" name="AdminUserName">
-        <span asp-validation-for="AdminUserName" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="AdminPassword">Admin Password</label>
-        <input asp-for="AdminPassword" type="password" class="form-control" id="AdminPassword" name="AdminPassword">
-        <span asp-validation-for="AdminPassword" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="ConfirmPassword">ConfirmPassword</label>
-        <input asp-for="ConfirmPassword" type="password" class="form-control" id="ConfirmPassword" name="ConfirmPassword">
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label for="Email">Email</label>
-        <input asp-for="Email" type="Email" class="form-control" id="Email" name="Email">
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-default">Submit</button>
-</form>*@
