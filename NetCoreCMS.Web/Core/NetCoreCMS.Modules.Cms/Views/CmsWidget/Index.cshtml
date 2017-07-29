@@ -6,40 +6,49 @@
     Layout = Constants.AdminLayoutName;
 }
 
+<style>
+    .ncc-widget-box-container .ncc-widget-box {
+        width:48%;
+        float:left;
+        margin-right: 2%;
+    }
+</style>
+
 <div class="row">
 
     <div class="col-lg-12">
         <div class="col-lg-7">
-            <div class="panel panel-default">
+            <div id="ncc-module-widget-box-container" class="panel panel-default" ondrop="dropBack(event)" ondragover="allowDrop(event)">
                 <div class="panel-heading">
                     Widgets
                 </div>
-                <div class="panel-body">
+                <div class="panel-body ncc-widget-box-container">
                     @foreach (IModule item in ViewBag.Modules)
                     {
                         if (item.Widgets.Count > 0)
                         {
-                            <div class="col-md-6">
+                            @*<div class="col-md-6">
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">@item.ModuleTitle</div>
-                                    <div id="Container_@item.ModuleId" data-module-id="@item.ModuleId"  class="panel-body"  ondrop="dropBack(event)" ondragover="allowDrop(event)">
+                                    <div id="Container_@item.ModuleId" data-module-id="@item.ModuleId"  class="panel-body"  ondrop="dropBack(event)" ondragover="allowDrop(event)">*@
                                         @foreach (IWidget widget in item.Widgets)
-                                        {                                            
-                                            <div id="SRC_@widget.WidgetId" data-widget-id="@widget.WidgetId" data-module-id="@item.ModuleId" class="panel panel-default" draggable="true" ondragstart="drag(event)">
-                                                <div class="panel-heading">
-                                                    <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
-                                                    <a data-toggle="collapse" href="#collapse_@widget.WidgetId.Replace('.', '_')">@widget.Title</a>
-                                                </div>
-                                                <div id="collapse_@widget.WidgetId.Replace('.', '_')" class="panel-collapse collapse">
-                                                    <div class="panel-body">
-                                                        @widget.Description
+                                        {   <div id="@Guid.NewGuid().ToString()" class="ncc-widget-box" data-widget-id="@widget.WidgetId" data-module-id="@item.ModuleId"  draggable="true" ondragstart="drag(event)">                                     
+                                                <div class="panel panel-default" >
+                                                    <div class="panel-heading">
+                                                        <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
+                                                        <a draggable="false" data-toggle="collapse" href="#collapse_@widget.WidgetId.Replace('.', '_')">@widget.Title (@item.ModuleTitle)</a>
                                                     </div>
-                                                </div>
-                                            </div>                                            
+                                                    <div id="collapse_@widget.WidgetId.Replace('.', '_')" class="panel-collapse collapse">
+                                                        <div class="panel-body">
+                                                            @widget.Description
+                                                        </div>
+                                                    </div>
+                                                </div>                    
+                                            </div>
                                         }
-                                    </div>
+                                    @*</div>
                                 </div>
-                            </div>
+                            </div>*@
                         }
                     }
                 </div>
@@ -99,17 +108,19 @@
                                                     var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
 
                                                     if (w != null) {
-                                                        <div id="@wZone.Id" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone" class="panel panel-default" draggable="true" ondragstart="drag(event)" >
-                                                        <div class="panel-heading">
-                                                            <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
-                                                            <a data-toggle="collapse" href="#collapse_@wZone.Id">@w.Title</a>
-                                                        </div>
-                                                        <div id="collapse_@wZone.Id" class="panel-collapse collapse">
-                                                            <div class="panel-body">
-                                                                 @w.Description
+                                                        <div id="@Guid.NewGuid().ToString()" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone"  draggable="true" ondragstart="drag(event)">
+                                                            <div class="panel panel-default"  >
+                                                                <div class="panel-heading">
+                                                                    <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
+                                                                    <a draggable="false" data-toggle="collapse" href="#collapse_@wZone.Id">@w.Title</a>
+                                                                </div>
+                                                                <div id="collapse_@wZone.Id" class="panel-collapse collapse">
+                                                                    <div class="panel-body">
+                                                                         @w.Description
+                                                                    </div>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
                                                     }
                                                 }
                                             }
@@ -126,6 +137,7 @@
         </div>
     </div>
 </div>
+<div id="ncc-widget-treash" style="width:1px;height:1px;"></div>
 
 <script>
 
@@ -133,29 +145,35 @@
         ev.preventDefault();
     }
 
-    function drag(ev) {
-        ev.dataTransfer.setData("widgetId", ev.target.id);
+    function drag(ev) {     
+        ev.dataTransfer.setData("widgetId", ev.target.id);        
     }
 
     function drop(ev) {
+
         console.log("Drop");
         ev.preventDefault();
         var targetDiv = ev.target;
+
         var divId = ev.dataTransfer.getData("widgetId");
         var div = document.getElementById(divId);
-        targetDiv.appendChild(div);
-        //var div1 = document.getElementById(divId);
-        //var destinationDiv = document.getElementById("Container_" + $(div1).attr("data-module-id"));
-        //destinationDiv.appendChild(div1);
+        //targetDiv.appendChild(div);
+        var clonedDiv = $(div).clone();
+        var uid = GUID.NewGUID();
+        $(clonedDiv).attr("id",uid);
+        clonedDiv.appendTo(targetDiv);
+        //$(div).clone().appendTo("#ncc-module-widget-box-container");
+        
         var moduleId = $(div).attr("data-module-id");
         var zone = $(targetDiv).attr("data-layout-zone");
         var layout = $(targetDiv).attr("data-layout-name");
         var theme = $(targetDiv).attr("data-theme-id");
         var widgetId = $(div).attr("data-widget-id");
 
-        $(div).attr("data-theme-id", theme);
-        $(div).attr("data-layout-name", layout);
-        $(div).attr("data-layout-zone", zone);
+        $(clonedDiv).attr("data-theme-id", theme);
+        $(clonedDiv).attr("data-layout-name", layout);
+        $(clonedDiv).attr("data-layout-zone", zone);
+
         NccPageMask.ShowLoadingMask();
         $.ajax({
             method: 'POST',
@@ -193,26 +211,28 @@
 
     function dropBack(ev) {
         console.log("Drop back");
+
         ev.preventDefault();
         var targetDiv = ev.target;
         var divId = ev.dataTransfer.getData("widgetId");
+
+        console.log(divId);
+
         var div = document.getElementById(divId);
-        var destModuleId = $(targetDiv).attr("data-module-id");
+        console.log(div);
+         
+        var zone = $(div).attr("data-layout-zone");
+        var layout = $(div).attr("data-layout-name");
+        var theme = $(div).attr("data-theme-id");
+        var widgetId = $(div).attr("data-widget-id");
         var srcModuleId = $(div).attr("data-module-id");
 
-        if (srcModuleId != destModuleId) {
-            NccGlobalAlert.ShowError("Different module widget. Drop into it's module panel.");
-        }
-        else {
+        console.log(zone, layout, theme, widgetId, srcModuleId);
+        removeWidget(srcModuleId, theme, layout, zone, widgetId); 
 
-            var zone = $(div).attr("data-layout-zone");
-            var layout = $(div).attr("data-layout-name");
-            var theme = $(div).attr("data-theme-id");
-            var widgetId = $(div).attr("data-widget-id");
-
-            targetDiv.appendChild(div);
-            removeWidget(destModuleId, theme, layout, zone, widgetId);
-        }
+        $("#ncc-widget-treash").append(div).empty();
+        
+        
     }
 
 </script>
