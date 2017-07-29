@@ -179,7 +179,9 @@ namespace NetCoreCMS.Framework.Modules
             nccModule.WebSite = module.Website;
             nccModule.ModuleTitle = module.ModuleTitle;
 
-            if(module.Category.Contains("Core"))
+            var coreModuleDir = Directory.GetParent(nccModule.Path);
+
+            if (coreModuleDir.Name.Equals("Core"))
             {
                 nccModule.ModuleStatus = NccModule.NccModuleStatus.Active;
             }
