@@ -77,20 +77,22 @@ namespace NetCoreCMS.Framework.Modules
                         LoadModuleInfo(moduleInstance, module);
 
                         NccModule.NccModuleStatus moduleStatus = VerifyModuleInstallation(moduleInstance, serviceProvider);
+                        moduleInstance.ModuleStatus = (int)moduleStatus;
 
                         if (moduleStatus == NccModule.NccModuleStatus.Active)
-                        {
-                            moduleInstance.ModuleStatus = (int) moduleStatus;
+                        {                            
                             // Register controller from modules
-                            mvcBuilder.AddApplicationPart(module.Assembly);
-                            // Register dependency in modules                            
-                            moduleInstance.Init(services);
-                            RegisterWidgets(moduleInstance, services, serviceProvider);                            
+                            mvcBuilder.AddApplicationPart(module.Assembly);                            
                         }
                         else if (moduleStatus == NccModule.NccModuleStatus.Duplicate)
                         {
                             //TODO: Raise duplicate error message
+                            continue;
                         }
+                        
+                        // Register dependency in modules                            
+                        moduleInstance.Init(services);
+                        RegisterWidgets(moduleInstance, services, serviceProvider);
                         instantiatedModuleList.Add(moduleInstance);
                     }
                 }

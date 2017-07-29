@@ -76,7 +76,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         {
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Active);
             if (entity != null)
-            { 
+            {
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -95,6 +95,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 module.ModuleStatus = status;
                 _moduleService.Update(module);
+                var loadedModule = GlobalConfig.Modules.Where(x => x.ModuleId == module.ModuleId).FirstOrDefault();
+                if(loadedModule != null)
+                {
+                    loadedModule.ModuleStatus = (int) status;
+                }
             }
             return module;
         }
@@ -107,7 +112,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
                 if(module != null)
                 {
-                    module.Inactivate();
+                    module.Inactivate();                    
                     TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
                 }
                 else
@@ -129,9 +134,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
             if(entity != null)
             {
-                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-
+                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();                
                 module.Install(_settingsService, ExecuteQuery);
+                module.ModuleStatus = (int)NccModule.NccModuleStatus.Installed;
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -149,6 +154,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             if (module != null)
             {
                 module.Uninstall(_settingsService, ExecuteQuery);
+                module.ModuleStatus = (int)NccModule.NccModuleStatus.UnInstalled;
             }
 
             if (entity != null)

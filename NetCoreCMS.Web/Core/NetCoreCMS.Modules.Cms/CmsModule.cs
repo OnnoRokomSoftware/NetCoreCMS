@@ -68,17 +68,17 @@ namespace NetCoreCMS.Core.Modules.Cms
 
         public void RegisterRoute(IRouteBuilder routes)
         {
-            throw new NotImplementedException();
+             
         }
 
         public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

@@ -39,12 +39,12 @@ namespace NetCoreCMS.Core.Modules.Media
 
         public bool Activate()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool Inactivate()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public void Init(IServiceCollection services)
@@ -57,17 +57,17 @@ namespace NetCoreCMS.Core.Modules.Media
 
         public void RegisterRoute(IRouteBuilder routes)
         {
-            throw new NotImplementedException();
+             
         }
 
         public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            throw new NotImplementedException();
+            return true;
         }
     }
 }

@@ -17,35 +17,38 @@ namespace NetCoreCMS.Framework.Utility
 
             foreach (var module in GlobalConfig.Modules)
             {
-                var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
-                foreach (var controller in controllers)
+                if (module.ModuleStatus == (int) NccModule.NccModuleStatus.Active)
                 {
-                    try
+                    var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
+                    foreach (var controller in controllers)
                     {
-                        var atrib = controller.GetTypeInfo().GetCustomAttribute<AdminMenu>();
-                        if (atrib != null)
+                        try
                         {
-                            var key = adminMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
+                            var atrib = controller.GetTypeInfo().GetCustomAttribute<AdminMenu>();
+                            if (atrib != null)
+                            {
+                                var key = adminMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
-                            if (key == null)
-                            {
-                                adminMenuDic.Add(atrib, new List<AdminMenuItem>());
-                                key = atrib;
-                            }
-                            var actions = controller.GetMethods();
-                            foreach (var item in actions)
-                            {
-                                var menuItem = item.GetCustomAttribute<AdminMenuItem>();
-                                if (menuItem != null)
+                                if (key == null)
                                 {
-                                    adminMenuDic[key].Add(menuItem);
+                                    adminMenuDic.Add(atrib, new List<AdminMenuItem>());
+                                    key = atrib;
+                                }
+                                var actions = controller.GetMethods();
+                                foreach (var item in actions)
+                                {
+                                    var menuItem = item.GetCustomAttribute<AdminMenuItem>();
+                                    if (menuItem != null)
+                                    {
+                                        adminMenuDic[key].Add(menuItem);
+                                    }
                                 }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        //TODO: Log error. Raise global error message.
+                        catch (Exception ex)
+                        {
+                            //TODO: Log error. Raise global error message.
+                        }
                     }
                 }
             }
@@ -58,35 +61,38 @@ namespace NetCoreCMS.Framework.Utility
 
             foreach (var module in GlobalConfig.Modules)
             {
-                var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
-                foreach (var controller in controllers)
+                if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
                 {
-                    try
+                    var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
+                    foreach (var controller in controllers)
                     {
-                        var atrib = controller.GetTypeInfo().GetCustomAttribute<SiteMenu>();
-                        if (atrib != null)
+                        try
                         {
-                            var key = siteMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
+                            var atrib = controller.GetTypeInfo().GetCustomAttribute<SiteMenu>();
+                            if (atrib != null)
+                            {
+                                var key = siteMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
-                            if (key == null)
-                            {
-                                siteMenuDic.Add(atrib, new List<SiteMenuItem>());
-                                key = atrib;
-                            }
-                            var actions = controller.GetMethods();
-                            foreach (var item in actions)
-                            {
-                                var menuItem = item.GetCustomAttribute<SiteMenuItem>();
-                                if (menuItem != null)
+                                if (key == null)
                                 {
-                                    siteMenuDic[key].Add(menuItem);
+                                    siteMenuDic.Add(atrib, new List<SiteMenuItem>());
+                                    key = atrib;
+                                }
+                                var actions = controller.GetMethods();
+                                foreach (var item in actions)
+                                {
+                                    var menuItem = item.GetCustomAttribute<SiteMenuItem>();
+                                    if (menuItem != null)
+                                    {
+                                        siteMenuDic[key].Add(menuItem);
+                                    }
                                 }
                             }
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        //TODO: Log error. Raise global error message.
+                        catch (Exception ex)
+                        {
+                            //TODO: Log error. Raise global error message.
+                        }
                     }
                 }
             }
