@@ -9,5 +9,5 @@
   "Version": "0.1.1",
   "NetCoreCMSVersion": "0.1.1",
   "Dependencies": [],
-  "Category": "Core,Example"
+  "Category": "HelloWorld,Example"
 }
