@@ -34,3 +34,9 @@ and check the `master` branch.
 - Open `NetCoreCMS.sln`
 - Build `NetCoreCMS.sln` solution (before running the project)
 - Ensure `NetCoreCMS.Web` is the startup project and run it.
+
+### Common Mistakes
+- Build module after changing the module else module will not work.
+- If make any mistake at installation time and project does not run then delete setup.json from root directory and run project again.
+- After install/uninstall any module or theme restart project.
+
