@@ -1,9 +1,9 @@
 ﻿{
   "ModuleId": "NetCoreCMS.Core.Modules.Blog",
-  "ModuleName": "NetCoreCMS Blog Module",
+  "ModuleName": "NetCoreCMS.Modules.Blog",
   "ModuleTitle": "Blog",
   "Author": "NetCoreCMS",
-  "Website": "http://NetCoreCMS.com",
+  "Website": "http://DotNetCoreCMS.com",
   "AntiForgery": true,
   "Description": "Builtin Blog Module.",
   "Version": "0.1.1",
