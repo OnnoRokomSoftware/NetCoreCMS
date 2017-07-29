@@ -3,11 +3,11 @@
   "ModuleName": "NetCoreCMS.Notice",
   "ModuleTitle": "NetCoreCMS Notice Module",
   "Author": "NetCoreCMS",
-  "Website": "http://NetCoreCMS.com",
+  "Website": "http://DotNetCoreCMS.com",
   "AntiForgery": true,
   "Description": "Builtin Content Management Example Module.",
   "Version": "0.1.1",
   "NetCoreCMSVersion": "0.1.1",
   "Dependencies": [],
-  "Category": "Core,Example"
+  "Category": "Notice,Example"
 }

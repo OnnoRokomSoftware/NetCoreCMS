@@ -3,7 +3,7 @@
   "ModuleName": "NetCoreCMS.ImageSlider",
   "ModuleTitle": "NetCoreCMS ImageSlider Module",
   "Author": "NetCoreCMS",
-  "Website": "http://NetCoreCMS.com",
+  "Website": "http://DotNetCoreCMS.com",
   "AntiForgery": true,
   "Description": "Builtin ImageSlider Module.",
   "Version": "1.0",
