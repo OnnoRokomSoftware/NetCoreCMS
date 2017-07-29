@@ -36,7 +36,7 @@ and check the `master` branch.
 - Ensure `NetCoreCMS.Web` is the startup project and run it.
 
 ### Common Mistakes
-- Build module after changing the module else module will not work.
-- If make any mistake at installation time and project does not run then delete setup.json from root directory and run project again.
+- Build module project after changing the module else module will not work.
+- If make any mistake at installation period and project does not run then delete setup.json from root directory and run project again.
 - After install/uninstall any module or theme restart project.
 
