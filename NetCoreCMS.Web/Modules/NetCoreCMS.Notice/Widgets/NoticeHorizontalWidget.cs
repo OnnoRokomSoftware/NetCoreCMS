@@ -96,9 +96,9 @@ namespace NetCoreCMS.Notice.Widgets
             return html;
         }
 
-        public string RenderConfig()
+        public string RenderConfig(long websiteWidgetId)
         {
-            throw new NotImplementedException();
+            return "";
         }
     }
 }

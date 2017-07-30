@@ -1,6 +1,9 @@
-﻿using NetCoreCMS.Framework.Core.Mvc.Views;
+﻿using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Modules.Cms.Controllers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,9 +17,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string _body;
         string _footer;
         string _configJson;
+        string _configHtml;
         string _description;
         string _viewFileName;
+        string _configViewFileName;
+
         IViewRenderService _viewRenderService;
+        NccWebSiteWidgetService _websiteWidgetService;
 
         public string WidgetId { get { return "NetCoreCMS.Modules.Cms.CmsVerticalMenuWidget"; } }
 
@@ -29,11 +36,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public string Footer { get { return _footer; } }
 
         public string ConfigJson { get { return _configJson; } }
+        public string ConfigHtml { get { return _configHtml; } }
         public string ViewFileName { get { return _viewFileName; } }
 
-        public CmsVerticalMenuWidget(IViewRenderService viewRenderService)
+        public CmsVerticalMenuWidget(IViewRenderService viewRenderService, NccWebSiteWidgetService websiteWidgetService)
         {
             _viewRenderService = viewRenderService;
+            _websiteWidgetService = websiteWidgetService;
         }
 
         public void Init()
@@ -42,6 +51,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
             _description = "Vertical nevigation menu";
             _footer = "Footer";
             _viewFileName = "Widgets/CmsVerticalMenu";
+            _configViewFileName = "Widgets/CmsVerticalMenuConfig";
         }
 
         public string RenderBody()
@@ -92,9 +102,11 @@ namespace NetCoreCMS.HelloWorld.Widgets
             return html;
         }
 
-        public string RenderConfig()
+        public string RenderConfig(long websiteWidgetId)
         {
-            throw new NotImplementedException();
+            var websiteWidget = _websiteWidgetService.Get(websiteWidgetId);
+            _configHtml = _viewRenderService.RenderToStringAsync<CmsWidgetController>(_configViewFileName, websiteWidget).Result;
+            return _configHtml;
         }
     }
 }

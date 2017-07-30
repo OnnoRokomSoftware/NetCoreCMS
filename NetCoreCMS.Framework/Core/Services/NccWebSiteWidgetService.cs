@@ -24,6 +24,19 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Get(entityId);
         }
 
+        public NccWebSiteWidget Get(string module, string theme, string layout, string zone, string widget)
+        {
+            var entity = _entityRepository.Query().FirstOrDefault(
+                x => x.ModuleId == module
+                && x.ThemeId == theme
+                && x.LayoutName == layout
+                && x.Zone == zone
+                && x.WidgetId == widget
+                );
+
+            return entity;
+        }
+
         public NccWebSiteWidget Save(NccWebSiteWidget entity)
         {
             _entityRepository.Add(entity);
@@ -47,7 +60,7 @@ namespace NetCoreCMS.Framework.Core.Services
             
             return entity;
         }
-
+        
         public void RemoveByModuleThemeLayoutZoneWidget(string module, string theme, string layout, string zone, string widget)
         {
             var entity = _entityRepository.Query().FirstOrDefault(

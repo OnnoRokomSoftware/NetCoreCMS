@@ -46,6 +46,10 @@
     <Content Remove="wwwroot/js\New Text Document.txt" />
     <Content Remove="wwwroot/lib\css-loader\dist\loader-ball.css" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="wwwroot\lib\jquery-serializeObject\jquery.serializeObject.min.js" />
+  </ItemGroup>
   <!--
   <ItemGroup>
     <Content Include="Data\SecureMedia\README.md" />

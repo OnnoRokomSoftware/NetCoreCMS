@@ -69,14 +69,39 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
         }
-        public JsonResult SaveConfig(string widgetId, string configJson, string widgetData)
+
+
+        /// <summary>
+        /// Save your website widget configuration
+        /// </summary>
+        /// <param name="webSiteWidgetId"></param>
+        /// <param name="data"></param>
+        /// <returns>Response JSON </returns>
+        public JsonResult SaveConfig(long webSiteWidgetId, string data)
         {
-            return Json(new ApiResponse());
+            var apiResponse = new ApiResponse(false, "Config save failed.");
+            var webSiteWidget = _nccWebSiteWidgetService.Get(webSiteWidgetId);
+            if (webSiteWidget != null)
+            {
+                webSiteWidget.WidgetConfigJson = data;
+                _nccWebSiteWidgetService.Update(webSiteWidget);
+                apiResponse.IsSuccess = true;
+                apiResponse.Message = "Config save successfully.";
+            }
+            return Json(apiResponse);
         }
 
-        public JsonResult GetConfig(string widgetId)
+        public JsonResult GetConfig(long webSiteWidgetId)
         {
-            return Json(new ApiResponse());
-        }
+            var apiResponse = new ApiResponse(false, "Config save failed.");
+            var webSiteWidget = _nccWebSiteWidgetService.Get(webSiteWidgetId);
+            if (webSiteWidget != null)
+            {
+                apiResponse.IsSuccess = true;
+                apiResponse.Message = "Success";
+                apiResponse.Data = webSiteWidget.WidgetConfigJson;
+            }
+            return Json(apiResponse);
+        } 
     }
 }

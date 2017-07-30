@@ -37,7 +37,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         /// </summary>
         /// <returns></returns>
         string RenderBody();
-        string RenderConfig();
+        string RenderConfig(long websiteWidgetId);
         void Init();
     }
 }

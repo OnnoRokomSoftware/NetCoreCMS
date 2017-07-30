@@ -117,7 +117,10 @@
                                                                 <div id="collapse_@wZone.Id" class="panel-collapse collapse">
                                                                     <div class="panel-body">
                                                                          @w.Description
-                                                                    </div>
+                                                                        <div>
+                                                                            @Html.Raw(w.RenderConfig(wZone.Id))
+                                                                        </div>
+                                                                    </div>                                                                    
                                                                 </div>
                                                             </div>
                                                         </div>

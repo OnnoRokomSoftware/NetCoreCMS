@@ -121,3 +121,7 @@ NccUtil = new function () {
             .replace(/[.,\/#!$%\^&\*;:{}=\+_`~()]/g, "");
     }
 }
+
+function Log(data) {
+    console.log(data);
+}

@@ -1,0 +1,62 @@
+﻿@model NetCoreCMS.Framework.Core.Models.NccWebSiteWidget
+
+<form id="configForm">
+    <div>        
+        @*<input type="hidden" name="webSiteWidgetId" value="@Model.WebSiteWidgetId"/>*@
+        <input class="form-control" type="text" id="title" name="title" value="" />
+        <textarea class="form-control" id="urls" name="urls" cols="5" rows="5"></textarea>
+        <input id="saveConfig" type="button" value="Save" />
+    </div>
+</form>
+
+<script>
+    $(document).ready(function () {
+
+        $("#saveConfig").on("click", function (evnt) {
+                        
+            var data = JSON.stringify($("#configForm").serializeObject());
+            Log(data);
+
+            $.ajax({
+                url: '/CmsWidget/SaveConfig',
+                method: 'POST',
+                data: { webSiteWidgetId: @Model.Id, data: data},
+                success: function (rsp) {
+                    if (rsp.isSuccess) {
+                        NccAlert.ShowSuccess(rsp.message);
+                    }
+                    else {
+                        NccAlert.ShowError(rsp.message);
+                    }
+                },
+                error: function (rsp) {
+                    NccAlert.ShowError("Error! Try again.");
+                }
+            });
+        });
+
+        setTimeout(function () {
+
+            $.ajax({
+                url: '/CmsWidget/GetConfig',
+                method: 'GET',
+                data: {websiteWidgetId: @Model.Id},
+                success: function (rsp) {
+                    if (rsp.isSuccess) {
+                        var data = JSON.parse(rsp.data);
+                        $("#title").val(data.title);
+                        $("#urls").val(data.urls);
+                    }
+                    else {
+                        NccAlert.ShowError(rsp.message);
+                    }
+                },
+                error: function (rsp) {
+                    NccAlert.ShowError("Error! Try again.");
+                }
+            });
+
+        }, 1000);
+
+    });
+</script>
