@@ -142,21 +142,20 @@ namespace NetCoreCMS.Framework.Modules
             return moduleEntity.ModuleStatus;
         }
 
-        public List<IWidget> RegisterModuleWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        public List<Widget> RegisterModuleWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
         {
-            var widgetList = new List<IWidget>();
+            var widgetList = new List<Widget>();
             foreach (var module in instantiatedModuleList)
             {
                 if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
                 {
-                    module.Widgets = new List<IWidget>();
-                    var widgetTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces()?.Where(y => y.Name == typeof(IWidget).Name).FirstOrDefault() != null).ToList();
+                    module.Widgets = new List<Widget>();
+                    var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
 
                     foreach (var widgetType in widgetTypeList)
                     {
                         //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                    
-                        var widgetInstance = (IWidget)serviceProvider.GetService(widgetType);
-                        widgetInstance.Init();
+                        var widgetInstance = (Widget)serviceProvider.GetService(widgetType);                        
                         module.Widgets.Add(widgetInstance);
                         widgetList.Add(widgetInstance);
                     }
@@ -197,8 +196,8 @@ namespace NetCoreCMS.Framework.Modules
 
         private void RegisterWidgets(IModule module, IServiceCollection services, IServiceProvider serviceProvider)
         {
-            module.Widgets = new List<IWidget>();
-            var widgetTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces()?.Where(y => y.Name == typeof(IWidget).Name).FirstOrDefault() != null).ToList();
+            module.Widgets = new List<Widget>();
+            var widgetTypeList = module.Assembly.GetTypes().Where( x => typeof(Widget).IsAssignableFrom(x)).ToList();
              
             foreach (var widgetType in widgetTypeList)
             {                

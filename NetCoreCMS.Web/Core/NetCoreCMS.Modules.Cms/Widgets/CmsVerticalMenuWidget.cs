@@ -11,102 +11,34 @@ using System.Threading.Tasks;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {
-    public class CmsVerticalMenuWidget : IWidget
+    public class CmsVerticalMenuWidget : Widget
     {
-        string _title;
-        string _body;
-        string _footer;
-        string _configJson;
-        string _configHtml;
-        string _description;
-        string _viewFileName;
-        string _configViewFileName;
 
         IViewRenderService _viewRenderService;
-        NccWebSiteWidgetService _websiteWidgetService;
+        NccWebSiteWidgetService _websiteWidgetService;                
 
-        public string WidgetId { get { return "NetCoreCMS.Modules.Cms.CmsVerticalMenuWidget"; } }
-
-        public string Title { get { return _title; } }
-
-        public string Description { get { return _description; } }
-
-        public string Body { get { return _body; } }
-
-        public string Footer { get { return _footer; } }
-
-        public string ConfigJson { get { return _configJson; } }
-        public string ConfigHtml { get { return _configHtml; } }
-        public string ViewFileName { get { return _viewFileName; } }
-
-        public CmsVerticalMenuWidget(IViewRenderService viewRenderService, NccWebSiteWidgetService websiteWidgetService)
+        public CmsVerticalMenuWidget(
+            IViewRenderService viewRenderService, 
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Cms.CmsVerticalMenuWidget", "Vertical Menu", "Vertical nevigation menu", "Footer")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
         }
 
-        public void Init()
+        public override void Init(long websiteWidgetId)
         {
-            _title = "Vertical Menu";
-            _description = "Vertical nevigation menu";
-            _footer = "Footer";
-            _viewFileName = "Widgets/CmsVerticalMenu";
-            _configViewFileName = "Widgets/CmsVerticalMenuConfig";
-        }
-
-        public string RenderBody()
-        {
-            _body = _viewRenderService.RenderToStringAsync<CmsWidgetController>(_viewFileName, null).Result;
-            return _body;
-        }
-
-        public string RenderBody(string html = "")
-        {
-            if (!string.IsNullOrEmpty(html))
-            {
-                html.Replace(Widget.BODY_REPLACE_TEXT, _body);
-            }
-            else
-            {
-                html = _body;
-            }
-            
-            return html;
-        }
-
-        public string RenderFooter(string html = "")
-        {
-            if (!string.IsNullOrEmpty(html))
-            {
-                html.Replace(Widget.FOOTER_REPLACE_TEXT, _body);
-            }
-            else
-            {
-                html = _footer;
-            }
-
-            return html;
-        }
-
-        public string RenderTitle(string html = "")
-        {
-            if (!string.IsNullOrEmpty(html))
-            {
-                html.Replace(Widget.TITLE_REPLACE_TEXT, _body);
-            }
-            else
-            {
-                html = _title;
-            }
-
-            return html;
-        }
-
-        public string RenderConfig(long websiteWidgetId)
-        {
+            WebSiteWidgetId = websiteWidgetId;
+            ViewFileName = "Widgets/CmsVerticalMenu";
+            ConfigViewFileName = "Widgets/CmsVerticalMenuConfig";
             var websiteWidget = _websiteWidgetService.Get(websiteWidgetId);
-            _configHtml = _viewRenderService.RenderToStringAsync<CmsWidgetController>(_configViewFileName, websiteWidget).Result;
-            return _configHtml;
+            ConfigHtml = _viewRenderService.RenderToStringAsync<CmsWidgetController>(ConfigViewFileName, websiteWidget).Result;
         }
+
+        public override string RenderBody()
+        {
+            var body = _viewRenderService.RenderToStringAsync<CmsWidgetController>(ViewFileName, null).Result;
+            return body;
+        }
+        
     }
 }

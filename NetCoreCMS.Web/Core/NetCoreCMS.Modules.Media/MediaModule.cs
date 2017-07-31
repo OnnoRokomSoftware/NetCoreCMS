@@ -13,7 +13,7 @@ namespace NetCoreCMS.Core.Modules.Media
 {
     public class MediaModule : IModule
     {
-        List<IWidget> _widgets;
+        List<Widget> _widgets;
         public MediaModule()
         {
             
@@ -34,7 +34,7 @@ namespace NetCoreCMS.Core.Modules.Media
         public string SortName { get; set; }
         public string Path { get; set; }
         public int ModuleStatus { get; set; }
-        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
+        public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
         public bool Activate()
         {
             throw new NotImplementedException();

@@ -92,18 +92,12 @@
                                     var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                                     foreach (var widget in widgets)
                                     {
-                                        widget.Init();
+                                        widget.Init(item.Id);
                                         <div>
-                                            <div class='panel panel-default'>
-                                                @*<div class='panel-heading'>
-                                                    @Html.Raw(widget.RenderTitle())
-                                                </div>*@
+                                            <div class='panel panel-default'> 
                                                 <div class='panel-body'>
                                                     @Html.Raw(widget.RenderBody())
-                                                </div>
-                                                @*<div class='panel-footer'>
-                                                    @Html.Raw(widget.RenderFooter())
-                                                </div>*@
+                                                </div> 
                                             </div>
                                         </div>
                                     }
@@ -125,7 +119,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    @*<a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">@WebSite.Name</a>*@
+                     
                     <div id="navbarWebsiteName" class="navbar-brand navbar-brand-with-top-menu">@ViewBag.WebSite.Name</div>
                 </div>
                 <div class="navbar-collapse collapse">
@@ -146,24 +140,12 @@
                 {
                     <div class="fullWidthSlider">
                         @foreach (var item in fullWidthSlider)
-                {
-                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                    foreach (var widget in widgets)
-                    {
-                        widget.Init();
-                                @*<div>
-                                <div class='panel panel-default'>
-                                    <div class='panel-heading'>
-                                        @Html.Raw(widget.RenderTitle())
-                                    </div>
-                                    <div class='panel-body'>*@
-                                @Html.Raw(widget.RenderBody())
-                                @*</div>
-                                        <div class='panel-footer'>
-                                            @Html.Raw(widget.RenderFooter())
-                                        </div>
-                                    </div>
-                                </div>*@
+                        {
+                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                            foreach (var widget in widgets)
+                            {
+                                widget.Init(item.Id); 
+                                        @Html.Raw(widget.RenderBody()) 
                             }
                         }
                     </div>
@@ -214,17 +196,17 @@
                                 var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                                 foreach (var widget in widgets)
                                 {
-                                    widget.Init();
+                                    widget.Init(item.Id);
                                     <div>
                                         <div class='panel panel-default'>
                                             <div class='panel-heading'>
-                                                @Html.Raw(widget.RenderTitle())
+                                                @Html.Raw(widget.Title)
                                             </div>
                                             <div class='panel-body'>
                                                 @Html.Raw(widget.RenderBody())
                                             </div>
                                             <div class='panel-footer'>
-                                                @Html.Raw(widget.RenderFooter())
+                                                @Html.Raw(widget.Footer)
                                             </div>
                                         </div>
                                     </div>
@@ -277,17 +259,17 @@
                                 var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                                 foreach (var widget in widgets)
                                 {
-                                    widget.Init();
+                                    widget.Init(item.Id);
                                     <div>
                                         <div class='panel panel-default'>
                                             <div class='panel-heading'>
-                                                @Html.Raw(widget.RenderTitle())
+                                                @Html.Raw(widget.Title)
                                             </div>
                                             <div class='panel-body'>
                                                 @Html.Raw(widget.RenderBody())
                                             </div>
                                             <div class='panel-footer'>
-                                                @Html.Raw(widget.RenderFooter())
+                                                @Html.Raw(widget.Footer)
                                             </div>
                                         </div>
                                     </div>
@@ -314,20 +296,9 @@
                                     var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                                     foreach (var widget in widgets)
                                     {
-                                        widget.Init();
-                                        @*<div>
-                                <div class='panel panel-default'>
-                                    <div class='panel-heading'>
-                                        @Html.Raw(widget.RenderTitle())
-                                    </div>
-                                    <div class='panel-body'>*@
+                                        widget.Init(item.Id);                                         
                                         @Html.Raw(widget.RenderBody())
-                                        @*</div>
-                                        <div class='panel-footer'>
-                                            @Html.Raw(widget.RenderFooter())
-                                        </div>
-                                    </div>
-                                </div>*@
+                                       
                                     }
                                 }
                             </div>
@@ -392,7 +363,7 @@
                                     var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                                     foreach (var widget in widgets)
                                     {
-                                        widget.Init();
+                                        widget.Init(item.Id);
                                         <div>
                                             @Html.Raw(widget.RenderBody())
                                         </div>

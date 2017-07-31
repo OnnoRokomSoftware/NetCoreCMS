@@ -31,7 +31,7 @@
                                 <div class="panel panel-primary">
                                     <div class="panel-heading">@item.ModuleTitle</div>
                                     <div id="Container_@item.ModuleId" data-module-id="@item.ModuleId"  class="panel-body"  ondrop="dropBack(event)" ondragover="allowDrop(event)">*@
-                                        @foreach (IWidget widget in item.Widgets)
+                                        @foreach (Widget widget in item.Widgets)
                                         {   <div id="@Guid.NewGuid().ToString()" class="ncc-widget-box" data-widget-id="@widget.WidgetId" data-module-id="@item.ModuleId"  draggable="true" ondragstart="drag(event)">                                     
                                                 <div class="panel panel-default" >
                                                     <div class="panel-heading">
@@ -98,16 +98,18 @@
                                         <div data-theme-id="@GlobalConfig.ActiveTheme.ThemeId"  data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             Drop widget here
                                             @{
-                                                var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).ToList();
-                                                foreach (var wZone in wZones)
-                                                {
-                                                    var wList = new List<IWidget>();
-                                                    foreach( var x in (List<NetCoreCMS.Framework.Modules.IModule>)ViewBag.Modules){
-                                                        wList.AddRange(x.Widgets);
-                                                    }
-                                                    var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
+                                                    var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).ToList();
+                                                    foreach (var wZone in wZones)
+                                                    {
+                                                        var wList = new List<Widget>();
+                                                        foreach( var x in (List<NetCoreCMS.Framework.Modules.IModule>)ViewBag.Modules){
+                                                            wList.AddRange(x.Widgets);
+                                                        }
+                                                        var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
 
-                                                    if (w != null) {
+                                                        if (w != null) {
+                                                            w.Init(wZone.Id);
+
                                                         <div id="@Guid.NewGuid().ToString()" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone"  draggable="true" ondragstart="drag(event)">
                                                             <div class="panel panel-default"  >
                                                                 <div class="panel-heading">
@@ -117,8 +119,8 @@
                                                                 <div id="collapse_@wZone.Id" class="panel-collapse collapse">
                                                                     <div class="panel-body">
                                                                          @w.Description
-                                                                        <div>
-                                                                            @Html.Raw(w.RenderConfig(wZone.Id))
+                                                                        <div>                                                                            
+                                                                            @Html.Raw(w.RenderConfig())
                                                                         </div>
                                                                     </div>                                                                    
                                                                 </div>

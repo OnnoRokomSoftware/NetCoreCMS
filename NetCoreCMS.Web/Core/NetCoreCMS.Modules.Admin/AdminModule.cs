@@ -18,7 +18,7 @@ namespace NetCoreCMS.Core.Modules.Admin
     
     public class AdminModule : IModule
     {
-        List<IWidget> _widgets;
+        List<Widget> _widgets;
         public AdminModule()
         {
              
@@ -39,7 +39,7 @@ namespace NetCoreCMS.Core.Modules.Admin
         public string SortName { get; set; }
         public string Path { get; set; }
         public int ModuleStatus { get; set; }
-        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
+        public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
         {

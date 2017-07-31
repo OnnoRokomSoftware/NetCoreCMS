@@ -37,7 +37,7 @@ namespace NetCoreCMS.Framework.Modules
         string SortName { get; set; }
         string Path { get; set; }
         int ModuleStatus { get; set; }
-        List<IWidget> Widgets { get; set; }
+        List<Widget> Widgets { get; set; }
         
         void Init(IServiceCollection services);
         void RegisterRoute(IRouteBuilder routes);

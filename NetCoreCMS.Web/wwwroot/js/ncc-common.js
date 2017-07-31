@@ -114,14 +114,23 @@ NccGlobalAlert = new function () {
 }
 
 NccUtil = new function () {
-    this.GetSafeSlug = function(string){
+    this.GetSafeSlug = function (string) {
         return string
             //.toLowerCase()
             .replace(/ /g, '-')
             .replace(/[.,\/#!$%\^&\*;:{}=\+_`~()]/g, "");
-    }
-}
+    };
 
-function Log(data) {
-    console.log(data);
+    this.Log = function (data) {
+        console.log(data);
+    };
+
+    this.JsonToArray = function(json){
+        var result = [];
+        var keys = Object.keys(json);
+        keys.forEach(function (key) {
+            result[key] = (json[key]);
+        });
+        return result;    
+    }
 }

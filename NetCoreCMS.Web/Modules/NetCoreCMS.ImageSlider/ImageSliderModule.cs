@@ -4,9 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.ComponentModel.DataAnnotations.Schema;
-using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Modules.Widgets;
-using NetCoreCMS.ImageSlider.Widgets;
 using Microsoft.AspNetCore.Routing;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Data;
@@ -15,7 +13,7 @@ namespace NetCoreCMS.Modules.ImageSlider
 {
     public class ImageSliderModule : IModule
     {
-        List<IWidget> _widgets;
+        List<Widget> _widgets;
         public ImageSliderModule()
         {
              
@@ -40,7 +38,7 @@ namespace NetCoreCMS.Modules.ImageSlider
         public int ModuleStatus { get; set; }
         public string ModuleTitle { get ; set ; }
         [NotMapped]
-        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
+        public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
         {

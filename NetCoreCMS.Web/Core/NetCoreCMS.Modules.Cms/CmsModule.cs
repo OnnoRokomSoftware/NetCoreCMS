@@ -15,7 +15,7 @@ namespace NetCoreCMS.Core.Modules.Cms
 {
     public class CmsModule : IModule
     {
-        List<IWidget> _widgets;
+        List<Widget> _widgets;
         public CmsModule()
         {
             
@@ -36,7 +36,7 @@ namespace NetCoreCMS.Core.Modules.Cms
         public string SortName { get; set; }
         public string Path { get; set; }
         public int ModuleStatus { get; set; }
-        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
+        public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
         {

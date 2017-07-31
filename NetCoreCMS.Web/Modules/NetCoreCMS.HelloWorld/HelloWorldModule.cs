@@ -15,7 +15,7 @@ namespace NetCoreCMS.Modules.HelloWorld
 {
     public class HelloWorldModule : IModule
     {
-        List<IWidget> _widgets;
+        List<Widget> _widgets;
         public HelloWorldModule()
         {
              
@@ -40,7 +40,7 @@ namespace NetCoreCMS.Modules.HelloWorld
         public int ModuleStatus { get; set; }
         public string ModuleTitle { get ; set ; }
         [NotMapped]
-        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
+        public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
         public bool Activate()
         {

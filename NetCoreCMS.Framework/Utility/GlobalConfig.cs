@@ -20,7 +20,7 @@ namespace NetCoreCMS.Framework.Utility
         public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<IModule> Modules { get; set; } = new List<IModule>();
-        public static List<IWidget> Widgets{ get; set; } = new List<IWidget>();
+        public static List<Widget> Widgets{ get; set; } = new List<Widget>();
         public static List<NccWebSiteWidget> WebSiteWidgets { get; set; } = new List<NccWebSiteWidget>();
         public static List<Theme> Themes { get; set; } = new List<Theme>();
         public static List<NccMenu> Menus { get; set; } = new List<NccMenu>();

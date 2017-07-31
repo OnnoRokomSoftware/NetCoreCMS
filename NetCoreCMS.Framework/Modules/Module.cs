@@ -15,7 +15,7 @@ namespace NetCoreCMS.Framework.Modules
 {
     public class Module : IModule
     {
-        List<IWidget> _widgets;
+        List<Widget> _widgets;
         
         public string Id { get; set; }
         public string ModuleId { get; set; }
@@ -47,11 +47,11 @@ namespace NetCoreCMS.Framework.Modules
         public string Path { get; set; }
         public int ModuleStatus { get; set; }
 
-        public List<IWidget> Widgets { get { return _widgets; } set { _widgets = value; } }
+        public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
         
         public Module()
         {
-            _widgets = new List<IWidget>();
+            _widgets = new List<Widget>();
             DependencyList = "";
         }
 
