@@ -12,8 +12,13 @@
         float:left;
         margin-right: 2%;
     }
+    .widget-container {
+        height: 75vh;
+    }
+    .widget-layout-container {
+        height: 70vh;
+    }
     .fullHeight{
-        height: 80vh;
         overflow-x: hidden;
         overflow-y: auto;
     }
@@ -23,44 +28,46 @@
 
     <div class="row">
         <div class="col-lg-7">
-            <div id="ncc-module-widget-box-container" class="panel panel-default fullHeight" ondrop="dropBack(event)" ondragover="allowDrop(event)">
+            <div id="ncc-module-widget-box-container" class="panel panel-default" ondrop="dropBack(event)" ondragover="allowDrop(event)">
                 <div class="panel-heading">
                     Widgets
                 </div>
                 <div class="panel-body ncc-widget-box-container">
-                    @foreach (IModule item in ViewBag.Modules)
-                    {
-                        if (item.Widgets.Count > 0)
+                    <div class="fullHeight widget-container">
+                        @foreach (IModule item in ViewBag.Modules)
                         {
-                            @*<div class="col-md-6">
-                                <div class="panel panel-primary">
-                                    <div class="panel-heading">@item.ModuleTitle</div>
-                                    <div id="Container_@item.ModuleId" data-module-id="@item.ModuleId"  class="panel-body"  ondrop="dropBack(event)" ondragover="allowDrop(event)">*@
-                                        @foreach (Widget widget in item.Widgets)
-                                        {   <div id="@Guid.NewGuid().ToString()" class="ncc-widget-box" data-widget-id="@widget.WidgetId" data-module-id="@item.ModuleId"  draggable="true" ondragstart="drag(event)">                                     
-                                                <div class="panel panel-default" >
-                                                    <div class="panel-heading">
-                                                        <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
-                                                        <a draggable="false" data-toggle="collapse" href="#collapse_@widget.WidgetId.Replace('.', '_')">@widget.Title (@item.ModuleTitle)</a>
-                                                    </div>
-                                                    <div id="collapse_@widget.WidgetId.Replace('.', '_')" class="panel-collapse collapse">
-                                                        <div class="panel-body">
-                                                            @widget.Description
+                            if (item.Widgets.Count > 0)
+                            {
+                                @*<div class="col-md-6">
+                                    <div class="panel panel-primary">
+                                        <div class="panel-heading">@item.ModuleTitle</div>
+                                        <div id="Container_@item.ModuleId" data-module-id="@item.ModuleId"  class="panel-body"  ondrop="dropBack(event)" ondragover="allowDrop(event)">*@
+                                            @foreach (Widget widget in item.Widgets)
+                                            {   <div id="@Guid.NewGuid().ToString()" class="ncc-widget-box" data-widget-id="@widget.WidgetId" data-module-id="@item.ModuleId"  draggable="true" ondragstart="drag(event)">                                     
+                                                    <div class="panel panel-default" >
+                                                        <div class="panel-heading">
+                                                            <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
+                                                            <a draggable="false" data-toggle="collapse" href="#collapse_@widget.WidgetId.Replace('.', '_')">@widget.Title (@item.ModuleTitle)</a>
                                                         </div>
-                                                    </div>
-                                                </div>                    
-                                            </div>
-                                        }
-                                    @*</div>
-                                </div>
-                            </div>*@
+                                                        <div id="collapse_@widget.WidgetId.Replace('.', '_')" class="panel-collapse collapse">
+                                                            <div class="panel-body">
+                                                                @widget.Description
+                                                            </div>
+                                                        </div>
+                                                    </div>                    
+                                                </div>
+                                            }
+                                        @*</div>
+                                    </div>
+                                </div>*@
+                            }
                         }
-                    }
+                    </div>
                 </div>
             </div>
         </div>
         <div class="col-lg-5">
-            <div class="panel with-nav-tabs panel-default fullHeight">
+            <div class="panel with-nav-tabs panel-default">
                 <div class="panel-heading">
                     Layout Zones
                 </div>
@@ -83,7 +90,7 @@
                                 ariaExpanded = "";
                             }
                         </ul>
-                        <div class="tab-content">
+                        <div class="tab-content fullHeight widget-layout-container">
                             @{
                                 active = "active";
                             }

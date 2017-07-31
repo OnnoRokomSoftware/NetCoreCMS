@@ -93,11 +93,18 @@
                                     foreach (var widget in widgets)
                                     {
                                         widget.Init(item.Id);
-                                        <div>
-                                            <div class='panel panel-default'> 
-                                                <div class='panel-body'>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div> 
+                                        <div class='panel panel-default'>
+                                            @if (widget.DisplayTitle != "")
+                                            {
+                                                <div class='panel-heading'>
+                                                    @Html.Raw(widget.DisplayTitle)
+                                                </div>
+                                            }
+                                            <div class='panel-body'>
+                                                @Html.Raw(widget.RenderBody())
+                                            </div>
+                                            <div class='panel-footer'>
+                                                @Html.Raw(widget.Footer)
                                             </div>
                                         </div>
                                     }
@@ -144,8 +151,21 @@
                             var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
                             foreach (var widget in widgets)
                             {
-                                widget.Init(item.Id); 
-                                        @Html.Raw(widget.RenderBody()) 
+                                widget.Init(item.Id);
+                                <div class='panel panel-default'>
+                                    @if (widget.DisplayTitle != "")
+                                    {
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.DisplayTitle)
+                                        </div>
+                                    }
+                                    <div class='panel-body'>
+                                        @Html.Raw(widget.RenderBody())
+                                    </div>
+                                    <div class='panel-footer'>
+                                        @Html.Raw(widget.Footer)
+                                    </div>
+                                </div>
                             }
                         }
                     </div>
@@ -197,17 +217,18 @@
                                 foreach (var widget in widgets)
                                 {
                                     widget.Init(item.Id);
-                                    <div>
-                                        <div class='panel panel-default'>
+                                    <div class='panel panel-default'>
+                                        @if (widget.DisplayTitle != "")
+                                        {
                                             <div class='panel-heading'>
-                                                @Html.Raw(widget.Title)
+                                                @Html.Raw(widget.DisplayTitle)
                                             </div>
-                                            <div class='panel-body'>
-                                                @Html.Raw(widget.RenderBody())
-                                            </div>
-                                            <div class='panel-footer'>
-                                                @Html.Raw(widget.Footer)
-                                            </div>
+                                        }
+                                        <div class='panel-body'>
+                                            @Html.Raw(widget.RenderBody())
+                                        </div>
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.Footer)
                                         </div>
                                     </div>
                                 }
@@ -260,17 +281,18 @@
                                 foreach (var widget in widgets)
                                 {
                                     widget.Init(item.Id);
-                                    <div>
-                                        <div class='panel panel-default'>
+                                    <div class='panel panel-default'>
+                                        @if (widget.DisplayTitle != "")
+                                        {
                                             <div class='panel-heading'>
-                                                @Html.Raw(widget.Title)
+                                                @Html.Raw(widget.DisplayTitle)
                                             </div>
-                                            <div class='panel-body'>
-                                                @Html.Raw(widget.RenderBody())
-                                            </div>
-                                            <div class='panel-footer'>
-                                                @Html.Raw(widget.Footer)
-                                            </div>
+                                        }
+                                        <div class='panel-body'>
+                                            @Html.Raw(widget.RenderBody())
+                                        </div>
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.Footer)
                                         </div>
                                     </div>
                                 }
@@ -364,8 +386,19 @@
                                     foreach (var widget in widgets)
                                     {
                                         widget.Init(item.Id);
-                                        <div>
-                                            @Html.Raw(widget.RenderBody())
+                                        <div class='panel panel-default'>
+                                            @if (widget.DisplayTitle != "")
+                                            {
+                                                <div class='panel-heading'>
+                                                    @Html.Raw(widget.DisplayTitle)
+                                                </div>
+                                            }
+                                            <div class='panel-body'>
+                                                @Html.Raw(widget.RenderBody())
+                                            </div>
+                                            <div class='panel-footer'>
+                                                @Html.Raw(widget.Footer)
+                                            </div>
                                         </div>
                                     }
                                 }
