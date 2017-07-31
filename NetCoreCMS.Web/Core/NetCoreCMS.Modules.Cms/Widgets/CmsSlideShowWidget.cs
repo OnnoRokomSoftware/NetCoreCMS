@@ -2,6 +2,7 @@
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Modules.Cms.Controllers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -27,7 +28,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/CmsSlideShow";
-            var websiteWidget = _websiteWidgetService.Get(websiteWidgetId);            
+            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
+            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
+            {
+                var configJson = webSiteWidget.WidgetConfigJson;
+                var config = JsonConvert.DeserializeObject<dynamic>(configJson);
+                DisplayTitle = config.title;
+            }
         }
 
         public override string RenderBody()
