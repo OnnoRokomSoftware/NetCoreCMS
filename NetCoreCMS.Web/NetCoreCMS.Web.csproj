@@ -46,18 +46,7 @@
     <Content Remove="wwwroot/js\New Text Document.txt" />
     <Content Remove="wwwroot/lib\css-loader\dist\loader-ball.css" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="wwwroot\lib\jquery-serializeObject\jquery.serializeObject.min.js" />
-  </ItemGroup>
-  <!--
-  <ItemGroup>
-    <Content Include="Data\SecureMedia\README.md" />
-    <Content Include="wwwroot\css\ncc-common.css" />
-    <Content Include="wwwroot\js\ncc-common.js" />
-    <Content Include="wwwroot\media\README.md" />
-  </ItemGroup>
-  -->
+ 
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
