@@ -12,13 +12,18 @@
         float:left;
         margin-right: 2%;
     }
+    .fullHeight{
+        height: 80vh;
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
 </style>
 
 <div class="row">
 
-    <div class="col-lg-12">
+    <div class="row">
         <div class="col-lg-7">
-            <div id="ncc-module-widget-box-container" class="panel panel-default" ondrop="dropBack(event)" ondragover="allowDrop(event)">
+            <div id="ncc-module-widget-box-container" class="panel panel-default fullHeight" ondrop="dropBack(event)" ondragover="allowDrop(event)">
                 <div class="panel-heading">
                     Widgets
                 </div>
@@ -55,89 +60,86 @@
             </div>
         </div>
         <div class="col-lg-5">
-
-            <div class="panel with-nav-tabs panel-default">
+            <div class="panel with-nav-tabs panel-default fullHeight">
                 <div class="panel-heading">
                     Layout Zones
                 </div>
                 <div class="panel-body">
-                    <ul class="nav nav-tabs">
-                        @{
-                            var active = "active";
-                            var ariaExpanded = "aria-expanded=\"true\"";
-                        }
-                        @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
-                        {
-                            var tabName = "#tab_" + layout.Name.Replace(' ', '_');
+                    <div class="row">
+                        <ul class="nav nav-tabs">
+                            @{
+                                var active = "active";
+                                var ariaExpanded = "aria-expanded=\"true\"";
+                            }
+                            @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
+                            {
+                                var tabName = "#tab_" + layout.Name.Replace(' ', '_');
 
-                            <li class="@active">
-                                <a href="@tabName" data-toggle="tab" @ariaExpanded  > @layout.Name.Replace("Layout", "") </a>
-                            </li> 
+                                    <li class="@active">
+                                        <a href="@tabName" data-toggle="tab" @ariaExpanded> @layout.Name.Replace("Layout", "") </a>
+                                    </li>
 
-                            active = "";
-                            ariaExpanded = "";
-                        }
-                    </ul>
-                    <div class="tab-content">
-                        <br/>
-                        @{
-                            active = "active";
-                        }
-                        @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
-                        {
-                            var tabName = "tab_" + layout.Name.Replace(' ','_');
-                                                      
-                            <div class="tab-pane @active" id="@tabName">
-                                <div>Widget Sections for layout <strong>@layout.Name</strong> </div>
-                                @foreach (var zone in layout.LayoutZones)
-                                {   
-                                    <div class="panel panel-default">
-                                        <div class="panel-heading">
-                                            @zone
-                                        </div>
-                                        <div data-theme-id="@GlobalConfig.ActiveTheme.ThemeId"  data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                active = "";
+                                ariaExpanded = "";
+                            }
+                        </ul>
+                        <div class="tab-content">
+                            @{
+                                active = "active";
+                            }
+                            @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
+                            {
+                                var tabName = "tab_" + layout.Name.Replace(' ','_');
+                                <div class="tab-pane @active" id="@tabName">
+                                    <div class="col-md-12">
+                                        <div class="text-right">Widget Sections for layout <strong>@layout.Name </strong> </div>
+                                        @foreach (var zone in layout.LayoutZones)
+                                        {
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    @zone
+                                                </div>
+                                                <div data-theme-id="@GlobalConfig.ActiveTheme.ThemeId" data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
                                             Drop widget here
-                                            @{
-                                                    var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).ToList();
-                                                    foreach (var wZone in wZones)
-                                                    {
-                                                        var wList = new List<Widget>();
-                                                        foreach( var x in (List<NetCoreCMS.Framework.Modules.IModule>)ViewBag.Modules){
-                                                            wList.AddRange(x.Widgets);
-                                                        }
-                                                        var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
-
-                                                        if (w != null) {
-                                                            w.Init(wZone.Id);
-
-                                                        <div id="@Guid.NewGuid().ToString()" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone"  draggable="true" ondragstart="drag(event)">
-                                                            <div class="panel panel-default"  >
-                                                                <div class="panel-heading">
-                                                                    <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
-                                                                    <a draggable="false" data-toggle="collapse" href="#collapse_@wZone.Id">@w.Title</a>
-                                                                </div>
-                                                                <div id="collapse_@wZone.Id" class="panel-collapse collapse">
-                                                                    <div class="panel-body">
-                                                                         @w.Description
-                                                                        <div>                                                                            
-                                                                            @Html.Raw(w.RenderConfig())
+                                                     @{ 
+                                                         var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).ToList();
+                                                         foreach (var wZone in wZones) {
+                                                             var wList = new List<Widget>();
+                                                             foreach (var x in (List<NetCoreCMS.Framework.Modules.IModule>)ViewBag.Modules) {
+                                                                 wList.AddRange(x.Widgets);
+                                                             }
+                                                             var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
+                                                             if (w != null) {
+                                                                 w.Init(wZone.Id);  
+                                                                 <div id="@Guid.NewGuid().ToString()" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone"  draggable="true" ondragstart="drag(event)">
+                                                                    <div class="panel panel-default"  >
+                                                                        <div class="panel-heading">
+                                                                            <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
+                                                                            <a draggable="false" data-toggle="collapse" href="#collapse_@wZone.Id">@w.Title</a>
                                                                         </div>
-                                                                    </div>                                                                    
+                                                                        <div id="collapse_@wZone.Id" class="panel-collapse collapse">
+                                                                            <div class="panel-body">
+                                                                                 @*@w.Description*@
+                                                                                @Html.Raw(w.RenderConfig())
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                        </div>
+                                                            }
+                                                        }
                                                     }
-                                                }
-                                            }
-                                        </div>
+                                                </div>
+                                            </div>
+                                        }
                                     </div>
-                                }
-                            </div>
-                                
-                            active = ""; 
-                        } 
+                                </div>
+
+                                active = "";
+                            }
+                        </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>

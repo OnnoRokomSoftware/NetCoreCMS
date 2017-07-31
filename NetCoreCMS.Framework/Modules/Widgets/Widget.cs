@@ -32,10 +32,21 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         public abstract string RenderBody();
         public string RenderConfig() {
             
-            ConfigPrefix = @"<form id='configForm_" + WebSiteWidgetId + @"'>
-                                <div>               
-                                    <input class='form-control' type='text' id='title' name='title' value='' />";
-            ConfigSuffix = @"       <input id='saveConfig_" + WebSiteWidgetId + @"' type='button' value='Save' />
+            ConfigPrefix = @"
+                            <form id='configForm_" + WebSiteWidgetId + @"' class='form-horizontal'>
+                                <div class='form-group'>
+                                    <label class='col-sm-3 control-label'>Title</label>
+                                    <div class='col-sm-9'>
+                                        <input type = 'text' class='form-control' id='title' name='title' value='' placeholder='Enter Title'>
+                                    </div>
+                                </div>
+                                <div>";
+            ConfigSuffix = @"       
+                                </div>
+                                <div class='form-group'>
+                                    <div class='col-sm-offset-3 col-sm-9'>
+                                        <input type='button' class='btn btn-default' id='saveConfig_" + WebSiteWidgetId + @"' value='Save' />
+                                    </div>
                                 </div>
                             </form>
 
