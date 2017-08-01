@@ -34,6 +34,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
                 var configJson = webSiteWidget.WidgetConfigJson;
                 var config = JsonConvert.DeserializeObject<dynamic>(configJson);
                 DisplayTitle = config.title;
+                Footer = config.footer;
                 body = config.bodyContent;
             }
 

@@ -63,12 +63,64 @@ namespace NetCoreCMS.Modules.ImageSlider
 
         public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            return true;
+            var createQuery = @"
+                CREATE TABLE `Ncc_Image_Slider` ( 
+                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
+                    `VersionNumber` INT NOT NULL , 
+                    `Name` VARCHAR(250) NOT NULL , 
+                    `CreationDate` DATETIME NOT NULL , 
+                    `ModificationDate` DATETIME NOT NULL , 
+                    `CreateBy` BIGINT NOT NULL , 
+                    `ModifyBy` BIGINT NOT NULL , 
+                    `Status` INT NOT NULL , 
+
+                    `ContainerStyle` TEXT NULL , 
+                    `Interval` INT NOT NULL , 
+                    `ShowNav` BIT(1) NOT NULL , 
+                    `ShowSideNav` BIT(1) NOT NULL , 
+                    `ImageWidth` VARCHAR(255) NULL , 
+                    `ImageHeight` VARCHAR(255) NULL , 
+                PRIMARY KEY (`Id`)) ENGINE = MyISAM;
+
+                CREATE TABLE `Ncc_Image_Slider_Title` ( 
+                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
+                    `VersionNumber` INT NOT NULL , 
+                    `Name` VARCHAR(250) NOT NULL , 
+                    `CreationDate` DATETIME NOT NULL , 
+                    `ModificationDate` DATETIME NOT NULL , 
+                    `CreateBy` BIGINT NOT NULL , 
+                    `ModifyBy` BIGINT NOT NULL , 
+                    `Status` INT NOT NULL , 
+
+                    `Path` VARCHAR(1000) NOT NULL , 
+                    `Description` TEXT NOT NULL , 
+                    `Order` INT NOT NULL , 
+                PRIMARY KEY (`Id`)) ENGINE = MyISAM;
+            ";
+
+            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = createQuery };
+            var retVal = executeQuery(nccDbQueryText);
+            if (!string.IsNullOrEmpty(retVal))
+            {
+                return true;
+            }
+            return false;
         }
 
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            return true;
+            var deleteQuery = @"
+                DROP TABLE `Ncc_Image_Slider_Title`; 
+                DROP TABLE `Ncc_Image_Slider`
+            ;";
+
+            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };
+            var retVal = executeQuery(nccDbQueryText);
+            if (!string.IsNullOrEmpty(retVal))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

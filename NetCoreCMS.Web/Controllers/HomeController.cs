@@ -23,12 +23,12 @@ namespace NetCoreCMS.Web.Controllers
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
                 var setupConfig = SetupHelper.LoadSetup();
-                if(setupConfig == null)
+                if (setupConfig == null)
                 {
                     TempData["Message"] = "Setup config file is missed. Please reinstall.";
                     return Redirect("~/CmsHome/ResourceNotFound");
                 }
-                if(setupConfig.StartupUrl.Trim('/') == "" || setupConfig.StartupUrl.Trim().ToLower() == "/home")
+                if (setupConfig.StartupUrl.Trim('/') == "" || setupConfig.StartupUrl.Trim().ToLower() == "/home")
                 {
                     return View();
                 }
@@ -36,23 +36,26 @@ namespace NetCoreCMS.Web.Controllers
             }
             return Redirect("/SetupHome/Index");
         }
-         
+
         public IActionResult Error()
         {
             return View();
         }
-         
+
         public IActionResult SetupSuccess()
         {
             Program.Shutdown();
             return View();
         }
-         
-        public IActionResult RestartHost()
+
+        [Authorize(Roles = "SuperAdmin,Administrator")]
+        public IActionResult RestartHost(string returnUrl = "/", string returnUrlName = "Home")
         {
             //TODO: need to secure this restart.
             NetCoreCmsHost.IsRestartRequired = true;
             Program.Shutdown();
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.ReturnUrlName = returnUrlName;
             return View();
         }
     }

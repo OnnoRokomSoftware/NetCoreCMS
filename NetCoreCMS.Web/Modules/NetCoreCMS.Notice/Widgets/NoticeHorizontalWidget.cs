@@ -35,12 +35,14 @@ namespace NetCoreCMS.Notice.Widgets
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/NoticeHorizontal";
+
             var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
-            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson) )
+            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {
                 var configJson = webSiteWidget.WidgetConfigJson;
                 var config = JsonConvert.DeserializeObject<dynamic>(configJson);
                 DisplayTitle = config.title;
+                Footer = config.footer;
             }
         }
 

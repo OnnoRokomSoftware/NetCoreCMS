@@ -19,7 +19,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         public string Title { get; }
         public string DisplayTitle { get; set; }
         public string Description { get; }        
-        public string Footer { get; }
+        public string Footer { get; set; }
         public string ConfigJson { get; }
         public string ConfigHtml { get; set; }
         private string ConfigPrefix { get; set; }
@@ -42,6 +42,12 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                                 </div>
                                 <div>";
             ConfigSuffix = @"       
+                                </div>
+                                <div class='form-group'>
+                                    <label class='col-sm-3 control-label'>Footer</label>
+                                    <div class='col-sm-9'>
+                                        <input type = 'text' class='form-control' id='footer' name='footer' value='' placeholder='Enter Footer'>
+                                    </div>
                                 </div>
                                 <div class='form-group'>
                                     <div class='col-sm-offset-3 col-sm-9'>

@@ -2,6 +2,7 @@
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.HelloWorld.Controllers;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,8 +25,15 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public override void Init(long websiteWidgetId)
         {
             WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/FooterMenu";            
-            var websiteWidget = _websiteWidgetService.Get(websiteWidgetId);            
+            ViewFileName = "Widgets/FooterMenu";
+            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
+            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
+            {
+                var configJson = webSiteWidget.WidgetConfigJson;
+                var config = JsonConvert.DeserializeObject<dynamic>(configJson);
+                DisplayTitle = config.title;
+                Footer = config.footer;
+            }
         }
 
         public override string RenderBody()
