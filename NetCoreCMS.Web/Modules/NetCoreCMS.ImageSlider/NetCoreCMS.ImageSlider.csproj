@@ -22,8 +22,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Repository\" />
-    <Folder Include="Services\" />
     <Folder Include="Widgets\" />
   </ItemGroup>
 
