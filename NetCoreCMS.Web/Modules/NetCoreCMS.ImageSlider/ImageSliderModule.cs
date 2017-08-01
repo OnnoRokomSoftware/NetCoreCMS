@@ -8,6 +8,8 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using Microsoft.AspNetCore.Routing;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.ImageSlider.Services;
+using NetCoreCMS.ImageSlider.Repository;
 
 namespace NetCoreCMS.Modules.ImageSlider
 {
@@ -52,8 +54,8 @@ namespace NetCoreCMS.Modules.ImageSlider
 
         public void Init(IServiceCollection services)
         {
-            //services.AddTransient<NccImageSliderRepository>();
-            //services.AddTransient<NccImageSliderService>();
+            services.AddTransient<NccImageSliderRepository>();
+            services.AddTransient<NccImageSliderService>();
         }
 
         public void RegisterRoute(IRouteBuilder routes)

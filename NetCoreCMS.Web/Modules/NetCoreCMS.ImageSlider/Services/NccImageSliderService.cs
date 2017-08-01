@@ -6,7 +6,7 @@ using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.ImageSlider.Repository;
 using NetCoreCMS.ImageSlider.Models;
 
-namespace NetCoreCMS.Notice.Services
+namespace NetCoreCMS.ImageSlider.Services
 {
     public class NccImageSliderService : IBaseService<NccImageSlider>
     {

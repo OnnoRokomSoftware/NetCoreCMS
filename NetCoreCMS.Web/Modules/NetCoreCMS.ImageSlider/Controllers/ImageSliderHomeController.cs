@@ -6,7 +6,7 @@ using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.ImageSlider.Models;
-using NetCoreCMS.Notice.Services;
+using NetCoreCMS.ImageSlider.Services;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -49,15 +49,15 @@ namespace NetCoreCMS.ImageSlider.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Slider Manage", Url = "/ImageSliderHome/Manage", IconCls = "", Order = 1)]
+        [AdminMenuItem(Name = "Slider Manage", Url = "/ImageSliderHome/Manage", IconCls = "", Order = 2)]
         public ActionResult Manage()
         {
-            var itemList = _nccSettingsService.LoadAll().OrderByDescending(n => n.Id).ToList(); ;
+            var itemList = _nccImageSliderService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
             return View(itemList);
         }
 
 
-        [AdminMenuItem(Name = "New Notice", Url = "/NoticeHome/CreateEdit", Order = 1)]
+        [AdminMenuItem(Name = "New Slider", Url = "/ImageSliderHome/CreateEdit", Order = 1)]
         public ActionResult CreateEdit(long Id = 0)
         {
             NccImageSlider item = new NccImageSlider();
