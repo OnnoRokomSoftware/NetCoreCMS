@@ -49,13 +49,50 @@ namespace NetCoreCMS.ImageSlider.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Slider Manage", Url = "/ImageSliderHome", IconCls = "", Order = 1)]
+        [AdminMenuItem(Name = "Slider Manage", Url = "/ImageSliderHome/Manage", IconCls = "", Order = 1)]
         public ActionResult Manage()
         {
             var itemList = _nccSettingsService.LoadAll().OrderByDescending(n => n.Id).ToList(); ;
             return View(itemList);
         }
 
+
+        [AdminMenuItem(Name = "New Notice", Url = "/NoticeHome/CreateEdit", Order = 1)]
+        public ActionResult CreateEdit(long Id = 0)
+        {
+            NccImageSlider item = new NccImageSlider();
+
+            if (Id > 0)
+            {
+                item = _nccImageSliderService.Get(Id);
+            }
+            return View(item);
+        }
+
+        [HttpPost]
+        public ActionResult CreateEdit(NccImageSlider model)
+        {
+            ViewBag.MessageType = "ErrorMessage";
+            ViewBag.Message = "Error occoured. Please fill up all field correctly.";
+
+            if (ModelState.IsValid)
+            {
+                if (model.Id > 0)
+                {
+                    _nccImageSliderService.Update(model);
+                    ViewBag.MessageType = "SuccessMessage";
+                    ViewBag.Message = "Data updated successfull.";
+                }
+                else
+                {
+                    _nccImageSliderService.Save(model);
+                    ViewBag.MessageType = "SuccessMessage";
+                    ViewBag.Message = "Data saved successfull.";
+                }
+            }
+
+            return View(model);
+        }
 
         public ActionResult Delete(long Id)
         {
