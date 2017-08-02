@@ -1,0 +1,13 @@
+﻿{
+  "ModuleId": "com.NetCoreCMS.MatGallery",
+  "ModuleName": "NetCoreCMS.MatGallery",
+  "ModuleTitle": "NetCoreCMS Module and Theme Gallery Module",
+  "Author": "NetCoreCMS",
+  "Website": "http://DotNetCoreCMS.com",
+  "AntiForgery": true,
+  "Description": "Module and Theme management system.",
+  "Version": "1.0",
+  "NetCoreCMSVersion": "0.1.1",
+  "Dependencies": [],
+  "Category": "module,theme"
+}
