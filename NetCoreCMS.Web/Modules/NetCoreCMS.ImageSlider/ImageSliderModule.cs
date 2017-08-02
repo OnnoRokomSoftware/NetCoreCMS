@@ -55,6 +55,7 @@ namespace NetCoreCMS.Modules.ImageSlider
         public void Init(IServiceCollection services)
         {
             services.AddTransient<NccImageSliderRepository>();
+            services.AddTransient<NccImageSliderItemRepository>();
             services.AddTransient<NccImageSliderService>();
         }
 
@@ -97,6 +98,8 @@ namespace NetCoreCMS.Modules.ImageSlider
                     `Path` VARCHAR(1000) NOT NULL , 
                     `Description` TEXT NOT NULL , 
                     `Order` INT NOT NULL , 
+
+                    `NccImageSliderId` BIGINT NOT NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
             ";
 

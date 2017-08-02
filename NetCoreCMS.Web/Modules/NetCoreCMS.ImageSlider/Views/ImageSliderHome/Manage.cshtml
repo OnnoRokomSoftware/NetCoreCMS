@@ -21,6 +21,10 @@
                     <thead>
                         <tr>
                             <th>Name</th>
+                            <th>Interval (sec)</th>
+                            <th>Image Width</th>
+                            <th>Image Height</th>
+                            <th>Total Slide</th>
                             <th>CreateBy</th>
                             <th>Status</th>
                             <th>Action</th>
@@ -31,6 +35,10 @@
                         {
                             <tr>
                                 <td>@item.Name</td>
+                                <td>@item.Interval</td>
+                                <td>@item.ImageWidth</td>
+                                <td>@item.ImageHeight</td>
+                                <td>@item.ImageItems.Count()</td>
                                 <td>@item.CreateBy</td>
                                 <td>@item.Status</td>
                                 <td>

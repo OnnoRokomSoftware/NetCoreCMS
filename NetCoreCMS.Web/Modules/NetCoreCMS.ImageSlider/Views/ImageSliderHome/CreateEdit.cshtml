@@ -7,6 +7,11 @@
     Layout = Constants.AdminLayoutName;
     ViewData["PageTitle"] = "Image Slider Create";
     ViewData["PageSubtitle"] = "Create a new slider";
+    if (Model.Id > 0)
+    {
+        ViewData["PageTitle"] = "Image Slider Update";
+        ViewData["PageSubtitle"] = "Update an existing slider";
+    }
 }
     
 <div class="row">
@@ -23,45 +28,55 @@
                     <input type="hidden" asp-for="Status" value="@Model.Status" />
                     <div class="col-sm-6 pull-left">
                         <div class="form-group">
-                            <label class="col-md-3 text-right">Container Style </label>
+                            <label class="col-md-3 text-right">Name </label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" asp-for="ContainerStyle" placeholder="" value="@Model.ContainerStyle" />
+                                <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-md-3 text-right">Total Slide </label>
-                            <div class="col-md-9">
-                                @*<input type="text" class="form-control" asp-for="TotalSlide" placeholder="" value="@Model.TotalSlide" />*@
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-md-3 text-right">Interval(sec) </label>
+                            <label class="col-md-3 text-right">Interval (sec) </label>
                             <div class="col-md-9">
                                 <input type="text" class="form-control" asp-for="Interval" placeholder="" value="@Model.Interval" />
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-md-3 text-right">Show Nav </label>
-                            <div class="col-md-9">
-                                <input type="checkbox" class="" asp-for="ShowNav" @Model.ShowNav />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Image Width </label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" asp-for="ImageWidth" placeholder="" value="@Model.ImageWidth" />
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-md-3 text-right">Show Side Nav </label>
-                            <div class="col-md-9">
-                                <input type="checkbox" class="" asp-for="ShowSideNav" @Model.ShowSideNav />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Image Height </label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" asp-for="ImageHeight" placeholder="" value="@Model.ImageHeight" />
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label class="col-md-3 text-right">Image Width </label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" asp-for="ImageWidth" placeholder="" value="@Model.ImageWidth" />
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Show Nav </label>
+                                <div class="col-md-6">
+                                    <input type="checkbox" class="" asp-for="ShowNav" @Model.ShowNav />
+                                </div>
                             </div>
                         </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Show Side Nav </label>
+                                <div class="col-md-6">
+                                    <input type="checkbox" class="" asp-for="ShowSideNav" @Model.ShowSideNav />
+                                </div>
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
-                            <label class="col-md-3 text-right">Image Height </label>
+                            <label class="col-md-3 text-right">Container Style </label>
                             <div class="col-md-9">
-                                <input type="text" class="form-control" asp-for="ImageHeight" placeholder="" value="@Model.ImageHeight" />
+                                @*<input type="text" class="form-control" asp-for="ContainerStyle" placeholder="" value="@Model.ContainerStyle" />*@
+                                <textarea class="form-control" asp-for="ContainerStyle" placeholder="">@Model.ContainerStyle</textarea>
                             </div>
                         </div>
 
@@ -69,34 +84,38 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">Sl.</th>
-                                    <th>Path</th>
-                                    <th>Description (Html)</th>
+                                    <th class="text-center">Image Path</th>
+                                    <th class="text-center">Description (Html)</th>
+                                    <th class="text-center">
+                                        <input type="button" class="btn btn-primary" value="Add" onclick="addRow()" /> 
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @*@foreach (var item in Model.ImageItems)
+                                @if (Model.ImageItems != null)
                                 {
-                                    <tr>
-                                        <td class="text-center">@(item.Order + 1)</td>
-                                        <td><input type="text" class="form-control" name="itemPath[]" placeholder="" value="@item.Path" /></td>
-                                        <td>
-                                            <textarea class="form-control" name="description[]" placeholder="">@item.Description</textarea>
-                                        </td>
-                                    </tr>
-                                }*@
-                                <tr>
-                                    <td class="text-center"></td>
-                                    <td><input type="text" class="form-control" name="itemPath[]" placeholder="" value="" /></td>
-                                    <td>
-                                        <textarea class="form-control" name="description[]" placeholder=""></textarea>
-                                    </td>
-                                </tr>
+                                    foreach (var item in Model.ImageItems)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@(item.Order + 1)</td>
+                                            <td><input type="text" class="form-control" name="itemPath[]" placeholder="" value="@item.Path" /></td>
+                                            <td>
+                                                <textarea class="form-control" name="description[]" placeholder="">@item.Description</textarea>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="button" class="btn btn-danger removeRow" value="Remove" />
+                                            </td>
+                                        </tr>
+                                    }
+                                }
                             </tbody>
 
                         </table>
 
                         <div>
-                            <input type="submit" class="btn btn-primary" />
+                            <a asp-controller="ImageSliderHome" asp-action="Manage" class="btn btn-default">Back</a>
+                            <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                            <input type="submit" class="btn btn-default" name="Save" value="Save And Edit" />
                         </div>
 
                     </div>
@@ -113,5 +132,13 @@
 
 
 @section Scripts{
-
+    <script>
+        function addRow() {
+            var rows = $('#pageListDt').find('tr').length;
+            $("#pageListDt").append("<tr><td class='text-center' >"+rows+"</td><td><input type='text' class='form-control' name='itemPath[]' placeholder='' value='' /></td><td><textarea class='form-control' name='description[]' placeholder=''></textarea></td><td class='text-center'><input type='button' class='btn btn-danger removeRow' value='Remove' /></td></tr>");
+        }
+        $('#pageListDt').on('click', '.removeRow', function (e) {
+            $(this).closest('tr').remove()
+        })
+    </script>
 }

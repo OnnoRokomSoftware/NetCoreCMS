@@ -100,10 +100,19 @@
                                                     <div class='panel-heading'>
                                                         @Html.Raw(widget.DisplayTitle)
                                                     </div>
-                                                }                                                
-                                                <div class='panel-body'>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div> 
+                                                }    
+                                                @if (widget.DisplayTitle != "" || widget.Footer != "")
+                                                {
+                                                    <div class='panel-body'>
+                                                        @Html.Raw(widget.RenderBody())
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        @Html.Raw(widget.RenderBody())
+                                                    </div>                                                    
+                                                }
                                                 @if (widget.Footer != "")
                                                 {
                                                     <div class='panel-footer'>
@@ -285,7 +294,7 @@
             <!-- Main content Start -->
             <div class="col-md-@bodyClassWidth">
                 <!-- Featured -->
-                <div class="row Featured">
+                <div class="Featured">
                     @{
                         var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == ViewBag.CurrentLayout).ToList();
                         if (featured != null && featured.Count > 0)
@@ -304,9 +313,18 @@
                                                     @Html.Raw(widget.DisplayTitle)
                                                 </div>
                                             }
-                                            <div class='panel-body'>
-                                                @Html.Raw(widget.RenderBody())
-                                            </div>
+                                            @if (widget.DisplayTitle != "" || widget.Footer != "")
+                                            {
+                                                <div class='panel-body'>
+                                                    @Html.Raw(widget.RenderBody())
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div>
+                                                    @Html.Raw(widget.RenderBody())
+                                                </div>
+                                            }
                                             @if (widget.Footer != "")
                                             {
                                                 <div class='panel-footer'>
@@ -392,9 +410,18 @@
                                                     @Html.Raw(widget.DisplayTitle)
                                                 </div>
                                             }
-                                            <div class='panel-body'>
-                                                @Html.Raw(widget.RenderBody())
-                                            </div>
+                                            @if (widget.DisplayTitle != "" || widget.Footer != "")
+                                            {
+                                                <div class='panel-body'>
+                                                    @Html.Raw(widget.RenderBody())
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div>
+                                                    @Html.Raw(widget.RenderBody())
+                                                </div>
+                                            }
                                             @if (widget.Footer != "")
                                             {
                                                 <div class='panel-footer'>

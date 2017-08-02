@@ -49,13 +49,19 @@ namespace NetCoreCMS.Web.Controllers
         }
 
         [Authorize(Roles = "SuperAdmin,Administrator")]
-        public IActionResult RestartHost(string returnUrl = "/", string returnUrlName = "Home")
+        public IActionResult RestartHost()
         {
             //TODO: need to secure this restart.
+            string referer = Request.Headers["Referer"].ToString();
             NetCoreCmsHost.IsRestartRequired = true;
             Program.Shutdown();
-            ViewBag.ReturnUrl = returnUrl;
-            ViewBag.ReturnUrlName = returnUrlName;
+            ViewBag.ReturnUrl = referer;
+            ViewBag.ReturnUrlName = referer;
+            if (referer.Trim() == "" || referer.Contains("RestartHost"))
+            {
+                ViewBag.ReturnUrl = "/";
+                ViewBag.ReturnUrlName = "Home";
+            }
             return View();
         }
     }

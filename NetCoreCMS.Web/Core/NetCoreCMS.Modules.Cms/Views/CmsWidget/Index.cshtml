@@ -47,7 +47,9 @@
                                                     <div class="panel panel-default" >
                                                         <div class="panel-heading">
                                                             <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
-                                                            <a draggable="false" data-toggle="collapse" href="#collapse_@widget.WidgetId.Replace('.', '_')">@widget.Title (@item.ModuleTitle)</a>
+                                                            <a draggable="false" data-toggle="collapse" href="#collapse_@widget.WidgetId.Replace('.', '_')">
+                                                                @widget.Title.Replace("Widget", "") (@item.ModuleTitle.Replace("NetCoreCMS", "").Replace("Module", "").Trim())
+                                                            </a>
                                                         </div>
                                                         <div id="collapse_@widget.WidgetId.Replace('.', '_')" class="panel-collapse collapse">
                                                             <div class="panel-body">
@@ -122,7 +124,9 @@
                                                                     <div class="panel panel-default"  >
                                                                         <div class="panel-heading">
                                                                             <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
-                                                                            <a draggable="false" data-toggle="collapse" href="#collapse_@wZone.Id">@w.Title</a>
+                                                                            <a draggable="false" data-toggle="collapse" href="#collapse_@wZone.Id">
+                                                                                @w.Title
+                                                                            </a>
                                                                         </div>
                                                                         <div id="collapse_@wZone.Id" class="panel-collapse collapse">
                                                                             <div class="panel-body">

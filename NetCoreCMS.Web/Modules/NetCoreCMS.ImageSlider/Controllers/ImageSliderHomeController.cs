@@ -70,27 +70,53 @@ namespace NetCoreCMS.ImageSlider.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateEdit(NccImageSlider model)
+        public ActionResult CreateEdit(NccImageSlider model, string save, string[] itemPath, string[] description)
         {
+            bool isSuccess = false;
             ViewBag.MessageType = "ErrorMessage";
             ViewBag.Message = "Error occoured. Please fill up all field correctly.";
 
             if (ModelState.IsValid)
             {
-                if (model.Id > 0)
+                //unique name check
+                model.Name = model.Name.Trim();
+                var itemCount = _nccImageSliderService.LoadAllByName(model.Name).Where(x => x.Id != model.Id).ToList().Count();
+                if (itemCount > 0)
                 {
-                    _nccImageSliderService.Update(model);
-                    ViewBag.MessageType = "SuccessMessage";
-                    ViewBag.Message = "Data updated successfull.";
+                    ViewBag.Message = "Duplicate name found.";
                 }
                 else
                 {
-                    _nccImageSliderService.Save(model);
-                    ViewBag.MessageType = "SuccessMessage";
-                    ViewBag.Message = "Data saved successfull.";
+                    model.ImageItems = new List<NccImageSliderItem>();
+                    for (int i = 0; i < itemPath.Count(); i++)
+                    {
+                        var tempItemPath = string.IsNullOrEmpty(itemPath[i]) ? "" : itemPath[i];
+                        var tempDescription = string.IsNullOrEmpty(description[i]) ? "" : description[i];
+
+                        model.ImageItems.Add(new NccImageSliderItem() { Name = "Name_" + tempItemPath.Replace("/", "_"), Path = tempItemPath, Description = tempDescription, Order = i });
+                    }
+
+                    if (model.Id > 0)
+                    {
+                        _nccImageSliderService.Update(model);
+                        isSuccess = true;
+                        ViewBag.MessageType = "SuccessMessage";
+                        ViewBag.Message = "Data updated successfull.";
+                    }
+                    else
+                    {
+                        _nccImageSliderService.Save(model);
+                        isSuccess = true;
+                        ViewBag.MessageType = "SuccessMessage";
+                        ViewBag.Message = "Data saved successfull.";
+                    }
                 }
             }
 
+            if (isSuccess == true && save == "Save")
+            {
+                return RedirectToAction("Manage");
+            }
             return View(model);
         }
 

@@ -21,8 +21,5 @@
     <ProjectReference Include="..\..\..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
   
-  <ItemGroup>
-    <Folder Include="Widgets\" />
-  </ItemGroup>
 
 </Project>
