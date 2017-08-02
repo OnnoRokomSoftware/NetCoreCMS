@@ -38,7 +38,14 @@
                                 <td>@item.Interval</td>
                                 <td>@item.ImageWidth</td>
                                 <td>@item.ImageHeight</td>
-                                <td>@item.ImageItems.Count()</td>
+                                @if (item.ImageItems != null)
+                                {
+                                    <td>@item.ImageItems.Count()</td>
+                                }
+                                else
+                                {
+                                    <td>-</td>
+                                }
                                 <td>@item.CreateBy</td>
                                 <td>@item.Status</td>
                                 <td>

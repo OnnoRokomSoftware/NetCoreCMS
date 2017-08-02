@@ -84,7 +84,7 @@
                             <thead>
                                 <tr>
                                     <th class="text-center">Sl.</th>
-                                    <th class="text-center">Image Path</th>
+                                    <th class="text-center">Image</th>
                                     <th class="text-center">Description (Html)</th>
                                     <th class="text-center">
                                         <input type="button" class="btn btn-primary" value="Add" onclick="addRow()" /> 
@@ -98,9 +98,12 @@
                                     {
                                         <tr>
                                             <td class="text-center">@(item.Order + 1)</td>
-                                            <td><input type="text" class="form-control" name="itemPath[]" placeholder="" value="@item.Path" /></td>
                                             <td>
-                                                <textarea class="form-control" name="description[]" placeholder="">@item.Description</textarea>
+                                                <img src="@item.Path" width="250px" /><br />
+                                                <input type="text" class="form-control" name="itemPath[]" placeholder="Enter Image Path" value="@item.Path" />
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" name="description[]" placeholder="Enter HTML Description">@item.Description</textarea>
                                             </td>
                                             <td class="text-center">
                                                 <input type="button" class="btn btn-danger removeRow" value="Remove" />
@@ -135,7 +138,7 @@
     <script>
         function addRow() {
             var rows = $('#pageListDt').find('tr').length;
-            $("#pageListDt").append("<tr><td class='text-center' >"+rows+"</td><td><input type='text' class='form-control' name='itemPath[]' placeholder='' value='' /></td><td><textarea class='form-control' name='description[]' placeholder=''></textarea></td><td class='text-center'><input type='button' class='btn btn-danger removeRow' value='Remove' /></td></tr>");
+            $("#pageListDt").append("<tr><td class='text-center' >"+rows+"</td><td><input type='text' class='form-control' name='itemPath[]' placeholder='Enter Image Path' value='' /></td><td><textarea class='form-control' name='description[]' placeholder='Enter HTML Description'></textarea></td><td class='text-center'><input type='button' class='btn btn-danger removeRow' value='Remove' /></td></tr>");
         }
         $('#pageListDt').on('click', '.removeRow', function (e) {
             $(this).closest('tr').remove()

@@ -65,6 +65,10 @@ namespace NetCoreCMS.ImageSlider.Controllers
             if (Id > 0)
             {
                 item = _nccImageSliderService.Get(Id);
+                if (item.ImageItems != null)
+                {
+                    item.ImageItems = item.ImageItems.OrderBy(x => x.Order).ToList();
+                }
             }
             return View(item);
         }

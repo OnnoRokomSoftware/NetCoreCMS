@@ -12,7 +12,7 @@ namespace NetCoreCMS.Notice.Models
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
-            Status = EntityStatus.New;
+            Status = EntityStatus.Active;
             VersionNumber = 1;
         }
 
