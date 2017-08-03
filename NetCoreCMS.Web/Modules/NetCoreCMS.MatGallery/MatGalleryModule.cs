@@ -77,14 +77,19 @@ namespace NetCoreCMS.Modules.MatGallery
                     `ModifyBy` BIGINT NOT NULL , 
                     `Status` INT NOT NULL , 
 
-                    `ModuleVersion` VARCHAR(255) NULL , 
+                    `Version` VARCHAR(255) NULL , 
                     `NetCoreCMSVersion` VARCHAR(255) NULL , 
+
                     `ModuleId` VARCHAR(255) NULL , 
+                    `ModuleName` VARCHAR(255) NULL , 
                     `ModuleTitle` VARCHAR(255) NULL , 
                     `Description` TEXT NULL , 
+
                     `Author` VARCHAR(255) NULL , 
                     `Email` VARCHAR(255) NULL , 
                     `Website` VARCHAR(255) NULL , 
+
+                    `Category` VARCHAR(255) NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
 
                 CREATE TABLE `Ncc_MTG_User_Module_Log` ( 
@@ -97,14 +102,19 @@ namespace NetCoreCMS.Modules.MatGallery
                     `ModifyBy` BIGINT NOT NULL , 
                     `Status` INT NOT NULL , 
 
-                    `ModuleVersion` VARCHAR(255) NULL , 
+                    `Version` VARCHAR(255) NULL , 
                     `NetCoreCMSVersion` VARCHAR(255) NULL , 
+
                     `ModuleId` VARCHAR(255) NULL , 
+                    `ModuleName` VARCHAR(255) NULL , 
                     `ModuleTitle` VARCHAR(255) NULL , 
                     `Description` TEXT NULL , 
+
                     `Author` VARCHAR(255) NULL , 
                     `Email` VARCHAR(255) NULL , 
                     `Website` VARCHAR(255) NULL , 
+
+                    `Category` VARCHAR(255) NULL , 
 
                     `NccUserModuleId` BIGINT NOT NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;

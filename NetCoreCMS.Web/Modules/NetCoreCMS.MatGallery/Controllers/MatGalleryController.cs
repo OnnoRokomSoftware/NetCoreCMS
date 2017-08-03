@@ -48,7 +48,7 @@ namespace NetCoreCMS.MatGallery.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Module Manage", Url = "/MatGallery/Manage", IconCls = "", Order = 1)]
+        [AdminMenuItem(Name = "Manage", Url = "/MatGallery/Manage", IconCls = "", Order = 10)]
         public ActionResult Manage()
         {
             var itemList = _nccUserModuleService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;

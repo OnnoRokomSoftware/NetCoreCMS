@@ -27,10 +27,11 @@ namespace NetCoreCMS.MatGallery.Models
         public int Status { get; set; }
 
 
-        public string ModuleVersion { get; set; }
+        public string Version { get; set; }
         public string NetCoreCMSVersion { get; set; }
 
         public string ModuleId { get; set; }
+        public string ModuleName { get; set; }
         public string ModuleTitle { get; set; }
         public string Description { get; set; }
 
@@ -38,7 +39,7 @@ namespace NetCoreCMS.MatGallery.Models
         public string Email { get; set; }
         public string Website { get; set; }
 
-        public string CategoryList { get; set; }
+        public string Category { get; set; }
     }
 
     public class NccUserModuleLog : IBaseModel<long>
@@ -63,10 +64,11 @@ namespace NetCoreCMS.MatGallery.Models
         public int Status { get; set; }
 
 
-        public string ModuleVersion { get; set; }
+        public string Version { get; set; }
         public string NetCoreCMSVersion { get; set; }
 
         public string ModuleId { get; set; }
+        public string ModuleName { get; set; }
         public string ModuleTitle { get; set; }
         public string Description { get; set; }
 
@@ -74,7 +76,7 @@ namespace NetCoreCMS.MatGallery.Models
         public string Email { get; set; }
         public string Website { get; set; }
 
-        public string CategoryList { get; set; }
+        public string Category { get; set; }
 
         public NccUserModule nccUserModule { get; set; }
     }
