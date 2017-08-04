@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.ResponseCaching;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Setup;
@@ -71,10 +72,11 @@ namespace NetCoreCMS.Web
         {
             _mvcBuilder = services.AddMvc();
             _services = services;
-            
+            _services.AddResponseCaching();
             _services.AddSession();
             _services.AddDistributedMemoryCache();
-            
+            _services.AddResponseCompression();
+
             _services.AddTransient<IEmailSender, AuthMessageSender>();
             _services.AddTransient<ISmsSender, AuthMessageSender>();
             _services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
@@ -162,9 +164,11 @@ namespace NetCoreCMS.Web
             GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
             
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
-            
+
             //app.UseThemeActivator(env, loggerFactory);
             //app.UseModuleActivator(env, _mvcBuilder, _services, loggerFactory);
+            app.UseResponseCaching(); //Use this attrib for cache [ResponseCache(Duration = 20)]
+            app.UseResponseCompression();
 
             if (env.IsDevelopment())
             {
