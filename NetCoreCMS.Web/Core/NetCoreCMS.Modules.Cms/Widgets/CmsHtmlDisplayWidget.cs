@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.HelloWorld.Widgets
+namespace NetCoreCMS.Core.Modules.Cms.Widgets
 {
     public class CmsHtmlDisplayWidget : Widget
     {
@@ -18,7 +18,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         string body;
         public CmsHtmlDisplayWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCms.Modules.Cms.CmsHtmlDisplay", "Html Display", "Html or text Display Show", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCms.Modules.Cms.CmsHtmlDisplay", "Html Display", "Html or text Display Show", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;

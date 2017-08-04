@@ -13,6 +13,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
             Title = title;
             Description = description;
             Footer = footer;
+            DisplayTitle = "";
         }
 
         public string WidgetId { get;}

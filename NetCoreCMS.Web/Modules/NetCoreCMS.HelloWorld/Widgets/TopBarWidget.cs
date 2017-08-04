@@ -16,7 +16,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public TopBarWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.TopBarWidget", "TopBar", "TopBar Widget", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.TopBarWidget", "TopBar", "TopBar Widget", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;

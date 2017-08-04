@@ -335,6 +335,28 @@ namespace NetCoreCMS.MatGallery.Controllers
             return RedirectToAction("Manage");
         }
 
+        public ActionResult PrivateStatusUpdate(long Id = 0)
+        {
+            if (Id > 0)
+            {
+                var item = _nccUserModuleService.Get(Id);
+                if (item.IsPrivate == true)
+                {
+                    item.IsPrivate= false;
+                    ViewBag.Message = "Module is Public.";
+                }
+                else
+                {
+                    item.IsPrivate = true;
+                    ViewBag.Message = "Module is Private.";
+                }
+
+                _nccUserModuleService.Update(item);
+                ViewBag.MessageType = "SuccessMessage";
+            }
+            return RedirectToAction("Manage");
+        }
+
         public ActionResult Log(long id) //nccUserModuleId
         {
             var itemList = _nccUserModuleService.LoadLog(id).OrderByDescending(x => x.Id).ToList();

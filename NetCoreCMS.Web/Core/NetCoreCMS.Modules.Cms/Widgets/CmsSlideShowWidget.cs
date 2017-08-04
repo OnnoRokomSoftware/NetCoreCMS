@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.HelloWorld.Widgets
+namespace NetCoreCMS.Core.Modules.Cms.Widgets
 {
     public class CmsSlideShowWidget : Widget
     {
@@ -18,7 +18,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public CmsSlideShowWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCms.Modules.Cms.CmsSlideShow", "Slide Show", "Image Slide Show", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCms.Modules.Cms.CmsSlideShow", "Slide Show", "Image Slide Show", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;

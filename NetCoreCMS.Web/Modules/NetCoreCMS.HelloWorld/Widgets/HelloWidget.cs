@@ -16,7 +16,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public HelloWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.HelloWidget", "Hello", "Hello Widget", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.HelloWidget", "Hello", "Hello Widget", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;

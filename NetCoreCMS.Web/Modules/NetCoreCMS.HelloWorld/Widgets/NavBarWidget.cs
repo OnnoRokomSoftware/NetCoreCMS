@@ -16,7 +16,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public NavBarWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.NavBarWidget", "NavBar", "NavBar Widget", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.NavBarWidget", "NavBar", "NavBar Widget", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;

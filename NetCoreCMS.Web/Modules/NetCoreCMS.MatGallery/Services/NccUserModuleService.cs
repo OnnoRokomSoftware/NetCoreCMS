@@ -127,6 +127,7 @@ namespace NetCoreCMS.MatGallery.Services
             oldEntity.Description = entity.Description;
 
             oldEntity.Category = entity.Category;
+            oldEntity.IsPrivate = entity.IsPrivate;
 
             oldEntity.Author = entity.Author;
             oldEntity.Email = entity.Email;
@@ -156,6 +157,7 @@ namespace NetCoreCMS.MatGallery.Services
             logEntity.Description = entity.Description;
 
             logEntity.Category = entity.Category;
+            logEntity.IsPrivate = entity.IsPrivate;
 
             logEntity.Author = entity.Author;
             logEntity.Email = entity.Email;

@@ -9,7 +9,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.HelloWorld.Widgets
+namespace NetCoreCMS.Core.Modules.Cms.Widgets
 {
     public class CmsVerticalMenuWidget : Widget
     {
@@ -19,7 +19,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public CmsVerticalMenuWidget(
             IViewRenderService viewRenderService, 
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Cms.CmsVerticalMenuWidget", "Vertical Menu", "Vertical nevigation menu", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Cms.CmsVerticalMenuWidget", "Vertical Menu", "Vertical nevigation menu", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;

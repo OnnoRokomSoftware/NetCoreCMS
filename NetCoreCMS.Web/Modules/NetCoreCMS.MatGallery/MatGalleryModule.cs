@@ -89,7 +89,8 @@ namespace NetCoreCMS.Modules.MatGallery
                     `Email` VARCHAR(255) NULL , 
                     `Website` VARCHAR(255) NULL ,
 
-                    `Category` VARCHAR(255) NULL , 
+                    `Category` VARCHAR(255) NULL ,
+                    `IsPrivate` BIT(1) NOT NULL,
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
 
                 CREATE TABLE `Ncc_MTG_User_Module_Log` ( 
@@ -115,6 +116,7 @@ namespace NetCoreCMS.Modules.MatGallery
                     `Website` VARCHAR(255) NULL , 
 
                     `Category` VARCHAR(255) NULL , 
+                    `IsPrivate` BIT(1) NOT NULL,
 
                     `NccUserModuleId` BIGINT NOT NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;

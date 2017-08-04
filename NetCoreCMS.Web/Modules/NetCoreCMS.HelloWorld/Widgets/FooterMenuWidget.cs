@@ -16,7 +16,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public FooterMenuWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.FooterMenuWidget", "Footer Menu", "Footer nevigation menu", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.FooterMenuWidget", "Footer Menu", "Footer nevigation menu", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;

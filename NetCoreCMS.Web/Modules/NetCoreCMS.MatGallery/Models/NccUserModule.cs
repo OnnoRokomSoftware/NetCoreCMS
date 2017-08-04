@@ -14,6 +14,7 @@ namespace NetCoreCMS.MatGallery.Models
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
             Status = EntityStatus.Active;
             VersionNumber = 1;
+            IsPrivate = true;
         }
 
         [Key]
@@ -40,6 +41,8 @@ namespace NetCoreCMS.MatGallery.Models
         public string Website { get; set; }
 
         public string Category { get; set; }
+
+        public bool IsPrivate { get; set; }
     }
 
     public class NccUserModuleLog : IBaseModel<long>
@@ -77,6 +80,8 @@ namespace NetCoreCMS.MatGallery.Models
         public string Website { get; set; }
 
         public string Category { get; set; }
+
+        public bool IsPrivate { get; set; }
 
         public NccUserModule nccUserModule { get; set; }
     }

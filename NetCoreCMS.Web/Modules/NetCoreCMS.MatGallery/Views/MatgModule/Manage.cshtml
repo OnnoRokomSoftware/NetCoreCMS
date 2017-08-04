@@ -31,6 +31,7 @@
                             <th class="text-center">Total Update</th>
                             <th class="text-center">Author</th>
                             <th class="text-center">CreatedBy</th>
+                            <th class="text-center">Is Private</th>
                             <th class="text-center">Status</th>
                             <th class="text-center">Action</th>
                         </tr>
@@ -50,16 +51,27 @@
                                 <td>@item.VersionNumber</td>
                                 <td>@item.Author</td>
                                 <td>@item.CreateBy</td>
+                                <td>@item.IsPrivate</td>
                                 <td>@item.Status</td>
                                 <td>
-                                    @if (item.Status == -2) {
-                                        <a asp-controller="MatgModule" asp-action="StatusUpdate" asp-route-id="@item.Id">Active</a>
+                                    @if (item.IsPrivate == true)
+                                    {
+                                        <a asp-controller="MatgModule" asp-action="PrivateStatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-success btn-outline">Make Public</a>
                                     }
                                     else
                                     {
-                                        <a asp-controller="MatgModule" asp-action="StatusUpdate" asp-route-id="@item.Id">Inactive</a>
+                                        <a asp-controller="MatgModule" asp-action="PrivateStatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-primary btn-outline">Make Private</a>
                                     }
-                                    | <a asp-controller="MatgModule" asp-action="Log" asp-route-id="@item.Id">Log</a>
+                                     
+                                    @if (item.Status == -2)
+                                    {
+                                        <a asp-controller="MatgModule" asp-action="StatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-success btn-outline">Active</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="MatgModule" asp-action="StatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-danger btn-outline">Inactive</a>
+                                    }
+                                    <a asp-controller="MatgModule" asp-action="Log" asp-route-id="@item.Id" class="btn btn-xs btn-info ">Log</a>
                                 </td>
                             </tr>
                         }

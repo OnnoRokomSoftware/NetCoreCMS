@@ -33,7 +33,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NccSeventeen", "NetCoreCMS.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.ImageSlider", "NetCoreCMS.Web\Modules\NetCoreCMS.ImageSlider\NetCoreCMS.ImageSlider.csproj", "{6A33D290-F530-4E49-A8C5-0C1A35B684AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.MatGallery", "NetCoreCMS.Web\Modules\NetCoreCMS.MatGallery\NetCoreCMS.MatGallery.csproj", "{B08B877B-4178-494C-AED4-BC40C5910FB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.MatGallery", "NetCoreCMS.Web\Modules\NetCoreCMS.MatGallery\NetCoreCMS.MatGallery.csproj", "{B08B877B-4178-494C-AED4-BC40C5910FB5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.LinkShare", "NetCoreCMS.Web\Modules\NetCoreCMS.LinkShare\NetCoreCMS.LinkShare.csproj", "{411E4D54-1FAE-4E55-97A7-2D3E7DF892B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +95,10 @@ Global
 		{B08B877B-4178-494C-AED4-BC40C5910FB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B08B877B-4178-494C-AED4-BC40C5910FB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B08B877B-4178-494C-AED4-BC40C5910FB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{411E4D54-1FAE-4E55-97A7-2D3E7DF892B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{411E4D54-1FAE-4E55-97A7-2D3E7DF892B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{411E4D54-1FAE-4E55-97A7-2D3E7DF892B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{411E4D54-1FAE-4E55-97A7-2D3E7DF892B2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,5 +115,6 @@ Global
 		{686E8D14-408B-4FBC-9BF2-A9086BFB3234} = {0C40B021-EF98-444C-9CCB-38B35ED10100}
 		{6A33D290-F530-4E49-A8C5-0C1A35B684AC} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
 		{B08B877B-4178-494C-AED4-BC40C5910FB5} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
+		{411E4D54-1FAE-4E55-97A7-2D3E7DF892B2} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
 	EndGlobalSection
 EndGlobal
