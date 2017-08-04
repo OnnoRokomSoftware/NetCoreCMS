@@ -14,6 +14,7 @@ namespace NetCoreCMS.LinkShare.Models
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
             Status = EntityStatus.Active;
             VersionNumber = 1;
+            Order = 1;
         }
 
         [Key]
@@ -28,7 +29,7 @@ namespace NetCoreCMS.LinkShare.Models
 
         public string Link { get; set; }
         public string ImagePath { get; set; }
-        public string ImageHeight { get; set; }
-        public NccCategory category { get; set; }
-    }    
+        public int Order { get; set; }
+        public ICollection<NccCategoryLinkShare> Categories { get; set; }
+    }
 }

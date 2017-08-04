@@ -24,6 +24,7 @@ namespace NetCoreCMS.LinkShare.Models
         public DateTime ModificationDate { get; set; }
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }
-        public int Status { get; set; }        
-    }    
+        public int Status { get; set; }
+        public ICollection<NccCategoryLinkShare> LinkShares { get; set; }
+    }
 }

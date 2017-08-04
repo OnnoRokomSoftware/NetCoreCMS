@@ -10,8 +10,24 @@ namespace NetCoreCMS.LinkShare.Models
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NccCategory>().ToTable("Ncc_LinkShare_Category");
-            modelBuilder.Entity<NccLinkShare>().ToTable("Ncc_LinkShare");
+            modelBuilder.Entity<NccCategory>().ToTable("Ncc_LS_Category");
+            modelBuilder.Entity<NccLinkShare>().ToTable("Ncc_LS_LinkShare");
+
+            modelBuilder.Entity<NccCategoryLinkShare>(b =>
+            {
+                b.ToTable("Ncc_LS_Category_LinkShare");
+                b.HasKey(bc => new { bc.NccCategoryId, bc.NccLinkShareId });
+            });
+
+            modelBuilder.Entity<NccCategoryLinkShare>()
+                .HasOne(bc => bc.Category)
+                .WithMany(b => b.LinkShares)
+                .HasForeignKey(bc => bc.NccCategoryId);
+
+            modelBuilder.Entity<NccCategoryLinkShare>()
+                .HasOne(bc => bc.NccLinkShare)
+                .WithMany(c => c.Categories)
+                .HasForeignKey(bc => bc.NccLinkShareId);
         }
     }
 }
