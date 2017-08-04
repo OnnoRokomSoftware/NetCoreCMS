@@ -9,14 +9,14 @@ using System.Text;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {
-    public class FooterMenuWidget : Widget
+    public class HelloWidget : Widget
     {
         IViewRenderService _viewRenderService;
         NccWebSiteWidgetService _websiteWidgetService;
 
-        public FooterMenuWidget(
+        public HelloWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.FooterMenuWidget", "Footer Menu", "Footer nevigation menu", "Footer")
+            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.HelloWidget", "Hello", "Hello Widget", "Footer")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
@@ -25,7 +25,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public override void Init(long websiteWidgetId)
         {
             WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/FooterMenu";
+            ViewFileName = "Widgets/Hello";
             var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {

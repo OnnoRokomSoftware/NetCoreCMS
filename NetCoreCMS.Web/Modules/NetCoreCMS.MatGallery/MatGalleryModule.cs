@@ -87,7 +87,7 @@ namespace NetCoreCMS.Modules.MatGallery
 
                     `Author` VARCHAR(255) NULL , 
                     `Email` VARCHAR(255) NULL , 
-                    `Website` VARCHAR(255) NULL , 
+                    `Website` VARCHAR(255) NULL ,
 
                     `Category` VARCHAR(255) NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
