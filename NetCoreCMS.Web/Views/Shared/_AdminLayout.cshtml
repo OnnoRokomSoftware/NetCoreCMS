@@ -23,6 +23,7 @@
 
     <link href="~/css/ncc-common.css" rel="stylesheet" />
     <script src="~/js/ncc-common.js" asp-append-version="true"></script>
+    <script src="~/lib/notifyjs/notify.min.js"></script>
 
     <!-- Bootstrap Core CSS -->    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
@@ -52,6 +53,39 @@
 <body>
     <div id="loadingMask" class="loader loader-double"></div>
     <div id="wrapper">
+        <div class="row">
+            <div id="messageContainer">
+                @if (TempData.ContainsKey("SuccessMessage") || ViewBag.MessageType == "SuccessMessage")
+                {
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["SuccessMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
+                    </div>
+                }
+                @if (TempData.ContainsKey("InfoMessage") || ViewBag.MessageType == "InfoMessage")
+                {
+                    <div class="alert alert-info alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["InfoMessage"])<a href="#" class="alert-link"></a>.
+                    </div>
+                }
+                @if (TempData.ContainsKey("WarningMessage") || ViewBag.MessageType == "WarningMessage")
+                {
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["WarningMessage"])<a href="#" class="alert-link"></a>.
+                    </div>
+                }
+                @if (TempData.ContainsKey("ErrorMessage") || ViewBag.MessageType == "ErrorMessage")
+                {
+                    <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["ErrorMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
+                    </div>
+                }
+            </div>
+
+        </div>
         <!-- Navigation -->
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
             <div class="navbar-header">
@@ -120,40 +154,9 @@
                         <div class="row">
                             <div id="globalMessageContainer" class="ncc-global-message">
 
-                            </div>
+                            </div>                            
                         </div>
-                        <h1 class="page-header">@ViewData["PageTitle"]</h1>
-                        <div id="messageContainer">
-                            @if (TempData.ContainsKey("SuccessMessage") || ViewBag.MessageType == "SuccessMessage")
-                            {
-                                <div class="alert alert-success alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @Html.Raw(TempData["SuccessMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
-                                </div>
-                            }
-                            @if (TempData.ContainsKey("InfoMessage") || ViewBag.MessageType == "InfoMessage")
-                            {
-                                <div class="alert alert-info alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @Html.Raw(TempData["InfoMessage"])<a href="#" class="alert-link"></a>.
-                                </div>
-                            }
-                            @if (TempData.ContainsKey("WarningMessage") || ViewBag.MessageType == "WarningMessage")
-                            {
-                                <div class="alert alert-warning alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @Html.Raw(TempData["WarningMessage"])<a href="#" class="alert-link"></a>.
-                                </div>
-                            }
-                            @if (TempData.ContainsKey("ErrorMessage") || ViewBag.MessageType == "ErrorMessage")
-                            {
-                                <div class="alert alert-danger alert-dismissable">
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                                    @Html.Raw(TempData["ErrorMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
-                                </div>
-                            }
-                        </div>
-
+                        <h1 class="page-header">@ViewData["PageTitle"]</h1> 
                         @RenderBody()
                     </div>
                     <!-- /.col-lg-12 -->
@@ -178,5 +181,14 @@
     <!-- Custom Theme JavaScript -->
     <script src="~/js/sb-admin-2.min.js"></script>
     @RenderSection("Scripts", required: false)
+    <script>
+        $(document).ready(function () { 
+
+            $.notify.defaults({
+                "globalPosition": "top center"
+            });
+
+        });
+    </script>
 </body>
 </html>

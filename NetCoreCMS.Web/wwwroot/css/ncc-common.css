@@ -1,6 +1,18 @@
-﻿.ncc-global-message
-{
-     
+﻿.ncc-global-message {
+    left:0px;
+    top:0px;
+    margin-top: 5px;
+    position: fixed;
+    width:100%;
+}
+
+#messageContainer {
+    margin-top: 5px;
+    position: absolute;
+    left:1%;
+    top:1%;
+    width:98%;
+    z-index:10000000;
 }
 
 /*Site Menu CSS*/
