@@ -51,7 +51,7 @@ namespace NetCoreCMS.MatGallery.Services
                 using (var txn = _entityRepository.BeginTransaction())
                 {
                     CopyNewData(oldEntity, entity);
-                    _entityRepository.Edit(oldEntity);
+                    //_entityRepository.Edit(oldEntity);
                     _entityRepository.SaveChange();
                     txn.Commit();
                 }
@@ -131,6 +131,13 @@ namespace NetCoreCMS.MatGallery.Services
             oldEntity.Author = entity.Author;
             oldEntity.Email = entity.Email;
             oldEntity.Website = entity.Website;
+        }
+
+
+
+        public List<NccUserModuleLog> LoadLog(long nccUserModuleId)
+        {
+            return _logRepository.Query().Where(x=>x.nccUserModule.Id == nccUserModuleId).ToList();
         }
 
         private void CopyToLog(NccUserModuleLog logEntity, NccUserModule entity)

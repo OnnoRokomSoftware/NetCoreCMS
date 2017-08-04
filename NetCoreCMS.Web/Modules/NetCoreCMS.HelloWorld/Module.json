@@ -1,6 +1,6 @@
 ﻿{
-  "ModuleId": "026468AD-174A-4FF7-9B1D-FCED3143E8A6",
-  "ModuleName": "NetCoreCMS.Modules.HelloWorld",
+  "ModuleId": "com.NetCoreCMS.HelloWorld",
+  "ModuleName": "NetCoreCMS.HelloWorld",
   "ModuleTitle": "NetCoreCMS HelloWorld Module",
   "Author": "NetCoreCMS",
   "Website": "http://DotNetCoreCMS.com",

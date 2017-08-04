@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
@@ -76,15 +77,8 @@ namespace NetCoreCMS.MatGallery.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Module Manage", Url = "/MatgModule/Manage", IconCls = "", Order = 2)]
-        public ActionResult Manage()
-        {
-            var itemList = _nccUserModuleService.LoadAll().OrderByDescending(x => x.Id).ToList();
-            return View(itemList);
-        }
-
         #region Upload operation
-        [AdminMenuItem(Name = "Upload", Url = "/MatgModule/Upload", IconCls = "fa-upload", Order = 1)]
+        [AdminMenuItem(Name = "Module Upload", Url = "/MatgModule/Upload", IconCls = "fa-upload", Order = 1)]
         public ActionResult Upload()
         {
             ViewBag.UploadPath = "";
@@ -199,7 +193,7 @@ namespace NetCoreCMS.MatGallery.Controllers
                             var oldVersion = new Version(oldUserModule.Version);
                             var newVersion = new Version(userModule.Version);
                             if (newVersion.CompareTo(oldVersion) > 0)
-                            {                                
+                            {
                                 userModule.Id = oldUserModule.Id;
                             }
                             else
@@ -248,7 +242,7 @@ namespace NetCoreCMS.MatGallery.Controllers
                         if (isSuccess)
                         {
                             ZipFile.CreateFromDirectory(finalFolderPath, moduleFolderPath + "\\" + moduleFolderName + "_v" + userModule.Version + ".zip");
-                        } 
+                        }
                         #endregion
                         #region DB & DB Log save
                         if (isSuccess)
@@ -261,7 +255,7 @@ namespace NetCoreCMS.MatGallery.Controllers
                             {
                                 _nccUserModuleService.Save(userModule);
                             }
-                        } 
+                        }
                         #endregion
                         #region Move the source file in sorce location AND Delete from temp folder   
                         //Thread.Sleep(5000);
@@ -312,6 +306,40 @@ namespace NetCoreCMS.MatGallery.Controllers
             return View();
         }
         #endregion        
+        [AdminMenuItem(Name = "Module Manage", Url = "/MatgModule/Manage", IconCls = "", Order = 2)]
+        public ActionResult Manage()
+        {
+            var itemList = _nccUserModuleService.LoadAll().OrderByDescending(x => x.Id).ToList();
+            return View(itemList);
+        }
+
+        public ActionResult StatusUpdate(long Id = 0)
+        {
+            if (Id > 0)
+            {
+                var item = _nccUserModuleService.Get(Id);
+                if (item.Status == EntityStatus.Active)
+                {
+                    item.Status = EntityStatus.Inactive;
+                    ViewBag.Message = "In-activated successfull.";
+                }
+                else
+                {
+                    item.Status = EntityStatus.Active;
+                    ViewBag.Message = "Activated successfull.";
+                }
+
+                _nccUserModuleService.Update(item);
+                ViewBag.MessageType = "SuccessMessage";
+            }
+            return RedirectToAction("Manage");
+        }
+
+        public ActionResult Log(long id) //nccUserModuleId
+        {
+            var itemList = _nccUserModuleService.LoadLog(id).OrderByDescending(x => x.Id).ToList();
+            return View(itemList);
+        }
         #endregion
 
         #region User Panel
