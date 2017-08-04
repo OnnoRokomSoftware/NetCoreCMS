@@ -25,7 +25,7 @@ namespace NetCoreCMS.HelloWorld.Widgets
         public override void Init(long websiteWidgetId)
         {
             WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/Hello";
+            ViewFileName = "Widgets/TopBar";
             var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {
