@@ -56,6 +56,7 @@ namespace NetCoreCMS.Modules.LinkShare
         {
             services.AddTransient<NccLinkShareRepository>();
             services.AddTransient<NccCategoryRepository>();
+
             services.AddTransient<NccLinkShareService>();
             services.AddTransient<NccLinkShareCategoryService>();
         }
@@ -68,7 +69,7 @@ namespace NetCoreCMS.Modules.LinkShare
         public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var createQuery = @"
-                CREATE TABLE `Ncc_Image_Slider` ( 
+                CREATE TABLE `Ncc_LS_Category` ( 
                     `Id` BIGINT NOT NULL AUTO_INCREMENT , 
                     `VersionNumber` INT NOT NULL , 
                     `Name` VARCHAR(250) NOT NULL , 
@@ -77,16 +78,9 @@ namespace NetCoreCMS.Modules.LinkShare
                     `CreateBy` BIGINT NOT NULL , 
                     `ModifyBy` BIGINT NOT NULL , 
                     `Status` INT NOT NULL , 
-
-                    `ContainerStyle` TEXT NULL , 
-                    `Interval` INT NOT NULL , 
-                    `ShowNav` BIT(1) NOT NULL , 
-                    `ShowSideNav` BIT(1) NOT NULL , 
-                    `ImageWidth` VARCHAR(255) NULL , 
-                    `ImageHeight` VARCHAR(255) NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
 
-                CREATE TABLE `Ncc_Image_Slider_Title` ( 
+                CREATE TABLE `Ncc_LS_LinkShare` ( 
                     `Id` BIGINT NOT NULL AUTO_INCREMENT , 
                     `VersionNumber` INT NOT NULL , 
                     `Name` VARCHAR(250) NOT NULL , 
@@ -96,11 +90,15 @@ namespace NetCoreCMS.Modules.LinkShare
                     `ModifyBy` BIGINT NOT NULL , 
                     `Status` INT NOT NULL , 
 
-                    `Path` VARCHAR(1000) NOT NULL , 
-                    `Description` TEXT NOT NULL , 
+                    `Link` VARCHAR(1000) NOT NULL , 
+                    `ImagePath` VARCHAR(1000) NULL , 
                     `Order` INT NOT NULL , 
+                PRIMARY KEY (`Id`)) ENGINE = MyISAM;
 
-                    `NccImageSliderId` BIGINT NOT NULL , 
+                CREATE TABLE `Ncc_LS_Category_LinkShare` ( 
+                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
+                    `NccCategoryId` BIGINT NOT NULL , 
+                    `NccLinkShareId` BIGINT NOT NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
             ";
 
@@ -116,8 +114,9 @@ namespace NetCoreCMS.Modules.LinkShare
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var deleteQuery = @"
-                DROP TABLE `Ncc_Image_Slider_Title`; 
-                DROP TABLE `Ncc_Image_Slider`
+                DROP TABLE `Ncc_LS_LinkShare_Category`;
+                DROP TABLE `Ncc_LS_Category`;
+                DROP TABLE `Ncc_LS_LinkShare`; 
             ;";
 
             var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };

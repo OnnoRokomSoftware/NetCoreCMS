@@ -18,21 +18,21 @@ namespace NetCoreCMS.LinkShare.Controllers
 
     [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
     [AdminMenu(Name = "Link Share", IconCls = "fa-link", Order = 100)]
-    public class LinkShareHomeController : NccController
+    public class LinkShareCategoryController : NccController
     {
         #region Initialization
         private NccSettingsService _nccSettingsService;
-        private NccLinkShareService _nccLinkShareService;
+        private NccLinkShareCategoryService _nccLinkShareCategoryService;
 
         private NccLinkShareSettings nccLinkShareSettings;
 
-        public LinkShareHomeController(NccSettingsService nccSettingsService, ILoggerFactory factory, NccLinkShareService nccLinkShareService)
+        public LinkShareCategoryController(NccSettingsService nccSettingsService, ILoggerFactory factory, NccLinkShareCategoryService nccLinkShareCategoryService)
         {
             _logger = factory.CreateLogger<LinkShareHomeController>();
             nccLinkShareSettings = new NccLinkShareSettings();
 
             _nccSettingsService = nccSettingsService;
-            _nccLinkShareService = nccLinkShareService;
+            _nccLinkShareCategoryService = nccLinkShareCategoryService;
             try
             {
                 var tempSettings = _nccSettingsService.GetByKey("NccLinkShare_Settings");
@@ -48,28 +48,28 @@ namespace NetCoreCMS.LinkShare.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Manage Links", Url = "/LinkShareHome/Manage", IconCls = "", Order = 2)]
+        [AdminMenuItem(Name = "Manage Category", Url = "/LinkShareCategory/Manage", IconCls = "", Order = 5)]
         public ActionResult Manage()
         {
-            var itemList = _nccLinkShareService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
+            var itemList = _nccLinkShareCategoryService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
             return View(itemList);
         }
 
 
-        [AdminMenuItem(Name = "New Link", Url = "/LinkShareHome/CreateEdit", IconCls = "fa-plus", Order = 1)]
+        [AdminMenuItem(Name = "New Category", Url = "/LinkShareCategory/CreateEdit", IconCls = "fa-plus", Order = 4)]
         public ActionResult CreateEdit(long Id = 0)
         {
-            NccLinkShare item = new NccLinkShare();
+            NccCategory item = new NccCategory();
 
             if (Id > 0)
             {
-                item = _nccLinkShareService.Get(Id);
+                item = _nccLinkShareCategoryService.Get(Id);
             }
             return View(item);
         }
 
         [HttpPost]
-        public ActionResult CreateEdit(NccLinkShare model, string save, string[] itemPath, string[] description)
+        public ActionResult CreateEdit(NccCategory model, string save)
         {
             bool isSuccess = false;
             ViewBag.MessageType = "ErrorMessage";
@@ -79,29 +79,23 @@ namespace NetCoreCMS.LinkShare.Controllers
             {
                 //unique name check
                 model.Name = model.Name.Trim();
-                var itemCount = _nccLinkShareService.LoadAllByName(model.Name).Where(x => x.Id != model.Id).ToList().Count();
+                var itemCount = _nccLinkShareCategoryService.LoadAllByName(model.Name).Where(x => x.Id != model.Id).ToList().Count();
                 if (itemCount > 0)
                 {
                     ViewBag.Message = "Duplicate name found.";
                 }
                 else
                 {
-                    //for (int i = 0; i < itemPath.Count(); i++)
-                    //{
-                    //    var tempItemPath = string.IsNullOrEmpty(itemPath[i]) ? "" : itemPath[i];
-                    //    var tempDescription = string.IsNullOrEmpty(description[i]) ? "" : description[i];
-                    //}
-
                     if (model.Id > 0)
                     {
-                        _nccLinkShareService.Update(model);
+                        _nccLinkShareCategoryService.Update(model);
                         isSuccess = true;
                         ViewBag.MessageType = "SuccessMessage";
                         ViewBag.Message = "Data updated successfull.";
                     }
                     else
                     {
-                        _nccLinkShareService.Save(model);
+                        _nccLinkShareCategoryService.Save(model);
                         isSuccess = true;
                         ViewBag.MessageType = "SuccessMessage";
                         ViewBag.Message = "Data saved successfull.";
@@ -118,14 +112,14 @@ namespace NetCoreCMS.LinkShare.Controllers
 
         public ActionResult Delete(long Id)
         {
-            NccLinkShare item = _nccLinkShareService.Get(Id);            
+            NccCategory item = _nccLinkShareCategoryService.Get(Id);            
             return View(item);
         }
 
         [HttpPost]
         public ActionResult Delete(long Id, int status)
         {
-            _nccLinkShareService.DeletePermanently(Id);
+            _nccLinkShareCategoryService.DeletePermanently(Id);
             ViewBag.MessageType = "SuccessMessage";
             ViewBag.Message = "Item deleted successful";
             return RedirectToAction("Manage");
