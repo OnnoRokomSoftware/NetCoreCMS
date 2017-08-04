@@ -1,0 +1,13 @@
+﻿{
+  "ModuleId": "com.NetCoreCMS.LinkShare",
+  "ModuleName": "NetCoreCMS.LinkShare",
+  "ModuleTitle": "NetCoreCMS LinkShare Module",
+  "Author": "NetCoreCMS",
+  "Website": "http://DotNetCoreCMS.com",
+  "AntiForgery": true,
+  "Description": "Builtin LinkShare Module.",
+  "Version": "1.0",
+  "NetCoreCMSVersion": "0.1.1",
+  "Dependencies": [],
+  "Category": "Image,Slider,Media"
+}
