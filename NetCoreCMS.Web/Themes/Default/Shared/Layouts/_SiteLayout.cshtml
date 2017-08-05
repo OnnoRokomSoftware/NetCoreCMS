@@ -196,7 +196,7 @@
                                 foreach (var widget in widgets)
                                 {
                                     widget.Init(item.Id);
-                                    if (widget.DisplayTitle != "" || widget.Footer != "")
+                                    if (widget.DisplayTitle.Trim() != "" || widget.Footer.Trim() != "")
                                     {
                                         <div class='panel panel-default'>
                                             @if (widget.DisplayTitle != "")
