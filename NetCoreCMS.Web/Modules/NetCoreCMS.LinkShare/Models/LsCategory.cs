@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.LinkShare.Models
 {
-    public class NccCategory : IBaseModel<long>
+    public class LsCategory : IBaseModel<long>
     {
-        public NccCategory()
+        public LsCategory()
         {
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
@@ -25,6 +25,6 @@ namespace NetCoreCMS.LinkShare.Models
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }
         public int Status { get; set; }
-        public ICollection<NccCategoryLinkShare> LinkShares { get; set; }
+        public List<LsLinkCategory> Links { get; set; }
     }
 }

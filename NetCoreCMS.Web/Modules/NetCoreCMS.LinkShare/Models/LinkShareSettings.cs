@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.LinkShare.Models
 {
-    public class NccLinkShareSettings
+    public class LinkShareSettings
     {
-        public NccLinkShareSettings()
+        public LinkShareSettings()
         {
             ModuleVersion = "1.0";
         }

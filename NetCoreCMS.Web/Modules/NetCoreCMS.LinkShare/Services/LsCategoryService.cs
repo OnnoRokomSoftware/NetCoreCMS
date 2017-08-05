@@ -9,28 +9,28 @@ using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.LinkShare.Services
 {
-    public class NccLinkShareService : IBaseService<NccLinkShare>
+    public class LsCategoryService : IBaseService<LsCategory>
     {
-        private readonly NccLinkShareRepository _entityRepository;
+        private readonly LsCategoryRepository _entityRepository;
 
-        public NccLinkShareService(NccLinkShareRepository entityRepository)
+        public LsCategoryService(LsCategoryRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
 
-        public NccLinkShare Get(long entityId)
+        public LsCategory Get(long entityId)
         {
             return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
         }
 
-        public NccLinkShare Save(NccLinkShare entity)
+        public LsCategory Save(LsCategory entity)
         {
             _entityRepository.Add(entity);
             _entityRepository.SaveChange();
             return entity;
         }
 
-        public NccLinkShare Update(NccLinkShare entity)
+        public LsCategory Update(LsCategory entity)
         {
             var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
             if (oldEntity != null)
@@ -38,7 +38,7 @@ namespace NetCoreCMS.LinkShare.Services
                 using (var txn = _entityRepository.BeginTransaction())
                 {
                     CopyNewData(oldEntity, entity);
-                    _entityRepository.Edit(oldEntity);
+                    //_entityRepository.Edit(oldEntity);
                     _entityRepository.SaveChange();
                     txn.Commit();
                 }
@@ -58,29 +58,29 @@ namespace NetCoreCMS.LinkShare.Services
             }
         }
 
-        public List<NccLinkShare> LoadAll()
+        public List<LsCategory> LoadAll()
         {
-            return _entityRepository.Query().ToList();
+            return _entityRepository.Query().Include("Links").ToList();
         }
 
-        public List<NccLinkShare> LoadAllActive()
+        public List<LsCategory> LoadAllActive()
         {
             return _entityRepository.LoadAllActive();
         }
 
-        public List<NccLinkShare> LoadAllByStatus(int status)
+        public List<LsCategory> LoadAllByStatus(int status)
         {
-            return _entityRepository.Query().Where(x => x.Status == status).ToList();
+            return _entityRepository.Query().Include("Links").Where(x => x.Status == status).ToList();
         }
 
-        public List<NccLinkShare> LoadAllByName(string name)
+        public List<LsCategory> LoadAllByName(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name == name).ToList();
+            return _entityRepository.Query().Include("Links").Where(x => x.Name == name).ToList();
         }
 
-        public List<NccLinkShare> LoadAllByNameContains(string name)
+        public List<LsCategory> LoadAllByNameContains(string name)
         {
-            return _entityRepository.Query().Where(x => x.Name.Contains(name)).ToList();
+            return _entityRepository.Query().Include("Links").Where(x => x.Name.Contains(name)).ToList();
         }
 
         public void DeletePermanently(long entityId)
@@ -93,7 +93,7 @@ namespace NetCoreCMS.LinkShare.Services
             }
         }
 
-        private void CopyNewData(NccLinkShare oldEntity, NccLinkShare entity)
+        private void CopyNewData(LsCategory oldEntity, LsCategory entity)
         {
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;

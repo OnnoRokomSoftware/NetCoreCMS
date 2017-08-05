@@ -4,9 +4,9 @@ using NetCoreCMS.LinkShare.Models;
 
 namespace NetCoreCMS.LinkShare.Repository
 {
-    public class NccLinkShareRepository : BaseRepository<NccLinkShare, long>
+    public class LsLinkRepository : BaseRepository<LsLink, long>
     {
-        public NccLinkShareRepository(NccDbContext context) : base(context)
+        public LsLinkRepository(NccDbContext context) : base(context)
         {
         }
     }

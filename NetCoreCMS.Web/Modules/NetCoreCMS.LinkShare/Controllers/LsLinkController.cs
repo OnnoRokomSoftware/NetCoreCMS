@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
@@ -18,29 +19,32 @@ namespace NetCoreCMS.LinkShare.Controllers
 
     [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
     [AdminMenu(Name = "Link Share", IconCls = "fa-link", Order = 100)]
-    public class LinkShareHomeController : NccController
+    public class LsLinkController : NccController
     {
         #region Initialization
         private NccSettingsService _nccSettingsService;
-        private NccLinkShareService _nccLinkShareService;
+        private LsLinkService _lsLinkService;
+        private LsCategoryService _lsCategoryService;
 
-        private NccLinkShareSettings nccLinkShareSettings;
+        private LinkShareSettings nccLinkShareSettings;
 
-        public LinkShareHomeController(NccSettingsService nccSettingsService, ILoggerFactory factory, NccLinkShareService nccLinkShareService)
+        public LsLinkController(NccSettingsService nccSettingsService, ILoggerFactory factory, LsLinkService lsLinkService, LsCategoryService lsCategoryService)
         {
-            _logger = factory.CreateLogger<LinkShareHomeController>();
-            nccLinkShareSettings = new NccLinkShareSettings();
+            _logger = factory.CreateLogger<LsLinkController>();
+            nccLinkShareSettings = new LinkShareSettings();
 
             _nccSettingsService = nccSettingsService;
-            _nccLinkShareService = nccLinkShareService;
+            _lsLinkService = lsLinkService;
+            _lsCategoryService = lsCategoryService;
             try
             {
                 var tempSettings = _nccSettingsService.GetByKey("NccLinkShare_Settings");
                 if (tempSettings != null)
                 {
-                    nccLinkShareSettings = JsonConvert.DeserializeObject<NccLinkShareSettings>(tempSettings.Value);
+                    nccLinkShareSettings = JsonConvert.DeserializeObject<LinkShareSettings>(tempSettings.Value);
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
             }
@@ -48,28 +52,29 @@ namespace NetCoreCMS.LinkShare.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Manage Links", Url = "/LinkShareHome/Manage", IconCls = "", Order = 2)]
+        [AdminMenuItem(Name = "Manage Links", Url = "/LsLink/Manage", IconCls = "", Order = 2)]
         public ActionResult Manage()
         {
-            var itemList = _nccLinkShareService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
+            var itemList = _lsLinkService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
             return View(itemList);
         }
 
 
-        [AdminMenuItem(Name = "New Link", Url = "/LinkShareHome/CreateEdit", IconCls = "fa-plus", Order = 1)]
+        [AdminMenuItem(Name = "New Link", Url = "/LsLink/CreateEdit", IconCls = "fa-plus", Order = 1)]
         public ActionResult CreateEdit(long Id = 0)
         {
-            NccLinkShare item = new NccLinkShare();
+            LsLink item = new LsLink();
+            ViewBag.LsCategoryList = _lsCategoryService.LoadAllActive();
 
             if (Id > 0)
             {
-                item = _nccLinkShareService.Get(Id);
+                item = _lsLinkService.Get(Id);
             }
             return View(item);
         }
 
         [HttpPost]
-        public ActionResult CreateEdit(NccLinkShare model, string save, string[] itemPath, string[] description)
+        public ActionResult CreateEdit(LsLink model, string save, long[] LsCategory)
         {
             bool isSuccess = false;
             ViewBag.MessageType = "ErrorMessage";
@@ -77,31 +82,27 @@ namespace NetCoreCMS.LinkShare.Controllers
 
             if (ModelState.IsValid)
             {
-                //unique name check
-                model.Name = model.Name.Trim();
-                var itemCount = _nccLinkShareService.LoadAllByName(model.Name).Where(x => x.Id != model.Id).ToList().Count();
-                if (itemCount > 0)
+                if (LsCategory == null || LsCategory.Count() == 0)
                 {
-                    ViewBag.Message = "Duplicate name found.";
+                    ViewBag.Message = "You have to select at least one category.";
                 }
                 else
                 {
-                    //for (int i = 0; i < itemPath.Count(); i++)
-                    //{
-                    //    var tempItemPath = string.IsNullOrEmpty(itemPath[i]) ? "" : itemPath[i];
-                    //    var tempDescription = string.IsNullOrEmpty(description[i]) ? "" : description[i];
-                    //}
-
+                    model.Categories = new List<LsLinkCategory>();
+                    foreach (var item in LsCategory)
+                    {
+                        model.Categories.Add(new LsLinkCategory() { LsLink = model, LsCategoryId = item });
+                    }
                     if (model.Id > 0)
                     {
-                        _nccLinkShareService.Update(model);
+                        _lsLinkService.Update(model);
                         isSuccess = true;
                         ViewBag.MessageType = "SuccessMessage";
                         ViewBag.Message = "Data updated successfull.";
                     }
                     else
                     {
-                        _nccLinkShareService.Save(model);
+                        _lsLinkService.Save(model);
                         isSuccess = true;
                         ViewBag.MessageType = "SuccessMessage";
                         ViewBag.Message = "Data saved successfull.";
@@ -113,19 +114,42 @@ namespace NetCoreCMS.LinkShare.Controllers
             {
                 return RedirectToAction("Manage");
             }
+            ViewBag.LsCategoryList = _lsCategoryService.LoadAllActive();
             return View(model);
+        }
+
+        public ActionResult StatusUpdate(long Id = 0)
+        {
+            if (Id > 0)
+            {
+                var item = _lsLinkService.Get(Id);
+                if (item.Status == EntityStatus.Active)
+                {
+                    item.Status = EntityStatus.Inactive;
+                    ViewBag.Message = "In-activated successfull.";
+                }
+                else
+                {
+                    item.Status = EntityStatus.Active;
+                    ViewBag.Message = "Activated successfull.";
+                }
+
+                _lsLinkService.Update(item);
+                ViewBag.MessageType = "SuccessMessage";
+            }
+            return RedirectToAction("Manage");
         }
 
         public ActionResult Delete(long Id)
         {
-            NccLinkShare item = _nccLinkShareService.Get(Id);            
+            LsLink item = _lsLinkService.Get(Id);
             return View(item);
         }
 
         [HttpPost]
         public ActionResult Delete(long Id, int status)
         {
-            _nccLinkShareService.DeletePermanently(Id);
+            _lsLinkService.DeletePermanently(Id);
             ViewBag.MessageType = "SuccessMessage";
             ViewBag.Message = "Item deleted successful";
             return RedirectToAction("Manage");

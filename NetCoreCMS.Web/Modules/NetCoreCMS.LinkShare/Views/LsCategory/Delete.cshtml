@@ -5,6 +5,7 @@
     Layout = Constants.AdminLayoutName;
     ViewData["PageTitle"] = "Item Delete";
     ViewData["PageSubtitle"] = "Delete item";
+    var controllerName = "LsCategory";
 }
 
 
@@ -15,7 +16,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="row">
-                    <form id="deletetForm" class="form-horizontal" asp-controller="ImageSliderHome" asp-action="Delete" method="post">
+                    <form id="deletetForm" class="form-horizontal" asp-controller="@controllerName" asp-action="Delete" method="post">
 
                         <div class="col-sm-8 pull-left">
                             <h3>Are you sure you want to delete @Model.Name ?</h3>

@@ -1,9 +1,9 @@
-﻿@using NetCoreCMS.ImageSlider.Models
+﻿@using NetCoreCMS.LinkShare.Models
 @using System.Collections
 
-@model NccImageSlider
+@model LsLinkViewModel
 
-<div style="@Model.ContainerStyle">
+<div class="@Model.ColumnClass">
     <div id="nccImageSlider" class="carousel slide" data-ride="carousel" data-interval="@(Model.Interval * 1000)">
         @if (Model.ShowNav == true)
         {

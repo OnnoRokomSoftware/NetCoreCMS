@@ -5,9 +5,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.LinkShare.Models
 {
-    public class NccLinkShare : IBaseModel<long>
+    public class LsLink : IBaseModel<long>
     {
-        public NccLinkShare()
+        public LsLink()
         {
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
@@ -15,6 +15,8 @@ namespace NetCoreCMS.LinkShare.Models
             Status = EntityStatus.Active;
             VersionNumber = 1;
             Order = 1;
+            PublishDate = DateTime.Now;
+            ExpireDate = DateTime.Now.AddDays(7);
         }
 
         [Key]
@@ -29,7 +31,10 @@ namespace NetCoreCMS.LinkShare.Models
 
         public string Link { get; set; }
         public string ImagePath { get; set; }
+        public bool HasDateRange { get; set; }
+        public DateTime PublishDate { get; set; }
+        public DateTime ExpireDate{ get; set; }
         public int Order { get; set; }
-        public ICollection<NccCategoryLinkShare> Categories { get; set; }
+        public List<LsLinkCategory> Categories { get; set; }
     }
 }
