@@ -19,6 +19,7 @@ namespace NetCoreCMS.LinkShare.Controllers
 
     [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
     [AdminMenu(Name = "Link Share", IconCls = "fa-link", Order = 100)]
+    [SiteMenu(Name = "Link Share", IconCls = "fa-link", Order = 100)]
     public class LsLinkController : NccController
     {
         #region Initialization
@@ -157,6 +158,17 @@ namespace NetCoreCMS.LinkShare.Controllers
         #endregion
 
         #region User Panel
+        [AllowAnonymous]
+        [SiteMenuItem(Name = "Links", Url = "/LsLink", IconCls = "", Order = 1)]
+        public ActionResult Index(string category = "", int page = 0, int count = 10)
+        {            
+            List<LsLink> itemList = new List<LsLink>();
+            if (category.Trim() == "")
+                itemList = _lsLinkService.LoadAllActive().OrderByDescending(x => x.Id).Skip(page * count).Take(count).ToList();
+            else
+                itemList = _lsLinkService.LoadAllByCategory(category, page, count);
+            return View(itemList);
+        }
         #endregion
     }
 }

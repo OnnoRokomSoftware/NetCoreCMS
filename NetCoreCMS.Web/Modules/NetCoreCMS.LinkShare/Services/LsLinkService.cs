@@ -91,9 +91,20 @@ namespace NetCoreCMS.LinkShare.Services
             return _entityRepository.Query().Include("Categories").Where(x => x.Name == name).ToList();
         }
 
-        public List<LsLink> LoadAllByCategory(string categoryName)
+        public List<LsLink> LoadAllByCategory(string categoryName, int page = 0, int count = 10)
         {
-            return _entityRepository.Query().Where(x => x.Status >= EntityStatus.New && x.Categories.Any(c => c.LsCategory.Name == categoryName)).OrderBy(x => x.Order).ToList();
+            return _entityRepository.Query()
+                .Where(x => x.Status >= EntityStatus.New
+                    && x.Categories.Any(c => c.LsCategory.Name == categoryName)
+                    && (
+                        x.HasDateRange == false
+                        || (x.PublishDate >= DateTime.Now && x.ExpireDate <= DateTime.Now)
+                    )
+                )
+                .OrderBy(x => x.Order)
+                .Skip(count * page)
+                .Take(count)
+                .ToList();
         }
 
         public List<LsLink> LoadAllByNameContains(string name)
@@ -119,7 +130,6 @@ namespace NetCoreCMS.LinkShare.Services
             oldEntity.Status = entity.Status;
 
             oldEntity.Link = entity.Link;
-            oldEntity.ImagePath = entity.ImagePath;
             oldEntity.HasDateRange = entity.HasDateRange;
             oldEntity.PublishDate = entity.PublishDate;
             oldEntity.ExpireDate = entity.ExpireDate;

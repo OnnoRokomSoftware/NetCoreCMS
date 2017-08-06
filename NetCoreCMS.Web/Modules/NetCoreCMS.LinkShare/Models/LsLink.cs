@@ -30,7 +30,6 @@ namespace NetCoreCMS.LinkShare.Models
         public int Status { get; set; }
 
         public string Link { get; set; }
-        public string ImagePath { get; set; }
         public bool HasDateRange { get; set; }
         public DateTime PublishDate { get; set; }
         public DateTime ExpireDate{ get; set; }

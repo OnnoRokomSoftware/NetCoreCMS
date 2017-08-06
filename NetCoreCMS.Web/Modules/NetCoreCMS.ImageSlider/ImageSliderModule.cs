@@ -115,8 +115,8 @@ namespace NetCoreCMS.Modules.ImageSlider
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var deleteQuery = @"
-                DROP TABLE `Ncc_Image_Slider_Title`; 
-                DROP TABLE `Ncc_Image_Slider`
+                DROP TABLE IF EXISTS `Ncc_Image_Slider_Title`; 
+                DROP TABLE IF EXISTS `Ncc_Image_Slider`
             ;";
 
             var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };

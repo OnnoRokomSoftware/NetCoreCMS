@@ -91,7 +91,6 @@ namespace NetCoreCMS.Modules.LinkShare
                     `Status` INT NOT NULL , 
 
                     `Link` VARCHAR(1000) NOT NULL , 
-                    `ImagePath` VARCHAR(1000) NULL , 
                     `HasDateRange` bit(1) NOT NULL , 
                     `PublishDate` DATETIME NULL , 
                     `ExpireDate` DATETIME NULL , 
@@ -116,9 +115,9 @@ namespace NetCoreCMS.Modules.LinkShare
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var deleteQuery = @"
-                DROP TABLE `Ncc_LS_Link_Category`;
-                DROP TABLE `Ncc_LS_Category`;
-                DROP TABLE `Ncc_LS_Link`; 
+                DROP TABLE IF EXISTS `Ncc_LS_Link_Category`;
+                DROP TABLE IF EXISTS `Ncc_LS_Category`;
+                DROP TABLE IF EXISTS `Ncc_LS_Link`; 
             ;";
 
             var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };

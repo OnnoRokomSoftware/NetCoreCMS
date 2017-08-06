@@ -134,8 +134,8 @@ namespace NetCoreCMS.Modules.MatGallery
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var deleteQuery = @"
-                DROP TABLE `Ncc_MTG_User_Module_Log`; 
-                DROP TABLE `Ncc_MTG_User_Module`;
+                DROP TABLE IF EXISTS `Ncc_MTG_User_Module_Log`; 
+                DROP TABLE IF EXISTS `Ncc_MTG_User_Module`;
             ;";
 
             var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };
