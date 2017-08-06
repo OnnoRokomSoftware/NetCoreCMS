@@ -18,7 +18,7 @@ namespace NetCoreCMS.MatGallery.Controllers
 
     [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
     //[AdminMenu(Name = "Gallery Management", IconCls = "", Order = 100)]
-    public class MatGalleryController : NccController
+    public class MatGalleryApiController : NccController
     {
         #region Initialization
         private NccSettingsService _nccSettingsService;
@@ -26,7 +26,7 @@ namespace NetCoreCMS.MatGallery.Controllers
 
         private Settings settings;
 
-        public MatGalleryController(NccSettingsService nccSettingsService, ILoggerFactory factory, NccUserModuleService nccUserModuleService)
+        public MatGalleryApiController(NccSettingsService nccSettingsService, ILoggerFactory factory, NccUserModuleService nccUserModuleService)
         {
             _logger = factory.CreateLogger<MatGalleryController>();
             settings = new Settings();
@@ -52,6 +52,20 @@ namespace NetCoreCMS.MatGallery.Controllers
         #endregion
 
         #region user Panel
+
+        #endregion
+
+        #region API Panel
+        [AllowAnonymous]
+        [HttpGet]
+        public JsonResult Modules(string key = "")
+        {
+            var itemList = _nccUserModuleService.LoadAllActive().OrderByDescending(x => x.Id)
+                .Select(x => new {
+                    x.ModuleId, x.ModuleName, x.ModuleTitle, x.Description, x.Version, x.Category, x.Author, x.Email, x.Website, LastUpdate = x.ModificationDate
+                }).ToList(); ;
+            return Json(itemList);
+        }
 
         #endregion
     }
