@@ -126,7 +126,7 @@
                                     <th>Version</th>
                                     <th>Category</th>
                                     <th>Author</th>
-                                    <th>Action <input type='button' class='btn btn-success btn-xs btn-outline' value='Download' onclick='downloadModule("asd")' /> </th>
+                                    <th>Action <input type='button' class='btn btn-success btn-xs btn-outline' value='Download' onclick='downloadModule("com.NetCoreCMS.HelloWorld","NetCoreCMS.HelloWorld")' /> </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -197,16 +197,16 @@
             }
         });
 
-        function downloadModule(moduleId) {
+        function downloadModule(moduleId, moduleName) {
             NccPageMask.ShowLoadingMask();
             $.ajax({
                 method: 'POST',
                 url: '/CmsModule/DownloadModule',
-                data: { moduleId: moduleId },
+                data: { moduleId: moduleId, moduleName: moduleName },
                 success: function (rsp) {
                     NccPageMask.HideLoadingMask();
                     console.log(rsp);
-                    NccGlobalAlert.ShowSuccess(rsp.message);
+                    NccGlobalAlert.ShowSuccess(rsp);
                 },
                 error: function (rsp) {
                     NccPageMask.HideLoadingMask();

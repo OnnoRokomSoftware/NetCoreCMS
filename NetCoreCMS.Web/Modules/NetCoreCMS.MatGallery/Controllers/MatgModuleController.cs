@@ -28,11 +28,11 @@ namespace NetCoreCMS.MatGallery.Controllers
     public class MatgModuleController : NccController
     {
         #region Initialization
+        private IHostingEnvironment _env;
         private NccSettingsService _nccSettingsService;
         private NccUserModuleService _nccUserModuleService;
         private Settings settings;
 
-        private IHostingEnvironment _env;
         private readonly string _tempPath = "MatGallery\\Modules\\_temp\\";
         private readonly string _moduleSourcePath = "MatGallery\\Modules\\_source\\";
         private readonly string _modulePath = "MatGallery\\Modules\\";

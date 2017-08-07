@@ -6,14 +6,19 @@ using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
@@ -22,12 +27,14 @@ namespace NetCoreCMS.Modules.Cms.Controllers
     public class CmsModuleController : NccController
     {
         #region Initialization
+        private IHostingEnvironment _env;
         NccModuleService _moduleService;
         NccSettingsService _settingsService;
         ModuleManager moduleManager;
         List<IModule> _coreModules;
         List<IModule> _publicModules;
         IHostingEnvironment _hostingEnvironment;
+        private readonly string _modulePath = "MatGallery\\Modules\\";
 
         public CmsModuleController(
             NccModuleService moduleService,
@@ -177,9 +184,62 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         }
 
 
-        public JsonResult DownloadModule(string key = "")
+        public async Task<JsonResult> DownloadModule(string key = "", string moduleId = "", string moduleName = "")
         {
-            return Json("Success");
+            ApiResponse resp = new ApiResponse();
+            resp.IsSuccess = false;
+            resp.Message = "Process Failed. Please try again.";
+            if (moduleId.Trim() != "")
+            {
+                try
+                {
+                    string url = "http://localhost:60180/MatGalleryApi/DownloadModule?moduleId=" + moduleId;
+                    #region Download in temp folder
+                    using (var client = new HttpClient())
+                    {
+                        using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                        {
+                            using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(), stream = new FileStream("Modules\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
+                            {
+                                await contentStream.CopyToAsync(stream);
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region Check & Create module folder
+
+                    #endregion
+
+                    #region Unzip in folder location
+                    //var finalFolderPath = Path.Combine(_env.WebRootPath, Path.Combine(_env.WebRootPath, _tempPath + finalFolderName));
+                    //if (!Directory.Exists(unzipFolderPath))
+                    //{
+                    //    Directory.CreateDirectory(unzipFolderPath);
+                    //    Directory.CreateDirectory(finalFolderPath);
+                    //}
+                    //else
+                    //{
+                    //    isSuccess = false;
+                    //    responseMessage = "Redundant ZipFile found in server.";
+                    //    //stop the process, because duplicate name situation occered.
+                    //}
+                    //if (isSuccess)
+                    //{
+                    //    ZipFile.ExtractToDirectory(tempFullFilepath, unzipFolderPath);
+                    //}
+                    #endregion
+
+                    resp.IsSuccess = true;
+                    resp.Message = "Module Downloaded complete.";
+                }
+                catch (Exception ex)
+                {
+
+                }
+
+            }
+            return Json(resp);
         }
 
         #region PrivetMethods
