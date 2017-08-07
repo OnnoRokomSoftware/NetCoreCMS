@@ -14,6 +14,7 @@ using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -34,19 +35,21 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         List<IModule> _coreModules;
         List<IModule> _publicModules;
         IHostingEnvironment _hostingEnvironment;
-        private readonly string _modulePath = "MatGallery\\Modules\\";
+        private readonly string _modulePath = "Modules\\";
 
         public CmsModuleController(
             NccModuleService moduleService,
             NccSettingsService settingsService,
             IHostingEnvironment hostingEnvironment,
-            ILoggerFactory factory
+            ILoggerFactory factory,
+            IHostingEnvironment env
             )
         {
             _moduleService = moduleService;
             _settingsService = settingsService;
             _hostingEnvironment = hostingEnvironment;
             _logger = factory.CreateLogger<CmsModuleController>();
+            _env = env;
             moduleManager = new ModuleManager();
         }
         #endregion
@@ -195,11 +198,16 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 {
                     string url = "http://localhost:60180/MatGalleryApi/DownloadModule?moduleId=" + moduleId;
                     #region Download in temp folder
+                    var tempFullFilepath = Path.Combine(_env.ContentRootPath, _modulePath + "\\_temp");
+                    if (!Directory.Exists(tempFullFilepath))
+                    {
+                        Directory.CreateDirectory(tempFullFilepath);
+                    }
                     using (var client = new HttpClient())
                     {
                         using (var request = new HttpRequestMessage(HttpMethod.Get, url))
                         {
-                            using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(), stream = new FileStream("Modules\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
+                            using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(), stream = new FileStream(_modulePath + "\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
                             {
                                 await contentStream.CopyToAsync(stream);
                             }
@@ -208,26 +216,28 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                     #endregion
 
                     #region Check & Create module folder
+                    var finalFolderPath = Path.Combine(_env.ContentRootPath, _modulePath + "\\" + moduleName);
+                    try
+                    {
+                        if (!Directory.Exists(finalFolderPath))
+                        {
+                            Directory.CreateDirectory(finalFolderPath);
+                        }
+                        else
+                        {
+                            System.IO.File.Delete(finalFolderPath);
+                            Directory.CreateDirectory(finalFolderPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
 
+                    }
                     #endregion
 
-                    #region Unzip in folder location
-                    //var finalFolderPath = Path.Combine(_env.WebRootPath, Path.Combine(_env.WebRootPath, _tempPath + finalFolderName));
-                    //if (!Directory.Exists(unzipFolderPath))
-                    //{
-                    //    Directory.CreateDirectory(unzipFolderPath);
-                    //    Directory.CreateDirectory(finalFolderPath);
-                    //}
-                    //else
-                    //{
-                    //    isSuccess = false;
-                    //    responseMessage = "Redundant ZipFile found in server.";
-                    //    //stop the process, because duplicate name situation occered.
-                    //}
-                    //if (isSuccess)
-                    //{
-                    //    ZipFile.ExtractToDirectory(tempFullFilepath, unzipFolderPath);
-                    //}
+                    #region Unzip in folder location                    
+                    ZipFile.ExtractToDirectory(tempFullFilepath + "\\" + moduleName + ".zip", finalFolderPath);
+                    System.IO.File.Delete(tempFullFilepath);
                     #endregion
 
                     resp.IsSuccess = true;

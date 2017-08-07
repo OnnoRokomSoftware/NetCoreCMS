@@ -163,7 +163,7 @@
                             return item[property] === filter[property];
                         });
                     }
-                    return collection.slice(0); // copy the array 
+                    return collection.slice(0); // copy the array
                 // (in case of empty object filter)
 
                 default:
@@ -176,7 +176,7 @@
             method: 'GET',
             url: '/MatGalleryApi/Modules',
             data: { key: "" },
-            success: function (rsp) {                
+            success: function (rsp) {
                 //console.log(rsp);
                 rsp.forEach(function (item, index) {
                     //console.log(item);
@@ -206,14 +206,17 @@
                 success: function (rsp) {
                     NccPageMask.HideLoadingMask();
                     console.log(rsp);
-                    NccGlobalAlert.ShowSuccess(rsp);
+                    if(rsp.isSuccess==true)
+                        NccGlobalAlert.ShowSuccess(rsp.message);
+                    else
+                        NccGlobalAlert.ShowError(rsp.message);
                 },
                 error: function (rsp) {
                     NccPageMask.HideLoadingMask();
                     NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
                 }
             });
-            NccGlobalAlert.ShowError(moduleId);
+            //NccGlobalAlert.ShowError(moduleId);
             NccPageMask.HideLoadingMask();
 
         }
