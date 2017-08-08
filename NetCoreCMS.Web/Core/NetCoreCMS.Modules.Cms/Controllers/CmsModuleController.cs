@@ -190,8 +190,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         public async Task<JsonResult> DownloadModule(string key = "", string moduleId = "", string moduleName = "")
         {
             ApiResponse resp = new ApiResponse();
-            resp.IsSuccess = false;
-            resp.Message = "Process Failed. Please try again.";
+            resp.IsSuccess = true;
+            resp.Message = "";
             if (moduleId.Trim() != "")
             {
                 try
@@ -199,19 +199,31 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                     string url = "http://localhost:60180/MatGalleryApi/DownloadModule?moduleId=" + moduleId;
                     #region Download in temp folder
                     var tempFullFilepath = Path.Combine(_env.ContentRootPath, _modulePath + "\\_temp");
-                    if (!Directory.Exists(tempFullFilepath))
+                    try
                     {
-                        Directory.CreateDirectory(tempFullFilepath);
-                    }
-                    using (var client = new HttpClient())
-                    {
-                        using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                        if (resp.IsSuccess == true)
                         {
-                            using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(), stream = new FileStream(_modulePath + "\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
+                            if (!Directory.Exists(tempFullFilepath))
                             {
-                                await contentStream.CopyToAsync(stream);
+                                Directory.CreateDirectory(tempFullFilepath);
+                            }
+                            using (var client = new HttpClient())
+                            {
+                                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                                {
+                                    using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(), stream = new FileStream(_modulePath + "\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
+                                    {
+                                        await contentStream.CopyToAsync(stream);
+                                    }
+                                }
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Module Download Failed.";
                     }
                     #endregion
 
@@ -219,40 +231,116 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                     var finalFolderPath = Path.Combine(_env.ContentRootPath, _modulePath + "\\" + moduleName);
                     try
                     {
-                        if (!Directory.Exists(finalFolderPath))
+                        if (resp.IsSuccess == true)
                         {
-                            Directory.CreateDirectory(finalFolderPath);
-                        }
-                        else
-                        {
-                            System.IO.File.Delete(finalFolderPath);
-                            Directory.CreateDirectory(finalFolderPath);
+                            if (!Directory.Exists(finalFolderPath))
+                            {
+                                Directory.CreateDirectory(finalFolderPath);
+                            }
+                            else
+                            {
+                                //Delete is not working perfectly. Bin folder dll file is in use cannot delete.
+                                Thread.Sleep(2000);
+                                try
+                                {
+                                    string strCmdText;
+                                    strCmdText = "rd /s /q \"" + finalFolderPath+"\"";
+                                    System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+                                    //Directory.Delete(finalFolderPath, true);
+                                    //DeleteDirectory(finalFolderPath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError(ex.ToString());
+                                    resp.IsSuccess = false;
+                                    resp.Message += "Previous module folder delete failed.";
+                                }
+                                Directory.CreateDirectory(finalFolderPath);
+                            }
                         }
                     }
                     catch (Exception ex)
                     {
-
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Module folder creation failed.";
                     }
                     #endregion
 
-                    #region Unzip in folder location                    
-                    ZipFile.ExtractToDirectory(tempFullFilepath + "\\" + moduleName + ".zip", finalFolderPath);
-                    System.IO.File.Delete(tempFullFilepath);
-                    #endregion
+                    #region Unzip in folder location     
+                    try
+                    {
+                        if (resp.IsSuccess == true)
+                        {
+                            ZipFile.ExtractToDirectory(tempFullFilepath + "\\" + moduleName + ".zip", finalFolderPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Module Unzip Failed.";
+                    }
 
-                    resp.IsSuccess = true;
-                    resp.Message = "Module Downloaded complete.";
+                    try
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (System.IO.File.Exists(tempFullFilepath + "\\" + moduleName + ".zip") == true)
+                            {
+                                Thread.Sleep(2000);
+                                System.IO.File.Delete(tempFullFilepath + "\\" + moduleName + ".zip");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Downloaded temporary file remove failed.";
+                    }
+                    #endregion                       
                 }
                 catch (Exception ex)
                 {
-
+                    _logger.LogError(ex.ToString());
+                    resp.IsSuccess = false;
+                    resp.Message = ex.Message;
                 }
-
+            }
+            if (resp.IsSuccess == true)
+            {
+                resp.Message = "Module downloaded and restored successfully";
             }
             return Json(resp);
         }
 
         #region PrivetMethods
+        public static void DeleteDirectory(string target_dir)
+        {
+            string[] files = Directory.GetFiles(target_dir);
+            string[] dirs = Directory.GetDirectories(target_dir);
+
+            foreach (string file in files)
+            {
+                try
+                {
+                    System.IO.File.SetAttributes(file, FileAttributes.Normal);
+                    System.IO.File.Delete(file);
+                }
+                catch (Exception) { }
+            }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+            try
+            {
+                Directory.Delete(target_dir, false);
+            }
+            catch (Exception) { }
+        }
         private string ExecuteQuery(NccDbQueryText query)
         {
             return _moduleService.ExecuteQuery(query);
