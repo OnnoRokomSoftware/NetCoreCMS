@@ -108,7 +108,7 @@
                 <!-- /.panel -->
             </div>
         </div>
-        <div class="tab-pane active" id="download">
+        <div class="tab-pane" id="download">
             <div class="">
                 <div class="panel panel-default">
                     <div class="panel-body" >
@@ -126,7 +126,7 @@
                                     <th>Version</th>
                                     <th>Category</th>
                                     <th>Author</th>
-                                    <th>Action <input type='button' class='btn btn-success btn-xs btn-outline' value='Download' onclick='downloadModule("com.NetCoreCMS.HelloWorld","NetCoreCMS.HelloWorld")' /> </th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -185,8 +185,8 @@
                         "   <td><b>" + item.moduleTitle + "</b><br/>" + item.description + "</td>"+
                         "   <td>" + item.version +"</td>"+
                         "   <td>" + item.category +"</td>" +
-                        "   <td><a href='" + item.website +"' target='_blank'>" + item.author + "</td>" +
-                        "   <td>" + "" +"</td>" +
+                        "   <td><a href='" + item.website + "' target='_blank'>" + item.author + "</td>" +
+                        "   <td>" + "<input type='button' class='btn btn-success btn-xs btn-outline' value='Download' onclick='downloadModule(\"" + item.moduleId + "\",\"" + item.moduleName + "\")' />" + "</td>" +
                         "</tr >"
                     );
                 });
