@@ -324,6 +324,28 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return View();
         }
 
+        [AdminMenuItem(Name = "Maintenance Mode",Url = "/Admin/MaintenanceMode", Order = 10)]
+        public IActionResult MaintenanceMode()
+        {
+            ViewBag.SetupConfig = SetupHelper.LoadSetup();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult MaintenanceMode(string isMaintenanceMode, int maintenanceDuration, string maintenanceMessage)
+        {
+            var setupConfig = SetupHelper.LoadSetup();
+            setupConfig.IsMaintenanceMode = !string.IsNullOrEmpty(isMaintenanceMode);
+            setupConfig.MaintenanceDownTime = maintenanceDuration;
+            setupConfig.MaintenanceMessage = maintenanceMessage;
+
+            SetupHelper.UpdateSetup(setupConfig);
+            ViewBag.Message = "Save successful";
+
+            ViewBag.SetupConfig = setupConfig;
+            return View();
+        }
+
         #endregion
 
         #region Privet Methods

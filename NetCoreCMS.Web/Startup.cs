@@ -25,6 +25,8 @@ using System.Linq;
 using NetCoreCMS.Framework.Core.Repository;
 using Microsoft.AspNetCore.Authorization;
 using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Core.Middleware;
+using System.Text;
 
 namespace NetCoreCMS.Web
 {
@@ -102,6 +104,8 @@ namespace NetCoreCMS.Web
             
             GlobalConfig.Modules.AddRange(userModules);
 
+            _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div>"+_setupConfig.MaintenanceMessage+"</div>"),"text/html",_setupConfig.MaintenanceDownTime * 60);
+            
             if (SetupHelper.IsDbCreateComplete)
             {
                 if(SetupHelper.SelectedDatabase == "SqLite")
@@ -199,6 +203,12 @@ namespace NetCoreCMS.Web
             }
             
             app.UseSession();
+
+            if (_setupConfig.IsMaintenanceMode)
+            {
+                app.UseMaintenance();
+            }
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
@@ -217,8 +227,8 @@ namespace NetCoreCMS.Web
                     template: "{slug?}",
                     defaults: new { controller = "Category", action = "Index" });
                 
-            }); 
-
+            });
+            
         }
     }
 }

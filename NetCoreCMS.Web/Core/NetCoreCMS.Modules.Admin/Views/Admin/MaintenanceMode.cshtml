@@ -1,0 +1,45 @@
+﻿@using NetCoreCMS.Framework.Utility
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["Title"] = "Maintenance Mode Settings";
+    
+    var checkedTxt = "";
+
+    if (ViewBag.SetupConfig.IsMaintenanceMode)
+    {        
+        checkedTxt = "checked";        
+    }
+}
+
+<h2>@ViewData["Title"].</h2>
+<h3>@ViewData["Message"]</h3>
+
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" asp-controller="Admin" asp-action="MaintenanceMode" method="post">
+            <div class="form-group">
+                <div asp-validation-summary="All" class="text-danger"></div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>Enable Maintenance: </label></div>
+                <div class="col-sm-5"><input name="isMaintenanceMode" type="checkbox" value="true" @checkedTxt /> </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>Maintenance Duration:</label></div>
+                <div class="col-sm-5"><input type="text" name="maintenanceDuration" value="@ViewBag.SetupConfig.MaintenanceDownTime" class="form-control" /></div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>From Email:</label></div>
+                <div class="col-sm-5"><input type="text" name="maintenanceMessage" value="@ViewBag.SetupConfig.MaintenanceMessage" class="form-control" /></div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 text-right">  </div>
+                <input class="btn btn-primary" type="submit" value="Update" />
+            </div>
+
+        </form>
+    </div>
+</div>

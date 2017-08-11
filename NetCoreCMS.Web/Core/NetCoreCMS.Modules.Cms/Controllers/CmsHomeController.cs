@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System.Linq;
 
@@ -47,7 +48,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
             return View();
         }
-
+        
         public IActionResult ResourceNotFound()
         {   
             return View();
