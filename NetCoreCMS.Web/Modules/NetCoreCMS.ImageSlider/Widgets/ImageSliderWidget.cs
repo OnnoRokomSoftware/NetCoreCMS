@@ -2,6 +2,7 @@
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.ImageSlider.Controllers;
+using NetCoreCMS.ImageSlider.Models;
 using NetCoreCMS.ImageSlider.Services;
 using Newtonsoft.Json;
 using System;
@@ -55,6 +56,7 @@ namespace NetCoreCMS.ImageSlider.Widgets
         public override string RenderBody()
         {
             var itemList = _imageSliderService.LoadAllByName(selectedImageSliderName).FirstOrDefault();
+            if (selectedImageSliderName.Trim() == "") { _imageSliderService.LoadAll().FirstOrDefault(); }
             var body = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ViewFileName, itemList).Result;
             return body;
         }

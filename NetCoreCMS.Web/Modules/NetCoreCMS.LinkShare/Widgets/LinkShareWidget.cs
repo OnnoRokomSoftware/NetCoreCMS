@@ -2,6 +2,7 @@
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.LinkShare.Controllers;
+using NetCoreCMS.LinkShare.Models;
 using NetCoreCMS.LinkShare.Services;
 using Newtonsoft.Json;
 using System;
@@ -13,24 +14,30 @@ namespace NetCoreCMS.LinkShare.Widgets
 {
     public class LinkShareWidget : Widget
     {
-        NccLinkShareService _imageSliderService;
+        LsLinkService _lsLinkService;
         IViewRenderService _viewRenderService;
         NccWebSiteWidgetService _websiteWidgetService;
-        string selectedImageSliderName;
+        string headerTitle;
+        string category;
+        string columnClass;
+        string columnColor;
+        string columnBgColor;
+        string footerTitle;
 
         public LinkShareWidget(
             IViewRenderService viewRenderService,
             NccWebSiteWidgetService websiteWidgetService,
-            NccLinkShareService imageSliderService) : base(
+            LsLinkService lsLinkService) : base(
                 "NetCoreCMS.Modules.Widgets.LinkShare",
                 "Link Share Widget",
                 "This is a widget to display links.",
-                ""
+                "",
+                false
             )
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
-            _imageSliderService = imageSliderService;
+            _lsLinkService = lsLinkService;
         }
 
         public override void Init(long websiteWidgetId)
@@ -43,9 +50,14 @@ namespace NetCoreCMS.LinkShare.Widgets
             {
                 var configJson = webSiteWidget.WidgetConfigJson;
                 var config = JsonConvert.DeserializeObject<dynamic>(configJson);
-                DisplayTitle = config.title;
-                Footer = config.footer;
-                selectedImageSliderName = config.name;
+                DisplayTitle = "";
+                Footer = "";
+                headerTitle = config.headerTitle;
+                category = config.category;
+                columnClass = config.columnClass;
+                columnColor = config.columnColor;
+                columnBgColor = config.columnBgColor;
+                footerTitle = config.footerTitle;
             }
 
             ConfigViewFileName = "Widgets/LinkShareConfig";
@@ -54,8 +66,18 @@ namespace NetCoreCMS.LinkShare.Widgets
 
         public override string RenderBody()
         {
-            var itemList = _imageSliderService.LoadAllByName(selectedImageSliderName).FirstOrDefault();
-            var body = _viewRenderService.RenderToStringAsync<LinkShareWidgetController>(ViewFileName, itemList).Result;
+            var itemList = _lsLinkService.LoadAllByCategory(category);
+            if (category.Trim() == "") { _lsLinkService.LoadAll().OrderByDescending(x => x.Id).Take(10).OrderBy(x => x.Order); }
+            var item = new LsLinkViewModel()
+            {
+                HeaderTitle = headerTitle,
+                ColumnClass = columnClass.Trim() == "" ? "col-md-12" : columnClass,
+                ColumnColor = columnColor,
+                ColumnBgColor = columnBgColor,
+                FooterTitle = footerTitle,
+                LsLinkList = itemList
+            };
+            var body = _viewRenderService.RenderToStringAsync<LinkShareWidgetController>(ViewFileName, item).Result;
             return body;
         }
     }

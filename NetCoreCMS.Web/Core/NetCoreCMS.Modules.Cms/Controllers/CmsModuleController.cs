@@ -6,14 +6,20 @@ using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.Modules.Cms.Controllers
 {
@@ -22,28 +28,32 @@ namespace NetCoreCMS.Modules.Cms.Controllers
     public class CmsModuleController : NccController
     {
         #region Initialization
+        private IHostingEnvironment _env;
         NccModuleService _moduleService;
         NccSettingsService _settingsService;
         ModuleManager moduleManager;
         List<IModule> _coreModules;
         List<IModule> _publicModules;
         IHostingEnvironment _hostingEnvironment;
+        private readonly string _modulePath = "Modules\\";
 
         public CmsModuleController(
             NccModuleService moduleService,
             NccSettingsService settingsService,
-            IHostingEnvironment hostingEnvironment, 
-            ILoggerFactory factory
+            IHostingEnvironment hostingEnvironment,
+            ILoggerFactory factory,
+            IHostingEnvironment env
             )
         {
             _moduleService = moduleService;
             _settingsService = settingsService;
             _hostingEnvironment = hostingEnvironment;
             _logger = factory.CreateLogger<CmsModuleController>();
+            _env = env;
             moduleManager = new ModuleManager();
         }
         #endregion
-        
+
         [AdminMenuItem(Name = "Manage", Url = "/CmsModule", IconCls = "fa-th-list", Order = 1)]
         public ActionResult Index()
         {
@@ -96,9 +106,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 module.ModuleStatus = status;
                 _moduleService.Update(module);
                 var loadedModule = GlobalConfig.Modules.Where(x => x.ModuleId == module.ModuleId).FirstOrDefault();
-                if(loadedModule != null)
+                if (loadedModule != null)
                 {
-                    loadedModule.ModuleStatus = (int) status;
+                    loadedModule.ModuleStatus = (int)status;
                 }
             }
             return module;
@@ -110,9 +120,9 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             if (entity != null)
             {
                 var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                if(module != null)
+                if (module != null)
                 {
-                    module.Inactivate();                    
+                    module.Inactivate();
                     TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
                 }
                 else
@@ -130,11 +140,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
         public ActionResult InstallModule(string id)
         {
-            
+
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
-            if(entity != null)
+            if (entity != null)
             {
-                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();                
+                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
                 module.Install(_settingsService, ExecuteQuery);
                 module.ModuleStatus = (int)NccModule.NccModuleStatus.Installed;
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
@@ -143,7 +153,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 TempData["ErrorMessage"] = "Error. Module is not found.";
             }
-            
+
             return RedirectToAction("Index");
         }
 
@@ -173,10 +183,164 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var nId = long.Parse(id);
             _moduleService.DeletePermanently(nId);
             TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
-            return RedirectToAction("Index"); 
+            return RedirectToAction("Index");
+        }
+
+
+        public async Task<JsonResult> DownloadModule(string key = "", string moduleId = "", string moduleName = "")
+        {
+            ApiResponse resp = new ApiResponse();
+            resp.IsSuccess = true;
+            resp.Message = "";
+            if (moduleId.Trim() != "")
+            {
+                try
+                {
+                    string url = "http://localhost:60180/MatGalleryApi/DownloadModule?moduleId=" + moduleId;
+                    #region Download in temp folder
+                    var tempFullFilepath = Path.Combine(_env.ContentRootPath, _modulePath + "\\_temp");
+                    try
+                    {
+                        if (resp.IsSuccess == true)
+                        {
+                            if (!Directory.Exists(tempFullFilepath))
+                            {
+                                Directory.CreateDirectory(tempFullFilepath);
+                            }
+                            using (var client = new HttpClient())
+                            {
+                                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+                                {
+                                    using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(), stream = new FileStream(_modulePath + "\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
+                                    {
+                                        await contentStream.CopyToAsync(stream);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Module Download Failed.";
+                    }
+                    #endregion
+
+                    #region Check & Create module folder
+                    var finalFolderPath = Path.Combine(_env.ContentRootPath, _modulePath + "\\" + moduleName);
+                    try
+                    {
+                        if (resp.IsSuccess == true)
+                        {
+                            if (!Directory.Exists(finalFolderPath))
+                            {
+                                Directory.CreateDirectory(finalFolderPath);
+                            }
+                            else
+                            {
+                                //Delete is not working perfectly. Bin folder dll file is in use cannot delete.
+                                Thread.Sleep(2000);
+                                try
+                                {
+                                    string strCmdText;
+                                    strCmdText = "rd /s /q \"" + finalFolderPath+"\"";
+                                    System.Diagnostics.Process.Start("CMD.exe", strCmdText);
+                                    //Directory.Delete(finalFolderPath, true);
+                                    //DeleteDirectory(finalFolderPath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    _logger.LogError(ex.ToString());
+                                    resp.IsSuccess = false;
+                                    resp.Message += "Previous module folder delete failed.";
+                                }
+                                Directory.CreateDirectory(finalFolderPath);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Module folder creation failed.";
+                    }
+                    #endregion
+
+                    #region Unzip in folder location     
+                    try
+                    {
+                        if (resp.IsSuccess == true)
+                        {
+                            ZipFile.ExtractToDirectory(tempFullFilepath + "\\" + moduleName + ".zip", finalFolderPath);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Module Unzip Failed.";
+                    }
+
+                    try
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            if (System.IO.File.Exists(tempFullFilepath + "\\" + moduleName + ".zip") == true)
+                            {
+                                Thread.Sleep(2000);
+                                System.IO.File.Delete(tempFullFilepath + "\\" + moduleName + ".zip");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.ToString());
+                        resp.IsSuccess = false;
+                        resp.Message += "Downloaded temporary file remove failed.";
+                    }
+                    #endregion                       
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                    resp.IsSuccess = false;
+                    resp.Message = ex.Message;
+                }
+            }
+            if (resp.IsSuccess == true)
+            {
+                resp.Message = "Module downloaded and restored successfully";
+            }
+            return Json(resp);
         }
 
         #region PrivetMethods
+        public static void DeleteDirectory(string target_dir)
+        {
+            string[] files = Directory.GetFiles(target_dir);
+            string[] dirs = Directory.GetDirectories(target_dir);
+
+            foreach (string file in files)
+            {
+                try
+                {
+                    System.IO.File.SetAttributes(file, FileAttributes.Normal);
+                    System.IO.File.Delete(file);
+                }
+                catch (Exception) { }
+            }
+
+            foreach (string dir in dirs)
+            {
+                DeleteDirectory(dir);
+            }
+            try
+            {
+                Directory.Delete(target_dir, false);
+            }
+            catch (Exception) { }
+        }
         private string ExecuteQuery(NccDbQueryText query)
         {
             return _moduleService.ExecuteQuery(query);

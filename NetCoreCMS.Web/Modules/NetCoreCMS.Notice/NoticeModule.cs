@@ -81,7 +81,7 @@ namespace NetCoreCMS.Modules.Notice
 
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            var noticeTableDeleteQuery = "DROP TABLE `ncc_notice`";
+            var noticeTableDeleteQuery = "DROP TABLE IF EXISTS `ncc_notice`";
             var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = noticeTableDeleteQuery };
             var retVal = executeQuery(nccDbQueryText);
             if (!string.IsNullOrEmpty(retVal))

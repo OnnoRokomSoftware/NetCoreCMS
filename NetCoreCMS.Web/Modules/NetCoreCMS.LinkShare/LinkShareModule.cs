@@ -54,11 +54,11 @@ namespace NetCoreCMS.Modules.LinkShare
 
         public void Init(IServiceCollection services)
         {
-            services.AddTransient<NccLinkShareRepository>();
-            services.AddTransient<NccCategoryRepository>();
+            services.AddTransient<LsLinkRepository>();
+            services.AddTransient<LsCategoryRepository>();
 
-            services.AddTransient<NccLinkShareService>();
-            services.AddTransient<NccLinkShareCategoryService>();
+            services.AddTransient<LsLinkService>();
+            services.AddTransient<LsCategoryService>();
         }
 
         public void RegisterRoute(IRouteBuilder routes)
@@ -80,7 +80,7 @@ namespace NetCoreCMS.Modules.LinkShare
                     `Status` INT NOT NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
 
-                CREATE TABLE `Ncc_LS_LinkShare` ( 
+                CREATE TABLE `Ncc_LS_Link` ( 
                     `Id` BIGINT NOT NULL AUTO_INCREMENT , 
                     `VersionNumber` INT NOT NULL , 
                     `Name` VARCHAR(250) NOT NULL , 
@@ -91,15 +91,16 @@ namespace NetCoreCMS.Modules.LinkShare
                     `Status` INT NOT NULL , 
 
                     `Link` VARCHAR(1000) NOT NULL , 
-                    `ImagePath` VARCHAR(1000) NULL , 
+                    `HasDateRange` bit(1) NOT NULL , 
+                    `PublishDate` DATETIME NULL , 
+                    `ExpireDate` DATETIME NULL , 
                     `Order` INT NOT NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
 
-                CREATE TABLE `Ncc_LS_Category_LinkShare` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `NccCategoryId` BIGINT NOT NULL , 
-                    `NccLinkShareId` BIGINT NOT NULL , 
-                PRIMARY KEY (`Id`)) ENGINE = MyISAM;
+                CREATE TABLE `Ncc_LS_Link_Category` ( 
+                    `LsCategoryId` BIGINT NOT NULL , 
+                    `LsLinkId` BIGINT NOT NULL  
+                ) ENGINE = MyISAM;
             ";
 
             var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = createQuery };
@@ -114,9 +115,9 @@ namespace NetCoreCMS.Modules.LinkShare
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var deleteQuery = @"
-                DROP TABLE `Ncc_LS_LinkShare_Category`;
-                DROP TABLE `Ncc_LS_Category`;
-                DROP TABLE `Ncc_LS_LinkShare`; 
+                DROP TABLE IF EXISTS `Ncc_LS_Link_Category`;
+                DROP TABLE IF EXISTS `Ncc_LS_Category`;
+                DROP TABLE IF EXISTS `Ncc_LS_Link`; 
             ;";
 
             var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };
