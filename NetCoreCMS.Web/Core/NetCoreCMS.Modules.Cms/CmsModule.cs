@@ -50,18 +50,8 @@ namespace NetCoreCMS.Core.Modules.Cms
 
         public void Init(IServiceCollection services)
         {
-            services.AddTransient<NccMenuRepository>();
-            services.AddTransient<NccMenuItemRepository>();
-            services.AddTransient<NccMenuService>();
             services.AddTransient<NccPageRepository>();
             services.AddTransient<NccPageService>();
-            services.AddTransient<ThemeManager>();
-            services.AddTransient<NccWebSiteWidgetRepository>();
-            services.AddTransient<NccWebSiteWidgetService>();
-            services.AddTransient<NccWebSiteRepository>();
-            services.AddTransient<NccWebSiteService>();
-            services.AddTransient<NccThemeRepository>();
-            services.AddTransient<NccThemeService>();
             services.AddTransient<NccCategoryRepository>();
             services.AddTransient<NccCategoryService>();            
         }

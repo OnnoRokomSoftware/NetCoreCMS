@@ -14,8 +14,8 @@ namespace NetCoreCMS.Framework.Setup
         public bool IsAdminCreateComplete { get; set; }
         public string SelectedDatabase { get; set; }
         public string ConnectionString { get; set; }
-        public string StartupUrl { get; set; } = "/CmsHome";
-        public string StartupType { get; set; } = StartupTypes.Default;
+        public string StartupUrl { get; set; } = "/CmsHome";        
+        public string StartupType { get; set; } = StartupTypes.Default;        
         public int LoggingLevel { get; set; } = (int) LogLevel.Debug;
         public bool IsMaintenanceMode { get; set; }
         public int MaintenanceDownTime { get; set; } = 30;

@@ -88,9 +88,22 @@ namespace NetCoreCMS.Web
 
             _services.AddTransient<NccSettingsRepository>();
             _services.AddTransient<NccSettingsService>();
+            services.AddTransient<NccMenuRepository>();
+            services.AddTransient<NccMenuService>();
+            services.AddTransient<NccMenuRepository>();
+            services.AddTransient<NccMenuItemRepository>();            
             _services.AddTransient<NccModuleRepository>();
             _services.AddTransient<NccModuleService>();
-            
+            services.AddTransient<ThemeManager>();
+            services.AddTransient<NccWebSiteWidgetRepository>();
+            services.AddTransient<NccWebSiteWidgetService>();
+            services.AddTransient<NccThemeRepository>();
+            services.AddTransient<NccThemeService>();
+            services.AddTransient<NccWebSiteRepository>();
+            services.AddTransient<NccWebSiteService>();
+            services.AddTransient<NccStartupRepository>();
+            services.AddTransient<NccStartupService>();
+
             _services.AddSingleton<IConfiguration>(Configuration);
             _services.AddSingleton<IConfigurationRoot>(Configuration);
             
@@ -104,7 +117,7 @@ namespace NetCoreCMS.Web
             
             GlobalConfig.Modules.AddRange(userModules);
 
-            _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div>"+_setupConfig.MaintenanceMessage+"</div>"),"text/html",_setupConfig.MaintenanceDownTime * 60);
+            _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>"+_setupConfig.MaintenanceMessage+"</h1></div>"),"text/html",_setupConfig.MaintenanceDownTime * 60);
             
             if (SetupHelper.IsDbCreateComplete)
             {

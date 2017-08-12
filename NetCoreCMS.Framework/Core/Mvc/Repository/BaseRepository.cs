@@ -4,8 +4,12 @@ using Microsoft.EntityFrameworkCore.Storage;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Setup;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
+using System.Reflection;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Repository
 {
@@ -117,6 +121,172 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
 
             var effRow = Context.Database.ExecuteSqlCommand(queryText);
             return effRow;
+        }
+
+        public List<T> ExecuteSqlQuery<T>(NccDbQueryText query)
+        {
+            var entityType = typeof(T);
+            var list = new List<T>();
+
+            var queryText = "";
+            if (SetupHelper.SelectedDatabase == "SqLite")
+            {
+                queryText = query.SQLite_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MSSQL")
+            {
+                queryText = query.MSSql_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MySql")
+            {
+                queryText = query.MySql_QueryText;
+            }
+            else
+            {
+                throw new System.Exception("No supported database found.");
+            }
+
+            var conn = Context.Database.GetDbConnection();
+            try
+            {
+                var entityProperties = entityType.GetProperties();
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {                    
+                    command.CommandText = queryText;
+                    DbDataReader reader = command.ExecuteReader();
+                    
+                    while (reader.Read())
+                    {
+                        var objArr = new object[reader.FieldCount];
+                        var value = reader.GetValues(objArr);
+                        var obj = Activator.CreateInstance<T>();
+                        for (int i = 0; i < entityProperties.Length; i++)
+                        {
+                            var prop = entityProperties[i];
+                            var ordinal = reader.GetOrdinal(prop.Name);
+                            if(ordinal >= 0)
+                            {
+                                if (prop.PropertyType == typeof(Int16))
+                                {
+                                    var val = reader.GetInt16(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if(prop.PropertyType == typeof(int))
+                                {
+                                    var val = reader.GetInt32(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(long))
+                                {
+                                    var val = reader.GetInt64(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(string))
+                                {
+                                    var val = reader.GetString(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(float))
+                                {
+                                    var val = reader.GetFloat(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(double))
+                                {
+                                    var val = reader.GetDouble(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(decimal))
+                                {
+                                    var val = reader.GetDecimal(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(bool))
+                                {
+                                    var val = reader.GetBoolean(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(DateTime))
+                                {
+                                    var val = reader.GetDateTime(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                                else if (prop.PropertyType == typeof(double))
+                                {
+                                    var val = reader.GetDouble(ordinal);
+                                    var propInfo = entityType.GetProperty(prop.Name);
+                                    propInfo.SetValue(obj, val);
+                                }
+                            }
+                        }
+                        list.Add(obj);
+                    }
+                    
+                    reader.Dispose();
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return list;
+        }
+
+        public ArrayList ExecuteSqlQuery(NccDbQueryText query)
+        {   
+            var list = new ArrayList();
+
+            var queryText = "";
+            if (SetupHelper.SelectedDatabase == "SqLite")
+            {
+                queryText = query.SQLite_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MSSQL")
+            {
+                queryText = query.MSSql_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MySql")
+            {
+                queryText = query.MySql_QueryText;
+            }
+            else
+            {
+                throw new Exception("No supported database found.");
+            }
+
+            var conn = Context.Database.GetDbConnection();
+            try
+            {
+                conn.Open();
+                using (var command = conn.CreateCommand())
+                {
+                    command.CommandText = queryText;
+                    DbDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        var objArr = new object[reader.FieldCount];
+                        var value = reader.GetValues(objArr);                        
+                        list.Add(objArr);
+                    }
+                    reader.Dispose();
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+            return list;
         }
     }
 }

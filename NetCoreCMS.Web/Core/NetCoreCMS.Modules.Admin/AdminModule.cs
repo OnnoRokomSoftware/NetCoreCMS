@@ -53,8 +53,7 @@ namespace NetCoreCMS.Core.Modules.Admin
 
         public void Init(IServiceCollection services)
         {
-            services.AddTransient<NccWebSiteRepository>();
-            services.AddTransient<NccWebSiteService>();
+            
         }
 
         public void RegisterRoute(IRouteBuilder routes)

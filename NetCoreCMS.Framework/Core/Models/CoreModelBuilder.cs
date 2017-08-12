@@ -83,8 +83,15 @@ namespace NetCoreCMS.Framework.Core.Models
                 .HasForeignKey(pt => pt.TagId);
 
             modelBuilder.Entity<NccRole>().ToTable("Ncc_Role");
+
             modelBuilder.Entity<NccSettings>().ToTable("Ncc_Settings");
             
+            modelBuilder.Entity<NccStartup>(b => {
+                b.ToTable("Ncc_Startup");
+                b.HasOne(p => p.User);
+                b.HasOne(p => p.Role);                
+            });
+
             modelBuilder.Entity<NccTheme>(b => {
                 b.ToTable("Ncc_Theme");
             });
@@ -133,8 +140,7 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<IdentityUserToken<long>>(b =>
             {
                 b.ToTable("Ncc_UserToken");
-            });
-            
+            });            
         }
     }
 }

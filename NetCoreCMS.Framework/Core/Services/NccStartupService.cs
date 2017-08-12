@@ -5,36 +5,38 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using Newtonsoft.Json;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccUserService : IBaseService<NccUser>
+    public class NccStartupService : IBaseService<NccStartup>
     {
-        private readonly NccUserRepository _entityRepository;
+        private readonly NccStartupRepository _entityRepository;
          
-        public NccUserService(NccUserRepository entityRepository)
+        public NccStartupService(NccStartupRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
          
-        public NccUser Get(long entityId)
+        public NccStartup Get(long entityId)
         {
             return _entityRepository.Get(entityId);
         }
 
-        public NccUser GetByUserName(string userName)
+        public NccStartup Get(long roleId, StartupFor startupFor)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.UserName == userName);
+            var query = _entityRepository.Query().Where(x => x.RoleId == roleId && x.StartupFor == startupFor);            
+            return query.LastOrDefault();
         }
 
-        public NccUser Save(NccUser entity)
+        public NccStartup Save(NccStartup entity)
         {
             _entityRepository.Add(entity);
             _entityRepository.SaveChange();
             return entity;
         }
 
-        public NccUser Update(NccUser entity)
+        public NccStartup Update(NccStartup entity)
         {
             var oldEntity = _entityRepository.Get(entity.Id);
             if(oldEntity != null)
@@ -62,27 +64,27 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccUser> LoadAll()
+        public List<NccStartup> LoadAll()
         {
             return _entityRepository.LoadAll();
         }
 
-        public List<NccUser> LoadAllActive()
+        public List<NccStartup> LoadAllActive()
         {
             return _entityRepository.LoadAllActive();
         }
 
-        public List<NccUser> LoadAllByStatus(int status)
+        public List<NccStartup> LoadAllByStatus(int status)
         {
-            return _entityRepository.LoadAllByStatus(status).ToList();
+            return _entityRepository.LoadAllByStatus(status);
         }
 
-        public List<NccUser> LoadAllByName(string name)
+        public List<NccStartup> LoadAllByName(string name)
         {
             return _entityRepository.LoadAllByName(name);
         }
 
-        public List<NccUser> LoadAllByNameContains(string name)
+        public List<NccStartup> LoadAllByNameContains(string name)
         {
             return _entityRepository.LoadAllByNameContains(name);
         }
@@ -97,8 +99,8 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        private void CopyNewData(NccUser oldEntity, NccUser entity)
-        { 
+        private void CopyNewData(NccStartup oldEntity, NccStartup entity)
+        {             
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;
             oldEntity.Name = entity.Name; 
@@ -108,26 +110,12 @@ namespace NetCoreCMS.Framework.Core.Services
             
             oldEntity.Status = entity.Status; 
             oldEntity.VersionNumber = entity.VersionNumber;
-            oldEntity.AccessFailedCount = entity.AccessFailedCount;
-            
-            oldEntity.ConcurrencyStamp = entity.ConcurrencyStamp;
-            oldEntity.Email = entity.Email;
-            oldEntity.EmailConfirmed = entity.EmailConfirmed;
-            oldEntity.FullName = entity.FullName;
-            oldEntity.LockoutEnabled = entity.LockoutEnabled;
-            oldEntity.LockoutEnd = entity.LockoutEnd;
-            
-            oldEntity.Mobile = entity.Mobile;
-            oldEntity.NormalizedEmail = entity.NormalizedEmail;
-            oldEntity.NormalizedUserName = entity.NormalizedUserName;
-            oldEntity.PasswordHash = entity.PasswordHash;
-            oldEntity.PhoneNumber = entity.PhoneNumber;
-            oldEntity.PhoneNumberConfirmed = entity.PhoneNumberConfirmed;
-            oldEntity.SecurityStamp = entity.SecurityStamp;
-            oldEntity.Slug = entity.Slug;
-            oldEntity.Status = entity.Status;
-            oldEntity.TwoFactorEnabled = entity.TwoFactorEnabled;
-            oldEntity.UserName = entity.UserName; 
-        } 
+            oldEntity.Role = entity.Role;
+            oldEntity.StartupFor = entity.StartupFor;
+            oldEntity.StartupType = entity.StartupType;
+            oldEntity.StartupUrl = entity.StartupUrl;
+            oldEntity.User = entity.User;            
+        }
+        
     }
 }

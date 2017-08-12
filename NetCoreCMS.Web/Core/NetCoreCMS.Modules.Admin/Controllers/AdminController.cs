@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
@@ -29,6 +30,8 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         NccPostService _postService;
         NccCategoryService _categoryService;
         NccSettingsService _settingsService;
+        RoleManager<NccRole> _roleManager;
+        NccStartupService _startupService;
 
         public AdminController(
             NccWebSiteService nccWebSiteService, 
@@ -36,6 +39,8 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             NccPostService postService, 
             NccCategoryService categoryService,
             NccSettingsService settingsService,
+            RoleManager<NccRole> roleManager,
+            NccStartupService startupService,
             ILoggerFactory loggarFactory)
         {
             _webSiteService = nccWebSiteService;
@@ -43,6 +48,8 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             _postService = postService;
             _categoryService = categoryService;
             _settingsService = settingsService;
+            _roleManager = roleManager;
+            _startupService = startupService;
             _logger = loggarFactory.CreateLogger<AdminController>();
         }
         
@@ -278,6 +285,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             var setupConfig = SetupHelper.LoadSetup();
             var model = new StartupViewModel();
             var moduleSiteMenuList = new List<SiteMenuItem>();
+            var roleList = _roleManager.Roles.Select(x=> new { Name = x.Name, Value = x.Id }).ToList();
 
             model.Default = setupConfig.StartupUrl;
             model.StartupType = setupConfig.StartupType;
@@ -287,6 +295,9 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             model.Categories = new SelectList(_categoryService.LoadAllActive(), "Slug", "Title", GetSlug(setupConfig.StartupUrl));
             AdminMenuHelper.ModulesSiteMenus().Select(x => x.Value).ToList().ForEach(x => moduleSiteMenuList.AddRange(x));
             model.ModuleSiteMenus = new SelectList(moduleSiteMenuList, "Url", "Url", setupConfig.StartupUrl);
+            model.Roles = new SelectList(roleList,"Value", "Name");
+
+            ViewBag.RoleStartups = _startupService.LoadAll();
 
             ViewBag.DefaultChecked = "";
             ViewBag.PageChecked = "";
@@ -316,6 +327,73 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             }
 
             return model;
+        }
+        
+        public ActionResult RoleStartup()
+        {
+            var model = PrepareStartupViewData();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult RoleStartup(StartupViewModel vmodel, long[] Roles)
+        {
+            foreach (var item in Roles)
+            {
+                var startup = new NccStartup();
+                var startupType = (StartupType)Enum.Parse(typeof(StartupType), vmodel.RoleStartupType);
+                var existingStartup = _startupService.Get(item, StartupFor.Role);
+                var role = _roleManager.FindByIdAsync(item.ToString()).Result;
+
+                if (existingStartup == null)
+                {
+                    startup.Role = role;
+                    startup.StartupFor = StartupFor.Role;
+                    startup.StartupType = startupType;
+                    startup.StartupUrl = GetSelectedUrl(vmodel);
+                    _startupService.Save(startup);
+                }
+                else
+                {
+                    existingStartup.Role = role;
+                    existingStartup.StartupFor = StartupFor.Role;
+                    existingStartup.StartupType = startupType;
+                    existingStartup.StartupUrl = GetSelectedUrl(vmodel);
+                    _startupService.Update(existingStartup);
+                }                
+            }
+            var model = PrepareStartupViewData();
+            return View(model);
+        }
+
+        private string GetSelectedUrl(StartupViewModel vmodel)
+        {
+            string url;
+            if (vmodel.StartupType == StartupTypes.Default)
+            {
+                url = vmodel.Default;
+            }
+            else if (vmodel.StartupType == StartupTypes.Page)
+            {
+                url = "/" + vmodel.PageSlug;
+            }
+            else if (vmodel.StartupType == StartupTypes.Post)
+            {
+                url = "/Post/" + vmodel.PostSlug;
+            }
+            else if (vmodel.StartupType == StartupTypes.Category)
+            {
+                url = "/Category/" + vmodel.PageSlug;
+            }
+            else if (vmodel.StartupType == StartupTypes.Module)
+            {
+                url = vmodel.ModuleSiteMenuUrl;
+            }
+            else
+            {
+                url = "/CmsHome";
+            }
+            return url;
         }
 
         public ActionResult ManageUsers()

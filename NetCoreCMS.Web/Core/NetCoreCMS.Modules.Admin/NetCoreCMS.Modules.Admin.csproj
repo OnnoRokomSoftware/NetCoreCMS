@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="wwwroot\css\NccModuleAdmin.css" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include="Views\Admin\MaintenanceMode.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>
