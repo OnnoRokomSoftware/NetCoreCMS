@@ -22,11 +22,11 @@
     <EmbeddedResource Remove="Modules\**" />
     <EmbeddedResource Remove="Plugins\**" />
     <EmbeddedResource Remove="Themes\**" />
-    <!--<None Remove="Core\**" />
+    <None Remove="Core\**" />
     <None Remove="Logs\**" />
     <None Remove="Modules\**" />
     <None Remove="Plugins\**" />
-    <None Remove="Themes\**" />-->
+    <None Remove="Themes\**" />
   </ItemGroup>
 
 
