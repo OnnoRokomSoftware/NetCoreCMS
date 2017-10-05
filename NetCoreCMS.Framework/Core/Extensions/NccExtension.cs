@@ -14,6 +14,7 @@ using NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Services.Auth;
+using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Setup;
@@ -39,6 +40,9 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
             services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
 
+            services.AddSingleton<NccShortCodeProvider, NccShortCodeProvider>();
+            services.AddSingleton<ThemeManager, ThemeManager>();
+
             services.AddTransient<NccCategoryDetailsRepository>();
             services.AddTransient<NccCategoryDetailsService>();
             services.AddTransient<NccPageDetailsRepository>();
@@ -56,7 +60,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddTransient<NccMenuItemRepository>();
             services.AddTransient<NccModuleRepository>();
             services.AddTransient<NccModuleService>();
-            services.AddTransient<ThemeManager>();
+            
             services.AddTransient<NccWebSiteWidgetRepository>();
             services.AddTransient<NccWebSiteWidgetService>();
             services.AddTransient<NccWebSiteRepository>();

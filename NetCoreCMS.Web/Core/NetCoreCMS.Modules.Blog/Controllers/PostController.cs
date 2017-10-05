@@ -9,10 +9,12 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -324,6 +326,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 if (post != null)
                 {
                     post = _mediator.Send(new OnPostShow(post)).Result;
+                    SetShortCodeContent(post);
                     return View("Details", post);
                 }
                 TempData["Message"] = "Post not found";
@@ -334,6 +337,26 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 allPost[i] = _mediator.Send(new OnPostShow(allPost[i])).Result;
             }
             return View(allPost);
+        }
+
+        private void SetShortCodeContent(NccPost post)
+        {
+            foreach (var item in post.PostDetails)
+            {
+                item.Content = GetRenderedContent(item.Content);
+            }
+        }
+
+        private string GetRenderedContent(string content)
+        {
+            foreach (DictionaryEntry item in GlobalConfig.ShortCodes)
+            {
+                if (content.Contains(item.Key.ToString()))
+                {
+                    //var start = FindShortCodePosition(content);
+                }
+            }
+            return "";
         }
 
         [AllowAnonymous]

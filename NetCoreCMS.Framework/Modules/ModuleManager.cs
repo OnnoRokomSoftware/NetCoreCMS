@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Core.ShotCodes;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -205,7 +206,13 @@ namespace NetCoreCMS.Framework.Modules
             foreach (var widgetType in widgetTypeList)
             {                
                 services.AddTransient(widgetType);                
-            }             
+            }
+
+            var shortCodeTypeList = module.Assembly.GetTypes().Where(x => typeof(IShortCode).IsAssignableFrom(x)).ToList();
+            foreach (var item in shortCodeTypeList)
+            {
+                services.AddTransient(item);
+            }
         }
 
         public void LoadModuleInfo(IModule module, IModule moduleInfo)

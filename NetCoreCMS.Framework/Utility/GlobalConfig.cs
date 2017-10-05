@@ -8,6 +8,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Themes;
 using System;
 using NetCoreCMS.Framework.Setup;
+using System.Collections;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -45,6 +46,7 @@ namespace NetCoreCMS.Framework.Utility
         public string StartupAction { get; set; }
 
         public static IServiceCollection Services { get; set; }
+        public static Hashtable ShortCodes { get; set; }
         public static IServiceProvider ServiceProvider { get; set; }
 
         public static void ListWidgets()

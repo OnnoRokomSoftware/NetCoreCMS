@@ -9,8 +9,7 @@ namespace NetCoreCMS.Framework.Modules
     public class Plugins : IPlugins
     {
         public string PluginsId { get; set; }
-        public string PluginsTitle { get; set; }
-        public string PluginsName { get; set; }
+        public string PluginsTitle { get; set; }        
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
         public string Website { get; set; }

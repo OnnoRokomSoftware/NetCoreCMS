@@ -38,6 +38,7 @@ using NetCoreCMS.Framework.Core.Middleware;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Extensions;
+using NetCoreCMS.Framework.Core.ShotCodes;
 
 namespace NetCoreCMS.Web
 {
@@ -46,6 +47,7 @@ namespace NetCoreCMS.Web
         private IHostingEnvironment _hostingEnvironment;
         ModuleManager               _moduleManager;
         ThemeManager                _themeManager;
+        NccShortCodeProvider        _nccShortCodeProvider;
         NetCoreStartup              _startup;
         IMvcBuilder                 _mvcBuilder;
         SetupConfig                 _setupConfig;
@@ -70,6 +72,7 @@ namespace NetCoreCMS.Web
 
             var logFilePath = NccInfo.LogFolder + "\\NccLogs-{Date}.log";
             Log.Logger      = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.RollingFile(logFilePath).CreateLogger();
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -86,7 +89,7 @@ namespace NetCoreCMS.Web
             _services.AddOptions();            
             //services.AddSingleton(typeof(IStringLocalizerFactory), typeof(ClassLibraryStringLocalizerFactory));
             services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
-
+            
             _services.AddLocalization();
 
             _mvcBuilder = services.AddMvc();            
@@ -118,6 +121,7 @@ namespace NetCoreCMS.Web
             var userModules = _moduleManager.LoadModules(moduleFolder);
 
             GlobalConfig.Modules.AddRange(userModules);
+            
 
             _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
 
@@ -168,6 +172,10 @@ namespace NetCoreCMS.Web
                 {
                     GlobalConfig.Widgets.AddRange(themeWidgets);
                 }
+
+                _nccShortCodeProvider = _serviceProvider.GetService<NccShortCodeProvider>();
+                GlobalConfig.ShortCodes = _nccShortCodeProvider.ScanAndRegisterShortCodes(GlobalConfig.Modules);
+
             }
 
             var defaultCulture = new RequestCulture("en");

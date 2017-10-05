@@ -10,7 +10,6 @@ namespace NetCoreCMS.Framework.Modules
     public interface IPlugins
     {
         string PluginsId { get; set; }
-        string PluginsName { get; set; }
         string PluginsTitle { get; set; }
         bool AntiForgery { get; set; }
         string Author { get; set; }
