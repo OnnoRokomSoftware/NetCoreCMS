@@ -1,28 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using System.Linq;
+using System;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     public class NccWebSiteService : IBaseService<NccWebSite>
     {
         private readonly NccWebSiteRepository _entityRepository;
+        private readonly NccWebSiteInfoRepository _webSiteInfoRepository;
 
         public NccWebSiteService()
         {
         }
-        public NccWebSiteService(NccWebSiteRepository entityRepository)
+        public NccWebSiteService(NccWebSiteRepository entityRepository, NccWebSiteInfoRepository nccWebSiteInfoRepository)
         {
             _entityRepository = entityRepository;
+            _webSiteInfoRepository = nccWebSiteInfoRepository;
         }
          
-        public NccWebSite Get(long entityId)
+        public NccWebSite Get(long entityId, bool isAsNoTracking = false)
         {
             return _entityRepository.Get(entityId);
+        }
+
+        public List<NccWebSite> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch,new List<string>() {"WebSiteInfos" });
         }
 
         public NccWebSite Save(NccWebSite entity)
@@ -34,8 +41,8 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccWebSite Update(NccWebSite entity)
         {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if(oldEntity != null)
+            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "WebSiteInfos" });
+            if (oldEntity != null)
             {
                 using (var txn = _entityRepository.BeginTransaction())
                 {
@@ -45,7 +52,7 @@ namespace NetCoreCMS.Framework.Core.Services
                     txn.Commit();
                 }
             }
-            
+
             return entity;
         }
         
@@ -60,31 +67,6 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccWebSite> LoadAll()
-        {
-            return _entityRepository.LoadAll();
-        }
-
-        public List<NccWebSite> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccWebSite> LoadAllByStatus(int status)
-        {
-            return _entityRepository.LoadAllByStatus(status);
-        }
-
-        public List<NccWebSite> LoadAllByName(string name)
-        {
-            return _entityRepository.LoadAllByName(name);
-        }
-
-        public List<NccWebSite> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.LoadAllByNameContains(name);
-        }
-
         public void DeletePermanently(long entityId)
         {
             var entity = _entityRepository.Get(entityId);
@@ -97,24 +79,59 @@ namespace NetCoreCMS.Framework.Core.Services
 
         private void CopyNewData(NccWebSite oldEntity, NccWebSite entity)
         {
-            oldEntity.AllowRegistration = entity.AllowRegistration;
-            oldEntity.Copyrights = entity.Copyrights;
+            var modificationDate = DateTime.Now;
+
+            oldEntity.AllowRegistration = entity.AllowRegistration;            
             oldEntity.DateFormat = entity.DateFormat;
             oldEntity.DomainName = entity.DomainName;
-            oldEntity.EmailAddress = entity.EmailAddress;
-            oldEntity.FaviconUrl = entity.FaviconUrl;
+            oldEntity.EmailAddress = entity.EmailAddress;            
             oldEntity.Language = entity.Language;
-            oldEntity.ModificationDate = entity.ModificationDate;
+            oldEntity.ModificationDate = modificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;
             oldEntity.Name = entity.Name;
-            oldEntity.NewUserRole = entity.NewUserRole;
-            oldEntity.SiteLogoUrl = entity.SiteLogoUrl;
-            oldEntity.SiteTitle = entity.SiteTitle;
-            oldEntity.Status = entity.Status;
-            oldEntity.Tagline = entity.Tagline;
+            oldEntity.NewUserRole = entity.NewUserRole;            
+            oldEntity.Status = entity.Status;            
             oldEntity.TimeFormat = entity.TimeFormat;
             oldEntity.TimeZone = entity.TimeZone;
-        }
-        
+            oldEntity.IsMultiLangual = entity.IsMultiLangual;
+            oldEntity.VersionNumber += 1;
+            oldEntity.Metadata = entity.Metadata;
+
+            foreach (var item in entity.WebSiteInfos)
+            {
+                var isNew = false;
+                var oldWsInfo = oldEntity.WebSiteInfos.Where(x => x.Language == item.Language).FirstOrDefault();
+                if(oldWsInfo == null)
+                {
+                    isNew = true;
+                    oldWsInfo = new NccWebSiteInfo();
+                    oldWsInfo.CreateBy = item.CreateBy;
+                    oldWsInfo.CreationDate = item.CreationDate;                    
+                    oldWsInfo.VersionNumber = item.VersionNumber;
+                    oldWsInfo.VersionNumber = 0;
+                    oldWsInfo.Language = item.Language;
+                }
+
+                oldWsInfo.Copyrights = item.Copyrights;                
+                oldWsInfo.FaviconUrl = item.FaviconUrl;
+                //oldWsInfo.Language = item.Language;
+                oldWsInfo.ModificationDate = modificationDate;
+                oldWsInfo.ModifyBy = BaseModel.GetCurrentUserId();
+                oldWsInfo.Name = item.Name;
+                oldWsInfo.PrivacyPolicyUrl = item.PrivacyPolicyUrl;
+                oldWsInfo.SiteLogoUrl = item.SiteLogoUrl;
+                oldWsInfo.SiteTitle = item.SiteTitle;
+                oldWsInfo.Status = item.Status;
+                oldWsInfo.Tagline = item.Tagline;
+                oldWsInfo.TermsAndConditionsUrl = item.TermsAndConditionsUrl;
+                oldWsInfo.VersionNumber += 1;
+                oldWsInfo.Metadata = item.Metadata;
+
+                if (isNew)
+                {
+                    oldEntity.WebSiteInfos.Add(oldWsInfo);
+                }
+            } 
+        } 
     }
 }

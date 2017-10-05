@@ -1,5 +1,8 @@
 ﻿@{
-    var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
+    string currentLanguage = this.ViewContext.HttpContext.Items["currentLanguage"].ToString();
+    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+
+    var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn" && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage == currentLanguage)).ToList();
     var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
 }
 
@@ -41,31 +44,34 @@
                 foreach (var widget in widgets)
                 {
                     widget.Init(item.Id);
-                    if (widget.DisplayTitle != "" || widget.Footer != "")
-                    {
-                        <div class='panel panel-default'>
-                            @if (widget.DisplayTitle != "")
-                            {
-                                <div class='panel-heading'>
-                                    @Html.Raw(widget.DisplayTitle)
+                    if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage == widget.Language)
+                    { 
+                        if (widget.DisplayTitle != "" || widget.Footer != "")
+                        {
+                            <div class='panel panel-default'>
+                                @if (widget.DisplayTitle != "")
+                                {
+                                    <div class='panel-heading'>
+                                        @Html.Raw(widget.DisplayTitle)
+                                    </div>
+                                }
+                                <div class='panel-body'>
+                                    @Html.Raw(widget.RenderBody())
                                 </div>
-                            }
-                            <div class='panel-body'>
+                                @if (widget.Footer != "")
+                                {
+                                    <div class='panel-footer'>
+                                        @Html.Raw(widget.Footer)
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
                                 @Html.Raw(widget.RenderBody())
                             </div>
-                            @if (widget.Footer != "")
-                            {
-                                <div class='panel-footer'>
-                                    @Html.Raw(widget.Footer)
-                                </div>
-                            }
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            @Html.Raw(widget.RenderBody())
-                        </div>
+                        }
                     }
                 }
             }

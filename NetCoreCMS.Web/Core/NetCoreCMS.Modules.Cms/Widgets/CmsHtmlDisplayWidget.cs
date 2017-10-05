@@ -1,12 +1,8 @@
 ﻿using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
-using NetCoreCMS.Modules.Cms.Controllers;
+using NetCoreCMS.Core.Modules.Cms.Controllers;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NetCoreCMS.Core.Modules.Cms.Widgets
 {
@@ -28,7 +24,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Widgets
         {
             WebSiteWidgetId = websiteWidgetId;
             //ViewFileName = "Widgets/CmsVerticalMenu";
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
+            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {
                 var configJson = webSiteWidget.WidgetConfigJson;
@@ -36,6 +32,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Widgets
                 DisplayTitle = config.title;
                 Footer = config.footer;
                 body = config.bodyContent;
+                Language = config.language;
             }
 
             ConfigViewFileName = "Widgets/CmsHtmlDisplayConfig";

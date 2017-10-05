@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
 using NetCoreCMS.Framework.Utility;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace NetCoreCMS.Framework.Modules
 {

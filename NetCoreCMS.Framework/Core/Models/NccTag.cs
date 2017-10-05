@@ -1,31 +1,15 @@
-﻿using NetCoreCMS.Framework.Core.Mvc.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccTag : IBaseModel<long>
-    {
+    public class NccTag : BaseModel, IBaseModel<long>
+    { 
         public NccTag()
         {
-            CreationDate = DateTime.Now;
-            ModificationDate = DateTime.Now;
-            CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
-            Status = EntityStatus.New;
-            VersionNumber = 1;
+            Posts = new List<NccPostTag>();
         }
 
-        [Key]
-        public long Id { get; set; }
-        public int VersionNumber { get; set; }
-        public string Name { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
-        public int Status { get; set; }
-
-        public List<NccPostTag> Tags { get; set; }
+        public List<NccPostTag> Posts { get; set; }
     }
 }

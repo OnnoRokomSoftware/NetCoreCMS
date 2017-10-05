@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Setup;
@@ -27,10 +28,10 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             {
                 ViewBag.Content = "";
                 ViewBag.Layout = "";
-                var page = _pageService.GetBySlugs("Home");
+                NccPage page = null;// _pageService.GetBySlugs("Home");
                 if (page != null)
                 {
-                    ViewBag.Content = page.Content;
+                    //ViewBag.Content = page.Content;
                     if (GlobalConfig.ActiveTheme.Layouts.Where(l => l.Name.Contains(page.Layout)).Count() > 0)
                     {
                         ViewBag.Layout = page.Layout;
@@ -42,24 +43,9 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             return Redirect("/SetupHome/Index");
         }
         
-        public IActionResult About()
-        {
-            ViewData["Message"] = "Your application description page.";
-
-            return View();
-        }
-        
         public IActionResult ResourceNotFound()
-        {   
-            return View();
-        }
-
-        public IActionResult Contact()
         {
-            ViewData["Message"] = "Your contact page.";
-
             return View();
-        }
-         
+        } 
     }
 }

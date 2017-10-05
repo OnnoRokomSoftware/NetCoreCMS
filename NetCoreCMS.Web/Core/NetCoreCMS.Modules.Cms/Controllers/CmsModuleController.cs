@@ -11,6 +11,8 @@ using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Modules.Cms.Models.ViewModels;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +23,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.Modules.Cms.Controllers
+namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Administrator")]
     [AdminMenu(Name = "Module", IconCls = "fa-th-large", Order = 7)]
@@ -186,6 +188,37 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             return RedirectToAction("Index");
         }
 
+        #region Online Gallery
+        public async Task<JsonResult> GetMatGalleryModules()
+        {
+            ApiResponse resp = new ApiResponse();
+            resp.IsSuccess = true;
+            resp.Message = "";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    try
+                    {
+                        client.BaseAddress = new Uri("https://gallery.osl.one/MatGalleryApi/Modules");
+                        var response = await client.GetAsync("?key=abc");
+                        response.EnsureSuccessStatusCode(); // Throw in not success
+
+                        var stringResponse = await response.Content.ReadAsStringAsync();
+                        resp.Data = JsonConvert.DeserializeObject<IEnumerable<NccModuleViewModel>>(stringResponse);
+
+                        resp.IsSuccess = true;
+                        resp.Message = "Success";
+                    }
+                    catch (HttpRequestException e)
+                    {
+                        Console.WriteLine($"Request exception: {e.Message}");
+                    }
+                }
+            }
+            catch (Exception) { }
+            return Json(resp);
+        }
 
         public async Task<JsonResult> DownloadModule(string key = "", string moduleId = "", string moduleName = "")
         {
@@ -196,7 +229,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             {
                 try
                 {
-                    string url = "http://localhost:60180/MatGalleryApi/DownloadModule?moduleId=" + moduleId;
+                    string url = "https://gallery.osl.one/MatGalleryApi/DownloadModule?moduleId=" + moduleId;
                     #region Download in temp folder
                     var tempFullFilepath = Path.Combine(_env.ContentRootPath, _modulePath + "\\_temp");
                     try
@@ -244,7 +277,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                                 try
                                 {
                                     string strCmdText;
-                                    strCmdText = "rd /s /q \"" + finalFolderPath+"\"";
+                                    strCmdText = "rd /s /q \"" + finalFolderPath + "\"";
                                     System.Diagnostics.Process.Start("CMD.exe", strCmdText);
                                     //Directory.Delete(finalFolderPath, true);
                                     //DeleteDirectory(finalFolderPath);
@@ -313,7 +346,8 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 resp.Message = "Module downloaded and restored successfully";
             }
             return Json(resp);
-        }
+        } 
+        #endregion
 
         #region PrivetMethods
         public static void DeleteDirectory(string target_dir)

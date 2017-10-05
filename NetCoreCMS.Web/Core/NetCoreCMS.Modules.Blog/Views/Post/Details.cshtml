@@ -1,14 +1,51 @@
 ﻿@using NetCoreCMS.Framework.Utility
-@model NccPost
+@using System.Linq
 
+@model NccPost
 @{
-    Layout = Constants.SiteLayoutName;
+
+    if (!string.IsNullOrEmpty(Model.Layout) && GlobalConfig.ActiveTheme.Layouts.Where(x => x.Name == Model.Layout).FirstOrDefault() != null)
+    {
+        Layout = "_" + Model.Layout;
+    }
+
+    var postDetails = Model.PostDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
+    if (postDetails == null)
+    {
+        postDetails = Model.PostDetails.FirstOrDefault();
+    }
+
+    ViewData["Title"] = postDetails?.Title;
+    ViewData["MetaDescription"] = postDetails?.MetaDescription;
+    ViewData["MetaKeyword"] = postDetails?.MetaKeyword;
 }
 
-<h3>@Model.Title</h3>
-<h5>Author: @Model.Author.FullName</h5>
-<hr />
-<p>
-    @Html.Raw(@Model.Content)
-</p>
+@section Styles{
+    <style>
+       @Html.Raw("        ");
+    </style>
+}
+<div class="row">
+    <div>
+        <h3>@postDetails?.Title</h3>
+        <h5 style="font-style:italic;">
+            Author: @if (Model.Author != null)
+            { <span>@Model.Author.FullName</span> }
+            else
+            {<span>Anonymous</span> }
+            <span> | Published Date: @Model.PublishDate.ToString("MMM dd, yyyy")</span>
+        </h5>
+        <hr />
+        @if (Model.ThumImage != null)
+        {
+            <img src="@Model.ThumImage" width="100%" />
+        }
+        @Html.Raw(postDetails?.Content)
+    </div>
+    <br />
+    <p><a href="/Post/">All Post</a></p>
+</div>
 
+@section Scripts{
+
+}

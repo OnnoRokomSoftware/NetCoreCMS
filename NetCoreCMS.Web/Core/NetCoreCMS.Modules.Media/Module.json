@@ -1,13 +1,16 @@
 ﻿{
-  "ModuleId": "D5526BED-976C-4029-8E23-A0C75C23C1B0",
-  "ModuleName": "NetCoreCMS.Modules.Media",
+  "ModuleId": "NetCoreCMS.Core.Modules.CmsMedia",
   "ModuleTitle": "CMS Media",
   "Author": "NetCoreCMS",
+  "Email": "netcorecms@gmail.com",
   "Website": "http://DotNetCoreCMS.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
   "AntiForgery": true,
   "Description": "Builtin Media module for Content Management.",
   "Version": "0.1.1",
-  "NetCoreCMSVersion": "0.1.1",
-  "Dependencies": [],
-  "Category": "Core"
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "Core",
+  "Dependencies": []
 }

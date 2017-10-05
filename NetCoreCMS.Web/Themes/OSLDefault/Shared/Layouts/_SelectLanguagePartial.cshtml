@@ -1,0 +1,31 @@
+﻿@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+
+@inject IStringLocalizer<SharedResource> Localizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+
+@{
+    if (!TempData.Keys.Contains("CurrentLanguage"))
+    {
+        TempData["CurrentLanguage"] = SupportedCultures.DefaultCulture.Culture.Name;
+    }
+
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    //var cultureItems = LocOptions.Value.SupportedUICultures
+    //    .Select(c => new SelectListItem { Value = c.Name, Text = c.DisplayName, Selected = c.Name == TempData["CurrentLanguage"].ToString() })
+    //    .ToList();
+    var cultureItems = LocOptions.Value.SupportedUICultures
+        .Select(c => new SelectListItem { Value = c.Name, Text = c.Name.ToUpper(), Selected = c.Name == TempData["CurrentLanguage"].ToString() })
+        .ToList();
+}
+<form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline" role="form" style="display:inline;">
+    <div class="form-group">
+        <label for="exampleInputName2">@Localizer["Language"]</label>
+        <select class="btn btn-mini btn-default" name="culture" onchange="this.form.submit();" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+    </div>
+    
+</form>
+@*<div title="@Localizer["Request culture provider:"] @requestCulture?.Provider?.GetType().Name">
+
+</div>*@

@@ -1,0 +1,49 @@
+{
+  "ThemeId": "one.osl.themes.Ums",
+  "ThemeName": "Ums",
+  "Type": "Site",
+  "Author": "OnnoRokom Sofware Ltd",
+  "Email": "into@onnorokom.com",
+  "Website": "https://onnorokomsoftware.com",
+  "Description": "Theme for Udvash Unmesh Shikksh poribar.",
+  "Version": "0.1.1",
+  "NetCoreCMSVersion": "0.1.1",
+  "Category": "Responsive, Orange",
+  "PreviewImage": "screenshot.png",
+  "IsActive": false,
+  "Layouts": [
+    {
+      "Name": "SiteLayout",
+      "PreviewImage": "SiteLayoutScreenShot.png",
+      "LayoutZones": [
+        "Featured",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "HomepageLayout",
+      "PreviewImage": "LoginLayoutScreenShot.png",
+      "LayoutZones": [
+        "Featured",
+        "ContactUs",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "FluidLayout",
+      "PreviewImage": "SiteFluidLayoutScreenShot.png",
+      "LayoutZones": [
+        "FullWidthSlider",
+        "ContainerSlider",
+        "Featured",
+        "Footer"
+      ]
+    }
+  ],
+  "MenuLocations": [
+    "Navigation",
+    "LeftColumn",
+    "RightColumn",
+    "Footer"
+  ]
+}

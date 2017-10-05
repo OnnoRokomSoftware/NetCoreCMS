@@ -1,8 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Views\Admin\RoleStartup.cshtml" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Include="wwwroot\css\NccModuleAdmin.css" />

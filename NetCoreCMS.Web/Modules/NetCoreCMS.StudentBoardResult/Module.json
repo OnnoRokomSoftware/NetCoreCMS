@@ -1,0 +1,16 @@
+﻿{
+  "ModuleId": "com.NetCoreCMS.StudentBoardResult",
+  "ModuleTitle": "Student Board Result Module",
+  "Author": "OnnoRokom Software Ltd.",
+  "Email": "netcorecms@gmail.com",
+  "Website": "https://osl.one",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
+  "AntiForgery": true,
+  "Description": "Student Board Result database for University Online Admission.",
+  "Version": "1.0",
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "Board, Result, Online Admission, versity",
+  "Dependencies": []
+}

@@ -3,6 +3,7 @@
 
 @{
     Layout = Constants.AdminLayoutName;
+    var controllerName = "CmsPage";
     ViewData["PageTitle"] = "Page Create";
     ViewData["PageSubtitle"] = "Create a new page";
     if (Model.Id > 0)
@@ -11,11 +12,14 @@
         ViewData["PageSubtitle"] = "Update information of a page";
     }
 }
-
-
-
-    <div class="row">
-
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+<div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -23,47 +27,110 @@
                 <div class="pull-right">
                     @if (Model.Id > 0)
                     {
-                        <a asp-controller="CmsPage" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>
+                        if (GlobalConfig.WebSite.IsMultiLangual == true || Model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                        {
+                            for (var j = 0; j < Model.PageDetails.Count; j++)
+                            {
+                                <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@Model.PageDetails[j].Slug" target="_blank">View-@Model.PageDetails[j].Language</a><span> | </span>
+                            }
+                        }
+                        else
+                        {
+                            <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@Model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" target="_blank">View-@Model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Language</a><span> | </span>
+                        }
+                        @*<a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@Model.Slug" target="_blank" class="btn btn-outline btn-info btn-xs">View</a>*@
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>
                     }
-                    <a asp-controller="CmsPage" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Page</a>
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Page</a>
                 </div> 
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <form id="pageCreateEditForm" class="form-horizontal" asp-controller="CmsPage" asp-action="CreateEdit" method="post">
-
+                    <form id="pageCreateEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
                         <div class="col-sm-8 pull-left">
-                            <div class="col-md-12">
-                                <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
-                                <input type="hidden" id="Id" name="Id" value="@Model.Id" />
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon">Page Title: </span>
-                                    <input type="text" class="form-control" id="Title" name="Title" asp-for="Title" placeholder="Enter Page Title">
-                                    <span asp-validation-for="Title" class="text-danger"></span>
+                            <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+                            <input type="hidden" asp-for="Id" />
+                            <div class="">
+                                @{ 
+                                    var tabBorderDesign = "";
+                                }
+                                @if (GlobalConfig.WebSite.IsMultiLangual == true)
+                                {
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        @foreach (var item in Model.PageDetails)
+                                        {
+                                            if (GlobalConfig.WebSite.Language == item.Language)
+                                            {
+                                                <li role="presentation" class="active">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">(D) 
+                                                        @SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName
+                                                    </a>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li role="presentation" class="">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                        @if (SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).Count() > 0)
+                                                        {
+                                                            <span>@SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@item.Language</span>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                    tabBorderDesign = "tabBorderDesign";
+                                }
+                                <!-- Tab panes -->
+                                <div class="tab-content @tabBorderDesign" >
+                                    @{ var activeClass = ""; var i = 0;}
+                                    @foreach (var item in Model.PageDetails)
+                                    {
+                                        if (GlobalConfig.WebSite.Language == item.Language)
+                                        { activeClass = "active"; }
+                                        else { activeClass = ""; }
+                                        <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">
+                                            <div class="" style="padding:10px 25px 25px 25px;">
+                                                <div class="col-md-12">
+                                                    <input type="hidden" asp-for="PageDetails[i].Id" />
+                                                    <input type="hidden" asp-for="PageDetails[i].Language" />
+                                                    <div class="form-group input-group">
+                                                        <span class="input-group-addon">Page Title: </span>
+                                                        <input type="text" class="form-control pageTitle" asp-for="PageDetails[i].Title" placeholder="Enter Page Title in @item.Language">
+                                                        <span asp-validation-for="PageDetails[i].Title" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group input-group">
+                                                        <span class="input-group-addon">@ViewBag.DomainName</span>
+                                                        <input type="text" class="form-control pageSlug" asp-for="PageDetails[i].Slug" placeholder="Slug in @item.Language">
+                                                        <span asp-validation-for="PageDetails[i].Slug" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                    <label>Page Content</label>
+                                                    @*<textarea id="PageContent" name="PageContent" class="form-control ckeditor" data-val="false">@Model.PageDetails[i].Content</textarea>*@
+                                                    <textarea class="form-control pageContent" asp-for="PageDetails[i].Content"></textarea>
+                                                    <span asp-validation-for="PageDetails[i].Content" class="text-danger"></span>
+                                                </div>
+                                                <div class="">
+                                                    <label>Meta Description</label>
+                                                    <textarea class="form-control" asp-for="PageDetails[i].MetaDescription" placeholder="Meta description in @item.Language"></textarea>
+                                                </div>
+                                                <div class="">
+                                                    <label>Meta Keyword</label>
+                                                    <textarea class="form-control" asp-for="PageDetails[i].MetaKeyword" placeholder="Meta keyword in @item.Language"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        i++;
+                                    }
                                 </div>
-                                <div class="form-group input-group">
-                                    <span class="input-group-addon">@ViewBag.DomainName</span>
-                                    <input type="text" class="form-control" id="Slug" name="Slug" asp-for="Slug" placeholder="Slug">
-                                    <span asp-validation-for="Slug" class="text-danger"></span>
-                                </div>
-                            </div>
 
-                            <div>
-                                <label>Page Content</label>
-                                <textarea id="PageContent" name="PageContent" class="form-control" data-val="false">@Model.Content</textarea>
-                                <span asp-validation-for="Content" class="text-danger"></span>
                             </div>
-
-                            <div>
-                                <label>Meta Description</label>
-                                <textarea class="form-control" asp-for="MetaDescription"></textarea>
-                            </div>
-
-                            <div>
-                                <label>Meta Keyword</label>
-                                <textarea class="form-control" asp-for="MetaKeyword"></textarea>
-                            </div>
-
                         </div>
                         <div class="col-sm-4 pull-right">
                             <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
@@ -88,16 +155,21 @@
                                             </div>
                                             <div>
                                                 <label>Schedule Date</label>
-                                                <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("yyyy-MM-dd hh:mm tt")" />
+                                                <div class='input-group date datetimepicker'>
+                                                    <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("MMM dd, yyyy hh:mm tt")" />
+                                                    <span class="input-group-addon">
+                                                        <span class="glyphicon glyphicon-calendar"></span>
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div>
                                                 <label>Layout</label>
                                                 <select class="form-control" asp-for="Layout" asp-items="@ViewBag.Layouts"></select>
                                             </div>
-                                            <div>
+                                            @*<div>
                                                 <label>Add to Navigation Menu</label>
                                                 <input type="checkbox" asp-for="AddToNavigationMenu" />
-                                            </div>
+                                            </div>*@
                                         </div>
                                         <div class="panel-footer">
                                             <input type="hidden" name="SubmitType" id="SubmitType" value="Save" />
@@ -114,7 +186,7 @@
                                                 </button>
                                             </div>
                                             <div class="pull-right">
-                                                @if ((int)Model.PageStatus != 2)
+                                                @if (Model.Id == 0 || (int)Model.PageStatus != 2)
                                                 {
                                                     <button id="publish" class="btn btn-sm btn-success" type="button">Publish</button>
                                                 }                                                
@@ -167,68 +239,75 @@
     <script>
         $(document).ready(function () {
 
-            CKEDITOR.replace('PageContent', {
-                filebrowserBrowseUrl: '/media/files',
-                filebrowserUploadUrl: '/media/files',
-                filebrowserImageBrowseUrl: '/media/Images',
-                filebrowserImageUploadUrl: '/media/Images',
-                //filebrowserWindowWidth: 800,
-                //filebrowserWindowHeight: 500,
-                toolbar: [
-                    { name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
-                    { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
-                    { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
-                    { name: 'clipboard2', items: ['Undo', 'Redo'] },
-                    { name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
-                    { name: 'editing1', items: ['SpellChecker', 'Scayt'] },
-                    { name: 'styles', items: ['Styles'] },
-                    { name: 'styles1', items: ['Format'] },
-                    { name: 'styles2', items: ['Font'] },
-                    { name: 'styles3', items: ['FontSize'] },
-                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
-                    { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
-                    //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
-                    { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
-                    { name: 'paragraph1', items: ['Outdent', 'Indent'] },
-                    { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
-                    { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                    //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
-                    { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                    { name: 'insert', items: ['Image', /*'Flash',*/ 'Table'] },
-                    //'/',
-                    { name: 'colors', items: ['TextColor', 'BGColor'] },
-                    { name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
-                    { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
-                    { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
-                ],
-            });
+            var elements = document.getElementsByClassName('pageContent');
+            for (var i = 0; i < elements.length; ++i) {
+                CKEDITOR.replace(elements[i], {
+                    enterMode: CKEDITOR.ENTER_DIV,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    //filebrowserUploadUrl: '/media/files',
+                    //filebrowserImageUploadUrl: '/MediaHome/Upload',
+                    //filebrowserWindowWidth: 800,
+                    //filebrowserWindowHeight: 500,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
+                        { name: 'editing1', items: ['SpellChecker', 'Scayt'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
+                        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        //'/',
+                        { name: 'colors', items: ['TextColor', 'BGColor'] },
+                        { name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+            }
 
-            $("#Title").change(function () {
-                $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+            $(".pageTitle").change(function () {
+                $(this).parent().parent().find(".pageSlug").val(NccUtil.GetSafeSlug($(this).val()));
+                //$(".pageSlug").val(NccUtil.GetSafeSlug($(this).val()));
             });
 
             $("#publish").click(function () {
                 var element = document.getElementById('PageStatus');
                 element.value = "2";
-                console.log($("#Slug").val());
-                if ($("#Slug").val() == "") {
-                    document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
-                    console.log($("#Slug").val());
-                }
+                //console.log($("#Slug").val());
+                //if ($("#Slug").val() == "") {
+                //    document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
+                //    console.log($("#Slug").val());
+                //}
                 document.getElementById("SubmitType").value = "publish";
                 //$("#SubmitType").value = "publish";
 
-                $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
+                //$('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
                 document.getElementById("pageCreateEditForm").submit();
             });
 
             $("#save").click(function () {
-                if ($("#Slug").val() == "") {
-                    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
-                }
+                //if ($("#Slug").val() == "") {
+                //    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+                //}
                 $("#SubmitType").val("Save");
 
-                $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
+                //$('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
                 document.getElementById("pageCreateEditForm").submit();
             });
         });

@@ -20,9 +20,14 @@ namespace NetCoreCMS.Framework.Core.Services
             _menuItemRepository = menuItemRepository;
         }
 
-        public NccMenu Get(long entityId)
+        public NccMenu Get(long entityId, bool isAsNoTracking = false)
         {
             return _entityRepository.Get(entityId);
+        }
+
+        public List<NccMenu> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
         }
 
         public NccMenu Save(NccMenu entity)
@@ -35,18 +40,19 @@ namespace NetCoreCMS.Framework.Core.Services
         public NccMenu Update(NccMenu entity)
         {
             var oldEntity = _entityRepository.Query().Include("MenuItems").FirstOrDefault(x => x.Id == entity.Id);
-            
+
             if (oldEntity != null)
             {
                 RecursiveLoad(oldEntity);
-                
+
+                foreach (var mi in oldEntity.MenuItems)
+                {
+                    RecursiveNccMenuItemDelete(mi);
+                }
+                _menuItemRepository.SaveChange();
+                oldEntity = _entityRepository.Query().Include("MenuItems").FirstOrDefault(x => x.Id == entity.Id);
                 using (var txn = _entityRepository.BeginTransaction())
                 {
-                    foreach (var mi in oldEntity.MenuItems)
-                    {
-                        RecursiveNccMenuItemDelete(mi);
-                    }
-                    _menuItemRepository.SaveChange();
                     CopyNewData(oldEntity, entity);
                     _entityRepository.Edit(oldEntity);
                     _entityRepository.SaveChange();
@@ -68,40 +74,16 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccMenu> LoadAll()
-        {
-            return _entityRepository.LoadAll();
-        }
-
-        public List<NccMenu> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccMenu> LoadAllByStatus(int status)
-        {
-            return _entityRepository.LoadAllByStatus(status);
-        }
-
-        public List<NccMenu> LoadAllByName(string name)
-        {
-            return _entityRepository.LoadAllByName(name);
-        }
-
-        public List<NccMenu> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.LoadAllByNameContains(name);
-        }
-
         public void DeletePermanently(long entityId)
         {
-            var entity = _entityRepository.Get(entityId);
+            var entity = _entityRepository.Get(entityId,false,new List<string>() { "MenuItems" } );
+
             if (entity != null)
             {
-                //foreach (var menuItem in entity.MenuItems)
-                //{
-                //    RecursiveNccMenuItemDelete(menuItem);
-                //}
+                foreach (var menuItem in entity.MenuItems)
+                {
+                    RecursiveNccMenuItemDelete(menuItem);
+                }
                 _entityRepository.Remove(entity);
                 _entityRepository.SaveChange();
             }
@@ -117,16 +99,17 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.Position = entity.Position;
             oldEntity.Status = entity.Status;
             oldEntity.MenuItems = entity.MenuItems;
+            oldEntity.Metadata = entity.Metadata;
         }
-
+         
         private void RecursiveNccMenuItemDelete(NccMenuItem nccMenuItem)
         {
             foreach (var mi in nccMenuItem.Childrens)
             {
                 RecursiveNccMenuItemDelete(mi);
             }
-            _menuItemRepository.DeletePermanently(nccMenuItem);
-            //_menuItemRepository.SaveChange();
+            _menuItemRepository.DeletePermanently(nccMenuItem);    
+            
         }
 
         public List<NccMenu> LoadAllSiteMenus()

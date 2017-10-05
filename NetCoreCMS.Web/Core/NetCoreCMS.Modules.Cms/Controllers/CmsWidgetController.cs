@@ -12,7 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace NetCoreCMS.Modules.Cms.Controllers
+namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Administrator")]
     [AdminMenu(Name = "Appearance", IconCls = "fa-tasks", Order = 5)]
@@ -20,8 +20,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
     {
         NccWebSiteWidgetService _nccWebSiteWidgetService;
         NccWebSiteService _nccWebSiteService;
-        ILoggerFactory _loggerFactory;
-        ILogger _logger;
+        ILoggerFactory _loggerFactory;        
 
         public CmsWidgetController(NccWebSiteWidgetService nccWebSiteWidgetService, NccWebSiteService nccWebSiteService, ILoggerFactory factory)
         {
@@ -32,11 +31,16 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         }
 
         [AdminMenuItem(Name = "Widget", Url = "/CmsWidget", IconCls = "fa-magic", Order = 2)]
-        public ActionResult Index()
+        public ActionResult Index(string sLayout = "")
         {
+            ViewBag.sLayout = "";
             ViewBag.Modules = GlobalConfig.GetActiveModules();
             ViewBag.Theme = GlobalConfig.ActiveTheme;
-            ViewBag.WebsiteWidgetZones = _nccWebSiteWidgetService.LoadAll();
+            if (GlobalConfig.ActiveTheme.Layouts.Where(x => x.Name == sLayout).Count() > 0)
+            {
+                ViewBag.sLayout = sLayout;
+            }
+            ViewBag.WebsiteWidgetZones = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
             return View();
         }
 
@@ -57,20 +61,47 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             };
 
             _nccWebSiteWidgetService.Save(nccWebSiteWidget);
-            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll();
+            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
 
-            return Json(new ApiResponse() { IsSuccess=true, Message="Save Successful." });
+            return Json(new ApiResponse() { IsSuccess=true, Message="Save Successful.", Data = nccWebSiteWidget });
         }
         
         [HttpPost]
         public JsonResult RemoveZoneWidget(string module, string theme, string layout, string zone, string widget)
         {
             _nccWebSiteWidgetService.RemoveByModuleThemeLayoutZoneWidget(module,theme,layout,zone,widget);
-            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll();
+            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
         }
 
+        [HttpPost]
+        public JsonResult RemoveZoneWidgetById(long zoneWidgetId)
+        {
+            var rsp = _nccWebSiteWidgetService.RemoveByZoneWidgetId(zoneWidgetId);
+            if (rsp.StartsWith("Error:"))
+            {
+                Json(new ApiResponse() { IsSuccess = false, Message = "Remove Failed." });
+            }
+            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
+            return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
+        }
 
+        [HttpPost]
+        public JsonResult UpdateWebsiteWidgetOrder(long webSiteWidgetId, int oldOrder, string operation)
+        {
+            if(operation == "up")
+            {
+                _nccWebSiteWidgetService.UpOrder(webSiteWidgetId, oldOrder);
+            }
+            else
+            {
+                _nccWebSiteWidgetService.DownOrder(webSiteWidgetId, oldOrder);
+            }
+            
+            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x=>x.WidgetOrder).ToList();
+            return Json(new ApiResponse() { IsSuccess = true, Message = "Order update Successful." });
+        }
+        
         /// <summary>
         /// Save your website widget configuration
         /// </summary>
@@ -93,7 +124,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
         public JsonResult GetConfig(long webSiteWidgetId)
         {
-            var apiResponse = new ApiResponse(false, "Config save failed.");
+            var apiResponse = new ApiResponse(false, "Config get failed.");
             var webSiteWidget = _nccWebSiteWidgetService.Get(webSiteWidgetId);
             if (webSiteWidget != null)
             {

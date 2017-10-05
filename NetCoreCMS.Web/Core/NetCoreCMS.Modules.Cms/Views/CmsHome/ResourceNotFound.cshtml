@@ -3,5 +3,32 @@
     Layout = Constants.SiteLayoutName;
     ViewData["Title"] = "Resource not found";
 }
-<h3>@TempData["Message"]</h3>
- 
+<link href='http://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
+<style type="text/css">
+    
+
+    body {
+        /*background: #f3f3e1;*/
+    }
+
+    .error {
+        font-family: 'Courgette', cursive;
+        /*margin-top: 50px;*/
+        text-align: center;
+    }
+        .error h1 {
+            font-size: 200px;
+            color: #8F8E8C;
+            text-align: center;
+            margin-bottom: 1px;
+            text-shadow: 5px 5px 10px #888;
+        }
+</style>
+
+<div class="error" style="padding-top:20vh;">
+    <h1>404</h1>
+    <h2>@TempData["Message"]</h2>
+    <div class="sub">
+        <p><a class="btn btn-primary" href="/">Back to Home</a></p>
+    </div>
+</div>

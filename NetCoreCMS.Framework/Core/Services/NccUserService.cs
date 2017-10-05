@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -17,14 +17,19 @@ namespace NetCoreCMS.Framework.Core.Services
             _entityRepository = entityRepository;
         }
          
-        public NccUser Get(long entityId)
+        public NccUser Get(long entityId, bool isAsNoTracking = false)
         {
             return _entityRepository.Get(entityId);
         }
 
+        public List<NccUser> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
+        }
+
         public NccUser GetByUserName(string userName)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.UserName == userName);
+            return _entityRepository.Query().Include("Roles").FirstOrDefault(x => x.UserName == userName);
         }
 
         public NccUser Save(NccUser entity)
@@ -60,31 +65,6 @@ namespace NetCoreCMS.Framework.Core.Services
                 _entityRepository.Edit(entity);
                 _entityRepository.SaveChange();
             }
-        }
-
-        public List<NccUser> LoadAll()
-        {
-            return _entityRepository.LoadAll();
-        }
-
-        public List<NccUser> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccUser> LoadAllByStatus(int status)
-        {
-            return _entityRepository.LoadAllByStatus(status).ToList();
-        }
-
-        public List<NccUser> LoadAllByName(string name)
-        {
-            return _entityRepository.LoadAllByName(name);
-        }
-
-        public List<NccUser> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
@@ -127,7 +107,8 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.Slug = entity.Slug;
             oldEntity.Status = entity.Status;
             oldEntity.TwoFactorEnabled = entity.TwoFactorEnabled;
-            oldEntity.UserName = entity.UserName; 
+            oldEntity.UserName = entity.UserName;
+            oldEntity.Metadata = entity.Metadata;
         } 
     }
 }

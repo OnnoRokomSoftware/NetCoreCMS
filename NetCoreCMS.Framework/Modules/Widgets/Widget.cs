@@ -1,5 +1,8 @@
-﻿using System;
+﻿using NetCoreCMS.Framework.i18n;
+using NetCoreCMS.Framework.Utility;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,6 +24,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         public string WidgetId { get; }
         public string Title { get; }
         public string DisplayTitle { get; set; }
+        public string Language { get; set; }
         public string Description { get; }
         public string Footer { get; set; }
         public string ConfigJson { get; }
@@ -54,9 +58,33 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                 titleInput = "";
                 footerInput = "";
             }
+            var culterList = SupportedCultures.Cultures.ToList();
+
+            var langOptions = "";
+            foreach (var item in culterList)
+            {
+                langOptions += "<option value='" + item.TwoLetterISOLanguageName + "'>" + item.DisplayName + "</option>";
+            }
+            var languageInput = "";
+            if (GlobalConfig.WebSite.IsMultiLangual == true)
+            {
+                languageInput = @"<div class='form-group'>
+                                    <label class='col-sm-3 control-label'>Language</label>
+                                    <div class='col-sm-9'>
+                                        <select class='form-control' id='language' name='language'>
+	                                        <option value=''>All</option>
+	                                        <!--<option value='en'>English</option>
+	                                        <option value='bd'>Bangla</option>-->
+                                            " + langOptions + @"
+                                        </select>
+                                        <!--<select name='culture' asp-for='@requestCulture.RequestCulture.UICulture.Name' asp-items='cultureItems'></select>-->
+                                    </div>
+                                </div>";
+            }
 
             ConfigPrefix = @"
                             <form id='configForm_" + WebSiteWidgetId + @"' class='form-horizontal'>
+                                " + languageInput + @"
                                 <div>";
             ConfigSuffix = @"       
                                 </div>
@@ -72,9 +100,9 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                                     $('#saveConfig_" + WebSiteWidgetId + @"').on('click', function (evnt) {
                                         var formJson = $('#configForm_" + WebSiteWidgetId + @"').serializeObject();
                                         
-                                        NccUtil.Log(formJson);
+                                        //NccUtil.Log(formJson);
                                         var data = JSON.stringify(formJson);
-                                        NccUtil.Log(data);
+                                        //NccUtil.Log(data);
 
                                         $.ajax({
                                             url: '/CmsWidget/SaveConfig',
@@ -89,7 +117,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                                                 }
                                             },
                                             error: function (rsp) {
-                                                NccAlert.ShowError('Error! Try again.');
+                                                NccAlert.ShowError('Error! Try to save again.');
                                             }
                                         });
                                     });
@@ -106,7 +134,8 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                                                         var dataArr = NccUtil.JsonToArray(data);
                                                         
                                                         for (var key in dataArr) {
-                                                            var elem = $('#configForm_" + WebSiteWidgetId + @" [name='+ key + ']');                                                              
+                                                            var elem = $('#configForm_" + WebSiteWidgetId + @" [name='+ key + ']'); 
+                                                            //console.log(elem[0].tagName+'-'+elem[0].type);
                                                             $(elem).val(dataArr[key]);
                                                         }                                                        
                                                     }
@@ -116,10 +145,10 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                                                 }
                                             },
                                             error: function (rsp) {
-                                                NccAlert.ShowError('Error! Try again.');
+                                                //NccAlert.ShowError('Error! Try to load again.');
                                             }
                                         });
-                                    }, 1000);
+                                    }, 100);
                                 });
                             </script>
                             ";

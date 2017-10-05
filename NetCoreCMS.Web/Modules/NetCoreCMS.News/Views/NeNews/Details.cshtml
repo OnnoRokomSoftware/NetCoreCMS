@@ -1,0 +1,18 @@
+﻿@using NetCoreCMS.Modules.News.Models
+@using System.Collections
+
+@model NeNews
+
+@{
+    Layout = Constants.SiteLayoutName;
+    ViewData["PageTitle"] = Model.Name;
+    ViewData["PageSubtitle"] = "";
+}
+
+<div>
+    @Html.Raw(Model.Content)
+</div>
+
+@section Scripts{
+    
+}

@@ -20,9 +20,10 @@ namespace NetCoreCMS.ImageSlider.Services
             _itemRepository = itemRepository;
         }
 
-        public NccImageSlider Get(long entityId)
+        public NccImageSlider Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Query().Include("ImageItems").FirstOrDefault(x => x.Id == entityId);
+            return _entityRepository.Get(entityId, false, new List<string>() { "ImageItems" });
+            //return _entityRepository.Query().Include("ImageItems").FirstOrDefault(x => x.Id == entityId);
         }
 
         public NccImageSlider Save(NccImageSlider entity)
@@ -65,29 +66,9 @@ namespace NetCoreCMS.ImageSlider.Services
             }
         }
 
-        public List<NccImageSlider> LoadAll()
+        public List<NccImageSlider> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.Query().Include("ImageItems").ToList();
-        }
-
-        public List<NccImageSlider> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccImageSlider> LoadAllByStatus(int status)
-        {
-            return _entityRepository.Query().Include("ImageItems").Where(x => x.Status == status).ToList();
-        }
-
-        public List<NccImageSlider> LoadAllByName(string name)
-        {
-            return _entityRepository.Query().Include("ImageItems").Where(x => x.Name == name).ToList();
-        }
-
-        public List<NccImageSlider> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.Query().Include("ImageItems").Where(x => x.Name.Contains(name)).ToList();
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "ImageItems" });
         }
 
         public void DeletePermanently(long entityId)

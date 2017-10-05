@@ -1,13 +1,17 @@
 ﻿{
-  "ModuleId": "A5A30A40-68E3-460A-A5BB-98DDA393A4D2",
+  "ModuleId": "NetCoreCMS.Core.Modules.Cms",
   "ModuleName": "NetCoreCMS.Modules.Cms",
   "ModuleTitle": "CMS",
   "Author": "NetCoreCMS",
+  "Email": "netcorecms@gmail.com",
   "Website": "http://DotNetCoreCMS.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
   "AntiForgery": true,
-  "Description": "Builtin Content Management Module.",
+  "Description": "Builtin Content Management System Module.",
   "Version": "0.1.1",
-  "NetCoreCMSVersion": "0.1.1",
-  "Dependencies": [],
-  "Category": "Core"
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "Core",
+  "Dependencies": []
 }

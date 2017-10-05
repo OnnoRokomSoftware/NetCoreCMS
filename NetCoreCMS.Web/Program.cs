@@ -1,28 +1,49 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading;
+using NetCoreCMS.Framework.Core.App;
 
 namespace NetCoreCMS.Web
 {
     public class Program
     {
-        private static CancellationTokenSource cancelTokenSource = new System.Threading.CancellationTokenSource();
-
+        private static IWebHost nccWebHost;
+        private static Thread starterThread = new Thread(StartApp);
+        
         public static void Main(string[] args)
         {
-            var host = new WebHostBuilder()
+            NetCoreCmsHost.StartForerver(starterThread, new ParameterizedThreadStart(StartApp), Directory.GetCurrentDirectory(), args);
+        }
+
+        private static void StartApp(object argsObj)
+        {
+            BuildWebHost((string[])argsObj).Run();            
+        }
+
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            nccWebHost = WebHost.CreateDefaultBuilder(args)
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()
                 .UseStartup<Startup>()
-                .UseApplicationInsights()                
+                .UseDefaultServiceProvider(options => options.ValidateScopes = false)
+                .UseApplicationInsights()
                 .Build();
-            host.Run(cancelTokenSource.Token);
+            return nccWebHost;
         }
 
-        public static void Shutdown()
+        public static async Task RestartAppAsync()
         {
-            cancelTokenSource.CancelAfter(2000);            
+            NetCoreCmsHost.StopAppAsync(nccWebHost);            
+        }
+
+        public static async Task ShutdownAppAsync()
+        {
+            NetCoreCmsHost.ShutdownAppAsync(nccWebHost);
         }
     }
 }

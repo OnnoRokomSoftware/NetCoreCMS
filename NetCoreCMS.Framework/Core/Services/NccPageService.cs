@@ -11,20 +11,27 @@ namespace NetCoreCMS.Framework.Core.Services
     public class NccPageService : IBaseService<NccPage>
     {
         private readonly NccPageRepository _entityRepository;
+        private readonly NccPageDetailsRepository _nccPageDetailsRepository;
 
-        public NccPageService(NccPageRepository entityRepository)
+        public NccPageService(NccPageRepository entityRepository, NccPageDetailsRepository nccPageDetailsRepository)
         {
             _entityRepository = entityRepository;
-        }
-         
-        public NccPage Get(long entityId)
-        {
-            return _entityRepository.Get(entityId);
+            _nccPageDetailsRepository = nccPageDetailsRepository;
         }
 
-        public NccPage GetBySlugs(string slug)
+        public NccPage Get(long entityId, bool isAsNoTracking = false)
         {
-           return _entityRepository.Query().FirstOrDefault(x => x.Slug == slug.ToLower());
+            return _entityRepository.Get(entityId, false, new List<string> { "Parent", "PageDetails" });
+        }
+
+        public NccPage GetBySlug(string slug)
+        {
+            return _nccPageDetailsRepository.Get(slug)?.Page;
+        }
+
+        public List<NccPage> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string> { "Parent", "PageDetails" });
         }
 
         public List<NccPage> LoadRecentPages(int count)
@@ -52,11 +59,11 @@ namespace NetCoreCMS.Framework.Core.Services
                 return entity;
             }
         }
-         
+
         public NccPage Update(NccPage entity)
         {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if(oldEntity != null)
+            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string> { "Parent", "PageDetails" });
+            if (oldEntity != null)
             {
                 oldEntity.ModificationDate = DateTime.Now;
                 oldEntity.ModifyBy = BaseModel.GetCurrentUserId();
@@ -68,49 +75,19 @@ namespace NetCoreCMS.Framework.Core.Services
                     txn.Commit();
                 }
             }
-            
+
             return entity;
         }
-        
+
         public void Remove(long entityId)
         {
-            var entity = _entityRepository.Get(entityId );
+            var entity = _entityRepository.Get(entityId);
             if (entity != null)
             {
                 entity.Status = EntityStatus.Deleted;
                 _entityRepository.Edit(entity);
                 _entityRepository.SaveChange();
             }
-        }
-
-        public List<NccPage> LoadAll()
-        {
-            return _entityRepository.LoadAll();
-        }
-
-        public List<NccPage> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccPage> LoadAllByStatus(int status)
-        {
-            return _entityRepository.LoadAllByStatus(status);
-        }
-
-        public List<NccPage> LoadAllByPageStatus(NccPage.NccPageStatus status)
-        {
-            return _entityRepository.Query().Where(x => x.PageStatus == status).ToList();
-        }
-
-        public List<NccPage> LoadAllByName(string name)
-        {
-            return _entityRepository.LoadAllByName(name);
-        }
-
-        public List<NccPage> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
@@ -124,27 +101,59 @@ namespace NetCoreCMS.Framework.Core.Services
         }
 
         public NccPage CopyNewData(NccPage copyFrom, NccPage copyTo)
-        {                
+        {
             copyTo.ModificationDate = copyFrom.ModificationDate;
             copyTo.ModifyBy = BaseModel.GetCurrentUserId();
-            copyTo.Name = copyFrom.Name;            
+            copyTo.Name = copyFrom.Name;
             copyTo.Status = copyFrom.Status;
-            copyTo.AddToNavigationMenu = copyFrom.AddToNavigationMenu;
-            copyTo.Content = copyFrom.Content;
-            copyTo.MetaDescription = copyFrom.MetaDescription;
-            copyTo.MetaKeyword = copyFrom.MetaKeyword;
             copyTo.ModificationDate = copyFrom.ModificationDate;
             copyTo.ModifyBy = copyFrom.ModifyBy;
             copyTo.PageStatus = copyFrom.PageStatus;
             copyTo.PageType = copyFrom.PageType;
             copyTo.Parent = copyFrom.Parent;
             copyTo.PublishDate = copyFrom.PublishDate;
-            copyTo.Slug = copyFrom.Slug;
-            copyTo.Title = copyFrom.Title;
             copyTo.Layout = copyFrom.Layout;
             copyTo.VersionNumber = copyFrom.VersionNumber;
+            copyTo.Metadata = copyFrom.Metadata;
+
+            var currentDateTime = DateTime.Now;
+            foreach (var item in copyFrom.PageDetails)
+            {
+                var isNew = false;
+                NccPageDetails temp = copyTo.PageDetails.Where(x => x.Language == item.Language).FirstOrDefault();
+                if (temp == null)
+                {
+                    isNew = true;
+                    temp = new NccPageDetails();
+                    temp.CreationDate = currentDateTime;
+                    temp.CreateBy = BaseModel.GetCurrentUserId();
+                    temp.Language = item.Language;
+                }
+                temp.ModificationDate = currentDateTime;
+                temp.ModifyBy = BaseModel.GetCurrentUserId();
+
+                temp.Title = item.Title;
+                temp.Slug = item.Slug;
+                temp.Content = item.Content;
+                temp.MetaDescription = item.MetaDescription;
+                temp.MetaKeyword = item.MetaKeyword;
+                temp.Name = string.IsNullOrEmpty(item.Name) ? item.Slug : item.Name;
+                temp.Metadata = item.Metadata;
+
+                if (isNew)
+                {
+                    copyTo.PageDetails.Add(temp);
+                }
+            }
+
+            //copyTo.PageDetails = copyFrom.PageDetails;
             return copyTo;
         }
-        
+
+        public List<NccPage> LoadAllByPageStatus(NccPage.NccPageStatus status)
+        {
+            return _entityRepository.Query().Where(x => x.PageStatus == status).ToList();
+        }
+
     }
 }

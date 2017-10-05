@@ -1,8 +1,11 @@
 ﻿@using NetCoreCMS.Framework.Utility
+@using NetCoreCMS.HelloWorld.Controllers
+
 @{
     Layout = Constants.SiteLayoutName;
+    var _T = new NccTranslator<SharedResource>(TempData["CurrentLanguage"].ToString());
 }
 
 <h1> Holaaaaaaaaa !!! It's a sample module</h1>
-
+Translation file <h4>@_T["FileName"]</h4>
 <hr/>

@@ -10,6 +10,7 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels
         public string Name { get; set; }
         public string Position { get; set; }
         public string MenuFor { get; set; }
+        public string MenuLanguage { get; set; }
         public List<NccMenuItemViewModel> Items { get; set; }
     }
 

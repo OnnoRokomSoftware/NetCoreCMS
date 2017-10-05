@@ -1,0 +1,91 @@
+﻿@using System.Collections
+
+@model List<NccTag>
+
+@{
+    Layout = Constants.AdminLayoutName;
+    var mainName = "Tag";
+    var controllerName = "Tag";
+    ViewData["PageTitle"] = mainName + " Manage";
+    ViewData["PageSubtitle"] = "Manage existing " + mainName.ToLower();
+}
+<style>
+    hr {
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+
+    .table th {
+        text-align: center;
+    }
+    .table td {
+        text-align: center;
+    }
+</style> 
+<div class="row">
+    <div class="col-md-12 pull-right">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                <div class="pull-right"><a asp-controller="@controllerName" asp-action="Index" asp-route-id="0" class="btn btn-outline btn-info btn-xs" target="_blank"><i class="fa fa-eye"></i> View all Tags</a></div>
+            </div>
+            <div class="panel-body">
+                <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Total Use</th>
+                            <th>Create By</th>
+                            <th>Create Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Name</td>
+                                <td>@item.Posts.Count()</td>
+                                <td style="text-align:center;">@item.CreateBy</td>
+                                <td style="text-align:center;">@Html.Raw(item.CreationDate.ToString("MMM dd, yyyy hh:mm tt"))</td>
+                                <td style="text-align:center;">
+                                    @if (item.Status == EntityStatus.Active)
+                                    {
+                                        <span>Active</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Inactive</span>
+                                    }
+                                </td>
+                                <td style="text-align:center;">
+                                    @if (item.Status == EntityStatus.Active)
+                                    {
+                                        <a asp-controller="@controllerName" asp-action="StatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-danger btn-outline">Inactive</a>
+                                    }
+                                    else
+                                    {
+                                        <a asp-controller="@controllerName" asp-action="StatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-success btn-outline">Active</a>
+                                    }
+                                    <a asp-controller="@controllerName" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-xs btn-danger">Delete</a>
+                                    <a asp-controller="@controllerName" asp-action="Index" asp-route-name="@item.Name" class="btn btn-xs btn-info btn-outline" target="_blank"><i class="fa fa-eye"></i> View</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    
+</div>
+ 
+@section Scripts{
+    <link href="~/lib/DataTables/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/DataTables/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="~/lib/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/DataTables/dataTables.bootstrap.min.js"></script>
+}

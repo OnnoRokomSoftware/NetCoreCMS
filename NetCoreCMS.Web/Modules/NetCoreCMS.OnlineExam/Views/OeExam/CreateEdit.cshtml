@@ -1,0 +1,148 @@
+﻿@using NetCoreCMS.Modules.OnlineExam.Models
+@using System.Collections
+
+@model OeExam
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Exam Create";
+    ViewData["PageSubtitle"] = "Create a new exam";
+    if (Model.Id > 0)
+    {
+        ViewData["PageTitle"] = "Exam Update";
+        ViewData["PageSubtitle"] = "Update an existing exam";
+    }
+    var controllerName = "OeExam";
+}
+    
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+            </div>
+            <div class="panel-body">
+
+                <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                    <input type="hidden" asp-for="Id" value="@Model.Id" />
+                    <input type="hidden" asp-for="Status" value="@Model.Status" />
+                    <div class="col-sm-12 pull-left">
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Name </label>
+                            <div class="col-md-7">
+                                <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Is Bangla </label>
+                            <div class="col-md-7">
+                                <input type="checkbox" asp-for="IsBangla" @{Model.IsBangla == true ? "checked" : "";} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Is English </label>
+                            <div class="col-md-7">
+                                <input type="checkbox" asp-for="IsEnglish" @{Model.IsEnglish == true ? "checked" : "";} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Total Marks </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="TotalMarks" placeholder="" value="@Model.TotalMarks" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Total Question </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="TotalQuestion" placeholder="" value="@Model.TotalQuestion" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Marks Per Question </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="MarksPerQuestion" placeholder="" value="@Model.MarksPerQuestion" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Negative Marks </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="NegativeMarks" placeholder="" value="@Model.NegativeMarks" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Total UniqueSet </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="TotalUniqueSet" placeholder="" value="@Model.TotalUniqueSet" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Total Time(min) </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="TotalTimeInMin" placeholder="" value="@Model.TotalTimeInMin" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Is Subject Wise </label>
+                            <div class="col-md-7">
+                                <input type="checkbox" asp-for="IsSubjectWise" @{Model.IsSubjectWise == true ? "checked" : "";} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Is Combined Shuffle </label>
+                            <div class="col-md-7">
+                                <input type="checkbox" asp-for="IsCombinedShuffle" @{Model.IsCombinedShuffle == true ? "checked" : "";} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Is Published </label>
+                            <div class="col-md-7">
+                                <input type="checkbox" asp-for="IsPublished" @{Model.IsPublished= =true ? "checked" : "" ;} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Is Retake </label>
+                            <div class="col-md-7">
+                                <input type="checkbox" asp-for="IsRetake" @{Model.IsRetake= =true ? "checked" : "" ;} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Has DateRange </label>
+                            <div class="col-md-7">
+                                <input type="checkbox" asp-for="HasDateRange" @{Model.HasDateRange == true ? "checked" : "";} />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Publish DateTime </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="PublishDateTime" placeholder="" value="@Model.PublishDateTime.ToString("yyyy-MM-dd HH:mm")" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-5 text-right">Expire DateTime </label>
+                            <div class="col-md-7">
+                                <input type="text" asp-for="ExpireDateTime" placeholder="" value="@Model.ExpireDateTime.ToString("yyyy-MM-dd HH:mm")" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
+                            <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                            <input type="submit" class="btn btn-default" name="Save" value="Save And New" />
+                        </div>
+
+                    </div>
+
+
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+}

@@ -1,10 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
-using NetCoreCMS.Framework.Core.Data;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Data;
 
 namespace NetCoreCMS.Framework.Utility
 {

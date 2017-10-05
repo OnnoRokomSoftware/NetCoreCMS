@@ -1,0 +1,48 @@
+{
+  "ThemeId": "one.osl.themes.BSMRSTU",
+  "ThemeName": "BSMRSTU",
+  "Type": "Site",
+  "Author": "OnnoRokom Software Ltd.",
+  "Email": "info@onnorokomsoftware.com",
+  "Website": "https://osl.one",
+  "DemoUrl": null,
+  "Description": "Bangabandhu Sheikh Mujibur Rahman Science & Technology University, Gopalganj Theme.",
+  "Version": "1.0",
+  "MinNccVersion": null,
+  "MaxNccVersion": null,
+  "Category": "Responsive, BSMRSTU",
+  "PreviewImage": "screenshot.png",
+  "IsActive": false,
+  "Layouts": [
+    {
+      "Name": "SiteLayout",
+      "PreviewImage": "SiteLayoutScreenShot.png",
+      "LayoutZones": [
+        "Featured",
+        "LeftSidebar",
+        "RightSidebar",
+        "Footer"
+      ]
+    },
+    {
+      "Name": "HomeLayout",
+      "PreviewImage": "HomeLayoutScreenShot.png",
+      "LayoutZones": [
+        "FullWidthSlider",
+        "Featured",
+        "LeftSidebar",
+        "RightSidebar",
+        "Footer"
+      ]
+    }
+  ],
+  "MenuLocations": [
+    "Top",
+    "Navigation",
+    "LeftColumn",
+    "RightColumn",
+    "Footer"
+  ],
+  "Widgets": [],
+  "Folder": null
+}

@@ -5,12 +5,12 @@
 <div class="col-sm-8">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <div class="col-sm-12">
-                <div class="col-sm-4" style="padding-right:0px;">
+            <div class="row">
+                <div class="col-md-4">
                     <input type="hidden" id="menuId" name="menuId" value="@currentMenu.Id" />
                     <input type="text" id="menuName" class="form-control input-sm" placeholder="Enter Menu Name" value="@currentMenu.Name" />
                 </div>
-                <div class="col-sm-4">
+                <div class="col-md-3">
                     <select id="menuLocation" class="form-control input-sm">
                         <option value="">Menu Location</option>
                         @foreach (var menuLocation in ViewBag.MenuLocations)
@@ -26,7 +26,13 @@
                         }
                     </select>
                 </div>
-                <div class="col-sm-4">
+                <div class="col-md-2">
+                    @if (GlobalConfig.WebSite.IsMultiLangual)
+                    {
+                        <select id="menuLanguage" class="form-control input-sm" asp-items="ViewBag.MenuLanguages"></select>
+                    }
+                </div>
+                <div class="col-md-3">
                     @if (currentMenu.Id > 0)
                     {
                         <a class="btn btn-sm btn-outline btn-success pull-right" style="margin-left:5px;" href="/CmsMenu">New Menu</a> 
@@ -47,11 +53,13 @@
                 }
                 else
                 {
-                    <li class="list-group-item no-boarder" ncc-menu-item-id="0" ncc-menu-item-action-type="Url" ncc-menu-item-controller="Home" ncc-menu-item-action="Index" ncc-menu-item-action-data="" ncc-menu-item-url="/" ncc-menu-item-target="" ncc-menu-item-order="1" ncc-menu-item-title="Home">
+                    <li class="list-group-item no-boarder" ncc-menu-item-id="0" ncc-menu-item-action-type="Url" ncc-menu-item-controller="Home" ncc-menu-item-action="Index" ncc-menu-item-action-data="" ncc-menu-item-url="/Home/Index" ncc-menu-item-target="" ncc-menu-item-order="1" ncc-menu-item-title="Home">
                         <div class="menu-item-content">
                             <div class="pull-left" style="padding: 5px 5px;">
-                                <i class="glyphicon glyphicon-move margin-right-10"></i>
-                                <span class="ncc-menu-title">Home</span>
+                                <i class="glyphicon glyphicon-move margin-right-10"></i>                                
+                                <span id="homeTxt" class="ncc-menu-title">Home</span>
+                                <input id="homeTxtEditor" class="ncc-menu-title-editor" type="text" style="display:none" />
+                                &nbsp;&nbsp;<i class="fa fa-edit" onclick="ShowEditor('homeTxt', 'homeTxtEditor')"></i>
                             </div>
                             <input type="button" class="closeMenuItem pull-right" value="X" onclick="RemoveMenuItem(this)" />
                         </div>

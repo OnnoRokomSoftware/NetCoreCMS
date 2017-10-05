@@ -23,7 +23,7 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels
         [Required]
         public string FullName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "The Email field is required")]
         [EmailAddress]
         public string Email { get; set; }
 

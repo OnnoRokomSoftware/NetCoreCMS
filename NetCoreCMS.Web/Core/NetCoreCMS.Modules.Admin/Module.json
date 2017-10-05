@@ -1,13 +1,16 @@
 ﻿{
-  "ModuleId": "1E732BAD-7CDB-4A07-B60E-00A69481BE39",
-  "ModuleName": "NetCoreCMS.Modules.Admin",
-  "ModuleTitle": "CMS Administration",
+  "ModuleId": "NetCoreCMS.Core.Modules.Admin",
+  "ModuleTitle": "CMS administration module",
   "Author": "NetCoreCMS",
+  "Email": "netcorecms@gmail.com",
   "Website": "http://DotNetCoreCMS.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
   "AntiForgery": true,
   "Description": "Builtin Administration for Content Management.",
   "Version": "0.1.1",
-  "NetCoreCMSVersion": "0.1.1",
-  "Dependencies": [],
-  "Category": "Core"
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "Core",
+  "Dependencies": []
 }

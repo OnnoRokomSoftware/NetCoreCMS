@@ -18,9 +18,9 @@ namespace NetCoreCMS.LinkShare.Services
             _entityRepository = entityRepository;
         }
 
-        public LsLink Get(long entityId)
+        public LsLink Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Query().Include("Categories").FirstOrDefault(x => x.Id == entityId);
+            return _entityRepository.Get(entityId,isAsNoTracking, new List<string>() { "Categories" });
         }
 
         public LsLink Save(LsLink entity)
@@ -33,7 +33,7 @@ namespace NetCoreCMS.LinkShare.Services
         public LsLink Update(LsLink entity)
         {
             RemoveCategories(entity);
-            var oldEntity = _entityRepository.Query().Include("Categories").FirstOrDefault(x => x.Id == entity.Id);
+            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories" });
             if (oldEntity != null)
             {
                 using (var txn = _entityRepository.BeginTransaction())
@@ -50,11 +50,11 @@ namespace NetCoreCMS.LinkShare.Services
 
         private void RemoveCategories(LsLink entity)
         {
-            var oldEntityCount = _entityRepository.Query().Include("Categories").FirstOrDefault(x => x.Id == entity.Id).Categories.Count();
+            var oldEntityCount = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories" }).Categories.Count();
 
             for (int i = 0; i < oldEntityCount; i++)
             {
-                var tempEntity = _entityRepository.Query().Include("Categories").FirstOrDefault(x => x.Id == entity.Id);
+                var tempEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories" });
                 tempEntity.Categories.RemoveAt(0);
                 _entityRepository.SaveChange();
             }
@@ -71,30 +71,15 @@ namespace NetCoreCMS.LinkShare.Services
             }
         }
 
-        public List<LsLink> LoadAll()
+        public List<LsLink> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.Query().Include("Categories").ToList();
-        }
-
-        public List<LsLink> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<LsLink> LoadAllByStatus(int status)
-        {
-            return _entityRepository.Query().Include("Categories").Where(x => x.Status == status).ToList();
-        }
-
-        public List<LsLink> LoadAllByName(string name)
-        {
-            return _entityRepository.Query().Include("Categories").Where(x => x.Name == name).ToList();
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "Categories" });
         }
 
         public List<LsLink> LoadAllByCategory(string categoryName, int page = 0, int count = 10)
         {
-            return _entityRepository.Query()
-                .Where(x => x.Status >= EntityStatus.New
+            return _entityRepository.Query().AsNoTracking()
+                .Where(x => x.Status >= EntityStatus.Active
                     && x.Categories.Any(c => c.LsCategory.Name == categoryName)
                     && (
                         x.HasDateRange == false
@@ -105,11 +90,6 @@ namespace NetCoreCMS.LinkShare.Services
                 .Skip(count * page)
                 .Take(count)
                 .ToList();
-        }
-
-        public List<LsLink> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.Query().Include("Categories").Where(x => x.Name.Contains(name)).ToList();
         }
 
         public void DeletePermanently(long entityId)

@@ -1,30 +1,15 @@
-﻿using NetCoreCMS.Framework.Core.Mvc.Models;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPlugins : IBaseModel<long>
-    {
+    public class NccPlugins : BaseModel, IBaseModel<long>
+    { 
         public NccPlugins()
         {
-            CreationDate = DateTime.Now;
-            ModificationDate = DateTime.Now;
-            CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
-            Status = EntityStatus.New;
-            VersionNumber = 1;
+            Widgets = new List<NccWidget>();
         }
 
-        [Key]
-        public long Id { get; set; }
-        public int VersionNumber { get; set; }
-        public string Name { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
-        public int Status { get; set; }
         public bool AntiForgery { get; set; }
         public string Author { get; set; }
         public string Website { get; set; }
@@ -35,6 +20,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Category { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
+
         public NccPluginsStatus PluginsStatus { get; set; }
         public List<NccWidget> Widgets { get; set; }
 

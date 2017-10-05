@@ -26,12 +26,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/Hello";
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
+            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {
                 var configJson = webSiteWidget.WidgetConfigJson;
                 var config = JsonConvert.DeserializeObject<dynamic>(configJson);
                 DisplayTitle = config.title;
+                Language = config.language;
                 Footer = config.footer;
             }
         }

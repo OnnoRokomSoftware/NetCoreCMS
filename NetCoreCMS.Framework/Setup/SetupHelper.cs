@@ -2,18 +2,18 @@
 using System.IO;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.AspNetCore.Identity;
 using NetCoreCMS.Framework.Utility;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.Services;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Extensions;
 
 namespace NetCoreCMS.Framework.Setup
 {
@@ -30,6 +30,10 @@ namespace NetCoreCMS.Framework.Setup
         public static string SelectedDatabase { get; set; }
         public static string ConnectionString { get; set; }
         public static int LoggingLevel { get; set; } = (int) LogLevel.Debug;
+        public static string Language { get; set; }
+        public static string StartupType { get; set; } = StartupTypeText.Url;
+        public static string StartupData { get; set; } = "/CmsHome";
+        public static string StartupUrl { get; set; } = "/CmsHome";
 
         public static SetupConfig SaveSetup()
         {
@@ -45,7 +49,11 @@ namespace NetCoreCMS.Framework.Setup
                         IsAdminCreateComplete = IsAdminCreateComplete,
                         SelectedDatabase = SelectedDatabase,
                         ConnectionString = ConnectionString,
-                        LoggingLevel = LoggingLevel
+                        LoggingLevel = LoggingLevel,
+                        Language = Language,
+                        StartupUrl = StartupUrl,
+                        StartupData = StartupData,
+                        StartupType = StartupType
                     }, Formatting.Indented);
 
                     if (!string.IsNullOrEmpty(content))
@@ -61,7 +69,7 @@ namespace NetCoreCMS.Framework.Setup
         {
             var config = new SetupConfig();
             var rootDir = GlobalConfig.ContentRootPath;
-            var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate);
+            var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using (StreamReader sr = new StreamReader(file))
             {
                 var content = sr.ReadToEnd();
@@ -73,6 +81,10 @@ namespace NetCoreCMS.Framework.Setup
                     SelectedDatabase = config.SelectedDatabase;
                     ConnectionString = config.ConnectionString;
                     LoggingLevel = config.LoggingLevel;
+                    Language = config.Language;
+                    StartupType = config.StartupType;
+                    StartupData = config.StartupData;
+                    StartupUrl = config.StartupUrl;
                 }
             }
             return config;
@@ -81,7 +93,7 @@ namespace NetCoreCMS.Framework.Setup
         public static void UpdateSetup(SetupConfig setupConfig)
         {
             var rootDir = GlobalConfig.ContentRootPath;
-            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
+            using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
                 using (StreamWriter sw = new StreamWriter(file))
                 {
@@ -163,19 +175,21 @@ namespace NetCoreCMS.Framework.Setup
         public static void CreateWebSite(NccDbContext dbContext, WebSiteInfo setupInfo)
         {
             var webSiteRepository = new NccWebSiteRepository(dbContext);
-            var webSiteService = new NccWebSiteService(webSiteRepository);
+            var webSiteInfoRepository = new NccWebSiteInfoRepository(dbContext);
+
+            var webSiteService = new NccWebSiteService(webSiteRepository, webSiteInfoRepository);
             var webSite = new NccWebSite()
             {
                 AllowRegistration = true,
-                Copyrights = "Copyright (c) " + DateTime.Now.Year + " " + setupInfo.SiteName,
+                //Copyrights = "Copyright (c) " + DateTime.Now.Year + " " + setupInfo.SiteName,
                 DateFormat = "dd/mm/yyyy",
                 EmailAddress = setupInfo.Email,
                 Name = setupInfo.SiteName,
                 NewUserRole = "Reader",
-                SiteTitle = setupInfo.SiteName,
-                Tagline = setupInfo.Tagline,
+                //SiteTitle = setupInfo.SiteName,
+                //Tagline = setupInfo.Tagline,
                 TimeFormat = "hh:mm:ss",
-                TimeZone = "UTC +6"
+                TimeZone = "UTC_6"
             };
             webSiteService.Save(webSite);
         }
@@ -183,7 +197,8 @@ namespace NetCoreCMS.Framework.Setup
         public static void CrateNccWebSite(NccDbContext dbContext, WebSiteInfo webSiteInfo)
         {
             var webSiteRepository = new NccWebSiteRepository(dbContext);
-            var webSiteService = new NccWebSiteService(webSiteRepository);
+            var webSiteInfoRepository = new NccWebSiteInfoRepository(dbContext);
+            var webSiteService = new NccWebSiteService(webSiteRepository, webSiteInfoRepository);
             var webSite = new NccWebSite()
             {
                 Name = webSiteInfo.SiteName,
@@ -191,21 +206,50 @@ namespace NetCoreCMS.Framework.Setup
                 DateFormat = "dd/MM/yyyy",
                 TimeFormat = "hh:mm:ss",
                 EmailAddress = webSiteInfo.Email,
-                Language = "en_US",
+                Language = webSiteInfo.Language,
                 NewUserRole = "Subscriber",
-                SiteTitle = webSiteInfo.SiteName,
-                Tagline = webSiteInfo.Tagline,
-                TimeZone = "UTC_1",
+                TimeZone = "UTC_6",
             };
+
+            webSite.WebSiteInfos = new List<NccWebSiteInfo>();
+            webSite.WebSiteInfos.Add(new NccWebSiteInfo() {
+                Language = webSiteInfo.Language,
+                Name = webSiteInfo.SiteName,
+                SiteTitle = webSiteInfo.SiteName,
+                Tagline = webSiteInfo.Tagline
+            });
+
             webSiteService.Save(webSite);
 
         }
 
-        public static void RegisterAuthServices()
+        public static void RegisterAuthServices(DatabaseEngine dbe)
         {
-            GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
-                    options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
-                );
+            switch (dbe)
+            {
+                case DatabaseEngine.MSSQL:
+                    GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
+                        options.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
+                    );                    
+                    break;
+                case DatabaseEngine.MsSqlLocalStorage:
+                    break;
+                case DatabaseEngine.MySql:
+                    GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
+                        options.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
+                    );
+                    
+                    break;
+                case DatabaseEngine.SqLite:
+                    GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
+                        options.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
+                    );
+                    
+                    break;
+                case DatabaseEngine.PgSql:
+                    break;
+            }
+            
             GlobalConfig.Services.AddCustomizedIdentity();
             
         }

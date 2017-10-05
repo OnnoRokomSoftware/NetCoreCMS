@@ -1,13 +1,16 @@
 ﻿{
   "ModuleId": "com.NetCoreCMS.LinkShare",
-  "ModuleName": "NetCoreCMS.LinkShare",
   "ModuleTitle": "NetCoreCMS LinkShare Module",
   "Author": "NetCoreCMS",
+  "Email": "netcorecms@gmail.com",
   "Website": "http://DotNetCoreCMS.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
   "AntiForgery": true,
   "Description": "Builtin LinkShare Module.",
   "Version": "1.0",
-  "NetCoreCMSVersion": "0.1.1",
-  "Dependencies": [],
-  "Category": "Link,share,notice"
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "Link,share,notice",
+  "Dependencies": []
 }

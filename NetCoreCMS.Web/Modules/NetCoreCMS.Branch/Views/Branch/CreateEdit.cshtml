@@ -1,0 +1,92 @@
+﻿@using NetCoreCMS.Branch.Models
+@model NccBranch
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Branch Create";
+    ViewData["PageSubtitle"] = "Create a new branch";
+    if (Model.Id > 0)
+    {
+        ViewData["PageTitle"] = "Branch Edit";
+        ViewData["PageSubtitle"] = "Update content of a branch";
+    }
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        <a asp-controller="Branch" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Branch</a>
+                    }
+                    <a asp-controller="Branch" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Branch</a>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <form id="createEditForm" class="form-horizontal" asp-controller="Branch" asp-action="CreateEdit" method="post">
+                        <div class="col-sm-8 pull-left">
+                            <div class="col-md-12">
+                                <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+                                <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+                            </div>
+                            <div>
+                                <label>Name </label>
+                                <input type="text" class="form-control" asp-for="Name" placeholder="Enter notice name">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label>Address </label>
+                                <input type="text" class="form-control" id="Address" name="Address" asp-for="Address" placeholder="Enter Address">
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label>Description </label>
+                                <input type="text" class="form-control" id="Description" name="Description" asp-for="Description" placeholder="Enter Description">
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label>Phone </label>
+                                <input type="text" class="form-control" id="Phone" name="Phone" asp-for="Phone" placeholder="Enter Phone">
+                                <span asp-validation-for="Phone" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label>LatLon </label>
+                                <input type="text" class="form-control" id="LatLon" name="LatLon" asp-for="LatLon" placeholder="Enter LatLon">
+                                <span asp-validation-for="LatLon" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label>Google Location </label>
+                                <input type="text" class="form-control" id="GoogleLocation" name="GoogleLocation" asp-for="GoogleLocation" placeholder="Enter Google Location">
+                                <span asp-validation-for="GoogleLocation" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label>Zome Level </label>
+                                <input type="text" class="form-control" id="ZoomLevel" name="ZoomLevel" asp-for="ZoomLevel" placeholder="Enter Zoom Level">
+                                <span asp-validation-for="ZoomLevel" class="text-danger"></span>
+                            </div>
+                            <div>
+                                <label>Is Admission Only</label>
+                                <input type="checkbox" asp-for="IsAdmissionOnly"></input>
+                            </div>
+                            <div>
+                                <label>Order</label>
+                                <input type="text" class="form-control" asp-for="Order"></input>
+                            </div>
+
+                            <div>
+                                <input type="submit" class="btn btn-primary"></input>
+                            </div>
+
+                        </div>
+
+
+                    </form>
+
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+        </div>
+    </div>
+</div>

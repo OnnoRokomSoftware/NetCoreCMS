@@ -5,10 +5,9 @@ using Microsoft.Extensions.FileProviders;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -51,10 +50,16 @@ namespace NetCoreCMS.Framework.Modules
                     app.UseStaticFiles(new StaticFileOptions()
                     {
                         FileProvider = new PhysicalFileProvider(moduleDir.FullName),
-                        RequestPath = new PathString("/" + module.ModuleName)
+                        RequestPath = new PathString("/" + GetModuleFolderName(module.Path))
                     });
                 }
             }
+        }
+
+        private static string GetModuleFolderName(string path)
+        {
+            var dir = new DirectoryInfo(path);
+            return dir.Name;
         }
 
         private static void RegisterActiveThemeResourcePath(IHostingEnvironment env, IApplicationBuilder app, List<Theme> themes)

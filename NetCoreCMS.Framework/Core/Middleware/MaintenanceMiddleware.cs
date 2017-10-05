@@ -28,16 +28,23 @@ namespace NetCoreCMS.Framework.Core.Middleware
         public async Task Invoke(HttpContext context)
         {
             var config = SetupHelper.LoadSetup();            
-            if (config.IsMaintenanceMode && context.User.IsInRole(NccCmsRoles.SuperAdmin) == false)
+            if (config.IsMaintenanceMode)
             {
-                // set the code to 503 for SEO reasons
-                context.Response.StatusCode = (int) HttpStatusCode.ServiceUnavailable;
-                context.Response.Headers.Add("Retry-After", window.RetryAfterInSeconds.ToString());
-                
-                context.Response.ContentType = window.ContentType;
-                await context
-                    .Response
-                    .WriteAsync(Encoding.UTF8.GetString(window.Response), Encoding.UTF8);
+                if(context.User.IsInRole(NccCmsRoles.SuperAdmin) || context.Request.Path.Value.ToLower() == "/login" || context.Request.Path.Value.ToLower() == "/admin" || context.Request.Path.Value.ToLower() == "/account/login")
+                {
+                    await next.Invoke(context);
+                }
+                else
+                {
+                    // set the code to 503 for SEO reasons
+                    context.Response.StatusCode = (int)HttpStatusCode.ServiceUnavailable;
+                    context.Response.Headers.Add("Retry-After", window.RetryAfterInSeconds.ToString());
+
+                    context.Response.ContentType = window.ContentType;
+                    await context
+                        .Response
+                        .WriteAsync(Encoding.UTF8.GetString(window.Response), Encoding.UTF8);
+                }
             }
             else
             {

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.i18n;
+using System.Text.RegularExpressions;
 
 namespace NetCoreCMS.Themes.Default.Lib
 {
@@ -17,14 +19,29 @@ namespace NetCoreCMS.Themes.Default.Lib
             foreach (var item in menus)
             {
                 menuTxt += "<div class=\"ncc-main-menu\">";
-                menuTxt += PrepareMenu(item.MenuItems);
+                menuTxt += PrepareMenu(item.MenuItems, "");
                 menuTxt += "</div>";
             }
 
             return menuTxt;
         }
 
-        public static string PrepareMenu(List<NccMenuItem> menuItem, string upperSubMenuCls = "nav navbar-nav", string menuItemCls = "")
+        public static string PrepareMenuHtml(string position, string currentLanguage)
+        {
+            var menus = GlobalConfig.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();
+            var menuTxt = "";
+
+            foreach (var item in menus)
+            {
+                menuTxt += "<div class=\"ncc-main-menu\">";
+                menuTxt += PrepareMenu(item.MenuItems, currentLanguage);
+                menuTxt += "</div>";
+            }
+
+            return menuTxt;
+        }
+
+        public static string PrepareMenu(List<NccMenuItem> menuItem, string currentLanguage, string upperSubMenuCls = "nav navbar-nav", string menuItemCls = "")
         {
             var menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
 
@@ -34,14 +51,20 @@ namespace NetCoreCMS.Themes.Default.Lib
                 var hasChildren = item.Childrens.Count > 0;
                 if (hasChildren)
                 {
+
                     var subMenuText = "<li class=\"" + menuItemCls + "\">";
-                    subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
-                    subMenuText += PrepareMenu(item.Childrens, "dropdown-menu multi-level", "dropdown-submenu");
+
+                    if (!string.IsNullOrEmpty(currentLanguage) && GlobalConfig.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
+                        subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+                    else
+                        subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+
+                    subMenuText += PrepareMenu(item.Childrens, currentLanguage, "dropdown-menu multi-level", "dropdown-submenu");
                     menuTxt += subMenuText + "</li>";
                 }
                 else
                 {
-                    menuTxt += ListItemHtml(item);
+                    menuTxt += ListItemHtml(item, currentLanguage);
                 }
             }
 
@@ -49,7 +72,7 @@ namespace NetCoreCMS.Themes.Default.Lib
             return menuTxt;
         }
 
-        private static string ListItemHtml(NccMenuItem item)
+        private static string ListItemHtml(NccMenuItem item, string currentLanguage)
         {
             var url = "/";
             var urlPrefix = "";
@@ -57,25 +80,39 @@ namespace NetCoreCMS.Themes.Default.Lib
 
             if (item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
             {
-                urlPrefix = "/Blog/Category/";
+                //urlPrefix = "/Category/";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.BlogPost)
             {
-                urlPrefix = "/Post/Details/";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Module)
             {
-                urlPrefix = "/" + item.Controller + "/" + item.Action + "/";
+                //urlPrefix = "/" + item.Controller + "/" + item.Action + "/";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Page)
             {
-                urlPrefix = "";/*/CmsHome/CmsPage/View/*/
-                item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
-                return "<li><a href=\"" + item.Url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+                //urlPrefix = "";/*/CmsHome/CmsPage/View/*/
+                //item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
+                //item.Url = NccUrlHelper.AddLanguageToUrl(currentLanguage, item.Url);
+                //return "<li><a href=\"" + item.Url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
             {
-                urlPrefix = "/Blog/Tag/Index/";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
             }
             else if (item.MenuActionType == NccMenuItem.ActionType.Url)
             {
@@ -84,12 +121,24 @@ namespace NetCoreCMS.Themes.Default.Lib
 
             if (!string.IsNullOrEmpty(item.Data))
             {
-                data = "?" + item.Data;
+                data = "?slug=" + item.Data;
             }
 
             url = urlPrefix + item.Url + data;
+            if (!string.IsNullOrEmpty(currentLanguage) && GlobalConfig.WebSite.IsMultiLangual && !IsExternalUrl(url))
+            {
+                url = "/" + currentLanguage + url;
+            }
+
             var li = "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
             return li;
+        }
+
+        private static bool IsExternalUrl(string url)
+        {
+            string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
+            Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            return reg.IsMatch(url);
         }
     }
 }

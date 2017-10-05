@@ -1,0 +1,73 @@
+﻿@{
+    ViewBag.CurrentLayout = "NoTopLayout";
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        @Html.Partial("Parts/_Head")
+        @Html.Raw(JavaScriptSnippet.FullScript)
+        @RenderSection("Styles", required: false)
+    </head>
+    <body id="body">
+        <!-- Zone TOP Start-->
+        <!-- Navbar -->
+        <nav id="mainNavbar" class="navbar navbar-default navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    @*<a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">@GlobalConfig.WebSite.Name</a>*@
+                    <div class="navbar-brand">@GlobalConfig.WebSite.Name</div>
+                </div>
+                <div class="navbar-collapse collapse">
+                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation"))
+                    @await Html.PartialAsync("_SiteLoginPartial")
+                </div>
+            </div>
+        </nav>  
+        
+        <div style="margin-top:70px;"></div>        
+        <!-- Zone TOP End-->
+
+        <!-- Full Width Slider Start -->
+        @Html.Partial("Parts/_FullWidthSlider")
+        <!-- Full Width Slider End -->
+
+        <!--  Main Body Start -->
+        <div class="container mainBody">   
+            <!-- Left Column start -->
+            @if((bool)this.ViewContext.HttpContext.Items["hasLeftColumn"])
+            {
+                @Html.Partial("Parts/_LeftColumn");
+            }
+            <!-- Left Column end -->
+            <!-- Right Column start -->
+            @if((bool)this.ViewContext.HttpContext.Items["hasRightColumn"])
+            {
+                @Html.Partial("Parts/_RightColumn");
+            }
+            <!-- Right Column end -->
+
+            <!-- Main content Start -->
+            <div class="col-md-@this.ViewContext.HttpContext.Items["bodyClassWidth"]">
+                <!-- Featured Start -->
+                @Html.Partial("Parts/_Featured")
+                <!-- Featured End -->
+
+                @RenderBody()
+            </div>
+            <!-- Main content End -->
+
+        </div>
+        <!--  Main Body End -->
+        
+        @Html.Partial("Parts/_Footer")
+        @RenderSection("Scripts", required: false)
+    </body>
+</html>
+

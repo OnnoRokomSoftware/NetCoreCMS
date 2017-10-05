@@ -1,0 +1,16 @@
+﻿{
+  "ModuleId": "com.NetCoreCMS.Analytics",
+  "ModuleTitle": "NetCoreCMS Analytics Module",
+  "Author": "NetCoreCMS",
+  "Email": "netcorecms@gmail.com",
+  "Website": "http://DotNetCoreCMS.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
+  "AntiForgery": true,
+  "Description": "Analytics Module.",
+  "Version": "1.1",
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "Analytics,share,tracking",
+  "Dependencies": []
+}

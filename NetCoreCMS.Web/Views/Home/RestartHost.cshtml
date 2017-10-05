@@ -12,7 +12,7 @@
  
 <script>
 // Set the date we're counting down to
-var count = 5;
+var count = 0;
 // Update the count down every 1 second
 var x = setInterval(function() {
         if (count <= 0) {
@@ -23,7 +23,7 @@ var x = setInterval(function() {
             document.getElementById("showText").innerText = "Please wait " + count + " second";
             count--;
         }
-    }, 1000);
+    }, 5000);
 
     function redirect(url) {
         var ua = navigator.userAgent.toLowerCase(),

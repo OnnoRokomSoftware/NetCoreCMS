@@ -6,33 +6,26 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.CodeAnalysis;
+using NetCoreCMS.Framework.Modules.Widgets;
 
 namespace NetCoreCMS.Framework.Themes
 {
     public class ThemeManager
     {
-        public static readonly string ThemeInfoFileName = "Theme.json";
-        ThemeManager _themeManager;
-        ILoggerFactory _loggerFactory;
-        ILogger _logger;
- 
-        public ThemeManager(ILoggerFactory factory)
-        {
-            ILoggerFactory _loggerFactory = factory;
-            _logger = _loggerFactory.CreateLogger<ThemeManager>();
-        }
+        public static readonly string ThemeInfoFileName = "Theme.json";        
+        static List<Assembly> _themeDlls;
+        
+        public ThemeManager(){}
 
         public List<Theme> ScanThemeDirectory(string path)
         {
-            List<Theme> themes = new List<Theme>();
+            var themes = new List<Theme>();
             var directoryInfo = new DirectoryInfo(path);
             foreach (var themeDir in directoryInfo.EnumerateDirectories())
             {
@@ -43,7 +36,20 @@ namespace NetCoreCMS.Framework.Themes
                     {
                         var themeInfoFileContent = File.ReadAllText(configFileLocation);
                         var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
+                        theme.Folder = themeDir.Name;
+                        theme.ConfigFilePath = configFileLocation;
+                        theme.ResourceFolder = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
+
+                        var themeAssemblyPath = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
+                        var themeAssembly = Assembly.LoadFile(themeAssemblyPath);
+
+                        if (RuntimeUtil.IsRelease(themeAssembly)) 
+                        {
+                            theme.ResourceFolder = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\Resources";
+                        }
+
                         themes.Add(theme);
+                        
                         if (theme.IsActive)
                         {
                             GlobalConfig.ActiveTheme = theme;
@@ -58,8 +64,13 @@ namespace NetCoreCMS.Framework.Themes
                 catch(Exception ex)
                 {
                     RegisterErrorMessage(ex.Message);
-                    _logger.LogError(ex.ToString());
+                    throw ex;
                 }                
+            }
+
+            if(GlobalConfig.ActiveTheme == null)
+            {
+                ActivateDefaultTheme();
             }
             return themes;
         }
@@ -86,8 +97,7 @@ namespace NetCoreCMS.Framework.Themes
                         else
                         {
                             RegisterErrorMessage("Previous theme inactivation failed.");
-                        }
-                        
+                        } 
                     }
 
                     return true;
@@ -101,7 +111,7 @@ namespace NetCoreCMS.Framework.Themes
             catch (Exception ex)
             {
                 RegisterErrorMessage(ex.Message);
-                _logger.LogError(ex.ToString());
+                throw ex;
             }
             return false;
         }
@@ -133,15 +143,44 @@ namespace NetCoreCMS.Framework.Themes
 
             }
             catch (Exception ex)
-            {   
-                _logger.LogError(ex.ToString());
+            {
+                throw ex;
             }
             return false;
         }
 
-        public static void RegisterThemes(IMvcBuilder mvcBuilder, IServiceCollection services, IDirectoryContents themes )
+        public bool ActivateDefaultTheme()
         {
-            var themeDlls = new List<Assembly>();
+            try
+            {
+                var infoFileLocation = Path.Combine(GlobalConfig.ContentRootPath, NccInfo.ThemeFolder, "Default", ThemeInfoFileName);
+                if (File.Exists(infoFileLocation))
+                {
+                    var themeInfoFileContent = File.ReadAllText(infoFileLocation);
+                    var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
+                    theme.IsActive = true;
+                    GlobalConfig.ActiveTheme = theme;
+                    var themeJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
+                    File.WriteAllText(infoFileLocation, themeJson); 
+                    return true;
+                }
+                else
+                {
+                    RegisterErrorMessage("Theme config file Theme.json not found");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                RegisterErrorMessage(ex.Message);
+                throw ex;
+            }
+            return false;
+        }
+
+        public void RegisterThemes(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider, IDirectoryContents themes )
+        {
+            _themeDlls = new List<Assembly>();
             foreach (var themeFolder in themes.Where(x => x.IsDirectory))
             {
                 try
@@ -170,24 +209,58 @@ namespace NetCoreCMS.Framework.Themes
 
                         if (assembly.FullName.Contains(themeFolder.Name))
                         {
-                            themeDlls.Add(assembly);
+                            _themeDlls.Add(assembly);
+                            if (GlobalConfig.ActiveTheme.Folder == themeFolder.Name)
+                            {
+                                mvcBuilder.AddApplicationPart(assembly);
+                                var widgetTypeList = assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
+                                foreach (var widgetType in widgetTypeList)
+                                {         
+                                    services.AddTransient(widgetType);                                    
+                                }
+                            }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Could not load module from " + themeFolder);
+                    throw new Exception("Could not load theme from " + themeFolder);
                 }
             } 
             
             mvcBuilder.AddRazorOptions(o =>
             {
-                foreach (var module in themeDlls)
+                foreach (var theme in _themeDlls)
                 {
-                    o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Location));
+                    o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(theme.Location));
                 }
             });
         }
+
+        public List<Widget> RegisterThemeWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider, IDirectoryContents themes)
+        {
+            var widgets = new List<Widget>();
+
+            foreach (var themeFolder in themes.Where(x => x.IsDirectory))
+            {
+                if (GlobalConfig.ActiveTheme.Folder == themeFolder.Name)
+                {
+                    var assembly = _themeDlls.Where(x => x.ManifestModule.Name == themeFolder.Name+".dll").FirstOrDefault();
+                    if(assembly != null)
+                    {
+                        var widgetTypeList = assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
+                        foreach (var widgetType in widgetTypeList)
+                        {                            
+                            //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                            
+                            var widgetInstance = (Widget)serviceProvider.GetService(widgetType);
+                            widgets.Add(widgetInstance);
+                            GlobalConfig.ActiveTheme.Widgets.Add(widgetInstance);
+                        }
+                    }
+                }
+            }
+            return widgets;
+        } 
 
         private void RegisterErrorMessage(string message)
         {

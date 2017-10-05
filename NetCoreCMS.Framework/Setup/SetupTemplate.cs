@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NetCoreCMS.Framework.Setup
+﻿namespace NetCoreCMS.Framework.Setup
 {
     public enum SetupTemplate
     {

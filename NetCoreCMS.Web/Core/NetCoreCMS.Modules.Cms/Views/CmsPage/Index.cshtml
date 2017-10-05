@@ -9,9 +9,16 @@
     if (!string.IsNullOrEmpty(Model.Layout) && GlobalConfig.ActiveTheme.Layouts.Where(x=>x.Name == Model.Layout).FirstOrDefault() != null) {
         Layout = "_" + Model.Layout;
     }
-    ViewData["Title"] = Model.Title;
-    ViewData["MetaDescription"] = Model.MetaDescription;
-    ViewData["MetaKeyword"] = Model.MetaKeyword;
+
+    var pageDetails = Model.PageDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
+    if(pageDetails == null)
+    {
+        pageDetails = Model.PageDetails.FirstOrDefault();
+    }
+
+    ViewData["Title"] = pageDetails.Title;
+    ViewData["MetaDescription"] = pageDetails.MetaDescription;
+    ViewData["MetaKeyword"] = pageDetails.MetaKeyword;
 }
  
 @section Styles{
@@ -20,7 +27,7 @@
     </style>
 }
 <div class="row">
-    @Html.Raw(Model.Content)
+    @Html.Raw(pageDetails.Content)
 </div>
  
 @section Scripts{

@@ -1,21 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
 using Microsoft.Extensions.Logging;
-using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Modules.Admin.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services.Auth;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
+
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using Microsoft.AspNetCore.Authorization;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Core.Services;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace NetCoreCMS.Modules.Admin.Controllers
 {
@@ -26,30 +26,33 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         UserManager<NccUser> _userManager;
         RoleManager<NccRole> _roleManager;
         SignInManager<NccUser> _signInManager;
-        IOptions<IdentityCookieOptions> _identityCookieOptions;
+        //IOptions<IdentityCookieOptions> _identityCookieOptions;
         IEmailSender _emailSender;
         ISmsSender _smsSender;
+        NccStartupService _startupService;
 
         public UsersController(
             ILoggerFactory loggerFactory,
             UserManager<NccUser> userManager,
             RoleManager<NccRole> roleManager,
             SignInManager<NccUser> signInManager,
-            IOptions<IdentityCookieOptions> identityCookieOptions,
+            //IOptions<IdentityCookieOptions> identityCookieOptions,
             IEmailSender emailSender,
-            ISmsSender smsSender
+            ISmsSender smsSender,
+            NccStartupService startupService
             )
         {
             _logger = loggerFactory.CreateLogger<UsersController>();
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-            _identityCookieOptions = identityCookieOptions;
+            //_identityCookieOptions = identityCookieOptions;
             _emailSender = emailSender;
             _smsSender = smsSender;
+            _startupService = startupService;
         }
 
-        [AdminMenuItem(Name = "Manage Users", Url ="/Users/Index", Order = 2, IconCls = "fa-user")]
+        [AdminMenuItem(Name = "Manage Users", Url ="/Users/Index", Order = 1, IconCls = "fa-user")]
         public ActionResult Index()
         {
             var users = GetUsersViewModelList("");            
@@ -98,7 +101,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             return uvm;
         }
 
-        [AdminMenuItem(Name = "New User", Url = "/Users/CreateEdit", Order = 1, IconCls = "fa-user-plus")]
+        [AdminMenuItem(Name = "New User", Url = "/Users/CreateEdit", Order = 3, IconCls = "fa-user-plus")]
         public ActionResult CreateEdit(string userName = "")
         {
             var user = new UserViewModel();

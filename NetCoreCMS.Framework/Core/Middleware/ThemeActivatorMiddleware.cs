@@ -20,7 +20,7 @@ namespace NetCoreCMS.Framework.Core.Middleware
         {
             return app.Use((context, next) =>
             {
-                var _themeManager = new ThemeManager(loggerFactory);
+                var _themeManager = new ThemeManager();
                 var themeFolder = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
                 GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
 

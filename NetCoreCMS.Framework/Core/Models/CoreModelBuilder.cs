@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
@@ -9,44 +8,61 @@ namespace NetCoreCMS.Framework.Core.Models
     {
         public void Build(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<NccModule>(b => {
+                b.ToTable("Ncc_Module");
+            });
+
+            modelBuilder.Entity<NccModuleDependency>(b => {
+                b.ToTable("Ncc_Module_Dependency");
+            });
+
             modelBuilder.Entity<NccMenu>(b => {
-                b.ToTable("Ncc_NccMenu");
+                b.ToTable("Ncc_Menu");
                 b.HasMany(ur => ur.MenuItems);
             });
+
             modelBuilder.Entity<NccMenuItem>(b => {
-                b.ToTable("Ncc_MenuItem");
+                b.ToTable("Ncc_Menu_Item");
                 b.HasOne( m => m.Parent );
                 b.HasMany( m => m.SubActions );
                 b.HasMany(m => m.Childrens);
             });
-            modelBuilder.Entity<NccModule>(b => {
-                b.ToTable("Ncc_Module");
-            });
+            
             modelBuilder.Entity<NccPage>(b => {
                 b.ToTable("Ncc_Page");
                 b.HasOne(p => p.Parent);
             });
+
             modelBuilder.Entity<NccPlugins>(b => {
                 b.ToTable("Ncc_Plugins");
                 b.HasMany(p => p.Widgets);
             });
+
             modelBuilder.Entity<NccPost>(b => {
-                b.ToTable("Ncc_NccPost");
+
+                b.ToTable("Ncc_Post");
+                b.Property(p => p.Id).ValueGeneratedOnAdd();
                 b.HasOne(p => p.Parent);
                 b.HasOne(p => p.Author);
+                b.HasMany(p => p.PostDetails);
                 b.HasMany(p => p.Categories);
                 b.HasMany(p => p.Comments);
                 b.HasMany(p => p.Tags);                
             });
             
             modelBuilder.Entity<NccCategory>(b => {
-                b.ToTable("Ncc_PostCategory");
+                b.ToTable("Ncc_Category");
                 b.HasOne(p => p.Parent);
-                b.HasMany(p => p.Categories);
+                b.HasMany(p => p.CategoryDetails);
+                b.HasMany(p => p.Posts);
             });
 
+
+            #region PostCatregories
+
             modelBuilder.Entity<NccPostCategory>()
-            .HasKey(t => new { t.PostId, t.CategoryId});
+                .ToTable("Ncc_Post_Category")
+                .HasKey(pt => new { pt.PostId, pt.CategoryId });
 
             modelBuilder.Entity<NccPostCategory>()
                 .HasOne(pt => pt.Post)
@@ -55,21 +71,28 @@ namespace NetCoreCMS.Framework.Core.Models
 
             modelBuilder.Entity<NccPostCategory>()
                 .HasOne(pt => pt.Category)
-                .WithMany(t => t.Categories)
-                .HasForeignKey(pt => pt.CategoryId);
+                .WithMany(t => t.Posts)
+                .HasForeignKey(pt => pt.CategoryId); 
+
+            #endregion
+
 
             modelBuilder.Entity<NccComment>(b => {
-                b.ToTable("Ncc_PostComment");
+                b.ToTable("Ncc_Post_Comment");
                 b.HasOne(p => p.Post);
                 b.HasOne(p => p.Author);
             });
 
             modelBuilder.Entity<NccTag>(b => {
                 b.ToTable("Ncc_Tag");
-                b.HasMany(p => p.Tags);
+                b.HasMany(p => p.Posts);
             });
 
+
+            #region PostTags
+
             modelBuilder.Entity<NccPostTag>()
+            .ToTable("Ncc_Post_Tag")
             .HasKey(t => new { t.PostId, t.TagId });
 
             modelBuilder.Entity<NccPostTag>()
@@ -79,67 +102,89 @@ namespace NetCoreCMS.Framework.Core.Models
 
             modelBuilder.Entity<NccPostTag>()
                 .HasOne(pt => pt.Tag)
-                .WithMany(t => t.Tags)
+                .WithMany(t => t.Posts)
                 .HasForeignKey(pt => pt.TagId);
 
-            modelBuilder.Entity<NccRole>().ToTable("Ncc_Role");
+            #endregion
+
+            modelBuilder.Entity<NccCategoryDetails>(b => {
+                b.ToTable("Ncc_Category_Details");
+                b.HasOne(p => p.Category);
+            });
+
+            modelBuilder.Entity<NccPageDetails>(b => {
+                b.ToTable("Ncc_Page_Details");
+                b.HasOne(p => p.Page);
+            });
+
+            modelBuilder.Entity<NccPostDetails>(b => {
+                b.ToTable("Ncc_Post_Details");
+                b.HasOne(p => p.Post);
+            });
+
+            modelBuilder.Entity<NccRole>(b =>
+            {
+                b.HasMany(ur => ur.Users);
+                b.ToTable("Ncc_Role");
+            });
 
             modelBuilder.Entity<NccSettings>().ToTable("Ncc_Settings");
-            
+
+            modelBuilder.Entity<NccScheduleTaskHistory>().ToTable("Ncc_Schedule_Task_History");
+
             modelBuilder.Entity<NccStartup>(b => {
                 b.ToTable("Ncc_Startup");
-                b.HasOne(p => p.User);
+                //b.HasOne(p => p.User);
                 b.HasOne(p => p.Role);                
             });
-
-            modelBuilder.Entity<NccTheme>(b => {
-                b.ToTable("Ncc_Theme");
-            });
-            modelBuilder.Entity<NccThemeLayout>(b => {
-                b.ToTable("Ncc_ThemeLayout");
-                b.HasOne(t => t.Theme);
-                b.HasMany(t => t.WidgetSections);
-            });            
-
+             
             modelBuilder.Entity<NccUser>(b =>
             {
                 b.HasMany(ur => ur.Roles);
                 b.ToTable("Ncc_User");             
             });
+
             modelBuilder.Entity<NccUserRole>(b =>
             {
                 b.HasKey(ur => new { ur.UserId, ur.RoleId });
                 b.HasOne(ur => ur.Role).WithMany(r => r.Users).HasForeignKey(r => r.RoleId);
                 b.HasOne(ur => ur.User).WithMany(u => u.Roles).HasForeignKey(u => u.UserId);
-                b.ToTable("Ncc_UserRole");
+                b.ToTable("Ncc_User_Role");
             });
-            modelBuilder.Entity<NccWebSite>().ToTable("Ncc_WebSite");
+
+            modelBuilder.Entity<NccWebSite>(b => {
+                b.ToTable("Ncc_WebSite");
+                b.HasMany<NccWebSiteInfo>(w => w.WebSiteInfos);
+            });
+
+            modelBuilder.Entity<NccWebSiteInfo>().ToTable("Ncc_WebSite_Info");
+
             modelBuilder.Entity<NccWebSiteWidget>(b => {
-                b.ToTable("Ncc_WebSiteWidget");
+                b.ToTable("Ncc_WebSite_Widget");
                 b.HasOne(w => w.WebSite);
             });
             modelBuilder.Entity<NccWidget>().ToTable("Ncc_Widget");
             modelBuilder.Entity<NccWidgetSection>(b => {
-                b.ToTable("Ncc_WidgetSections");
+                b.ToTable("Ncc_Widget_Sections");
 
             });
             modelBuilder.Entity<IdentityUserClaim<long>>(b =>
             {
                 b.HasKey(uc => uc.Id);
-                b.ToTable("Ncc_UserClaim");
+                b.ToTable("Ncc_User_Claim");
             });
             modelBuilder.Entity<IdentityRoleClaim<long>>(b =>
             {
                 b.HasKey(rc => rc.Id);
-                b.ToTable("Ncc_RoleClaim");
+                b.ToTable("Ncc_Role_Claim");
             });            
             modelBuilder.Entity<IdentityUserLogin<long>>(b =>
             {
-                b.ToTable("Ncc_UserLogin");
+                b.ToTable("Ncc_User_Login");
             });
             modelBuilder.Entity<IdentityUserToken<long>>(b =>
             {
-                b.ToTable("Ncc_UserToken");
+                b.ToTable("Ncc_User_Token");
             });            
         }
     }

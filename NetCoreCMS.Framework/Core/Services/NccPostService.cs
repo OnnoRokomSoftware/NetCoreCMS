@@ -12,32 +12,27 @@ namespace NetCoreCMS.Framework.Core.Services
     public class NccPostService : IBaseService<NccPost>
     {
         private readonly NccPostRepository _entityRepository;
+        private readonly NccPostDetailsRepository _nccPostDetailsRepository;
 
-        public NccPostService(NccPostRepository entityRepository)
+        public NccPostService(NccPostRepository entityRepository, NccPostDetailsRepository nccPostDetailsRepository)
         {
             _entityRepository = entityRepository;
-        }
-         
-        public NccPost Get(long entityId)
-        {
-            return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
+            _nccPostDetailsRepository = nccPostDetailsRepository;
         }
 
-        public NccPost GetBySlugs(string slug)
+        public NccPost Get(long entityId, bool isAsNoTracking = false)
         {
-           return _entityRepository
-                .Query()
-                .Include("Author")
-                .Include("Comments")
-                .Include("Categories")
-                .Include("Tags")
-                .FirstOrDefault(x => x.Slug == slug.ToLower());
+            return _entityRepository.Get(entityId, isAsNoTracking, new List<string> { "Parent", "PostDetails", "Categories", "Tags", "Tags.Tag" });
         }
 
-        public List<NccPost> LoadRecentPages(int count)
+        public NccPost GetBySlug(string slug)
         {
-            var pages = _entityRepository.LoadRecentPosts(count);
-            return pages;
+            return _nccPostDetailsRepository.Get(slug)?.Post;
+        }
+
+        public List<NccPost> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string> { "Parent", "PostDetails", "Categories", "Tags", "Tags.Tag" });
         }
 
         public NccPost Save(NccPost entity)
@@ -59,11 +54,12 @@ namespace NetCoreCMS.Framework.Core.Services
                 return entity;
             }
         }
-         
+
         public NccPost Update(NccPost entity)
         {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if(oldEntity != null)
+            RemoveChieldsForUpdate(entity);
+            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string> { "Parent", "PostDetails", "Categories", "Tags" });
+            if (oldEntity != null)
             {
                 oldEntity.ModificationDate = DateTime.Now;
                 oldEntity.ModifyBy = BaseModel.GetCurrentUserId();
@@ -75,13 +71,34 @@ namespace NetCoreCMS.Framework.Core.Services
                     txn.Commit();
                 }
             }
-            
+
             return entity;
         }
-        
+
+        private void RemoveChieldsForUpdate(NccPost entity)
+        {
+            //remove categories
+            var temp = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories", "Tags" });
+            var count = temp.Categories.Count();
+            for (int i = 0; i < count; i++)
+            {
+                var tempEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories" });
+                tempEntity.Categories.RemoveAt(0);
+                _entityRepository.SaveChange();
+            }
+
+            count = temp.Tags.Count();
+            for (int i = 0; i < count; i++)
+            {
+                var tempEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Tags" });
+                tempEntity.Tags.RemoveAt(0);
+                _entityRepository.SaveChange();
+            }
+        }
+
         public void Remove(long entityId)
         {
-            var entity = _entityRepository.Get( entityId );
+            var entity = _entityRepository.Get(entityId);
             if (entity != null)
             {
                 entity.PostStatus = NccPost.NccPostStatus.UnPublished;
@@ -89,65 +106,6 @@ namespace NetCoreCMS.Framework.Core.Services
                 _entityRepository.Edit(entity);
                 _entityRepository.SaveChange();
             }
-        }
-
-        public List<NccPost> LoadAll()
-        {
-            return _entityRepository.LoadAll();
-        }
-
-        public List<NccPost> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccPost> LoadAllByStatus(int status)
-        {
-            return _entityRepository.LoadAllByStatus(status);
-        }
-
-        public List<NccPost> LoadAllByPostStatusAndDate(NccPost.NccPostStatus status, DateTime dateTime)
-        {
-            return _entityRepository
-                .Query()
-                .Include("Author")
-                .Include("Comments")
-                .Include("Categories")
-                .Include("Tags")
-                .Where(x => x.PostStatus == status && x.PublishDate <= dateTime).ToList();
-        }
-
-        public List<NccPost> LoadPublished(int from = 0, int total = 10)
-        {
-            return _entityRepository
-                .Query()
-                .Include("Author")
-                .Include("Comments")
-                .Include("Categories")
-                .Include("Tags")
-                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now)
-                .OrderByDescending(x => x.PublishDate)
-                .Skip(from)
-                .Take(total)
-                .ToList();
-        }
-
-        public int TotalPublishedPostCount()
-        {
-            return _entityRepository
-                .Query()
-                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now)
-                .Count();
-        }
-
-        public List<NccPost> LoadAllByName(string name)
-        {
-            return _entityRepository.LoadAllByName(name);
-        }
-
-        public List<NccPost> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
@@ -161,39 +119,81 @@ namespace NetCoreCMS.Framework.Core.Services
         }
 
         public NccPost CopyNewData(NccPost copyFrom, NccPost copyTo)
-        {                
+        {
             copyTo.ModificationDate = copyFrom.ModificationDate;
             copyTo.ModifyBy = BaseModel.GetCurrentUserId();
-            copyTo.Name = copyFrom.Name;            
+            copyTo.Name = copyFrom.Name;
             copyTo.Status = copyFrom.Status;
-            
-            copyTo.Content = copyFrom.Content;
-            copyTo.MetaDescription = copyFrom.MetaDescription;
-            copyTo.MetaKeyword = copyFrom.MetaKeyword;
             copyTo.ModificationDate = copyFrom.ModificationDate;
-            //copyTo.ModifyBy = copyFrom.ModifyBy;
             copyTo.PostStatus = copyFrom.PostStatus;
             copyTo.PostType = copyFrom.PostType;
             copyTo.Parent = copyFrom.Parent;
             copyTo.PublishDate = copyFrom.PublishDate;
-            copyTo.Slug = copyFrom.Slug;
-            copyTo.Title = copyFrom.Title;
             copyTo.Layout = copyFrom.Layout;
             copyTo.VersionNumber = copyFrom.VersionNumber;
             copyTo.AllowComment = copyFrom.AllowComment;
             copyTo.Author = copyFrom.Author;
-            copyTo.Categories = copyFrom.Categories;
             copyTo.CreateBy = copyFrom.CreateBy;
             copyTo.CreationDate = copyFrom.CreationDate;
             copyTo.IsFeatured = copyFrom.IsFeatured;
             copyTo.IsStiky = copyFrom.IsStiky;
-            copyTo.Comments = copyFrom.Comments;
+            //copyTo.Comments = copyFrom.Comments;
             copyTo.RelatedPosts = copyFrom.RelatedPosts;
             copyTo.Tags = copyFrom.Tags;
             copyTo.ThumImage = copyFrom.ThumImage;
-            
+            copyTo.Metadata = copyFrom.Metadata;
+
+            copyTo.Categories = copyFrom.Categories;
+
+            var currentDateTime = DateTime.Now;
+            foreach (var item in copyFrom.PostDetails)
+            {
+                var isNew = false;
+                NccPostDetails temp = copyTo.PostDetails.Where(x => x.Language == item.Language).FirstOrDefault();
+                if (temp == null)
+                {
+                    isNew = true;
+                    temp = new NccPostDetails();
+                    temp.CreationDate = currentDateTime;
+                    temp.CreateBy = BaseModel.GetCurrentUserId();
+                    temp.Language = item.Language;
+                }
+                temp.ModificationDate = currentDateTime;
+                temp.ModifyBy = BaseModel.GetCurrentUserId();
+
+                temp.Title = item.Title;
+                temp.Slug = item.Slug;
+                temp.Content = item.Content;
+                temp.MetaDescription = item.MetaDescription;
+                temp.MetaKeyword = item.MetaKeyword;
+                temp.Metadata = item.Metadata;
+                temp.Name = string.IsNullOrEmpty(item.Name) ? item.Slug : item.Name;
+                if (isNew)
+                {
+                    copyTo.PostDetails.Add(temp);
+                }
+            }
+
             return copyTo;
         }
-        
+
+        public List<NccPost> LoadRecentPages(int count)
+        {
+            var pages = _entityRepository.LoadRecentPosts(count);
+            return pages;
+        }
+
+        public List<NccPost> LoadPublished(int from = 0, int total = 10)
+        {
+            return _entityRepository.LoadPublished(from, total);
+        }
+
+        public int TotalPublishedPostCount()
+        {
+            return _entityRepository
+                .Query()
+                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now)
+                .Count();
+        }
     }
 }

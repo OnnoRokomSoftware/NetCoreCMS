@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Cms.Models.ViewModels;
@@ -15,7 +17,7 @@ using System.Linq;
 using System.Text;
 
 
-namespace NetCoreCMS.Modules.Cms.Controllers
+namespace NetCoreCMS.Core.Modules.Cms.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Administrator")]
     [AdminMenu(Name = "Appearance", IconCls = "fa-tasks", Order = 5)]
@@ -24,11 +26,26 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         #region Initialization
         NccMenuService _menuService;
         NccPageService _pageService;
+        NccPageDetailsService _pageDetailsService;
+        NccPostDetailsService _nccPostDetailsService;
+        NccCategoryDetailsService _nccCategoryDetailsService;
+        NccTagService _nccTagService;
 
-        public CmsMenuController(NccMenuService menuService, NccPageService pageService, ILoggerFactory factory)
+        public CmsMenuController(
+            NccMenuService menuService,
+            NccPageService pageService,
+            NccPageDetailsService pageDetailsService,
+            NccPostDetailsService nccPostDetailsService,
+            NccCategoryDetailsService nccCategoryDetailsService,
+            NccTagService nccTagService,
+            ILoggerFactory factory)
         {
             _pageService = pageService;
             _menuService = menuService;
+            _pageDetailsService = pageDetailsService;
+            _nccPostDetailsService = nccPostDetailsService;
+            _nccCategoryDetailsService = nccCategoryDetailsService;
+            _nccTagService = nccTagService;
             _logger = factory.CreateLogger<CmsMenuController>();
         }
         #endregion
@@ -37,22 +54,27 @@ namespace NetCoreCMS.Modules.Cms.Controllers
         [AdminMenuItem(Name = "Menu", Url = "/CmsMenu", IconCls = "fa-list", Order = 1)]
         public ActionResult Index(bool isManage = false, long menuId = 0)
         {
-            ViewBag.AllPages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published);
-            ViewBag.RecentPages = _pageService.LoadRecentPages(5);
-            ViewBag.MenuList = _menuService.LoadAll();
-            ViewBag.MenuLocations = GlobalConfig.ActiveTheme.MenuLocations.ToList();
+            AddCmsMenuViewData();
+
             ViewBag.IsManage = false;
             if (isManage)
                 ViewBag.IsManage = true;
-            ViewBag.CurrentMenu = new NccMenu();
-            ViewBag.CurrentMenuItems = "";
+
+            var langList = SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.NativeName }).ToList();
+            langList.Add(new { Value = "", Text = "All" });
+            var menuLanguages = new SelectList(langList, "Value", "Text", "All");
+
+            ViewBag.SelectedLanguage = "All";
+
             if (menuId > 0)
             {
-                //NccMenu nccMenu = _menuService.Get(menuId);
                 NccMenu nccMenu = GlobalConfig.Menus.Where(x => x.Id == menuId).FirstOrDefault();
                 if (nccMenu != null)
                 {
+                    ViewBag.SelectedLanguage = nccMenu.MenuLanguage;
+                    menuLanguages = new SelectList(langList, "Value", "Text", nccMenu.MenuLanguage);
                     ViewBag.CurrentMenu = nccMenu;
+
                     string finalMenuList = "";
                     foreach (var menuItem in nccMenu.MenuItems.OrderBy(m => m.MenuOrder))
                     {
@@ -61,9 +83,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                     ViewBag.CurrentMenuItems = finalMenuList;
                 }
             }
+
+            ViewBag.MenuLanguages = menuLanguages.OrderBy(x => x.Text);
             return View();
         }
-
+        
         [HttpPost]
         public JsonResult CreateEditMenu(string model)
         {
@@ -73,6 +97,11 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             var r = new ApiResponse();
             if (menu != null)
             {
+                if (string.IsNullOrEmpty(menu.MenuLanguage))
+                {
+                    menu.MenuLanguage = "";
+                }
+
                 if (menu.Name.Trim() == "")
                 {
                     r.IsSuccess = false;
@@ -92,7 +121,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 {
                     if (menu.Id > 0)
                     {
-                        if (_menuService.LoadAllByName(menu.Name).Count > 0 && _menuService.LoadAllByName(menu.Name).FirstOrDefault().Id != menu.Id)
+                        if (_menuService.LoadAll(false, -1, menu.Name).Count > 0 && _menuService.LoadAll(false, -1, menu.Name).FirstOrDefault().Id != menu.Id)
                         {
                             r.IsSuccess = false;
                             r.Message = "This menu name already used.";
@@ -109,7 +138,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                     }
                     else
                     {
-                        if (_menuService.LoadAllByName(menu.Name).Count > 0)
+                        if (_menuService.LoadAll(false, -1, menu.Name).Count > 0)
                         {
                             r.IsSuccess = false;
                             r.Message = "This menu name already exists.";
@@ -163,7 +192,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
 
         #region Helper Ajax
         [HttpPost]
-        public JsonResult LoadPages(string name)
+        public JsonResult LoadPages(string name, string lang)
         {
             var response = new ApiResponse();
 
@@ -172,23 +201,21 @@ namespace NetCoreCMS.Modules.Cms.Controllers
             if (!string.IsNullOrEmpty(name))
             {
                 name = name.ToLower();
-                var pages = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published).Where(p => p.Title.ToLower().Contains(name));
-                if (pages != null)
+                List<NccPageDetails> pageDetails = _pageDetailsService.Search(name, lang);
+
+                if (pageDetails != null)
                 {
-                    //List<NccPage> selectedList = new List<NccPage>();
-                    //foreach (var p in pages)
-                    //{
-                    //    if (name.IndexOf(p.Name, StringComparison.OrdinalIgnoreCase) >= 0)
-                    //    {
-                    //        selectedList.Add(p);
-                    //    }
-                    //}
-                    //if (selectedList.Count > 0)
-                    //{
-                        response.Data = pages;
+                    if (pageDetails.Count > 0)
+                    {
+                        response.Data = pageDetails.Select(x => new { name = x.Name, title = x.Title, slug = x.Slug, id = x.Id });
                         response.IsSuccess = true;
                         response.Message = "successfull";
-                    //}
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Empty name";
+                    }
                 }
             }
             else
@@ -196,19 +223,189 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 response.IsSuccess = false;
                 response.Message = "Empty name";
             }
+
+            return Json(response);
+        }
+        [HttpPost]
+        public JsonResult LoadPosts(string name, string lang)
+        {
+            var response = new ApiResponse();
+
+            response.IsSuccess = false;
+            response.Message = "No data found";
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = name.ToLower();
+                List<NccPostDetails> details = _nccPostDetailsService.Search(name, lang);
+
+                if (details != null)
+                {
+                    if (details.Count > 0)
+                    {
+                        response.Data = details.Select(x => new { name = x.Name, title = x.Title, slug = x.Slug, id = x.Id });
+                        response.IsSuccess = true;
+                        response.Message = "successfull";
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Empty name";
+                    }
+                }
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = "Empty name";
+            }
+
+            return Json(response);
+        }
+        [HttpPost]
+        public JsonResult LoadCategories(string name, string lang)
+        {
+            var response = new ApiResponse();
+
+            response.IsSuccess = false;
+            response.Message = "No data found";
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = name.ToLower();
+                List<NccCategoryDetails> details = _nccCategoryDetailsService.Search(name, lang);
+
+                if (details != null)
+                {
+                    if (details.Count > 0)
+                    {
+                        response.Data = details.Select(x => new { name = x.Name, title = x.Title, slug = x.Slug, id = x.Id });
+                        response.IsSuccess = true;
+                        response.Message = "successfull";
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Empty name";
+                    }
+                }
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = "Empty name";
+            }
+
+            return Json(response);
+        }
+        [HttpPost]
+        public JsonResult LoadModules(string name)
+        {
+            List<NccModuleMenuViewModel> moduleMenuList = new List<NccModuleMenuViewModel>();
+            var response = new ApiResponse();
+
+            response.IsSuccess = false;
+            response.Message = "No data found";
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = name.ToLower();
+                foreach (KeyValuePair<SiteMenu, List<SiteMenuItem>> item in NccMenuHelper.GetModulesSiteMenus())
+                {
+                    foreach (SiteMenuItem subItem in item.Value)
+                    {
+                        moduleMenuList.Add(new NccModuleMenuViewModel() { ModuleName = item.Key.Name, MenuName = subItem.Name, MenuUrl = subItem.Url });
+                    }
+                }
+                var details = moduleMenuList.Where(x => x.ModuleName.ToLower().Contains(name) || x.MenuName.ToLower().Contains(name)).OrderBy(x => x.ModuleName).ThenBy(x => x.MenuName).ToList();
+                if (details != null)
+                {
+                    if (details.Count > 0)
+                    {
+                        response.Data = details.Select(x => new { moduleName = x.ModuleName, menuName = x.MenuName, menuUrl = x.MenuUrl });
+                        response.IsSuccess = true;
+                        response.Message = "successfull";
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Empty name";
+                    }
+                }
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = "Empty name";
+            }
+
+            return Json(response);
+        }
+        [HttpPost]
+        public JsonResult LoadTags(string name)
+        {
+            var response = new ApiResponse();
+
+            response.IsSuccess = false;
+            response.Message = "No data found";
+            if (!string.IsNullOrEmpty(name))
+            {
+                name = name.ToLower();
+                List<NccTag> details = _nccTagService.Search(name);
+
+                if (details != null)
+                {
+                    if (details.Count > 0)
+                    {
+                        response.Data = details.Select(x => new { name = x.Name, title = "", slug = "", id = x.Id });
+                        response.IsSuccess = true;
+                        response.Message = "successfull";
+                    }
+                    else
+                    {
+                        response.IsSuccess = false;
+                        response.Message = "Empty name";
+                    }
+                }
+            }
+            else
+            {
+                response.IsSuccess = false;
+                response.Message = "Empty name";
+            }
+
             return Json(response);
         }
         #endregion
 
         #region Helper
+        private void AddCmsMenuViewData()
+        {
+            string lang = GlobalConfig.WebSite.IsMultiLangual ? "" : GlobalConfig.WebSite.Language;
+            ViewBag.RecentPages = _pageDetailsService.LoadRecentPageDetails(10, lang);            
+            ViewBag.RecentPostDetails = _nccPostDetailsService.LoadRecentPostDetails(10,lang);            
+            ViewBag.RecentCategoryDetails = _nccCategoryDetailsService.LoadRecentCategoryDetails(10, lang);            
+            ViewBag.RecentTags = _nccTagService.LoadRecentTag(10);
+
+            ViewBag.ModuleSiteMenus = NccMenuHelper.GetModulesSiteMenus();
+
+            ViewBag.MenuList = _menuService.LoadAll();
+            ViewBag.MenuLocations = GlobalConfig.ActiveTheme.MenuLocations.ToList();
+
+            ViewBag.CurrentMenu = new NccMenu();
+            ViewBag.CurrentMenuItems = "";
+        }
+
         private string menuItemToString(NccMenuItem menuItem, int level)
         {
+            var src = Guid.NewGuid().ToString();
+            var dest = Guid.NewGuid().ToString();
+
             string menuStart = @"<li class='list-group-item no-boarder' ncc-menu-item-id='" + menuItem.Id + @"' ncc-menu-item-action-type='Url' ncc-menu-item-controller='" + menuItem.Controller + @"' ncc-menu-item-action='" + menuItem.Action + @"' ncc-menu-item-action-data='' ncc-menu-item-url='" + menuItem.Url + @"' ncc-menu-item-target='" + menuItem.Target + @"' ncc-menu-item-order='" + menuItem.MenuOrder + @"' ncc-menu-item-title='" + menuItem.Name + @"'>
                             <div class='menu-item-content'>
                                 <div class='pull-left' style='padding: 5px 5px;'>
                                     <i class='glyphicon glyphicon-move margin-right-10'></i>
-                                    <span class='ncc-menu-title'>" + menuItem.Name + @"</span>
-                                </div>
+                                    <span id='" + src + "' class='ncc-menu-title'>" + menuItem.Name + @"</span>
+                                    <input id='" + dest + "' class='ncc-menu-title-editor' type='text' style='display:none' />"
+                                    + "&nbsp;&nbsp;<i class='fa fa-edit' onclick = 'ShowEditor(\"" + src + "\", \"" + dest + "\")'></i>"
+                                + @"</div>
                                 <input type='button' class='closeMenuItem pull-right' value='X' onclick='RemoveMenuItem(this)' />
                             </div>";
             string menuCenter = "";
@@ -283,6 +480,7 @@ namespace NetCoreCMS.Modules.Cms.Controllers
                 Name = menu.Name,
                 Position = menu.Position,
                 MenuOrder = 1, //TODO:Load last order and incrase and set here
+                MenuLanguage = menu.MenuLanguage
             };
         }
         #endregion

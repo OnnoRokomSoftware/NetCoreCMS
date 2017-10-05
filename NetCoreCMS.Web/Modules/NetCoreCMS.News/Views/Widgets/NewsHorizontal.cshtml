@@ -1,0 +1,43 @@
+﻿@using NetCoreCMS.Modules.News.Models
+@using System.Collections
+@{
+    var i = 0;
+}
+@model NeNewsViewModel
+
+
+    <div class="@Model.ColumnClass">        
+        <table style="border:none;width:100%;">
+            <tr>
+                @if (Model.HeaderTitle != "")
+                {
+                    <td style="background-color:@Model.ColumnBgColor;color:@Model.ColumnColor;padding:5px;height:30px;text-align:center;">
+                        @Html.Raw(Model.HeaderTitle)
+                    </td>
+                }
+                <td style="height:30px;">
+                    <marquee behavior="scroll" direction="left">
+                        @foreach (var item in Model.NeNewsList)
+                        {
+                            if (i == 0)
+                            {
+                                i = 1;
+                            }
+                            else
+                            {
+                                <span>&nbsp;&nbsp;||</span>
+                            }
+                            <span><a href="/NeNews/Details?newsId=@item.Id">@Html.Raw(item.Name)</a></span>
+                        }
+                    </marquee>
+                </td>
+                @if (Model.FooterTitle != "")
+                {
+                    <td style="background-color:@Model.ColumnBgColor;color:@Model.ColumnColor;height:30px;text-align:center;">
+                        @Html.Raw(Model.FooterTitle)
+                    </td>
+                }
+            </tr>
+        </table>
+    </div>
+

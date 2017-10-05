@@ -1,0 +1,207 @@
+﻿/*Card design start*/
+.services {
+    /*margin: 20px auto;*/
+}
+
+.themeBox {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);    
+}
+    .themeBox .panel-heading {
+        background-color: #fff;
+    }
+    .themeBox .panel-body {
+        height: 215px;
+        padding: 0px;
+        overflow: hidden;
+    }
+        .themeBox .panel-body img {
+            width: 100%;
+            height: 215px;
+        }
+
+    .themeBox .panel-footer {
+        background-color: #fff;
+        height: 40px;
+        padding-top: 5px;
+        text-align: center;
+    }
+        .themeBox .panel-footer strong {
+            color: #fff;
+        }
+
+.themeBoxActive {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-color: #5cb85c;
+}
+    .themeBoxActive .panel-heading {
+        background-color: #5cb85c;
+        border-color: #fff;
+    }
+    .themeBoxActive .panel-body {
+        height: 215px;
+        padding: 0px;
+        overflow: hidden;
+    }
+        .themeBoxActive .panel-body img {
+            width: 100%;
+            height: 215px;
+        }
+
+    .themeBoxActive .panel-footer {
+        background-color: #5cb85c;
+        text-align: center;
+        height: 40px;
+        border-color: #fff;
+    }
+        .themeBoxActive .panel-footer strong {
+            color: #fff;
+        }
+
+figure.snip1174 {
+    color: #fff;
+    position: relative;
+    float: left;
+    overflow: hidden;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    text-align: left;
+    /*margin: 10px;*/
+    width: 100%;
+    /*border-radius: 5px;*/
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+    figure.snip1174 * {
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        -webkit-transition: all 0.35s ease;
+        transition: all 0.35s ease;
+    }
+
+    figure.snip1174 img {
+        max-width: 100%;
+        -webkit-transform: scale(1);
+        transform: scale(1);
+        vertical-align: top;
+        opacity: .95;
+    }
+
+    figure.snip1174 figcaption {
+        position: absolute;
+        padding: 40px 25px;
+        top: 0;
+        left: 0;
+    }
+
+    figure.snip1174 h2,
+    figure.snip1174 p {
+        margin: 0;
+        padding: 0;
+        opacity: 0;
+    }
+
+    figure.snip1174 h2 {
+        margin-bottom: 10px;
+        display: inline-block;
+        font-weight: 100;
+        font-size: 1.8em;
+    }
+
+    figure.snip1174 p {
+        font-weight: 300;
+        margin-bottom: 20px;
+        line-height: 1.4em;
+        opacity: 0;
+    }
+
+    figure.snip1174 a {
+        display: inline-block;
+        padding: 10px 20px;
+        border: 1px solid #ffffff;
+        text-decoration: none;
+        color: #ffffff;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        font-size: 0.8em;
+        -webkit-transform: translateY(50%);
+        transform: translateY(50%);
+        opacity: 0;
+    }
+
+        figure.snip1174 a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+    figure.snip1174 p:hover {
+        background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    figure.snip1174.blue {
+        background-color: #20638f;
+    }
+
+    figure.snip1174.yellow {
+        background-color: #c87f0a;
+    }
+
+    figure.snip1174.green {
+        background-color: #1e8449;
+    }
+
+    figure.snip1174.active {
+        /*background-color: #337ab7;*/
+        background-color: #5cb85c;
+    }
+
+    figure.snip1174.navy {
+        background-color: #FFF;
+    }
+
+    figure.snip1174.red {
+        background-color: #962d22;
+    }
+
+    figure.snip1174.navy:hover,
+    figure.snip1174.navy:hover {
+        background-color: #20638f;
+    }
+
+    figure.snip1174:hover img,
+    figure.snip1174.hover img {
+        opacity: 0;
+        -webkit-transform: scale(1.5);
+        transform: scale(1.5);
+    }
+
+    figure.snip1174:hover a,
+    figure.snip1174.hover a {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    figure.snip1174:hover p,
+    figure.snip1174.hover p {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    figure.snip1174:hover h2,
+    figure.snip1174.hover h2 {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+.overText {
+    position: absolute;
+    top: 0;
+    /*bottom: 0;*/
+    left: 0;
+    right: 0;
+    background-color: #337ab7;
+    color: #FFF;
+    font-size: 24px;
+}
+/*Card Design end*/

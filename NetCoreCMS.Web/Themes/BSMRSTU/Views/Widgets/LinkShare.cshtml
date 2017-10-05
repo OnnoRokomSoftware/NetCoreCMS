@@ -1,0 +1,38 @@
+﻿@using NetCoreCMS.LinkShare.Models
+@using System.Collections
+@{
+    var i = 0;
+}
+@model LsLinkViewModel
+
+<div class="@Model.ColumnClass">
+    <div class='panel panel-default'>
+        @if (Model.HeaderTitle != "")
+        {
+            <div class='panel-heading' style="color:#FFF; background-color:#154553;">
+                <strong>@Html.Raw(Model.HeaderTitle)</strong>
+            </div>
+        }
+        <div class='panel-body' style="padding:0px;">
+            @foreach (var item in Model.LsLinkList)
+            {
+                if (i == 0)
+                {
+                    i = 1;
+                    <p style="background-color: #DDD;padding: 10px;color: #fff;margin: 0px; "><a href="@item.Link" target="_blank" style="color:#000;">@item.Name</a></p>
+                }
+                else
+                {
+                    @*<hr />*@
+                    <p style="background-color: #DDD;padding: 10px;color: #fff;margin: 0px; border-top:solid 1px;"><a href="@item.Link" target="_blank" style="color:#000;">@item.Name</a></p>
+                }
+            }
+        </div>
+        @if (Model.FooterTitle != "")
+        {
+            <div class='panel-footer' style="color:#FFF; background-color:#154553;">
+                <strong>@Html.Raw(Model.FooterTitle)</strong>
+            </div>
+        }
+    </div>
+</div>

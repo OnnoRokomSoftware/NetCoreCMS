@@ -1,0 +1,93 @@
+﻿@using NetCoreCMS.UmsBdResult.Models
+
+<div class="panel-heading text-center">
+    Result Details
+</div>
+<div class="panel-body">
+    @{
+        IList<UmsBdResultIndivisualViewModel> ivmList = ViewBag.Result;
+        if (ivmList.Any())
+        {
+            <div class="col-md-12 col-sm-12">
+                <div class="col-md-3"></div>
+                <div class="col-md-6 text-center">
+                    <h4>
+                        @ivmList[0].Program - @ivmList[0].Session<br />
+                        @ivmList[0].PrnNo<br />
+                        @ivmList[0].StudentName<br />
+                        Individual Performance
+                    </h4>
+                </div>
+                <div class="col-md-3"></div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-12 col-sm-12 resultCss">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-responsive table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Exam Name</th>
+                                <th>Full Marks</th>
+                                <th>MCQ Marks</th>
+                                <th>Written Marks</th>
+                                <th>Total Marks</th>
+                                <th>Highest Marks</th>
+                                <th>Branch Merit</th>
+                                <th>Central Merit</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{
+                                foreach (var ivm in ivmList)
+                                {
+                                    <tr>
+                                        <td>@ivm.ExamName</td>
+                                        <td>@ivm.FullMarks</td>
+                                        <td>@ivm.McqMarks</td>
+                                        <td>@ivm.WrittenMarks</td>
+                                        <td>@ivm.TotalMarks</td>
+                                        <td>@ivm.HighestMarks</td>
+                                        <td>@ivm.Bmp</td>
+                                        <td>@ivm.Cmp</td>
+                                    </tr>
+                                }
+                            }
+
+                        </tbody>
+                    </table>
+
+                    @if (@ViewBag.IsWord)
+                    {
+                            <div class="col-md-12 col-sm-12">
+                                <div class="text-center">
+                                    <h4>
+                                        Download MCQ Analysis Report
+                                    </h4>
+                                </div>
+                                <div class="text-center">
+                                    <span style=" color:gray;">
+                                        <a href="/Result/DownloadSolveSheet?prnNo=@ViewBag.PrnNo&examId=@ViewBag.ExamId&version=1" target="_blank" style="background-color: #4CAF50; border: none; color: white; padding: 10px 15px; text-align: center; text-decoration: none; display: inline-block; font-size: 12px;">Bangla Version</a>
+                                    </span>&nbsp;
+                                    <span style=" color:gray;">
+                                        <a href="/Result/DownloadSolveSheet?prnNo=@ViewBag.PrnNo&examId=@ViewBag.ExamId&version=2" target="_blank" style="background-color: #4CAF50; border: none; color: white; padding: 10px 15px; text-align: center; text-decoration: none; display: inline-block; font-size: 12px;">English Version</a>
+                                    </span>
+                                    
+                                </div>
+                            </div>    
+                    }
+
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="col-md-12 col-sm-12">
+                <div class="alert alert-danger">
+                    <a class="close" data-dismiss="alert">×</a>
+                    <strong>Error!</strong> &nbsp; Result Not Found !!!
+                </div>
+            </div>
+        }
+    }
+</div>
+

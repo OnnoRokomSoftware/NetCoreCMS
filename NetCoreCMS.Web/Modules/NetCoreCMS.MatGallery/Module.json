@@ -1,0 +1,16 @@
+﻿{
+  "ModuleId": "com.NetCoreCMS.MatGallery",
+  "ModuleTitle": "NetCoreCMS Module and Theme Gallery Module",
+  "Author": "NetCoreCMS",
+  "Email": "netcorecms@gmail.com",
+  "Website": "http://DotNetCoreCMS.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
+  "AntiForgery": true,
+  "Description": "Module and Theme management system.",
+  "Version": "1.0",
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "module,theme",
+  "Dependencies": []
+}

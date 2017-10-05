@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 using NetCoreCMS.Framework.Core.Mvc.Extensions;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Models
@@ -12,18 +12,19 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
             CreateBy = ModifyBy = GetCurrentUserId();
-            Status = EntityStatus.New;
+            Status = EntityStatus.Active;
             VersionNumber = 1;
         }
 
         [Key]
         public long Id { get; set; }
         public int VersionNumber { get; set; }
+        public string Metadata { get; set; }
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime ModificationDate { get; set; }
         public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
+        public long ModifyBy { get; set; }        
         public int Status { get; set; }
 
         public static long GetCurrentUserId()

@@ -13,3 +13,5 @@ config
 /NetCoreCMS.Web/Data/.db
 *.pubxml
 /NetCoreCMS.Web/Logs/*.log
+.vs
+__Logs

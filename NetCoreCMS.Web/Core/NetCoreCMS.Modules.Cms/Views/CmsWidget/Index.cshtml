@@ -22,6 +22,30 @@
         overflow-x: hidden;
         overflow-y: auto;
     }
+    a:hover{
+        text-decoration:none;
+    }
+    .up {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 30px;
+        margin: -10px 5px 10px 5px;
+        color: #5cb85c;
+    }
+    .down {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 30px;
+        margin: -10px 5px 10px 5px;
+        color: #eea236;
+    }
+    .remove {
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 22px;
+        margin: -5px 5px 10px 5px;
+        color: #d9534f;
+    }
 </style>
 
 <div class="row">
@@ -64,6 +88,28 @@
                                 </div>*@
                             }
                         }
+
+                        @if (ViewBag.Theme != null && ViewBag.Theme.Widgets.Count > 0)
+                        {
+                            foreach (Widget widget in ViewBag.Theme.Widgets)
+                            {   
+                                <div id="@Guid.NewGuid().ToString()" class="ncc-widget-box" data-widget-id="@widget.WidgetId" data-theme-id="@ViewBag.Theme.ThemeId" draggable="true" ondragstart="drag(event)">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading">
+                                            <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
+                                            <a draggable="false" data-toggle="collapse" href="#collapse_@widget.WidgetId.Replace('.', '_')">
+                                                @widget.Title.Replace("Widget", "") (@ViewBag.Theme.ThemeName.Replace("NetCoreCMS", "").Replace("Theme", "").Trim())
+                                            </a>
+                                        </div>
+                                        <div id="collapse_@widget.WidgetId.Replace('.', '_')" class="panel-collapse collapse">
+                                            <div class="panel-body">
+                                                @widget.Description
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
                     </div>
                 </div>
             </div>
@@ -82,6 +128,11 @@
                             }
                             @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
                             {
+                                if (!string.IsNullOrEmpty(ViewBag.sLayout))
+                                {
+                                    if (layout.Name == ViewBag.sLayout) { active = "active"; }
+                                    else { active = ""; }
+                                }
                                 var tabName = "#tab_" + layout.Name.Replace(' ', '_');
 
                                     <li class="@active">
@@ -98,6 +149,11 @@
                             }
                             @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
                             {
+                                if (!string.IsNullOrEmpty(ViewBag.sLayout))
+                                {
+                                    if (layout.Name == ViewBag.sLayout) { active = "active"; }
+                                    else { active = ""; }
+                                }
                                 var tabName = "tab_" + layout.Name.Replace(' ','_');
                                 <div class="tab-pane @active" id="@tabName">
                                     <div class="col-md-12">
@@ -108,25 +164,55 @@
                                                 <div class="panel-heading">
                                                     @zone
                                                 </div>
-                                                <div data-theme-id="@GlobalConfig.ActiveTheme.ThemeId" data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">
-                                            Drop widget here
+                                                <div data-theme-id="@GlobalConfig.ActiveTheme.ThemeId" data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">                                            
                                                      @{ 
-                                                         var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).ToList();
+                                                         var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).OrderBy(x=>x.WidgetOrder).ToList();
+                                                         if (wZones.Count <= 0)
+                                                         {
+                                                             <span>Drop widget here</span>
+                                                         }
+                                                         var widgetInZontSerial = 0;
                                                          foreach (var wZone in wZones) {
+                                                             widgetInZontSerial++;
                                                              var wList = new List<Widget>();
                                                              foreach (var x in (List<NetCoreCMS.Framework.Modules.IModule>)ViewBag.Modules) {
                                                                  wList.AddRange(x.Widgets);
                                                              }
+                                                             if(GlobalConfig.ActiveTheme.Widgets != null && GlobalConfig.ActiveTheme.Widgets.Count > 0)
+                                                             {
+                                                                 wList.AddRange(GlobalConfig.ActiveTheme.Widgets);
+                                                             }
                                                              var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
                                                              if (w != null) {
-                                                                 w.Init(wZone.Id);  
-                                                                 <div id="@Guid.NewGuid().ToString()" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone"  draggable="true" ondragstart="drag(event)">
+                                                                 w.Init(wZone.Id);
+                                                                 var panelId = Guid.NewGuid().ToString();
+                                                                 <div id="@panelId" data-website-widget-id="@wZone.Id" data-widget-id="@wZone.WidgetId" data-module-id="@wZone.ModuleId" data-theme-id="@wZone.ThemeId"  data-layout-name="@wZone.LayoutName" data-layout-zone="@wZone.Zone"   ondragstart="drag(event)">
                                                                     <div class="panel panel-default"  >
                                                                         <div class="panel-heading">
                                                                             <i class="glyphicon glyphicon-move margin-right-10"></i>&nbsp;
                                                                             <a draggable="false" data-toggle="collapse" href="#collapse_@wZone.Id">
-                                                                                @w.Title
+                                                                                @*@wZone.WidgetOrder*@
+                                                                                @w.Title @{
+                                                                                        var lang = "";
+                                                                                        if (GlobalConfig.WebSite.IsMultiLangual)
+                                                                                        {
+                                                                                            lang = string.IsNullOrEmpty(w.Language) ? " ( All )" : " ( " + w.Language + " )";
+                                                                                        }
+                                                                                    }
+                                                                                @lang
                                                                             </a>
+                                                                            <a class="pull-right remove" onclick="RemoveWebSiteZoneWidget('@panelId')" title="Delete Widget"><i class="fa fa-times"></i></a>
+                                                                            @if (wZones.Count > 1)
+                                                                            {
+                                                                                    @if (widgetInZontSerial > 1)
+                                                                                    {
+                                                                                        <a class="pull-right up" onclick="UpWebSiteZoneWidget(@wZone.Id,@wZone.WidgetOrder,'@layout.Name')" title="Up"><i class="fa fa-caret-up"></i></a>
+                                                                                    }
+                                                                                    @if (widgetInZontSerial < wZones.Count)
+                                                                                    {
+                                                                                        <a class="pull-right down" onclick="DownWebSiteZoneWidget(@wZone.Id,@wZone.WidgetOrder,'@layout.Name')" title="Down"><i class="fa fa-caret-down"></i></a>
+                                                                                    }
+                                                                            }
                                                                         </div>
                                                                         <div id="collapse_@wZone.Id" class="panel-collapse collapse">
                                                                             <div class="panel-body">
@@ -163,8 +249,8 @@
         ev.preventDefault();
     }
 
-    function drag(ev) {     
-        ev.dataTransfer.setData("widgetId", ev.target.id);        
+    function drag(ev) {
+        ev.dataTransfer.setData("widgetId", ev.target.id);
     }
 
     function drop(ev) {
@@ -175,13 +261,13 @@
 
         var divId = ev.dataTransfer.getData("widgetId");
         var div = document.getElementById(divId);
-        //targetDiv.appendChild(div);
+        targetDiv.appendChild(div);
         var clonedDiv = $(div).clone();
         var uid = GUID.NewGUID();
-        $(clonedDiv).attr("id",uid);
-        clonedDiv.appendTo(targetDiv);
+        $(clonedDiv).attr("id", uid);
+        //clonedDiv.appendTo(targetDiv);
         //$(div).clone().appendTo("#ncc-module-widget-box-container");
-        
+
         var moduleId = $(div).attr("data-module-id");
         var zone = $(targetDiv).attr("data-layout-zone");
         var layout = $(targetDiv).attr("data-layout-name");
@@ -201,6 +287,11 @@
                 NccPageMask.HideLoadingMask();
                 console.log(rsp);
                 NccGlobalAlert.ShowSuccess(rsp.message);
+                $(clonedDiv).attr("data-website-widget-id", rsp.data.id);
+                setTimeout(function () {
+                    //window.location.reload(1);
+                    window.location.href = window.location.pathname + "?sLayout=" + layout;
+                }, 500);
             },
             error: function (rsp) {
                 NccPageMask.HideLoadingMask();
@@ -227,6 +318,61 @@
         });
     }
 
+    function RemoveWebSiteZoneWidget(panelId) {
+
+        NccPageMask.ShowLoadingMask();
+        var wZoneId = $("#" + panelId).attr("data-website-widget-id");
+        $.ajax({
+            method: 'POST',
+            url: '/CmsWidget/RemoveZoneWidgetById',
+            data: { zoneWidgetId: wZoneId },
+            success: function (rsp) {
+                NccPageMask.HideLoadingMask();
+                console.log(rsp);
+                NccGlobalAlert.ShowSuccess(rsp.message);
+                $("#" + panelId).remove();
+            },
+            error: function (rsp) {
+                NccPageMask.HideLoadingMask();
+                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+            }
+        });
+    }
+
+    function UpWebSiteZoneWidget(websiteWidgetId, oldOrder, layout) {
+        $.ajax({
+            method: 'POST',
+            url: '/CmsWidget/UpdateWebsiteWidgetOrder',
+            data: { webSiteWidgetId: websiteWidgetId, oldOrder: oldOrder , operation:'up'},
+            success: function (rsp) {                
+                setTimeout(function () {
+                    //window.location.reload(1);
+                    window.location.href = window.location.pathname + "?sLayout=" + layout;
+                }, 300);
+            },
+            error: function (rsp) {
+                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+            }
+        });
+    }
+
+    function DownWebSiteZoneWidget(websiteWidgetId, oldOrder, layout) {
+        $.ajax({
+            method: 'POST',
+            url: '/CmsWidget/UpdateWebsiteWidgetOrder',
+            data: { webSiteWidgetId: websiteWidgetId, oldOrder: oldOrder, operation: 'down' },
+            success: function (rsp) {
+                setTimeout(function () {
+                    //window.location.reload(1);
+                    window.location.href = window.location.pathname + "?sLayout=" + layout;
+                }, 300);
+            },
+            error: function (rsp) {
+                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+            }
+        });
+    }
+
     function dropBack(ev) {
         console.log("Drop back");
 
@@ -238,7 +384,7 @@
 
         var div = document.getElementById(divId);
         console.log(div);
-         
+
         var zone = $(div).attr("data-layout-zone");
         var layout = $(div).attr("data-layout-name");
         var theme = $(div).attr("data-theme-id");
@@ -246,11 +392,11 @@
         var srcModuleId = $(div).attr("data-module-id");
 
         console.log(zone, layout, theme, widgetId, srcModuleId);
-        removeWidget(srcModuleId, theme, layout, zone, widgetId); 
+        removeWidget(srcModuleId, theme, layout, zone, widgetId);
 
         $("#ncc-widget-treash").append(div).empty();
-        
-        
+
+
     }
 
 </script>

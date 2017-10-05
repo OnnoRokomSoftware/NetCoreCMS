@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.LinkShare.Models
 {
-    public class LsCategory : IBaseModel<long>
+    public class LsCategory : BaseModel, IBaseModel<long>
     {
         public LsCategory()
         {
@@ -14,17 +14,9 @@ namespace NetCoreCMS.LinkShare.Models
             CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
             Status = EntityStatus.Active;
             VersionNumber = 1;
+            Links = new List<LsLinkCategory>();
         }
-
-        [Key]
-        public long Id { get; set; }
-        public int VersionNumber { get; set; }
-        public string Name { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
-        public int Status { get; set; }
+         
         public List<LsLinkCategory> Links { get; set; }
     }
 }

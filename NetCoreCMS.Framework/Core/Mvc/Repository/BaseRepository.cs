@@ -27,47 +27,103 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
 
         public EntityT Add(EntityT entity)
         {
+            entity.CreationDate = entity.ModificationDate = DateTime.Now;
             DbSet.Add(entity);
             return entity;
         }
 
         public EntityT Edit(EntityT entity)
         {
-            entity.Status = EntityStatus.Modified;
+            //entity.Status = EntityStatus.Modified;
+            entity.ModificationDate = DateTime.Now;
             Context.Entry(entity).State = EntityState.Modified;
 
             return entity;
         }
 
-        public EntityT Get(IdT id)
+        //public EntityT Get(IdT id)
+        //{
+        //    //return DbSet.AsNoTracking().FirstOrDefault(x => x.Id.Equals(id));
+        //    return DbSet.FirstOrDefault(x => x.Id.Equals(id));
+        //}
+
+        public EntityT Get(IdT id, bool isAsNoTracking = false, List<string> includeChilds = null)
         {
-            return DbSet.FirstOrDefault(x => x.Id.Equals(id));
+            IQueryable<EntityT> tempDbSet = DbSet;
+
+            if (includeChilds != null)
+            {
+                foreach (var item in includeChilds)
+                {
+                    tempDbSet = tempDbSet.Include(item);
+                }
+            }
+
+            if (isAsNoTracking)
+                tempDbSet = tempDbSet.AsNoTracking().Where(x => x.Id.Equals(id));
+            else
+                tempDbSet = tempDbSet.Where(x => x.Id.Equals(id));
+
+
+            return tempDbSet.FirstOrDefault();
         }
 
-        public List<EntityT> LoadAll()
+        public List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeChilds = null)
         {
-            return DbSet.ToList();
+            IQueryable<EntityT> tempDbSet = DbSet.Where(x => x.Status != EntityStatus.Deleted);
+
+            if (includeChilds != null)
+            {
+                foreach (var item in includeChilds)
+                {
+                    tempDbSet = tempDbSet.Include(item);
+                }
+            }
+
+            if (isActive)
+            {
+                tempDbSet = tempDbSet.Where(x => x.Status == EntityStatus.Active);
+            }
+
+            if (status >= 0)
+            {
+                tempDbSet = tempDbSet.Where(x => x.Status == status);
+            }
+            if (!string.IsNullOrEmpty(name))
+            {
+                if (isLikeSearch)
+                    tempDbSet = tempDbSet.Where(x => x.Name.ToLower().Contains(name.ToLower()));
+                else
+                    tempDbSet = tempDbSet.Where(x => x.Name.ToLower() == name.ToLower());
+            }
+
+            return tempDbSet.ToList();
         }
 
-        public List<EntityT> LoadAllActive()
-        {
-            return DbSet.Where(x=> x.Status >= EntityStatus.New).ToList();
-        }
+        //public List<EntityT> LoadAll()
+        //{
+        //    return DbSet.ToList();
+        //}
 
-        public List<EntityT> LoadAllByStatus(int status)
-        {
-            return DbSet.Where(x => x.Status == status).ToList();
-        }
+        //public List<EntityT> LoadAllActive()
+        //{
+        //    return DbSet.Where(x=> x.Status >= EntityStatus.New).ToList();
+        //}
 
-        public List<EntityT> LoadAllByName(string name)
-        {
-            return DbSet.Where(x => x.Name == name).ToList();
-        }
+        //public List<EntityT> LoadAllByStatus(int status)
+        //{
+        //    return DbSet.Where(x => x.Status == status).ToList();
+        //}
 
-        public List<EntityT> LoadAllByNameContains(string name)
-        {
-            return DbSet.Where(x => x.Name.Contains(name)).ToList();
-        }
+        //public List<EntityT> LoadAllByName(string name)
+        //{
+        //    return DbSet.Where(x => x.Name == name).ToList();
+        //}
+
+        //public List<EntityT> LoadAllByNameContains(string name)
+        //{
+        //    return DbSet.Where(x => x.Name.Contains(name)).ToList();
+        //}
 
         public IDbContextTransaction BeginTransaction()
         {

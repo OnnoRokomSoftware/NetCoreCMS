@@ -1,0 +1,16 @@
+﻿{
+  "ModuleId": "one.osl.modules.UmsBdRedirect",
+  "ModuleTitle": "UmsBd Redirect Module",
+  "Author": "OnnoRokom Software Ltd",
+  "Email": "netcorecms@gmail.com",
+  "Website": "http://onnorokomsoftware.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
+  "AntiForgery": true,
+  "Description": "UmsBd Result Redirect Module.",
+  "Version": "1.0",
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "OSL,UmsBd,Redirect,Result",
+  "Dependencies": []
+}

@@ -16,10 +16,15 @@ namespace NetCoreCMS.Framework.Core.Services
         {
             _entityRepository = entityRepository;
         }
-         
-        public NccCategory Get(long entityId)
+
+        public NccCategory Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId);
+            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "CategoryDetails", "Parent" });
+        }
+
+        public List<NccCategory> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "CategoryDetails", "Parent" });
         }
 
         public NccCategory Save(NccCategory entity)
@@ -31,21 +36,21 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccCategory Update(NccCategory entity)
         {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if(oldEntity != null)
+            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "CategoryDetails", "Parent" });
+            if (oldEntity != null)
             {
                 using (var txn = _entityRepository.BeginTransaction())
                 {
-                    CopyNewData(oldEntity, entity);
+                    CopyNewData(entity, oldEntity);
                     _entityRepository.Edit(oldEntity);
                     _entityRepository.SaveChange();
                     txn.Commit();
                 }
             }
-            
+
             return entity;
         }
-        
+
         public void Remove(long entityId)
         {
             var entity = _entityRepository.Get(entityId);
@@ -55,31 +60,6 @@ namespace NetCoreCMS.Framework.Core.Services
                 _entityRepository.Edit(entity);
                 _entityRepository.SaveChange();
             }
-        }
-
-        public List<NccCategory> LoadAll()
-        {
-            return _entityRepository.LoadAll();
-        }
-
-        public List<NccCategory> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccCategory> LoadAllByStatus(int status)
-        {
-            return _entityRepository.LoadAllByStatus(status);
-        }
-
-        public List<NccCategory> LoadAllByName(string name)
-        {
-            return _entityRepository.LoadAllByName(name);
-        }
-
-        public List<NccCategory> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
@@ -92,20 +72,51 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        private void CopyNewData(NccCategory oldEntity, NccCategory entity)
-        {            
-            oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.ModifyBy = entity.ModifyBy;
-            oldEntity.Name = entity.Name;           
-            oldEntity.Status = entity.Status;
-            oldEntity.Categories = entity.Categories;
-            oldEntity.CategoryImage = entity.CategoryImage;
-            oldEntity.MetaDescription = entity.MetaDescription;
-            oldEntity.MetaKeyword = entity.MetaKeyword;
-            oldEntity.Parent = entity.Parent;
-            oldEntity.Slug = entity.Slug;
-            oldEntity.Title = entity.Title;            
+        private void CopyNewData(NccCategory copyFrom, NccCategory copyTo)
+        {
+            copyTo.ModificationDate = copyFrom.ModificationDate;
+            copyTo.ModifyBy = copyFrom.ModifyBy;
+            copyTo.Name = copyFrom.Name;
+            copyTo.Status = copyFrom.Status;            
+            copyTo.CategoryImage = copyFrom.CategoryImage;
+            copyTo.Parent = copyFrom.Parent;
+            copyTo.VersionNumber = copyFrom.VersionNumber;
+            copyTo.Metadata = copyFrom.Metadata;
+
+            var creationDate = DateTime.Now;
+            copyTo.ModificationDate = creationDate;
+
+            foreach (var item in copyFrom.CategoryDetails)
+            {
+                var tmpCategoryDetails = copyTo.CategoryDetails.Where(x => x.Language == item.Language).FirstOrDefault();
+                if(tmpCategoryDetails == null)
+                {
+                    tmpCategoryDetails = new NccCategoryDetails();
+                    copyTo.CategoryDetails.Add(tmpCategoryDetails);
+                }
+                
+                tmpCategoryDetails.Language = item.Language;
+                tmpCategoryDetails.MetaDescription = item.MetaDescription;
+                tmpCategoryDetails.MetaKeyword = item.MetaKeyword;
+                tmpCategoryDetails.ModificationDate = creationDate;
+                tmpCategoryDetails.ModifyBy = BaseModel.GetCurrentUserId();
+                tmpCategoryDetails.Name = item.Name;
+                tmpCategoryDetails.Slug = item.Slug;
+                tmpCategoryDetails.Status = item.Status;
+                tmpCategoryDetails.Title = item.Title;
+                tmpCategoryDetails.VersionNumber = item.VersionNumber;
+                tmpCategoryDetails.Metadata = item.Metadata;
+            }
         }
         
+        public List<NccCategory> LoadByParrentId(long parrentId, bool isActive = true)
+        {
+            return _entityRepository.LoadByParrentId(parrentId, isActive);
+        }
+
+        public NccCategory GetWithPost(string slug)
+        {
+            return _entityRepository.GetWithPost(slug);
+        }
     }
 }

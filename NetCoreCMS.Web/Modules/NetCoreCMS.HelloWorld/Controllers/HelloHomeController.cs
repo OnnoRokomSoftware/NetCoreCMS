@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.i18n;
 
 namespace NetCoreCMS.HelloWorld.Controllers
 {
@@ -19,8 +20,10 @@ namespace NetCoreCMS.HelloWorld.Controllers
         }
 
         [AdminMenuItem(Name = "Index", Url = "/HelloHome/Index", Order = 1)]
+        [SiteMenuItem(Name = "Hello world Home", Url = "/HelloHome/Index", Order = 1)]
         public ActionResult Index()
         {
+            var nccTranslator = new NccTranslator<HelloHomeController>(CurrentLanguage);
             return View();
         }
 

@@ -68,5 +68,10 @@ namespace NetCoreCMS.Framework.Core.Services.Auth
 
             return Task.FromResult(0); 
         }
+
+        public Task SendEmailConfirmationAsync(string email, string callbackUrl)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

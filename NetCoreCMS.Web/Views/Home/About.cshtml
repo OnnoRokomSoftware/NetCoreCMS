@@ -1,0 +1,18 @@
+﻿@using Microsoft.Extensions.Localization
+@using NetCoreCMS.Framework.i18n
+@using NetCoreCMS.Web.Controllers
+
+@inject NccTranslator<SharedResource> _sharedLocalizer
+
+
+
+@{
+    ViewData["Title"] = "Temp";    
+}
+<h2>@ViewData["Title"]</h2>
+<h3>@ViewData["Message"]</h3>
+
+<h4>@_sharedLocalizer["Create"]</h4>
+<h4>@_homeLocalizer["About"]</h4>
+
+<p>Use this area to provide additional information.</p>

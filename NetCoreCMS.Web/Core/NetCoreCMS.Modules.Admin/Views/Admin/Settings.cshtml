@@ -3,58 +3,152 @@
 @model NccWebSite
 @{
     Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = NccInfo.Name + " Settings";
 }
 
-<h1> @NccInfo.Name Settings </h1>
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+
+@*<h1> @NccInfo.Name Settings </h1>*@
 
 <div class="row">
     <form class="form-horizontal" asp-controller="Admin" asp-action="Settings" method="post">
         <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
-        <input type="hidden" class="form-control" id="Id" name="Id" asp-for="Id" >
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="SiteName">Site Name:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="Name" name="Name" asp-for="Name" placeholder="Enter Site Name">
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-        </div>
+        <input type="hidden" asp-for="Id" >        
         
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="SiteTitle">Site Title:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="SiteTitle" name="SiteTitle" asp-for="SiteTitle" placeholder="Enter Site Title">
-                <span asp-validation-for="SiteTitle" class="text-danger"></span>
-            </div>
-        </div>
+        <div class="" >
+            @{
+                var tabBorderDesign = "";
+            }
+            @if (GlobalConfig.WebSite.IsMultiLangual == true)
+            {
+                <ul class="nav nav-tabs" role="tablist">
+                    @foreach (var item in Model.WebSiteInfos)
+                    {
+                        if (GlobalConfig.WebSite.Language == item.Language)
+                        {
+                            <li role="presentation" class="active">
+                                <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                    (D) @SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li role="presentation" class="">
+                                <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                    @if (SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).Count() > 0)
+                                    {
+                                        <span>@SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@item.Language</span>
+                                    }
+                                </a>
+                            </li>
+                        }
+                    }
+                </ul>
+                tabBorderDesign = "tabBorderDesign";
+            }
+            <!-- Tab panes -->
+            <div class="tab-content @tabBorderDesign">
+                @{ var activeClass = ""; var i = 0;}
+                @foreach (var item in Model.WebSiteInfos)
+                {
+                    if (GlobalConfig.WebSite.Language == item.Language)
+                    { activeClass = "active"; }
+                    else { activeClass = ""; }
+                    <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">
+                        <div class="" style="padding:10px 25px 25px 25px;">
+                                <input type="hidden" asp-for="WebSiteInfos[i].Language" value="@item.Language" />
+                            
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="SiteName">Site Name :</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" asp-for="WebSiteInfos[i].Name" placeholder="Enter Site Name in @item.Language" />
+                                        <span asp-validation-for="Name" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="Tagline">Tagline:</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="Tagline" name="Tagline" asp-for="Tagline" placeholder="Enter Tagline">
-                <span asp-validation-for="Tagline" class="text-danger"></span>
-            </div>
-        </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="SiteTitle">Site Title :</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" asp-for="WebSiteInfos[i].SiteTitle" placeholder="Enter Site Title in @item.Language" />
+                                        <span asp-validation-for="WebSiteInfos[i].SiteTitle" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="FaviconUrl">Favicon URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="FaviconUrl" type="text" class="form-control" id="FaviconUrl" name="FaviconUrl" placeholder="Enter Favicon Url">
-                <span asp-validation-for="FaviconUrl" class="text-danger"></span>
-            </div>
-        </div>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="Tagline">Tagline :</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" asp-for="WebSiteInfos[i].Tagline" placeholder="Enter Tagline in @item.Language" />
+                                        <span asp-validation-for="WebSiteInfos[i].Tagline" class="text-danger"></span>
+                                    </div>
+                                </div>
 
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="SiteLogoUrl">Site Logo URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="SiteLogoUrl" type="text" class="form-control" id="SiteLogoUrl" name="SiteLogoUrl" placeholder="Enter Site Logo Url">
-                <span asp-validation-for="SiteLogoUrl" class="text-danger"></span>
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="FaviconUrl">Favicon URL :</label>
+                                    <div class="col-sm-10">
+                                        <img src="@Model.WebSiteInfos[i].FaviconUrl" class="FaviconUrlImage" width="50" height="50" />
+                                        <input type="button" class="btn btn-default" id="LogoSelect" value="Select" onclick="openFFPromotionPopup('/MediaHome/?inputId=FaviconUrl_@i')" />
+                                        <input type="hidden" asp-for="WebSiteInfos[i].FaviconUrl" id="FaviconUrl_@i" class="form-control FaviconUrl" placeholder="Enter Favicon Url" />
+                                        <span asp-validation-for="WebSiteInfos[i].FaviconUrl" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="SiteLogoUrl">Site Logo URL :</label>
+                                    <div class="col-sm-10">
+                                        <img src="@Model.WebSiteInfos[i].SiteLogoUrl" class="SiteLogoUrlImage" width="250" style="padding-bottom:5px;" /><br />
+                                        <input type="button" class="btn btn-default" id="LogoSelect" value="Select" onclick="openFFPromotionPopup('/MediaHome/?inputId=SiteLogoUrl_@i')" />
+                                        <input type="hidden" asp-for="WebSiteInfos[i].SiteLogoUrl" id="SiteLogoUrl_@i" class="form-control SiteLogoUrl" placeholder="Enter Site Logo Url" />
+                                        <span asp-validation-for="WebSiteInfos[i].SiteLogoUrl" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="Copyrights">Copyrights :</label>
+                                    <div class="col-sm-10">
+                                        <input asp-for="WebSiteInfos[i].Copyrights"type="text" class="form-control" placeholder="Enter copyright in @item.Language" />
+                                        <span asp-validation-for="WebSiteInfos[i].Copyrights" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="PrivacyPolicyUrl">Privacy Policy URL :</label>
+                                    <div class="col-sm-10">
+                                        <input asp-for="WebSiteInfos[i].PrivacyPolicyUrl" type="text" class="form-control" placeholder="Enter Privecy policy URL for @item.Language" />
+                                        <span asp-validation-for="WebSiteInfos[i].PrivacyPolicyUrl" class="text-danger"></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="control-label col-sm-2" for="TermsAndConditionsUrl">Terms and Conditions URL :</label>
+                                    <div class="col-sm-10">
+                                        <input asp-for="WebSiteInfos[i].TermsAndConditionsUrl" type="text" class="form-control" placeholder="Enter Terms and conditions URL for @item.Language" />
+                                        <span asp-validation-for="WebSiteInfos[i].TermsAndConditionsUrl" class="text-danger"></span>
+                                    </div>
+                                </div>
+                            
+                        </div>
+                    </div>
+                    i++;
+                }
             </div>
+
         </div>
+        <br />
         <div class="form-group">
             <label class="control-label col-sm-2" for="DomainName">Website URL:</label>
             <div class="col-sm-10">
-                <input asp-for="DomainName" type="text" class="form-control" id="DomainName" name="DomainName" placeholder="Enter Website URL">
+                <input asp-for="DomainName" type="text" class="form-control" placeholder="Enter Website URL" />
                 <span asp-validation-for="DomainName" class="text-danger"></span>
             </div>
         </div>
@@ -62,7 +156,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="Email">Email:</label>
             <div class="col-sm-10">
-                <input asp-for="EmailAddress" type="Email" class="form-control" id="EmailAddress" name="EmailAddress" placeholder="Enter Email">
+                <input asp-for="EmailAddress" type="Email" class="form-control" placeholder="Enter Email" />
                 <span asp-validation-for="EmailAddress" class="text-danger"></span>
             </div>
         </div>
@@ -70,7 +164,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="Email">Allow User Registration:</label>
             <div class="col-sm-10">
-                <input asp-for="AllowRegistration" type="checkbox" class="form-control" id="AllowRegistration" name="AllowRegistration" >
+                <input asp-for="AllowRegistration" type="checkbox" />
                 <span asp-validation-for="AllowRegistration" class="text-danger"></span>
             </div>
         </div>
@@ -78,14 +172,13 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="SetupTemplate">New User Role:</label>
             <div class="col-sm-10">
-                <select asp-for="NewUserRole" type="text" class="form-control" id="NewUserRole" name="NewUserRole">
+                <select asp-for="NewUserRole" class="form-control">
                     <option value="">Select new user role</option>
                     <option value="Administrator">Administrator</option>                    
                     <option value="Editor">Editor</option>
                     <option value="Author">Author</option>
                     <option value="Contributor">Contributor</option>  
-                    <option value="Subscriber">Subscriber</option>  
-                    
+                    <option value="Subscriber">Subscriber</option>                      
                 </select>
                 <span asp-validation-for="NewUserRole" class="text-danger"></span>
             </div>
@@ -94,31 +187,41 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="TimeZone">TimeZone:</label>
             <div class="col-sm-10">
-                <select asp-for="TimeZone" type="text" class="form-control" id="TimeZone" name="TimeZone">
+                <select asp-for="TimeZone" class="form-control">
                     <option value="">Select TimeZone</option>
                     <option value="UTC_6">UTC +6</option>
-                    <option value="UTC_1">UTC 1</option>                    
+                    <option value="UTC_1">UTC +1</option>                    
                 </select>
                 <span asp-validation-for="TimeZone" class="text-danger"></span>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="control-label col-sm-2" for="Language">Language:</label>
+            <label class="control-label col-sm-2" for="Language">Default Language:</label>
             <div class="col-sm-10">
-                <select asp-for="Language" type="text" class="form-control" id="Language" name="Language">
+                <select asp-for="Language" class="form-control">
                     <option value="">Select Language</option>
-                    <option value="en_US">English US</option>
-                    <option value="bn_BD">Bangla BD</option>
+                    @foreach (var item in SupportedCultures.Cultures.ToList())
+                    {
+                        <option value="@item.TwoLetterISOLanguageName">@item.NativeName</option>
+                    }
                 </select>
                 <span asp-validation-for="Language" class="text-danger"></span>
             </div>
         </div>
 
         <div class="form-group">
+            <label class="control-label col-sm-2" for="Email">Enable Multi Language:</label>
+            <div class="col-sm-10">
+                <input asp-for="IsMultiLangual" type="checkbox" />
+                <span asp-validation-for="IsMultiLangual" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label class="control-label col-sm-2" for="DateFormat">Date Format:</label>
             <div class="col-sm-10">
-                <input asp-for="DateFormat" type="text" class="form-control" id="DateFormat" name="DateFormat">
+                <input asp-for="DateFormat" type="text" class="form-control" />
                 <span asp-validation-for="DateFormat" class="text-danger"></span>
             </div>
         </div>
@@ -126,35 +229,11 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="TimeFormat">Time Format:</label>
             <div class="col-sm-10">
-                <input asp-for="TimeFormat" type="text" class="form-control" id="TimeFormat" name="TimeFormat">
+                <input asp-for="TimeFormat" type="text" class="form-control" />
                 <span asp-validation-for="TimeFormat" class="text-danger"></span>
             </div>
         </div>
-         
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="Copyrights">Copyrights:</label>
-            <div class="col-sm-10">
-                <input asp-for="Copyrights" type="text" class="form-control" id="Copyrights" name="Copyrights">
-                <span asp-validation-for="Copyrights" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="PrivacyPolicyUrl">Privacy Policy URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="PrivacyPolicyUrl" type="text" class="form-control" id="PrivacyPolicyUrl" name="PrivacyPolicyUrl">
-                <span asp-validation-for="PrivacyPolicyUrl" class="text-danger"></span>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="TermsAndConditionsUrl">Terms and Conditions URL:</label>
-            <div class="col-sm-10">
-                <input asp-for="TermsAndConditionsUrl" type="text" class="form-control" id="TermsAndConditionsUrl" name="TermsAndConditionsUrl">
-                <span asp-validation-for="TermsAndConditionsUrl" class="text-danger"></span>
-            </div>
-        </div>
-
+          
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-primary">Submit</button>
@@ -164,4 +243,34 @@
 
     </form>
 </div>  
-       
+@section Scripts{
+    <script type="text/javascript">
+        var windowObjectReference = null; // global variable
+
+        function openFFPromotionPopup(siteUrl) {
+            if (windowObjectReference == null || windowObjectReference.closed) {
+                windowObjectReference = window.open(siteUrl, "PromoteFirefoxWindowName", "resizable,scrollbars,status");
+            }
+            else {
+                windowObjectReference.focus();
+            };
+        }
+
+        setInterval(function () {
+            var elements = document.getElementsByClassName('SiteLogoUrlImage');
+            for (var i = 0; i < elements.length; ++i)
+            {
+                elements[i].setAttribute("src", $(elements[i]).parent().find(".SiteLogoUrl").val());
+                //console.log(elements[i]);
+            }
+        }, 500);
+
+        setInterval(function () {
+            var elements = document.getElementsByClassName('FaviconUrlImage');
+            for (var i = 0; i < elements.length; ++i) {
+                elements[i].setAttribute("src", $(elements[i]).parent().find(".FaviconUrl").val());
+                //console.log(elements[i]);
+            }
+        }, 500);
+    </script>
+}

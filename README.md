@@ -1,5 +1,5 @@
 # NetCoreCMS
-NetCoreCMS is a Content Management System developed using ASP.Net Core 2.0. It is usable as web application framework.  
+NetCoreCMS is a Content Management System developed using ASP.Net Core 1.1. It is usable as web application framework.  
 
 ## Build Status
 | Build server| Platform       | Status      |

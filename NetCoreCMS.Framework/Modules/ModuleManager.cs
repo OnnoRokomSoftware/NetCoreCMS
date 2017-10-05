@@ -50,7 +50,7 @@ namespace NetCoreCMS.Framework.Modules
 
                         if (assembly.FullName.Contains(moduleFolder.Name))
                         {
-                            modules.Add(new Module{ ModuleName = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
+                            modules.Add(new Module{ Folder = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
                         }
                     }
                 }
@@ -88,7 +88,7 @@ namespace NetCoreCMS.Framework.Modules
                         {
                             //TODO: Raise duplicate error message
                             continue;
-                        }
+                        }                        
                         
                         // Register dependency in modules                            
                         moduleInstance.Init(services);
@@ -134,7 +134,7 @@ namespace NetCoreCMS.Framework.Modules
                 moduleEntity = CreateNccModuleEntity(module);
                 moduleService.Save(moduleEntity);
             }
-            else if(moduleEntity.Name != module.ModuleName)
+            else if(moduleEntity.ModuleId != module.ModuleId)
             {
                 return NccModule.NccModuleStatus.Duplicate;
             }
@@ -158,6 +158,7 @@ namespace NetCoreCMS.Framework.Modules
                         var widgetInstance = (Widget)serviceProvider.GetService(widgetType);                        
                         module.Widgets.Add(widgetInstance);
                         widgetList.Add(widgetInstance);
+                        GlobalConfig.Widgets.Add(widgetInstance);
                     }
                 }
             }
@@ -167,12 +168,14 @@ namespace NetCoreCMS.Framework.Modules
         private NccModule CreateNccModuleEntity(IModule module)
         {
             var nccModule = new NccModule();
-            nccModule.Name = module.ModuleName;
+            nccModule.Name = module.Folder;
             nccModule.AntiForgery = module.AntiForgery;
             nccModule.ModuleId = module.ModuleId;
-            nccModule.Dependencies = String.Join(",", module.Dependencies);
-            nccModule.NetCoreCMSVersion = module.NetCoreCMSVersion;
-            nccModule.Path = module.Path;            
+            nccModule.Dependencies = module.Dependencies;
+            nccModule.MinNccVersion = module.MinNccVersion;
+            nccModule.MaxNccVersion = module.MaxNccVersion;
+            nccModule.Path = module.Path;
+            nccModule.Folder = module.Folder;
             nccModule.Version = module.Version;
             nccModule.Description = module.Description;
             nccModule.Category = module.Category;
@@ -221,8 +224,9 @@ namespace NetCoreCMS.Framework.Modules
                 module.ModuleId = loadedModule.ModuleId;
                 
                 module.ModuleTitle = loadedModule.ModuleTitle;
-                module.NetCoreCMSVersion = loadedModule.NetCoreCMSVersion;
-                module.ModuleName = loadedModule.ModuleName;
+                module.MinNccVersion = loadedModule.MinNccVersion;
+                module.MaxNccVersion = loadedModule.MaxNccVersion;
+                module.SortName = loadedModule.SortName;
                 module.Version = loadedModule.Version;
                 module.Website = loadedModule.Website;
                 module.Assembly = moduleInfo.Assembly;

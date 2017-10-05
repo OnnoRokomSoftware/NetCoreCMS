@@ -1,0 +1,213 @@
+﻿@using NetCoreCMS.UmsBdResult.Models
+@model UmsBdResultViewModel
+@{
+    Layout = Constants.SiteLayoutName;
+    ViewData["PageTitle"] = "Result";
+    ViewData["PageSubtitle"] = "Result";
+}
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading text-center">
+                @ViewData["PageSubtitle"]
+            </div>
+            <div class="panel-body">
+                <div class="col-md-12">
+                    <form id="resultViewForm" class="form-horizontal" asp-controller="UmsBdResult" asp-action="Index" method="post">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Program Roll : </label>
+                                <div class="col-md-4">
+                                    <input type="text" asp-for="PrnNo" class="form-control" data-val="false" placeholder="Enter your Program Roll" maxlength="11"></input>
+                                    <span asp-validation-for="PrnNo" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Course : </label>
+                                <div class="col-md-4">
+                                    <select id="SelectedCourse" class="form-control" asp-for="SelectedCourse" asp-items="@(new SelectList(ViewBag.CourseList,"Id","FullName"))">
+                                        <option>--Select Course--</option>
+                                    </select>
+                                    <span asp-validation-for="SelectedCourse" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Exam : </label>
+                                <div class="col-md-4">
+                                    <select id="ExamId" class="form-control" asp-for="ExamId" asp-items="@(new SelectList(ViewBag.ExamList,"Id","FullName"))">
+                                        <option>--Select Exam--</option>
+                                    </select>
+                                    <span asp-validation-for="ExamId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12 text-center">
+                                    <input type="button" class="btn btn-default" value="Submit" id="displayResult" />
+                                    @*<img id="loding" src="~/Themes/UnmeshBd/images/ajax-loader.gif" alt="Loading" />*@
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="panel panel-default" id="result">
+    
+</div>
+@section Scripts{
+    <script type="text/javascript">
+        $(document).on("input propertychange", "#PrnNo ", function (event) {
+            if ($(this).val() == "") {
+                $(this).parent().append("<div class='errmsg' style='color:red;'>Program roll is required.</div>");
+            } else {
+                $(this).parent().find(".errmsg").remove();
+            }
+
+            $("#result").html("");
+            $("#SelectedCourse option").remove();
+            $('#SelectedCourse').append("<option value=''>--Select Course--</option>");
+            $("#ExamId option").remove();
+            $('#ExamId').append("<option value=''>--Select Exam--</option>");
+            var prnNo = $(this).val();
+            if (prnNo != "" && prnNo.length == 11) {
+                $.ajax({
+                    type: "post",
+                    url: "/Result/AjaxRequestForCourse",
+                    cache: false,
+                    async: true,
+                    data: { "prnNo": prnNo },
+                    beforeSend: function () {
+                        $("#PrnNo").parent().parent().append("<img id='loding' src='/NetCoreCMS.UmsBdResult/images/ajax-loader.gif' alt='Loading' />");
+                    },
+                    success: function (result) {
+                        console.log("success");
+                        if (result.isSuccess) {
+                            console.log("success1");
+                            $(".customMessage ").html("");
+                            $.each(result.returnList, function (i, v) {
+                                $('#SelectedCourse').append($('<option value="' + v.value + '">' + v.text + '</option>'));
+                            });
+                        }
+                        else {
+                            var m = '<div class="alert alert-danger"><a data-dismiss="alert" class="close">X</a><strong>Error! </strong>' + result.returnList + '</div>';
+                            $(".customMessage ").html(m);
+                        }
+                    },
+                    complete: function () {
+                        $("#PrnNo").parent().parent().find("#loding").remove();
+                    },
+                    error: function (result) {
+                        $("#PrnNo").parent().parent().find("#loding").remove();
+                    }
+                });
+            }
+        });
+
+        $(document).on("change", "#SelectedCourse", function (event) {
+            $("#result").html("");
+            $("#ExamId option").remove();
+            $('#ExamId').append("<option value=''>--Select Exam--</option>");
+            if ($(this).val() == "") {
+                $(this).parent().append("<div class='errmsg' style='color:red;'>Course is required.</div>");
+            } else {
+                $(this).parent().find(".errmsg").remove();
+            }
+            var courseId = $("#SelectedCourse").val();
+            var prnNo = $("#PrnNo").val();
+            if (prnNo != "" && prnNo.length == 11 && courseId != "") {
+                $.ajax({
+                    type: "post",
+                    url: "/Result/AjaxRequestForExamInformation",
+                    cache: false,
+                    async: true,
+                    data: { courseId: courseId, prnNo: prnNo },
+                    beforeSend: function () {
+                        $("#SelectedCourse").parent().parent().append("<img id='loding' src='/NetCoreCMS.UmsBdResult/images/ajax-loader.gif' alt='Loading' />");
+                    },
+                    success: function (result) {
+                        if (result.isSuccess) {
+                            $(".customMessage ").html("");
+                            $.each(result.returnList, function (i, v) {
+                                $('#ExamId').append($('<option value="' + v.value + '">' + v.text + '</option>'));
+                            });
+                        }
+                        else {
+                            var m = '<div class="alert alert-danger"><a data-dismiss="alert" class="close">X</a><strong>Error! </strong>' + result.returnList + '</div>';
+                            $(".customMessage ").html(m);
+                        }
+                    },
+                    complete: function () {
+                        $("#SelectedCourse").parent().parent().find("#loding").remove();
+                    },
+                    error: function (result) {
+                        $("#SelectedCourse").parent().parent().find("#loding").remove();
+                    }
+                });
+            }
+        });
+
+        $(document).on("click", "#displayResult", function (event) {
+            var prnNo = $("#PrnNo").val();
+            var courseId = $("#SelectedCourse").val();
+            var examId = $("#ExamId").val();
+            var success = true;
+            $('input, select').each(
+                function () {
+                    var input = $(this);
+                    var msg = "";
+                    if (input.val() == null || input.val() == "") {
+                        if (input.attr('id') == "PrnNo") {
+                            msg = "Program roll is required.";
+                            success = false;
+                        }
+                        if (input.attr('id') == "SelectedCourse") {
+                            msg = "Course is required.";
+                            success = false;
+                        }
+                        if (input.attr('id') == "ExamId") {
+                            msg = "Exam is required.";
+                            success = false;
+                        }
+                        input.parent().find(".errmsg").remove();
+                        input.parent().append("<div class='errmsg' style='color:red;'>" + msg + "</div>");
+                    }
+                }
+            );
+            $("#result").html("");
+            if (prnNo != "" && courseId != "" && examId != "" && success) {
+                $(".customMessage ").html("");
+                $.ajax({
+                    type: "post",
+                    url: "/Result/AjaxRequestForReport",
+                    cache: false,
+                    async: true,
+                    data: { "prnNo": prnNo, "courseId": courseId, "examId": examId },
+                    beforeSend: function () {
+                        $("#displayResult").parent().append("<img id='loding' src='/NetCoreCMS.UmsBdResult/images/ajax-loader.gif' alt='Loading' />");
+                    },
+                    success: function (result) {
+                        $(".customMessage ").html("");
+                        if (!result.hasOwnProperty("IsSuccess")) {
+                            $("#result").html(result);
+                        }
+                        else {
+                            var m = '<div class="alert alert-danger"><a data-dismiss="alert" class="close">X</a><strong>Error! </strong>' + result.returnList + '</div>';
+                            $(".customMessage ").html(m);
+                        }
+                    },
+                    complete: function () {
+                        $("#displayResult").parent().find("#loding").remove();
+                    },
+                    error: function (result) {
+                        $("#displayResult").parent().find("#loding").remove();
+                    }
+                });
+            }
+        });
+    </script>
+}

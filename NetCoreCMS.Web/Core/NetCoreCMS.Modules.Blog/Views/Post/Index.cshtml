@@ -1,39 +1,84 @@
 ﻿@using NetCoreCMS.Framework.Utility
+@using System.Text.RegularExpressions
 @using System.Collections
 @model List<NccPost>
 @{
     Layout = Constants.SiteLayoutName;
-    ViewData["PageTitle"] = "Post Manage";
-    ViewData["PageSubtitle"] = "Manage existing Posts";
+    ViewData["PageTitle"] = "All blog post";
+    ViewData["PageSubtitle"] = "";
 }
-
-<script src="~/lib/ckeditor/ckeditor.js"></script>
-<link href="/NetCoreCMS.Modules.Cms/css/page.css" rel="stylesheet" />
-<script src="/NetCoreCMS.Modules.Cms/js/managePage.js"></script>
 
 
 <div class="row">
-    <div class="col-lg-12">
-         
-        @foreach (var page in Model)
+    <div class="col-md-12">
+        @foreach (NccPost item in Model)
         {
-            <div style="border: dashed 1px gray;padding:10px 10px;">
-                <h3>@page.Title</h3>
-                <p>Author: @page.Author.FullName | Date: @page.PublishDate.ToString("yyyy-MM-dd hh:mm tt")</p>
-                
-                <hr/>
-                    @{
-                        var len = page.Content.Length;
-                        if(len > 200)
-                        {
-                            len = 200;
+            NccPostDetails postDetails = item.PostDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
+            if (postDetails == null)
+            {
+                postDetails = item.PostDetails.FirstOrDefault();
+            }
+            if (postDetails != null)
+            {
+                <div style="border: dashed 1px gray;padding:10px 10px;">
+                    @if (item.ThumImage != null)
+                    {
+                        <div style="width:220px; float:left; margin-right:10px;">
+                            <img src="@item.ThumImage" width="220" height="110" />
+                        </div>
+                    }
+                    <div>
+                        <a href="/Post/@postDetails.Slug"><h3 style="margin-top:0px;">@postDetails.Title</h3></a>
+                        <p style="font-style:italic; font-size:12px;">
+                            Author:
+                            @if (item.Author != null)
+                            { <span>@item.Author.FullName</span> }
+                            else
+                            {<span>Anonymous</span> }
+                            <span> | Published Date: @item.PublishDate.ToString("MMM dd, yyyy")</span>
+
+                            | <a href="#">@item.Comments.Count() Comments</a>
+                            @*| <i class="icon-share"></i> <a href="#">39 Shares</a>*@
+                            @if (item.Categories.Count > 0)
+                            {
+                                <span>| Category :</span>
+                                @foreach (NccPostCategory cat in item.Categories)
+                                {
+                                    NccCategoryDetails cDetails = cat.Category.CategoryDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
+                                    if (cDetails == null)
+                                    {
+                                        cDetails = cat.Category.CategoryDetails.FirstOrDefault();
+                                    }
+                                    <a href="/Category/Index/?slug=@cDetails.Slug"><span class="label label-primary">@cDetails.Name</span></a>
+                                }
+                            }
+                            @if (item.Tags.Count > 0)
+                            {
+                                <span>| Tags :</span>
+                                @foreach (NccPostTag tag in item.Tags)
+                                {
+                                    <a href="/Tags/Index/?name=@tag.Tag.Name"><span class="label label-info">@tag.Tag.Name</span></a>
+                                }
+                            }
+                        </p>
+
+                        <hr style="margin:0px;padding:0px;" />
+                        @{
+                            var content = postDetails.Content;
+                            content = Regex.Replace(content, "<[^>]*>", string.Empty);
+                            content = Regex.Replace(content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
+                            var len = content.Length;
+                            if (len > 200)
+                            {
+                                len = 200;
+                                content = content.Substring(0, len);
+                            }
+                            <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">More</a></p>
                         }
-                        var content = page.Content.Substring(0,len);
-                        <p>@Html.Raw(content) ...<a href="/Post/Details/?Slug=@page.Slug">More</a></p> 
-                    } 
-            </div>
-            <br/>
-        } 
-             
+                    </div>                    
+                </div>
+                <br />
+            }
+        }
     </div>
 </div>

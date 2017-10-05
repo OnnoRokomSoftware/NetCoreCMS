@@ -49,7 +49,7 @@ namespace NetCoreCMS.ImageSlider.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Slider Manage", Url = "/ImageSliderHome/Manage", IconCls = "", Order = 2)]
+        [AdminMenuItem(Name = "Slider Manage", Url = "/ImageSliderHome/Manage", IconCls = "", Order = 1)]
         public ActionResult Manage()
         {
             var itemList = _nccImageSliderService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
@@ -57,7 +57,7 @@ namespace NetCoreCMS.ImageSlider.Controllers
         }
 
 
-        [AdminMenuItem(Name = "New Slider", Url = "/ImageSliderHome/CreateEdit", Order = 1)]
+        [AdminMenuItem(Name = "New Slider", Url = "/ImageSliderHome/CreateEdit", Order = 2)]
         public ActionResult CreateEdit(long Id = 0)
         {
             NccImageSlider item = new NccImageSlider();
@@ -84,7 +84,7 @@ namespace NetCoreCMS.ImageSlider.Controllers
             {
                 //unique name check
                 model.Name = model.Name.Trim();
-                var itemCount = _nccImageSliderService.LoadAllByName(model.Name).Where(x => x.Id != model.Id).ToList().Count();
+                var itemCount = _nccImageSliderService.LoadAll(true, 0, model.Name).Where(x => x.Id != model.Id).ToList().Count();
                 if (itemCount > 0)
                 {
                     ViewBag.Message = "Duplicate name found.";

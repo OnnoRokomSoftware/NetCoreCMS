@@ -1,98 +1,62 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
-
-  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputType>exe</OutputType>
-  </PropertyGroup>
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <PackageTargetFallback>$(PackageTargetFallback);portable-net45+win8+wp8+wpa81;</PackageTargetFallback>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <UserSecretsId>aspnet-NetCoreCMS.Web-A497A7FB-6A8B-4C0C-A642-25FF5B4E9FEC</UserSecretsId>
+    <MvcRazorCompileOnPublish>false</MvcRazorCompileOnPublish>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <UserSecretsId>aspnet-NetCoreCMS.Web-d794d7b5-5326-4a33-a104-3a9b1ea9ad88</UserSecretsId>
-    <ApplicationIcon />
-    <OutputTypeEx>exe</OutputTypeEx>
-    <StartupObject />
-  </PropertyGroup>
-  
   <ItemGroup>
     <Compile Remove="Core\**" />
+    <Compile Remove="Logs\**" />
     <Compile Remove="Modules\**" />
     <Compile Remove="Plugins\**" />
     <Compile Remove="Themes\**" />
     <Content Remove="Core\**" />
+    <Content Remove="Logs\**" />
     <Content Remove="Modules\**" />
     <Content Remove="Plugins\**" />
     <Content Remove="Themes\**" />
     <EmbeddedResource Remove="Core\**" />
+    <EmbeddedResource Remove="Logs\**" />
     <EmbeddedResource Remove="Modules\**" />
     <EmbeddedResource Remove="Plugins\**" />
     <EmbeddedResource Remove="Themes\**" />
-    <None Remove="Core\**" />
+    <!--<None Remove="Core\**" />
+    <None Remove="Logs\**" />
     <None Remove="Modules\**" />
     <None Remove="Plugins\**" />
-    <None Remove="Themes\**" />
+    <None Remove="Themes\**" />-->
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
+    <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
+    <PackageReference Include="Serilog.Sinks.RollingFile" Version="3.3.1-dev-00771" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot/js\New Text Document.txt" />
-    <Content Remove="wwwroot/lib\css-loader\dist\loader-ball.css" />
+    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" />
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
- 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="1.1.2" />
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCaching" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCaching.Abstractions" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.ResponseCompression" Version="1.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Session" Version="1.1.1" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="1.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="1.1.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.Design" Version="1.1.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="1.1.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" Version="1.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="1.1.0" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="1.1.0" />
-    <PackageReference Include="Serilog.Extensions.Logging.File" Version="1.1.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="1.0.0" />
-    <DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="1.0.0" />
-    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.0" />
-    <DotNetCliToolReference Include="Microsoft.DotNet.Watcher.Tools" Version="1.0.0" />
-  </ItemGroup>
-  
+
   <ItemGroup>
     <ProjectReference Include="..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
-  
+
   <ItemGroup>
-    <Folder Include="Lib\" />
-    <Folder Include="Services\" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <None Include="Views\Home\SetupSuccess.cshtml" />
-    <None Include="Views\SetupHome\CreateAdmin.cshtml" />
-    <None Include="Views\SetupHome\Index.cshtml" />
-    <None Include="Views\SetupHome\Success.cshtml" />
-    <None Include="wwwroot\css\SetupStyle.css" />
-    <None Include="wwwroot\js\Setup.js" />
+    <None Update="Core\NetCoreCMS.Modules.Cms\Views\Language\TranslationFileEdit.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>TranslationFileEdit.txt</LastGenOutput>
+    </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+  
 </Project>

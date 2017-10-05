@@ -6,6 +6,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
     {
         TId Id { get; set; }
         int VersionNumber { get; set; }
+        string Metadata { get; set; }
         string Name { get; set; }
         DateTime CreationDate { get; set; }
         DateTime ModificationDate { get; set; }

@@ -1,0 +1,11 @@
+﻿@using Microsoft.Extensions.Localization
+@using NetCoreCMS.Framework.i18n
+
+@functions
+{
+    public string _T(string text)
+    {
+        IStringLocalizer<SharedResource> localizer = (IStringLocalizer<SharedResource>) GlobalConfig.ServiceProvider.GetService(typeof(IStringLocalizer<SharedResource>));
+        return localizer[text];
+    }
+}

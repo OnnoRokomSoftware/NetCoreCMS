@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -13,8 +14,10 @@ namespace NetCoreCMS.Framework.Core.Auth
             IHttpContextAccessor contextAccessor,
             IUserClaimsPrincipalFactory<TUser> claimsFactory,
             IOptions<IdentityOptions> optionsAccessor,
-            ILogger<SignInManager<TUser>> logger)
-            : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger)
+            ILogger<SignInManager<TUser>> logger,
+            IAuthenticationSchemeProvider schemes
+            )
+            : base(userManager, contextAccessor, claimsFactory, optionsAccessor, logger, schemes)
         {
             
         }

@@ -7,7 +7,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
 
-namespace NetCoreCMS.Core.Modules.Media
+namespace NetCoreCMS.Core.Modules.Blog
 {
     public class BlogModelBuilder : INccModuleBuilder
     {

@@ -1,13 +1,27 @@
-﻿@using NetCoreCMS.Core.Modules.Cms
-@using NetCoreCMS.Core.Modules.Cms.Models
-@using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels
-@using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels
-@using Microsoft.AspNetCore.Identity
+﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Localization
+
+@using NetCoreCMS.Framework.Core
 @using NetCoreCMS.Framework.Utility
 @using NetCoreCMS.Framework.Modules
 @using NetCoreCMS.Framework.Modules.Widgets
 @using NetCoreCMS.Framework.Core.Models
+@using NetCoreCMS.Framework.Core.Mvc.Views
+@using NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
+@using NetCoreCMS.Themes.Default.Lib
+@using NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
 
-
+@addTagHelper *, NetCoreCMS.Framework
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject SignInManager<NccUser> SignInManager
+@inject UserManager<NccUser> UserManager
+@inject IStringLocalizer _T
+
+@using Microsoft.Extensions.Localization
+@using NetCoreCMS.Framework.i18n
+@using NetCoreCMS.Framework.Themes
+
+

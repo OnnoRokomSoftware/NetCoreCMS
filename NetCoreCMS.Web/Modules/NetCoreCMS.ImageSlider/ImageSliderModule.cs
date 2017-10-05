@@ -10,6 +10,7 @@ using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.ImageSlider.Services;
 using NetCoreCMS.ImageSlider.Repository;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Modules.ImageSlider
 {
@@ -22,23 +23,26 @@ namespace NetCoreCMS.Modules.ImageSlider
         }
 
         public string ModuleId { get; set; }
-        public string ModuleName { get; set; }
-        public string SortName { get; set; }
-        public bool AntiForgery { get; set ; }
-        public string Author { get ; set ; }
-        public string Website { get ; set ; }
-        public string Version { get ; set ; }
-        public string NetCoreCMSVersion { get ; set ; }
-        public string Description { get ; set ; }
-
-        public List<string> Dependencies { get ; set ; }
-        public string Category { get ; set ; }
+        public string ModuleTitle { get; set; }
+        public string Author { get; set; }
+        public string Email { get; set; }
+        public string Website { get; set; }
+        public string DemoUrl { get; set; }
+        public string ManualUrl { get; set; }
+        public bool AntiForgery { get; set; }
+        public string Version { get; set; }
+        public string MinNccVersion { get; set; }
+        public string MaxNccVersion { get; set; }
+        public string Description { get; set; }
+        public string Category { get; set; }
+        public List<NccModuleDependency> Dependencies { get; set; }
 
         [NotMapped]
         public Assembly Assembly { get; set; }
         public string Path { get ; set ; }
+        public string Folder { get; set; }
         public int ModuleStatus { get; set; }
-        public string ModuleTitle { get ; set ; }
+        public string SortName { get ; set ; }
         [NotMapped]
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
@@ -67,9 +71,10 @@ namespace NetCoreCMS.Modules.ImageSlider
         public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var createQuery = @"
-                CREATE TABLE `Ncc_Image_Slider` ( 
+                CREATE TABLE IF NOT EXISTS `Ncc_Image_Slider` ( 
                     `Id` BIGINT NOT NULL AUTO_INCREMENT , 
                     `VersionNumber` INT NOT NULL , 
+                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
                     `Name` VARCHAR(250) NOT NULL , 
                     `CreationDate` DATETIME NOT NULL , 
                     `ModificationDate` DATETIME NOT NULL , 
@@ -85,9 +90,10 @@ namespace NetCoreCMS.Modules.ImageSlider
                     `ImageHeight` VARCHAR(255) NULL , 
                 PRIMARY KEY (`Id`)) ENGINE = MyISAM;
 
-                CREATE TABLE `Ncc_Image_Slider_Title` ( 
+                CREATE TABLE IF NOT EXISTS `Ncc_Image_Slider_Title` ( 
                     `Id` BIGINT NOT NULL AUTO_INCREMENT , 
                     `VersionNumber` INT NOT NULL , 
+                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
                     `Name` VARCHAR(250) NOT NULL , 
                     `CreationDate` DATETIME NOT NULL , 
                     `ModificationDate` DATETIME NOT NULL , 
@@ -111,7 +117,10 @@ namespace NetCoreCMS.Modules.ImageSlider
             }
             return false;
         }
-
+        public bool Update(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        {
+            return true;
+        }
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
             var deleteQuery = @"

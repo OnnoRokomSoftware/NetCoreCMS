@@ -59,7 +59,7 @@
                 {
                     <div class="alert alert-success alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        @Html.Raw(TempData["SuccessMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
+                        @Html.Raw(TempData["SuccessMessage"])@Html.Raw(ViewBag.Message)<a href="#" class="alert-link"></a>.
                     </div>
                 }
                 @if (TempData.ContainsKey("InfoMessage") || ViewBag.MessageType == "InfoMessage")
@@ -80,7 +80,7 @@
                 {
                     <div class="alert alert-danger alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        @Html.Raw(TempData["ErrorMessage"])@ViewBag.Message<a href="#" class="alert-link"></a>.
+                        @Html.Raw(TempData["ErrorMessage"])@Html.Raw(ViewBag.Message)<a href="#" class="alert-link"></a>.
                     </div>
                 }
             </div>
@@ -95,7 +95,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 @*<a class="navbar-brand" href="index.html">SB Admin v2.0</a>*@
-                <a asp-area="" asp-controller="Admin" asp-action="Index" class="navbar-brand">NetCoreCMS Admin</a>
+                <a asp-area="" asp-controller="Admin" asp-action="Index" class="navbar-brand">@GlobalConfig.WebSite.Name Admin</a>
             </div>
             <!-- /.navbar-header -->
             <ul class="nav navbar-top-links navbar-right">              
@@ -138,7 +138,7 @@
                         <li class="active">
                             <a asp-controller="Admin" asp-action="Index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>                       
-                        @Html.Raw(AdminMenuHelper.GetAdminMenuHtml(AdminMenuHelper.ModulesAdminMenus()))
+                        @Html.Raw(NccMenuHelper.GetAdminMenuHtml(NccMenuHelper.GetModulesAdminMenus()))
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -170,7 +170,7 @@
     <div class="row text-center">
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - NetCoreCMS</p>
+            <p class="text-muted text-center">Developed by <a href="@NccInfo.Website" title="@NccInfo.Author" target="_blank">@NccInfo.Author</a>.</p>
         </footer>
     </div>
     <!-- /#wrapper -->
@@ -179,6 +179,19 @@
     <script src="~/js/metisMenu.min.js"></script>
     <!-- Custom Theme JavaScript -->
     <script src="~/js/sb-admin-2.min.js"></script>
+
+    <!--Bootstrap DateTime Picker Start-->
+    <script src="~/lib/moment/moment.js"></script>
+    <link href="~/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $('.datetimepicker').datetimepicker({
+                format: 'MMM D, YYYY hh:mm A'
+            });
+        });
+    </script>
+    <!--Bootstrap DateTime Picker END-->
     @RenderSection("Scripts", required: false)
     <script>
         $(document).ready(function () { 

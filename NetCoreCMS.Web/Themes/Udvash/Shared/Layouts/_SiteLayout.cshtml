@@ -1,0 +1,52 @@
+﻿@{
+    int bodyClassWidth = 12;
+    bool hasLeftColumn = false;
+    bool hasRightColumn = false;
+    //var WebSite = GlobalConfig.WebSite;
+    ViewBag.WebSite = GlobalConfig.WebSite;
+    ViewBag.CurrentLayout = "SiteLayout";    
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        @Html.Partial("Parts/_Head")
+        @Html.Raw(JavaScriptSnippet.FullScript)
+        @RenderSection("Styles", required: false)
+    </head>
+    <body id="body">        
+        <!-- Zone TOP Start-->
+        <!-- Header -->
+        @Html.Partial("Parts/_Header")
+
+        <!-- Navbar -->
+        <nav id="mainNavbar" class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    @Html.Partial("Parts/_NavbarPart")
+                </div>
+                <div class="navbar-collapse collapse">
+                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation"))
+                    <div class="userMenu">
+                        @await Html.PartialAsync("_SiteLoginPartial")
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- Zone TOP End-->
+        <!--  Main Body Start -->
+        <div class="container mainBody">            
+            <!-- Featured Start -->
+            @Html.Partial("Parts/_Featured")
+            <!-- Featured End -->
+
+            @RenderBody()
+        </div>
+        <!--  Main Body End -->        
+        
+        <!--  Footer Start -->
+        @Html.Partial("Parts/_Footer")
+        @RenderSection("Scripts", required: false)
+    </body>
+</html>
+

@@ -9,10 +9,12 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Setup;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public class NccDbContext : IdentityDbContext<NccUser, NccRole, long, IdentityUserClaim<long>, NccUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>, IDbContextFactory<NccDbContext>
+    public class NccDbContext : IdentityDbContext<NccUser, NccRole, long, IdentityUserClaim<long>, NccUserRole, IdentityUserLogin<long>, IdentityRoleClaim<long>, IdentityUserToken<long>>, IDesignTimeDbContextFactory<NccDbContext>
     {
         public NccDbContext()
         {
@@ -80,6 +82,13 @@ namespace NetCoreCMS.Framework.Core.Data
         }
 
         public NccDbContext Create(DbContextFactoryOptions options)
+        {
+            var opts = SetupHelper.GetDbContextOptions();
+            var nccDbConetxt = new NccDbContext(opts);
+            return nccDbConetxt;
+        }
+
+        public NccDbContext CreateDbContext(string[] args)
         {
             var opts = SetupHelper.GetDbContextOptions();
             var nccDbConetxt = new NccDbContext(opts);

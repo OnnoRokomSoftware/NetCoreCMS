@@ -18,9 +18,14 @@ namespace NetCoreCMS.Framework.Core.Services
             _entityRepository = entityRepository;
         }
          
-        public NccModule Get(long entityId)
+        public NccModule Get(long entityId, bool isAsNoTracking = false)
         {
             return _entityRepository.Get(entityId);
+        }
+
+        public List<NccModule> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
         }
 
         internal NccModule GetByModuleId(string moduleId)
@@ -63,34 +68,9 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public List<NccModule> LoadAll()
-        {
-            return _entityRepository.LoadAll();
-        }
-
         public List<NccModule> LoadByModuleStatus(NccModule.NccModuleStatus active)
         {
             return _entityRepository.LoadByModuleStatus(active);
-        }
-
-        public List<NccModule> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<NccModule> LoadAllByStatus(int status)
-        {
-            return _entityRepository.LoadAllByStatus(status);
-        }
-
-        public List<NccModule> LoadAllByName(string name)
-        {
-            return _entityRepository.LoadAllByName(name);
-        }
-
-        public List<NccModule> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.LoadAllByNameContains(name);
         }
 
         public void DeletePermanently(long entityId)
@@ -118,13 +98,15 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.Dependencies = entity.Dependencies;
             
             oldEntity.ModuleStatus = entity.ModuleStatus;
-            oldEntity.NetCoreCMSVersion = entity.NetCoreCMSVersion;
+            oldEntity.MaxNccVersion = entity.MaxNccVersion;
+            oldEntity.MinNccVersion = entity.MinNccVersion;
             oldEntity.Path = entity.Path;
-            
+            oldEntity.Folder = entity.Folder;
             oldEntity.Status = entity.Status;
             oldEntity.Version = entity.Version;
             oldEntity.VersionNumber = entity.VersionNumber;
-            
+            oldEntity.Metadata = entity.Metadata;
+
         }
 
         public string ExecuteQuery(NccDbQueryText query)

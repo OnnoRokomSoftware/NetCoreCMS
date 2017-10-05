@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.LinkShare.Models
 {
-    public class LsLink : IBaseModel<long>
+    public class LsLink : BaseModel, IBaseModel<long>
     {
         public LsLink()
         {
@@ -17,18 +17,9 @@ namespace NetCoreCMS.LinkShare.Models
             Order = 1;
             PublishDate = DateTime.Now;
             ExpireDate = DateTime.Now.AddDays(7);
+            Categories = new List<LsLinkCategory>();
         }
-
-        [Key]
-        public long Id { get; set; }
-        public int VersionNumber { get; set; }
-        public string Name { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
-        public int Status { get; set; }
-
+          
         public string Link { get; set; }
         public bool HasDateRange { get; set; }
         public DateTime PublishDate { get; set; }

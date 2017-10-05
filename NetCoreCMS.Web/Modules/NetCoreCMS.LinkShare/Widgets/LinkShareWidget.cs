@@ -17,12 +17,12 @@ namespace NetCoreCMS.LinkShare.Widgets
         LsLinkService _lsLinkService;
         IViewRenderService _viewRenderService;
         NccWebSiteWidgetService _websiteWidgetService;
-        string headerTitle;
-        string category;
-        string columnClass;
-        string columnColor;
-        string columnBgColor;
-        string footerTitle;
+        string headerTitle = "";
+        string category = "";
+        string columnClass = "";
+        string columnColor = "";
+        string columnBgColor = "";
+        string footerTitle = "";
 
         public LinkShareWidget(
             IViewRenderService viewRenderService,
@@ -45,11 +45,12 @@ namespace NetCoreCMS.LinkShare.Widgets
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/LinkShare";
 
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
+            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {
                 var configJson = webSiteWidget.WidgetConfigJson;
                 var config = JsonConvert.DeserializeObject<dynamic>(configJson);
+                Language = config.language;
                 DisplayTitle = "";
                 Footer = "";
                 headerTitle = config.headerTitle;
@@ -67,7 +68,7 @@ namespace NetCoreCMS.LinkShare.Widgets
         public override string RenderBody()
         {
             var itemList = _lsLinkService.LoadAllByCategory(category);
-            if (category.Trim() == "") { _lsLinkService.LoadAll().OrderByDescending(x => x.Id).Take(10).OrderBy(x => x.Order); }
+            if (category.Trim() == "") { itemList = _lsLinkService.LoadAll().OrderByDescending(x => x.Id).Take(10).OrderBy(x => x.Order).ToList(); }
             var item = new LsLinkViewModel()
             {
                 HeaderTitle = headerTitle,

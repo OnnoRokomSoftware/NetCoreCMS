@@ -17,7 +17,7 @@ namespace NetCoreCMS.ImageSlider.Widgets
         NccImageSliderService _imageSliderService;
         IViewRenderService _viewRenderService;
         NccWebSiteWidgetService _websiteWidgetService;
-        string selectedImageSliderName;
+        string selectedImageSliderName = "";
 
         public ImageSliderWidget(
             IViewRenderService viewRenderService,
@@ -39,24 +39,26 @@ namespace NetCoreCMS.ImageSlider.Widgets
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/ImageSlider";
 
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId);
+            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {
                 var configJson = webSiteWidget.WidgetConfigJson;
                 var config = JsonConvert.DeserializeObject<dynamic>(configJson);
+                Language = config.language;
                 DisplayTitle = config.title;
                 Footer = config.footer;
                 selectedImageSliderName = config.name;
             }
 
             ConfigViewFileName = "Widgets/ImageSliderConfig";
-            ConfigHtml = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ConfigViewFileName, webSiteWidget).Result;
+            var itemList = _imageSliderService.LoadAll(true).ToList();
+            ConfigHtml = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ConfigViewFileName, itemList /*webSiteWidget*/).Result;
         }
 
         public override string RenderBody()
         {
-            var itemList = _imageSliderService.LoadAllByName(selectedImageSliderName).FirstOrDefault();
-            if (selectedImageSliderName.Trim() == "") { _imageSliderService.LoadAll().FirstOrDefault(); }
+            var itemList = _imageSliderService.LoadAll(true, -1, selectedImageSliderName).FirstOrDefault();
+            if (selectedImageSliderName.Trim() == "") { itemList = _imageSliderService.LoadAll().FirstOrDefault(); }
             var body = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ViewFileName, itemList).Result;
             return body;
         }

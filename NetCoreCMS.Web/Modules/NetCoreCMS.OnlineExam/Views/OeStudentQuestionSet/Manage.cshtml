@@ -1,0 +1,79 @@
+﻿@using NetCoreCMS.Modules.OnlineExam.Models
+@using System.Collections
+
+@model List<OeStudentQuestionSet>
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Student Result";
+    ViewData["PageSubtitle"] = "Existing results";
+    var controllerName = "OeStudentQuestionSet";
+}
+    
+<div class="">
+    <div class="">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                @*<div class="pull-right"><a asp-controller="@controllerName" asp-action="CreateEdit" class="btn btn-outline btn-primary btn-xs">Add New</a></div>*@
+            </div>
+            <div class="panel-body" style="overflow:auto; max-height:60vh;">
+                <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th style="text-align:center;">Exam</th>
+                            <th style="text-align:center;">Version</th>
+                            <th style="text-align:center;">Prn</th>
+                            <th style="text-align:center;">Student</th>
+                            <th style="text-align:center;">Full Marks</th>
+                            <th style="text-align:center;">Marks</th>
+                            <th style="text-align:center;">Correct</th>
+                            <th style="text-align:center;">Incorrect</th>
+                            <th style="text-align:center;">Not Answered</th>
+                            <th style="text-align:center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td style="text-align:center;">@item.Exam.Name</td>
+                                <td style="text-align:center;">
+                                    @if (item.Version == 1)
+                                    {
+                                        <p>Bangla</p>
+                                    }
+                                    else
+                                    {
+                                        <p>English</p>
+                                    }
+                                </td>
+                                <td style="text-align:center;">@item.Student.PrnNo</td>
+                                <td style="text-align:center;">@item.Student.Name</td>
+                                <td style="text-align:center;">@item.Exam.TotalMarks</td>
+                                <td style="text-align:center;">@item.TotalMarks</td>
+                                <td style="text-align:center;">@item.Correct</td>
+                                <td style="text-align:center;">@item.Incorrect</td>
+                                <td style="text-align:center;">@item.NotAnswered</td>
+                                <td style="text-align:center;">
+                                    <a asp-controller="OeQuestion" asp-action="Result" asp-route-id="@item.Id" class="btn btn-xs btn-primary btn-outline" target="_blank">Details</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <link href="~/lib/DataTables/dataTables.bootstrap.css" rel="stylesheet" />
+    <link href="~/lib/DataTables/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="~/lib/DataTables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/DataTables/dataTables.bootstrap.min.js"></script>
+}

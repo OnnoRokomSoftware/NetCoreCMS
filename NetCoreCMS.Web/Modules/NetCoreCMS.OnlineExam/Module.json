@@ -1,0 +1,16 @@
+﻿{
+  "ModuleId": "one.osl.modules.OnlineExam",
+  "ModuleTitle": "OnlineExam Module",
+  "Author": "OnnoRokom Software Ltd.",
+  "Email": "netcorecms@gmail.com",
+  "Website": "http://osl.one",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
+  "AntiForgery": true,
+  "Description": "Online Exam module. Basic Student, Exam, Unique Set, Set, Exam and Result are included in this project.",
+  "Version": "1.0",
+  "MinNccVersion": "0.1.1",
+  "MaxNccVersion": "0.3.5",
+  "Category": "Online,Exam",
+  "Dependencies": []
+}

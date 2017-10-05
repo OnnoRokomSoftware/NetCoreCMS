@@ -1,36 +1,54 @@
-﻿<!-- Loading -->
+﻿@{
+    string currentLanguage = this.ViewContext.HttpContext.Items["currentLanguage"].ToString();
+    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+}
+<!-- Loading -->
 <div id="loadingMask" class="loader loader-double"></div>
 
 <!-- Header -->
 <div class="container-fluid topHeader">
     <div class="container">
         <div class="topLogo">
-            <a href="/"><h1>@ViewBag.WebSite.Name</h1></a>
-            <h4>@ViewBag.WebSite.Tagline</h4>
+            @if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteLogoUrl(currentLanguage)))
+            {
+                <a href="/"><h1>@ThemeHelper.GetWebSiteName(currentLanguage)</h1></a>
+                        <h4>@ThemeHelper.GetWebSiteTagline(currentLanguage)</h4>
+            }
+            else
+            {
+                <a href="/">
+                    <img src="@ThemeHelper.GetWebSiteLogoUrl(currentLanguage)" alt="@ThemeHelper.GetWebSiteName(currentLanguage)" title="@ThemeHelper.GetWebSiteTagline(currentLanguage)" width="200px" />
+                </a>
+            }
         </div>
         <div id="topMenu" class="topMenu pull-right">
+            @if (GlobalConfig.WebSite.IsMultiLangual == true)
+            {
+                @await Html.PartialAsync("_SelectLanguagePartial")
+            }
             @{
-                var menus = GlobalConfig.Menus.Where(x => x.Position == "Top");
+                var menus = GlobalConfig.Menus.Where(x => x.Position == "Top" && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage == currentLanguage));
                 foreach (var item in menus)
                 {
                     foreach (var menuItem in item.MenuItems)
                     {
-                        <a href="@menuItem.Url">@menuItem.Name</a><span> | </span>
+                        <a href="@NccUrlHelper.AddLanguageToUrl(currentLanguage, menuItem.Url)">@menuItem.Name</a><span> | </span>
                     }
                 }
                 if (SignInManager.IsSignedIn(User))
                 {
-                    <a asp-area="" asp-controller="Admin" asp-action="Index">Admin</a><span> | </span>
-                            <a asp-area="" asp-controller="ManageAccount" asp-action="Index" title="Manage">Hello @UserManager.GetUserName(User)!</a><span> | </span>
-                            <a asp-area="" asp-controller="Account" asp-action="Logout">Log out</a>
+                    <a asp-area="" asp-controller="Admin" asp-action="Index">@_TT["Admin"]</a><span> | </span>
+                    <a asp-area="" asp-controller="ManageAccount" asp-action="Index" title="Manage">@_TT["Hello"] @UserManager.GetUserName(User)!</a><span> | </span>
+                    <a asp-area="" asp-controller="Account" asp-action="Logout">@_TT["Log out"]</a>
                 }
                 else
                 {
-                    <a asp-area="" asp-controller="Account" asp-action="Register">Register</a><span> | </span>
-                    <a asp-area="" asp-controller="Account" asp-action="Login">Log in</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Register">@_TT["Register"]</a><span> | </span>
+                    <a asp-area="" asp-controller="Account" asp-action="Login">@_TT["Log in"]</a>
                 }
             }
         </div>
+
         <div class="topWidgetZone">
             @{
                 var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "TopBar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
@@ -43,31 +61,34 @@
                             foreach (var widget in widgets)
                             {
                                 widget.Init(item.Id);
-                                if (widget.DisplayTitle != "" || widget.Footer != "")
-                                {
-                                    <div class='panel panel-default'>
-                                        @if (widget.DisplayTitle != "")
-                                        {
-                                            <div class='panel-heading'>
-                                                @Html.Raw(widget.DisplayTitle)
+                                if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage == widget.Language)
+                                { 
+                                    if (widget.DisplayTitle != "" || widget.Footer != "")
+                                    {
+                                        <div class='panel panel-default'>
+                                            @if (widget.DisplayTitle != "")
+                                            {
+                                                <div class='panel-heading'>
+                                                    @Html.Raw(widget.DisplayTitle)
+                                                </div>
+                                            }
+                                            <div class='panel-body'>
+                                                @Html.Raw(widget.RenderBody())
                                             </div>
-                                        }
-                                        <div class='panel-body'>
+                                            @if (widget.Footer != "")
+                                            {
+                                                <div class='panel-footer'>
+                                                    @Html.Raw(widget.Footer)
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
                                             @Html.Raw(widget.RenderBody())
                                         </div>
-                                        @if (widget.Footer != "")
-                                        {
-                                            <div class='panel-footer'>
-                                                @Html.Raw(widget.Footer)
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div>
-                                        @Html.Raw(widget.RenderBody())
-                                    </div>
+                                    }
                                 }
                             }
                         }

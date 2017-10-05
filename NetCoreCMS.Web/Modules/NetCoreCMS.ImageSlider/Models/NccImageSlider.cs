@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.ImageSlider.Models
 {
-    public class NccImageSlider : IBaseModel<long>
+    public class NccImageSlider : BaseModel, IBaseModel<long>
     {
         public NccImageSlider()
         {
@@ -19,18 +19,9 @@ namespace NetCoreCMS.ImageSlider.Models
             ShowNav = true;
             ShowSideNav = true;
             ImageWidth = "100%";
+            ImageItems = new List<NccImageSliderItem>();
         }
-
-        [Key]
-        public long Id { get; set; }
-        public int VersionNumber { get; set; }
-        public string Name { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
-        public int Status { get; set; }
-
+          
         public string ContainerStyle { get; set; }
         //public int TotalSlide { get; set; }
         public int Interval { get; set; }
@@ -41,7 +32,7 @@ namespace NetCoreCMS.ImageSlider.Models
         public List<NccImageSliderItem> ImageItems { get; set; }
     }
 
-    public class NccImageSliderItem:IBaseModel<long>
+    public class NccImageSliderItem: BaseModel, IBaseModel<long>
     {
         public NccImageSliderItem()
         {
@@ -51,17 +42,7 @@ namespace NetCoreCMS.ImageSlider.Models
             Status = EntityStatus.Active;
             VersionNumber = 1;
         }
-
-        [Key]
-        public long Id { get; set; }
-        public int VersionNumber { get; set; }
-        public string Name { get; set; }
-        public DateTime CreationDate { get; set; }
-        public DateTime ModificationDate { get; set; }
-        public long CreateBy { get; set; }
-        public long ModifyBy { get; set; }
-        public int Status { get; set; }
-        
+          
         [Required]
         public string Path { get; set; }
         public string Description { get; set; }

@@ -19,6 +19,8 @@ namespace NetCoreCMS.Core.Modules.Setup.Models.ViewModels
         public string AdminPassword { get; set; }
         [Required]
         public string ConfirmPassword { get; set; }
+        [Required]
+        public string Language { get; set; }
 
     }
 }

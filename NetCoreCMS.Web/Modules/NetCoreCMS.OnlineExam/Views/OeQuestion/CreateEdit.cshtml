@@ -1,0 +1,648 @@
+﻿@using NetCoreCMS.Modules.OnlineExam.Models
+@using System.Collections
+
+@model OeViewQuestion
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Question Create";
+    ViewData["PageSubtitle"] = "Create a new question";
+    if (Model.BnId > 0 || Model.EnId > 0)
+    {
+        ViewData["PageTitle"] = "Question Update";
+        ViewData["PageSubtitle"] = "Update an existing question";
+    }
+    var controllerName = "OeQuestion";
+}
+    
+<div class="row">
+    <div class="row">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                <div class="pull-right">
+                    @if (Model.BnId > 0 || Model.EnId > 0)
+                    {
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">Add New</a>
+                    }
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage</a>
+                </div>
+            </div>
+
+            <div class="panel-body">
+                <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                    <input type="hidden" asp-for="BnId" value="@Model.BnId" />
+                    <input type="hidden" asp-for="EnId" value="@Model.EnId" />
+                    @*<input type="hidden" asp-for="Status" value="@Model.Status" />*@
+                    <div class="col-md-12">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Exam </label>
+                                <div class="col-md-9">
+                                    @if (Model.BnId > 0 || Model.EnId > 0)
+                                    {
+                                        <input type="hidden" name="ExamId" value="@Model.Exam.Id" />
+                                        <span>@Model.Exam.Name</span>
+                                    }
+                                    else
+                                    {
+                                        <select class="form-control" asp-for="Exam" name="ExamId" asp-items="@ViewBag.ExamList" required>
+                                            <option value="">Select an exam</option>
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Subject </label>
+                                <div class="col-md-9">
+                                    @if (Model.BnId > 0 || Model.EnId > 0)
+                                    {
+                                        <input type="hidden" name="SubjectId" value="@Model.Subject.Id" />
+                                        <span>@Model.Subject.Name</span>
+                                    }
+                                    else
+                                    {
+                                        <select class="form-control" asp-for="Subject" name="SubjectId" asp-items="@ViewBag.SubjectList" required>
+                                            <option value="">Select a subject</option>
+                                        </select>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">UniqueSet Number </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="UniqueSetNumber" placeholder="" value="@Model.UniqueSetNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Question Serial </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="QuestionSerial" placeholder="" value="@Model.QuestionSerial" />
+                                </div>
+                            </div>
+                        </div>
+                        <table width="100%" style="text-align: center; margin-bottom:10px;">
+                            <tr style="font-weight:bold;">
+                                <td width="4%"></td>
+                                @if ((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true && Model.Exam.IsEnglish == false)
+                                {
+                                    <td width="94%">Bangla</td>
+                                }
+                                else if ((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == false && Model.Exam.IsEnglish == true)
+                                {
+                                    <td width="94%">EngLish</td>
+                                }
+                                else
+                                {
+                                    <td width="48%">Bangla</td>
+                                    <td width="48%">EngLish</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td></td>
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="BnQuestion">@Model.BnQuestion</textarea></td>
+                                }
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsEnglish == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="EnQuestion">@Model.EnQuestion</textarea></td>
+                                }
+                            </tr>
+                            <tr>
+                                <td></td>
+                                @if ((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true && Model.Exam.IsEnglish == true)
+                                {
+                                    <td><strong>Bangla Option</strong></td>
+                                    <td><strong>English Option</strong></td>
+                                }
+                                else if ((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true && Model.Exam.IsEnglish == false)
+                                {
+                                    <td><strong>Bangla Option</strong></td>
+                                }
+                                else if ((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == false && Model.Exam.IsEnglish == true)
+                                {
+                                    <td><strong>English Option</strong></td>
+                                }
+                                else
+                                {
+                                    <td><strong>Bangla Option</strong></td>
+                                    <td><strong>English Option</strong></td>
+                                }                                
+                            </tr>
+                            <tr>
+                                <td><strong>A</strong></td>
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="BnOptionA">@Model.BnOptionA</textarea></td>
+                                }
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsEnglish == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="EnOptionA">@Model.EnOptionA</textarea></td>
+                                }
+                            </tr>
+                            <tr>
+                                <td><strong>B</strong></td>
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="BnOptionB">@Model.BnOptionB</textarea></td>
+                                }
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsEnglish == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="EnOptionB">@Model.EnOptionB</textarea></td>
+                                }
+                            </tr>
+                            <tr>
+                                <td><strong>C</strong></td>
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="BnOptionC">@Model.BnOptionC</textarea></td>
+                                }
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsEnglish == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="EnOptionC">@Model.EnOptionC</textarea></td>
+                                }
+                            </tr>
+                            <tr>
+                                <td><strong>D</strong></td>
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="BnOptionD">@Model.BnOptionD</textarea></td>
+                                }
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsEnglish == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="EnOptionD">@Model.EnOptionD</textarea></td>
+                                }
+                            </tr>
+                            <tr>
+                                <td></td>
+                                @if ((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true && Model.Exam.IsEnglish == false)
+                                {
+                                    <td>Bangla Solve</td>
+                                }
+                                else if ((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == false && Model.Exam.IsEnglish == true)
+                                {
+                                    <td>EngLish Solve</td>
+                                }
+                                else
+                                {
+                                    <td>Bangla Solve</td>
+                                    <td>EngLish Solve</td>
+                                }
+                            </tr>
+                            <tr>
+                                <td></td>
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="BnSolve">@Model.BnSolve</textarea></td>
+                                }
+                                @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsEnglish == true) || (Model.BnId == 0 && Model.EnId == 0))
+                                {
+                                    <td><textarea class="form-control" asp-for="EnSolve">@Model.EnSolve</textarea></td>
+                                }
+                            </tr>
+                        </table>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Correct Answer </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="CorrectAnswer" placeholder="" value="@Model.CorrectAnswer" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Is Shuffle </label>
+                                <div class="col-md-9">
+                                    @if (Model.IsShuffle)
+                                    {
+                                        <input type="checkbox" asp-for="IsShuffle" checked />
+                                    }
+                                    else
+                                    {
+                                        <input type="checkbox" asp-for="IsShuffle" />
+                                    }                                    
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            <label class="col-md-2 text-right">Name </label>
+                            <div class="col-md-10">
+                            </div>
+                        </div>*@
+                        <div class="col-md-12">
+                            <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
+                            <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                            <input type="submit" class="btn btn-default" name="Save" value="Save And New" />
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script>
+            KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
+    </script>
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+
+    @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsBangla == true) || (Model.BnId == 0 && Model.EnId == 0))
+    {
+        <script>
+            $(document).ready(function () {
+                CKEDITOR.replace('BnQuestion', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 400,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('BnOptionA', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('BnOptionB', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('BnOptionC', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('BnOptionD', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('BnSolve', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+            });
+        </script>
+    }
+    @if (((Model.BnId > 0 || Model.EnId > 0) && Model.Exam.IsEnglish == true) || (Model.BnId == 0 && Model.EnId == 0))
+    {
+        <script>
+            $(document).ready(function () {
+                CKEDITOR.replace('EnQuestion', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 400,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('EnOptionA', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('EnOptionB', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('EnOptionC', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('EnOptionD', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+                CKEDITOR.replace('EnSolve', {
+                    enterMode: CKEDITOR.ENTER_BR,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    height: 100,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-'] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        { name: 'insert', items: ['Image', 'Mathjax', /*'Flash',*/ 'Table'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: [/*'Maximize',*/ 'ShowBlocks'] }
+                    ],
+                    extraPlugins: 'mathjax',
+                    mathJaxLib: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS_HTML',
+                });
+            });
+        </script>
+    }
+
+    <script>
+        $(document).ready(function () {
+            //for (instance in CKEDITOR.instances) {
+            //    var editor = CKEDITOR.instances[instance];
+            //    if (editor) {
+            //        // Call showToolBarDiv() when editor get the focus
+            //        editor.on('focus', function (event) {
+            //            showToolBarDiv(event);
+            //        });
+
+            //        // Call hideToolBarDiv() when editor loses the focus
+            //        editor.on('blur', function (event) {
+            //            hideToolBarDiv(event);
+            //        });
+
+            //        //Whenever CKEditor get focus. We will show the toolbar span.
+            //        function showToolBarDiv(event) {
+            //            //'event.editor.id' returns the id of the spans used in ckeditr.
+            //            $('#' + event.editor.id + '_top').show();
+            //        }
+
+            //        function hideToolBarDiv(event) {
+            //            //'event.editor.id' returns the id of the spans used in ckeditr.
+            //            $('#' + event.editor.id + '_top').hide()
+            //        }
+            //    }
+            //}
+
+            //$("#Title").change(function () {
+            //    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+            //});
+
+            //$("#publish").click(function () {
+            //    var element = document.getElementById('PageStatus');
+            //    element.value = "2";
+            //    console.log($("#Slug").val());
+            //    if ($("#Slug").val() == "") {
+            //        document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
+            //        console.log($("#Slug").val());
+            //    }
+            //    document.getElementById("SubmitType").value = "publish";
+            //    //$("#SubmitType").value = "publish";
+
+            //    $('#PageContent').html(CKEDITOR.instances["PageContent"].getData());
+            //    document.getElementById("pageCreateEditForm").submit();
+            //});
+
+            //$("#save").click(function () {
+            //    //if ($("#Slug").val() == "") {
+            //    //    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+            //    //}
+            //    //$("#SubmitType").val("Save");
+
+            //    $('#BnQuestion').val(CKEDITOR.instances["BnQuestion"].getData());
+            //    $('#EnQuestion').val(CKEDITOR.instances["EnQuestion"].getData());
+            //    document.getElementById("createEditForm").submit();
+            //});
+        });
+    </script>
+}

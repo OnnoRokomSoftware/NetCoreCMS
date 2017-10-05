@@ -1,11 +1,15 @@
-﻿<!--  Footer Start -->
+﻿@{
+    string currentLanguage = this.ViewContext.HttpContext.Items["currentLanguage"].ToString();
+    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+}
+<!--  Footer Start -->
 <footer>
     <hr />
     <div class="container">
         <div class="row">
             @{
                 bool hasFooter = false;
-                var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer").ToList();
+                var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer" && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage == currentLanguage)).ToList();
                 var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == ViewBag.CurrentLayout).ToList();
                 if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
                 {
@@ -48,31 +52,34 @@
                             foreach (var widget in widgets)
                             {
                                 widget.Init(item.Id);
-                                if (widget.DisplayTitle != "" || widget.Footer != "")
-                                {
-                                    <div class='panel panel-default'>
-                                        @if (widget.DisplayTitle != "")
-                                        {
-                                            <div class='panel-heading'>
-                                                @Html.Raw(widget.DisplayTitle)
+                                if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage == widget.Language)
+                                { 
+                                    if (widget.DisplayTitle != "" || widget.Footer != "")
+                                    {
+                                        <div class='panel panel-default'>
+                                            @if (widget.DisplayTitle != "")
+                                            {
+                                                <div class='panel-heading'>
+                                                    @Html.Raw(widget.DisplayTitle)
+                                                </div>
+                                            }
+                                            <div class='panel-body'>
+                                                @Html.Raw(widget.RenderBody())
                                             </div>
-                                        }
-                                        <div class='panel-body'>
+                                            @if (widget.Footer != "")
+                                            {
+                                                <div class='panel-footer'>
+                                                    @Html.Raw(widget.Footer)
+                                                </div>
+                                            }
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
                                             @Html.Raw(widget.RenderBody())
                                         </div>
-                                        @if (widget.Footer != "")
-                                        {
-                                            <div class='panel-footer'>
-                                                @Html.Raw(widget.Footer)
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div>
-                                        @Html.Raw(widget.RenderBody())
-                                    </div>
+                                    }
                                 }
                             }
                         }
@@ -89,8 +96,8 @@
     }
     <div class="container">
         <div class="row">
-            <div class="col-md-6 copyright"> Copyrights &copy; @Html.Raw(ViewBag.WebSite.Copyrights) @DateTime.Now.Year</div>
-            <div class="col-md-6 poweredby"> Powered by <a href="#" target="_blank">NetCoreCMS</a></div>
+            <div class="col-md-6 copyright"> @_TT["Copyrights"] &copy; @Html.Raw(@ThemeHelper.GetWebSiteCopyright(currentLanguage)) @_TT[DateTime.Now.Year.ToString()]</div>
+            <div class="col-md-6 poweredby"> @Html.Raw(string.Format(_TT["Developed using {0}"].ToString(), "<a href=\"" + NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
         </div>
     </div>
 </footer>
@@ -123,6 +130,17 @@ $(document).ready(function () {
             }
         }
     }, 50);
+
+    $('.ncc-main-menu').find('a').each(function () {
+        var pathname = decodeURI(window.location.pathname);
+        if (pathname == '/CmsHome')
+            pathname = "/";
+        if ($(this).attr('href') == pathname) {
+            $(this).parents("li").addClass('active');
+        }
+        /*console.log($(this).attr('href'));
+        console.log(pathname);*/
+    });
 
 });
 </script>

@@ -1,0 +1,49 @@
+﻿<!-- Full Width Slider Start -->
+<div>
+    @{
+        var fullWidthSlider = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "FullWidthSlider" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+        if (fullWidthSlider != null && fullWidthSlider.Count > 0)
+        {
+            <div class="fullWidthSlider">
+                @foreach (var item in fullWidthSlider)
+                {
+                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                    foreach (var widget in widgets)
+                    {
+                        widget.Init(item.Id);
+                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(this.ViewContext.HttpContext.Items["currentLanguage"].ToString()) || this.ViewContext.HttpContext.Items["currentLanguage"].ToString().ToLower() == widget.Language.ToLower())
+                        { 
+                            if (widget.DisplayTitle != "" || widget.Footer != "")
+                            {
+                                <div class='panel panel-default'>
+                                    @if (widget.DisplayTitle != "")
+                                    {
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.DisplayTitle)
+                                        </div>
+                                    }
+                                    <div class='panel-body'>
+                                        @Html.Raw(widget.RenderBody())
+                                    </div>
+                                    @if (widget.Footer != "")
+                                    {
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.Footer)
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+                                    @Html.Raw(widget.RenderBody())
+                                </div>
+                            }
+                        }
+                    }
+                }
+            </div>
+        }
+    }
+</div>
+<!-- Full Width Slider End -->

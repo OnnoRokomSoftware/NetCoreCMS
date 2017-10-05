@@ -18,9 +18,9 @@ namespace NetCoreCMS.LinkShare.Services
             _entityRepository = entityRepository;
         }
 
-        public LsCategory Get(long entityId)
+        public LsCategory Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Query().FirstOrDefault(x => x.Id == entityId);
+            return _entityRepository.Get(entityId);
         }
 
         public LsCategory Save(LsCategory entity)
@@ -58,29 +58,9 @@ namespace NetCoreCMS.LinkShare.Services
             }
         }
 
-        public List<LsCategory> LoadAll()
+        public List<LsCategory> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.Query().Include("Links").ToList();
-        }
-
-        public List<LsCategory> LoadAllActive()
-        {
-            return _entityRepository.LoadAllActive();
-        }
-
-        public List<LsCategory> LoadAllByStatus(int status)
-        {
-            return _entityRepository.Query().Include("Links").Where(x => x.Status == status).ToList();
-        }
-
-        public List<LsCategory> LoadAllByName(string name)
-        {
-            return _entityRepository.Query().Include("Links").Where(x => x.Name == name).ToList();
-        }
-
-        public List<LsCategory> LoadAllByNameContains(string name)
-        {
-            return _entityRepository.Query().Include("Links").Where(x => x.Name.Contains(name)).ToList();
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
         }
 
         public void DeletePermanently(long entityId)

@@ -1,4 +1,4 @@
-﻿@using NetCoreCMS.Modules.Admin.Models.ViewModels
+﻿@using NetCoreCMS.Framework.Core.Models.ViewModels
 @model StartupViewModel
 
 @{
@@ -31,38 +31,38 @@
             </div>
 
             <div class="form-group">
-                <div class="col-sm-1 text-right"><input type="radio" name="StartupType" value="Default" @ViewBag.DefaultChecked /></div>
-                <div class="col-sm-5"><input type="text" name="Default" value="@Model.Default" class="form-control" /></div>
+                <div class="col-sm-1 text-right"><input type="radio" name="RoleStartupType" value="Url" @ViewBag.DefaultChecked /></div>
+                <div class="col-sm-5"><input type="text" name="Url" value="@Model.Url" class="form-control" /></div>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-1 text-right"><input type="radio" name="StartupType" value="Page" @ViewBag.PageChecked /></div>
+                <div class="col-sm-1 text-right"><input type="radio" name="RoleStartupType" value="Page" @ViewBag.PageChecked /></div>
                 <div class="col-sm-5">
-                    <select asp-for="PageSlug" asp-items="@Model.Pages" class="form-control">
+                    <select asp-for="PageId" asp-items="@Model.Pages" class="form-control">
                         <option>Select a page</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-1 text-right"><input type="radio" name="StartupType" value="Category" @ViewBag.CategoryChecked /></div>
+                <div class="col-sm-1 text-right"><input type="radio" name="RoleStartupType" value="Category" @ViewBag.CategoryChecked /></div>
                 <div class="col-sm-5">
-                    <select asp-for="CategorySlug" asp-items="@Model.Categories" class="form-control">
+                    <select asp-for="CategoryId" asp-items="@Model.Categories" class="form-control">
                         <option>Select a category</option>
                     </select>
                 </div>
             </div>
 
             <div class="form-group">
-                <div class="col-sm-1 text-right"><input type="radio" name="StartupType" value="Post" @ViewBag.PostChecked /></div>
+                <div class="col-sm-1 text-right"><input type="radio" name="RoleStartupType" value="Post" @ViewBag.PostChecked /></div>
                 <div class="col-sm-5">
-                    <select asp-for="PostSlug" asp-items="@Model.Posts" class="form-control">
+                    <select asp-for="PostId" asp-items="@Model.Posts" class="form-control">
                         <option>Select a post</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-1 text-right"><input type="radio" name="StartupType" value="Module" @ViewBag.ModuleChecked /></div>
+                <div class="col-sm-1 text-right"><input type="radio" name="RoleStartupType" value="Module" @ViewBag.ModuleChecked /></div>
                 <div class="col-sm-5">
                     <select asp-for="ModuleSiteMenuUrl" asp-items="@Model.ModuleSiteMenus" class="form-control">
                         <option>Select module menu</option>

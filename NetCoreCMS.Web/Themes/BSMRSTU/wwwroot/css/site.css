@@ -1,0 +1,172 @@
+﻿/*
+ * Author: OnnoRokom Software Ltd
+ * Website: http://onnorokomsoftware.com
+ * Copyright (c) onnorokomsoftware.com
+ * License: Commercial
+*/
+body{
+    font-size:16px !important;
+}
+
+.home{
+    border:solid 1px;
+}
+
+/*Side design*/
+.topHeader {
+    background-color: #154553;
+    height: 70px;
+    overflow-y:hidden;
+}
+.headerBig {
+    padding-top: 10px;
+    padding-bottom: 5px;
+    display: block;
+}
+
+    .headerBig img {
+        float: left;
+    }
+    .headerBig h1 {
+        color: #FFF;
+        font-size: 20px;
+        font-weight: bold;
+        margin-top: 5px;
+        margin-left: 5px;
+        margin-bottom: -8px;
+    }
+    .headerBig h4 {
+        color: #AAA;
+        font-size: 14px;
+        margin-left: 5px;
+        font-weight: bold;
+    }
+
+.headerSmall {
+    display: none;
+}
+
+footer {
+    background-color: #154553;
+    color: #FFF;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
+    footer .bottomText {
+        background-color: #0c3541;
+        color: #FFF;
+        min-height: 50px;
+        padding-top: 15px;
+    }
+
+.copyright {
+    float: left;
+}
+
+.poweredby {
+    float: right;
+    text-align: right;
+}
+@media only screen and (max-width: 1000px) {
+    .headerBig {
+        display: none;
+    }
+
+    .headerSmall {
+        padding-top: 10px;
+        padding-bottom: 5px;
+        display: block;
+    }
+        .headerSmall img {
+            float: left;
+        }
+        .headerSmall h1 {
+            color: #FFF;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 5px;
+            margin-left: 5px;
+            margin-bottom: -8px;
+        }
+
+        .headerSmall h4 {
+            color: #AAA;
+            font-size: 14px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+}
+@media only screen and (max-width: 766px) {
+    footer {
+        background-color: #154553;
+        color: #FFF;
+        position: inherit;
+    }
+
+        footer .bottomText {
+            background-color: #0c3541;
+            color: #FFF;
+            min-height: 50px;
+            padding-top: 15px;
+        }
+    .copyright {
+        float:none;
+        text-align:center;
+    }
+
+    .poweredby {
+        float: none;
+        text-align: center;
+    }
+}
+@media only screen and (max-width: 400px) {
+    .headerSmall {
+        padding-top: 10px;
+        padding-bottom: 0px;
+        display: block;
+    }
+        .headerSmall h1 {
+            color: #FFF;
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            padding-left: 5px;
+        }
+
+        .headerSmall h4 {
+            display: none;
+        }
+}
+
+.mainBody {
+    /*min-height: 80vh;*/
+    padding: 0px;
+    word-wrap: break-word;
+}
+.fullWidthSlider {
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+/*site design*/
+
+
+/*Bootstrap override start*/
+.btn {
+    font-size: 16px !important;
+}
+.btn-primary {
+    background: #154553;
+    color: #ffffff;
+}
+
+    .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open > .dropdown-toggle.btn-primary {
+        background: #0c3541;
+    }
+
+    .btn-primary:active, .btn-primary.active {
+        background: #0c3541;
+        box-shadow: none;
+    }
+/*Bootstrap override end*/

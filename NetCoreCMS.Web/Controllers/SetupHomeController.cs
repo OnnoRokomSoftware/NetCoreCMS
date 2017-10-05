@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -11,9 +13,11 @@ using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace NetCoreCMS.Core.Modules.Setup.Controllers
@@ -21,7 +25,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
     [AllowAnonymous]
     public class SetupHomeController : NccController
     { 
-        private readonly ILogger _logger;
+
         IHttpContextAccessor _httpContextAccessor;
         ILoggerFactory _loggerFactory;
 
@@ -76,12 +80,18 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
 
         public ActionResult CreateAdmin()
         {
+            ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value","Text");
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(AdminViewModel viewModel)
         {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value", "Text");
+                return View(viewModel);
+            }
 
             SetupHelper.InitilizeDatabase();
 
@@ -116,6 +126,9 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             var lookupNormalizer = new UpperInvariantLookupNormalizer();
             var identityErrorDescriber = new IdentityErrorDescriber();
             var logger = _loggerFactory.CreateLogger<UserManager<NccUser>>();
+            var authOption = new AuthenticationOptions();            
+            var options = Options.Create<AuthenticationOptions>(authOption);            
+            var scheme = new AuthenticationSchemeProvider(options);
             
             var userManager = new UserManager<NccUser>(
                 userStore,
@@ -138,13 +151,12 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                 roleValidatorList,
                 new UpperInvariantLookupNormalizer(),
                 new IdentityErrorDescriber(),
-                roleLogger,
-                _httpContextAccessor
+                roleLogger
                 );
 
             var claimsFactory = new UserClaimsPrincipalFactory<NccUser,NccRole>(userManager, roleManager, identityOptions);
             var signInLogger = _loggerFactory.CreateLogger<SignInManager<NccUser>>();
-            var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger);
+            var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger, scheme);
             
             //nccDbConetxt.Database.Migrate();
 
@@ -156,12 +168,14 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                 AdminUserName = viewModel.AdminUserName,
                 ConnectionString = SetupHelper.ConnectionString,
                 Database = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase),
-                Email = viewModel.Email
+                Email = viewModel.Email,
+                Language = viewModel.Language
             };
 
-            var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager,  setupInfo );
-            SetupHelper.RegisterAuthServices();
+            SetupHelper.RegisterAuthServices(dbe);
+            var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager,  setupInfo );            
             SetupHelper.IsAdminCreateComplete = true;
+            SetupHelper.Language = viewModel.Language;
             SetupHelper.SaveSetup();
             SetupHelper.CrateNccWebSite(nccDbConetxt, setupInfo);
 

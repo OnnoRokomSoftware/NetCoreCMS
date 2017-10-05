@@ -1,0 +1,258 @@
+﻿/*
+ * Author: OnnoRokom Software Ltd
+ * Website: http://onnorokomsoftware.com
+ * Copyright (c) onnorokomsoftware.com
+ * License: Commercial
+*/
+/*Side design*/
+body {
+    font-family: "SolaimanLipi",Arial,Helvetica,sans-serif;
+    background-color: #FFF;
+    color: #000;
+    font-size: 16px;
+}
+    body a {
+        color: #ffe200;
+    }
+    body a:hover{
+        color: #fcff00;
+    }
+
+/*h1, h2, h3, h4, h5, h6 {
+    font-family: "SolaimanLipi",Arial,Helvetica,sans-serif;
+}*/
+
+.home{
+    border:solid 1px;
+}
+
+.headerImageBig {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    display: block;
+}
+
+.headerImageSmall {
+    display: none;
+}
+
+#navbarWebsiteName {
+    font-size: 24px;
+    font-weight: bold;
+    color: #FFF200 !important;
+}
+
+.navbar-default {
+    background-color: #300a0b;
+    border-color: #270304;
+    color: #FFF;
+}
+    .navbar-default .navbar-brand {
+        color: #fff !important;
+    }
+    .navbar-default .navbar-brand:hover {
+        color: #fcff00;
+    } 
+    .navbar-default .navbar-nav > li > a {
+        color: #fff;
+    }
+        .navbar-default .navbar-nav > li > a:hover {
+            color: #ffe200;
+            font-weight: bold;
+        }
+    .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+        color: #ffe200;
+        font-weight: bold;
+        background-color: #481113;
+    }
+    .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+        color: #ffe200;
+        font-weight: bold;
+        background-color: #300a0b;
+    }
+
+    .navbar-default .navbar-nav .dropdown-menu {
+        background-color: #300a0b;
+        color: #ffe200;
+    }
+        .navbar-default .navbar-nav .dropdown-menu > li > a {
+            background-color: #300a0b;
+            color: #FFF;
+        }
+            .navbar-default .navbar-nav .dropdown-menu > li > a:hover {
+                background-color: #481113;
+                color: #ffe200;
+            }
+    .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+        background-color: #300a0b;
+        color: #FFF;
+    }
+        .navbar-default .navbar-nav .open .dropdown-menu > li > a:hover {
+            background-color: #481113;
+            color: #ffe200;
+        }
+.topHeader {
+    /*height: 137px;*/
+} 
+.navbar-brand-with-top-menu{
+    display:none;
+}
+.userMenu{
+    display:none;
+}
+
+.pageContent h2{
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.footerMenu {
+    /*display: block;*/
+    float: right;
+    text-align: right;
+    color: #300A0B;
+}
+    .footerMenu a {
+        color: #300A0B;
+        font-weight: bold;
+    }
+        .footerMenu a:hover {
+            color: #fcff00;
+            font-weight: bold;
+        }
+
+.mainBody {
+    min-height: 65vh;
+    padding: 0px;
+}
+
+.fullWidthSlider {
+    background-color: #481113;
+    margin-top: -20px;
+    margin-bottom: 20px;
+}
+
+.darkBackground {
+    background-color: #481113;
+    margin-top: -20px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.boxDesign {
+    background-color: #fff;
+    border-radius: 5px;
+    border-color: #000;
+    border-style: solid;
+    border-width: 3px; 
+    color: black;
+    padding: 10px;
+    overflow:hidden;
+}
+
+.smallBoxDesign {
+    background-color: #fff;
+    border-radius: 5px;
+    border-color: #000;
+    border-style: solid;
+    border-width: 3px;
+    color: black;
+    text-align: center;
+    width: 30%;
+    margin: 1.0% 1.5% 1.0% 1.5%;
+    float: left;
+    padding: 10px;
+}
+.panel-default {
+    border-color: #481113;
+}
+    .panel-default > .panel-heading {
+        color: #fff;
+        background-color: #481113;
+        border-color: #481113;
+    }
+    .panel-default .panel-body {
+        color: #000;
+        background-color: #fff;
+        border-color: #481113;
+        font-size: 14px;
+    }
+
+.btn-default {
+    color: #fff !important;
+    background-color: #481113 !important;
+    border-color: #481113 !important;
+}
+    .btn-default:hover {
+        color: #fff !important;
+        background-color: #63171a !important;
+        border-color: #481113 !important;
+    }
+
+
+.copyright {
+    float: left;
+}
+
+
+
+@media only screen and (max-width: 766px) {
+    /*.navbar-brand-with-top-menu {
+        display: block;
+    }*/
+    .headerImageBig {
+        display: none;
+    }
+
+    .headerImageSmall {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        display: block;
+    }
+
+    .userMenu {
+        display: block;
+    }
+
+    .topWidgetZone {
+        display: none;
+    }
+
+    .topLogo {
+        width: 100%;
+        text-align: center;
+    }
+
+        .topLogo h1 {
+            text-align: center;
+        }
+
+        .topLogo h4 {
+            padding-left: initial;
+            color: gray;
+        }
+
+    .smallBoxDesign {
+        background-color: #fff;
+        border-radius: 5px;
+        border-color: #000;
+        border-style: solid;
+        border-width: 3px;
+        color: black;
+        text-align: center;
+        width: 95%;
+        margin: 2.5%;
+        padding: 20px;
+    }
+
+    .footerMenu {
+        display: none;
+    }
+}
+
+
+
+/*site design*/

@@ -1,0 +1,87 @@
+﻿@{
+    //int bodyClassWidth = 12;
+    //bool hasLeftColumn = false;
+    //bool hasRightColumn = false;
+    ViewBag.CurrentLayout = "SiteLayout";
+
+    ///*Special Calculation for left and right column show hide*/
+    //var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
+    //var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+    //if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
+    //{
+    //    hasLeftColumn = true;
+    //    bodyClassWidth = bodyClassWidth - 2;
+    //}
+
+    //var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
+    //var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+    //if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
+    //{
+    //    hasRightColumn = true;
+    //    bodyClassWidth = bodyClassWidth - 2;
+    //}
+    ///*Special Calculation for left and right column show hide*/
+}
+
+<!DOCTYPE html>
+<html>
+    <head>
+        @Html.Partial("Parts/_Head")
+        @Html.Raw(JavaScriptSnippet.FullScript)
+        @RenderSection("Styles", required: false)
+    </head>
+    <body id="body">
+        <!-- Zone TOP Start-->
+        <!-- Header -->
+        @Html.Partial("Parts/_Header")    
+
+        <!-- Navbar -->
+        <nav id="mainNavbar" class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    @Html.Partial("Parts/_NavbarPart")
+                </div>
+                <div class="navbar-collapse collapse">
+                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation"))
+                    <div class="userMenu">
+                        @await Html.PartialAsync("_SiteLoginPartial")
+                    </div>
+                </div>
+            </div>
+        </nav>        
+        <!-- Zone TOP End-->
+
+        <!--  Main Body Start -->
+        <div class="container mainBody">   
+            <!-- Left Column start -->
+            @if ((bool)this.ViewContext.HttpContext.Items["hasLeftColumn"])
+            {
+                @Html.Partial("Parts/_LeftColumn");
+            }
+            <!-- Left Column end -->
+
+            <!-- Right Column start -->
+            @if ((bool)this.ViewContext.HttpContext.Items["hasRightColumn"])
+            {
+                @Html.Partial("Parts/_RightColumn");
+            }
+            <!-- Right Column end -->
+
+            <!-- Main content Start -->
+            <div class="col-md-@this.ViewContext.HttpContext.Items["bodyClassWidth"]">
+                <!-- Featured Start -->
+                @Html.Partial("Parts/_Featured")
+                <!-- Featured End -->
+
+                @RenderBody()
+            </div>
+            <!-- Main content End -->
+
+        </div>
+        <!--  Main Body End -->
+
+        @Html.Partial("Parts/_Footer")
+        @RenderSection("Scripts", required: false)
+    </body>
+</html>
+

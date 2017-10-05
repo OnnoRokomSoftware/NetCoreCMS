@@ -1,0 +1,75 @@
+﻿@{
+    var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
+    var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+}
+
+<div class="col-sm-2 pull-left">
+    <!-- Left Menu Start -->
+    @if (menusLeft != null && menusLeft.Count > 0)
+    {
+        <div class="col-md-12">
+            @foreach (var item in menusLeft)
+            {
+                foreach (var menuItem in item.MenuItems)
+                {
+                    <a href="@menuItem.Url">@menuItem.Name</a><br />
+                    foreach (var mi2 in menuItem.Childrens)
+                    {
+                        <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                        foreach (var mi3 in mi2.Childrens)
+                        {
+                            <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                            foreach (var mi4 in mi3.Childrens)
+                            {
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                            }
+                        }
+                    }
+                }
+            }
+        </div>
+        <div class="clearfix"></div>
+    }
+    <!-- Left Menu End -->
+    <!-- Left Sidebar Start -->
+    @if (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0)
+    {
+        <div class="row">
+            @foreach (var item in zoneLeftWidgets)
+            {
+                var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                foreach (var widget in widgets)
+                {
+                    widget.Init(item.Id);
+                    if (widget.DisplayTitle != "" || widget.Footer != "")
+                    {
+                        <div class='panel panel-default'>
+                            @if (widget.DisplayTitle != "")
+                            {
+                                <div class='panel-heading'>
+                                    @Html.Raw(widget.DisplayTitle)
+                                </div>
+                            }
+                            <div class='panel-body'>
+                                @Html.Raw(widget.RenderBody())
+                            </div>
+                            @if (widget.Footer != "")
+                            {
+                                <div class='panel-footer'>
+                                    @Html.Raw(widget.Footer)
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            @Html.Raw(widget.RenderBody())
+                        </div>
+                    }
+                }
+            }
+        </div>
+    }
+    <!-- Left Sidebar End -->
+</div>

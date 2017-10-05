@@ -11,5 +11,6 @@ namespace NetCoreCMS.Framework.Setup
         public string AdminPassword { get; set; }
         public DatabaseEngine Database { get; set; }
         public string ConnectionString { get; set; }
+        public string Language { get; set; }
     }
 }

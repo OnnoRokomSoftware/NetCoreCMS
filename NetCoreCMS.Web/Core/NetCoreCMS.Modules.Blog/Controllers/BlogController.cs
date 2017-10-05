@@ -12,16 +12,16 @@ using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Themes;
 
-namespace NetCoreCMS.Core.Modules.Media.Controllers
+namespace NetCoreCMS.Core.Modules.Blog.Controllers
 {
-    [Authorize(Roles ="SuperAdmin,Adimistrator,Editor")]
-    [AdminMenu(Name ="Blog", Order = 5)]
+    [Authorize(Roles = "SuperAdmin,Adimistrator,Editor")]
+    [SiteMenu(IconCls = "fa-newspaper-o", Name = "Blog", Order = 100)]
+    [AdminMenu(IconCls = "fa-newspaper-o", Name = "Blog", Order = 5)]
     public class BlogController : NccController
     {
         NccPostService _nccPostService;
         NccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
-        ILogger _logger;
 
         public BlogController(NccPostService nccPostService, NccUserService nccUserService, ILoggerFactory loggerFactory)
         {
@@ -32,78 +32,15 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
         }
 
         [AllowAnonymous]
-        public ActionResult Index(int page = 0)
+        public ActionResult Index()
         {
-            ViewBag.TotalPost = _nccPostService.TotalPublishedPostCount();
-            var postList = _nccPostService.LoadPublished(page * 5, 5);
-
-            return View(postList);
+            return RedirectToAction("Index", "Post");
         }
 
         [AllowAnonymous]
         public ActionResult Details(string slug)
         {
-
-            return View();
-        }
-
-        [AdminMenuItem(Name ="New Post", Order = 1, Url = "/Blog/CreateEdit")]
-        public ActionResult CreateEdit(long id=0)
-        {
-            PreparePostCreateEditView();
-
-            NccPost post = new NccPost();
-            
-            if (id > 0)
-            {
-                post = _nccPostService.Get(id);
-            }
-            else
-            {
-                post.Content = "";
-                post.PublishDate = DateTime.Now;
-                post.PostStatus = NccPost.NccPostStatus.Draft;
-            }
-
-            return View(post);
-        }
-
-        [HttpPost]
-        public ActionResult CreateEdit(NccPost post)
-        {
-            if (ModelState.IsValid)
-            {
-                var author = _nccUserService.Get(User.GetUserId());
-                post.Author = author;
-                post.Status = EntityStatus.Active;
-                _nccPostService.Save(post);
-                TempData["SuccessMessage"] = "Post save successful";
-            }
-
-            PreparePostCreateEditView();
-
-            return View(post);
-        }
-
-        private void PreparePostCreateEditView()
-        {
-            ViewBag.DomainName = (Request.IsHttps == true ? "https://" : "http://") + Request.Host + "/Blog/";
-            ViewBag.Layouts = GlobalConfig.ActiveTheme.Layouts;
-        }
-
-        [AdminMenuItem(Name = "Manage", Order = 2, Url = "/Blog/Manage")]
-        public ActionResult Manage()
-        {
-            var allPosts = _nccPostService.LoadAll().OrderByDescending(p => p.CreationDate).ToList();
-            return View(allPosts);
-        }
-
-        public ActionResult Delete(long Id)
-        {
-            ApiResponse rsp = new ApiResponse();
-            _nccPostService.Remove(Id);            
-            TempData["SuccessMessage"] = "Page deleted successful";
-            return RedirectToAction("Manage");
-        }
+            return RedirectToAction("Index", "Post", new { slug = slug });            
+        }        
     }
 }

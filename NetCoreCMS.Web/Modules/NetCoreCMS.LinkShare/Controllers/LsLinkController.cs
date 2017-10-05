@@ -65,7 +65,7 @@ namespace NetCoreCMS.LinkShare.Controllers
         public ActionResult CreateEdit(long Id = 0)
         {
             LsLink item = new LsLink();
-            ViewBag.LsCategoryList = _lsCategoryService.LoadAllActive();
+            ViewBag.LsCategoryList = _lsCategoryService.LoadAll(true);
 
             if (Id > 0)
             {
@@ -115,7 +115,7 @@ namespace NetCoreCMS.LinkShare.Controllers
             {
                 return RedirectToAction("Manage");
             }
-            ViewBag.LsCategoryList = _lsCategoryService.LoadAllActive();
+            ViewBag.LsCategoryList = _lsCategoryService.LoadAll(true);
             return View(model);
         }
 
@@ -164,7 +164,7 @@ namespace NetCoreCMS.LinkShare.Controllers
         {            
             List<LsLink> itemList = new List<LsLink>();
             if (category.Trim() == "")
-                itemList = _lsLinkService.LoadAllActive().OrderByDescending(x => x.Id).Skip(page * count).Take(count).ToList();
+                itemList = _lsLinkService.LoadAll(true).OrderByDescending(x => x.Id).Skip(page * count).Take(count).ToList();
             else
                 itemList = _lsLinkService.LoadAllByCategory(category, page, count);
             return View(itemList);

@@ -1,0 +1,342 @@
+﻿@using NetCoreCMS.Modules.OnlineExam.Models
+@{
+    var controllerName = "OeQuestion";
+}
+<style>
+    .ExamHead {
+        text-align: center;
+        font-size: 24px;
+    }
+
+    .serial {
+        width: 10%;
+        float: left;
+        text-align: right;
+    }
+
+    .questionBlock {
+        margin-bottom: 15px;
+    }
+
+    .question {
+        width: 90%;
+        float: left;
+    }
+
+    .questionText {
+        margin-bottom: 5px;
+    }
+
+    .questionTable {
+        width: 100%;
+        border: none;
+    }
+
+    .optionSerial {
+        width: 10%;
+        text-align: right;
+    }
+
+    .option {
+        width: 90%;
+        padding-left:10px;
+    }
+    .optionCheckbox{        
+        height: 25px;
+        width: 25px;
+    }
+    #clock {
+        font-weight: bold;
+    }
+
+    @@media only screen and (max-width: 1000px) {
+        .optionSerial {
+            width: 15%;
+            text-align: right;
+        }
+
+        .option {
+            width: 85%;
+        }
+    }
+
+    @@media only screen and (max-width: 600px) {
+        .optionSerial {
+            width: 20%;
+            text-align: right;
+        }
+
+        .option {
+            width: 80%;
+        }
+    }
+
+    @@media only screen and (max-width: 400px) {
+        .optionSerial {
+            width: 25%;
+            text-align: right;
+        }
+
+        .option {
+            width: 75%;
+        }
+    }
+</style>
+<div class="row">
+    @{
+        OeExam exam = ViewBag.Exam;
+        int examMinute = exam.TotalTimeInMin;
+        List<OeStudentQuestionSetDetails> oeStudentQuestionSetDetailsList = ViewBag.QuestionSetDetailsList;
+        if (DateTime.Now.Subtract(oeStudentQuestionSetDetailsList.FirstOrDefault().StudentQuestionSet.CreationDate).Minutes > 0)
+        {
+            examMinute = exam.TotalTimeInMin - DateTime.Now.Subtract(oeStudentQuestionSetDetailsList.FirstOrDefault().StudentQuestionSet.CreationDate).Minutes;
+            @*<span> @examMinute </span><br />
+            <span>@DateTime.Now</span><br />
+            <span>@oeStudentQuestionSetDetailsList.FirstOrDefault().StudentQuestionSet.CreationDate</span>*@
+        }
+        else
+        {
+            @*<span>@examMinute</span><br />
+            <span>@DateTime.Now</span><br />
+            <span>@oeStudentQuestionSetDetailsList.FirstOrDefault().StudentQuestionSet.CreationDate</span>*@
+        }
+        int serial = 0;
+        string identifireA = "";
+        string identifireB = "";
+        string identifireC = "";
+        string identifireD = "";
+
+        <form id="ExamSelectForm" name="ExamSelectForm" asp-controller="@controllerName" asp-action="Index" method="post">
+            <input type="hidden" name="prn" value="@ViewBag.prn" />
+            <input type="hidden" name="reg" value="@ViewBag.reg" />
+            <input type="hidden" name="studentQuestionSetId" value="@oeStudentQuestionSetDetailsList.FirstOrDefault().StudentQuestionSet.Id" />
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <div class="ExamHead">
+                        <div class="pull-left">
+                            @*<a asp-controller="@controllerName" asp-action="Index" asp-route-id="" asp-route-prn="@ViewBag.prn" asp-route-reg="@ViewBag.reg" class="btn btn-default">Back</a>*@
+                            <strong>@exam.Name</strong>
+                        </div>
+                        <strong>&nbsp;</strong>
+                        <div class="pull-right">
+                            <span>Remaining Time: </span>
+                            <span id="clock">
+                                @if (exam.TotalTimeInMin > 60)
+                                {
+                                    <span><span>@Convert.ToInt16(examMinute / 60)</span>:<span>@examMinute%60</span>:00</span>
+                                }
+                                else if (examMinute < 10)
+                                {
+                                    <span>0<span>@examMinute</span>:00</span>
+                                }
+                                else
+                                {
+                                    <span><span>@examMinute</span>:00</span>
+                                }
+                            </span>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="panel-body" style="overflow:auto;">
+                    <div style="text-align:center;">
+                        <span>
+                            <span>
+                                <span>Marks Per Question: </span>
+                                <span>@exam.MarksPerQuestion</span>
+                                <span>, Negative Marks: </span>
+                                <span>@exam.NegativeMarks</span>
+                            </span>
+                        </span>
+                    </div>
+                    <hr />
+                    @foreach (var item in oeStudentQuestionSetDetailsList)
+                    {
+                        {
+                            serial = item.SetSerial;
+                            identifireA = serial + "-A";
+                            identifireB = serial + "-B";
+                            identifireC = serial + "-C";
+                            identifireD = serial + "-D";
+                        }
+                        <div class="col-md-12 questionBlock">
+                            <div class="serial">
+                                <strong>@serial . </strong>
+                            </div>
+                            <div class="question">
+                                <div class="col-md-12 questionText">
+                                    @Html.Raw(item.Question.Name)
+                                </div>
+                                <div class="col-sm-6">
+                                    <table class="questionTable">
+                                        <tr>
+                                            <td class="optionSerial"><input type="checkbox" class="optionCheckbox" name="StudentAnswer" value="@identifireA" /></td>
+                                            <td class="option">
+                                                @if (item.OptionA == "A")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionA)</span>
+                                                }
+                                                else if (item.OptionA == "B")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionB)</span>
+                                                }
+                                                else if (item.OptionA == "C")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionC)</span>
+                                                }
+                                                else if (item.OptionA == "D")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionD)</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-sm-6">
+                                    <table class="questionTable">
+                                        <tr>
+                                            <td class="optionSerial"><input type="checkbox" class="optionCheckbox" name="StudentAnswer" value="@identifireB" /></td>
+                                            <td class="option">
+                                                @if (item.OptionB == "A")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionA)</span>
+                                                }
+                                                else if (item.OptionB == "B")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionB)</span>
+                                                }
+                                                else if (item.OptionB == "C")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionC)</span>
+                                                }
+                                                else if (item.OptionB == "D")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionD)</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-sm-6">
+                                    <table class="questionTable">
+                                        <tr>
+                                            <td class="optionSerial"><input type="checkbox" class="optionCheckbox" name="StudentAnswer" value="@identifireC" /></td>
+                                            <td class="option">
+                                                @if (item.OptionC == "A")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionA)</span>
+                                                }
+                                                else if (item.OptionC == "B")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionB)</span>
+                                                }
+                                                else if (item.OptionC == "C")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionC)</span>
+                                                }
+                                                else if (item.OptionC == "D")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionD)</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-sm-6">
+                                    <table class="questionTable">
+                                        <tr>
+                                            <td class="optionSerial"><input type="checkbox" class="optionCheckbox" name="StudentAnswer" value="@identifireD" /></td>
+                                            <td class="option">
+                                                @if (item.OptionD == "A")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionA)</span>
+                                                }
+                                                else if (item.OptionD == "B")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionB)</span>
+                                                }
+                                                else if (item.OptionD == "C")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionC)</span>
+                                                }
+                                                else if (item.OptionD == "D")
+                                                {
+                                                    <span>@Html.Raw(item.Question.OptionD)</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @*<div class="col-md-12 text-center">
+                            <h4>@exam.TotalQuestion</h4>
+                            <h4>@exam.MarksPerQuestion</h4>
+                            <h4>@exam.NegativeMarks</h4>
+                            <h4>@exam.TotalMarks</h4>
+                        </div>*@
+
+                </div>
+                <div class="panel-footer">
+                    <div style="text-align:center;">
+                        <input type="submit" value="Finish Exam" class="btn btn-success btn-lg" />
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
+    }
+</div>
+<script>
+    document.addEventListener('contextmenu', event => event.preventDefault());
+    // Set the date we're counting down to
+    var countDownDate = new Date(Date.now() + @examMinute * 60000).getTime();
+
+    // Update the count down every 1 second
+    var x = setInterval(function () {
+
+        // Get todays date and time
+        var now = new Date().getTime();
+
+        // Find the distance between now an the count down date
+        var distance = countDownDate - now;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        var timeRemaining = "";
+        if (days > 0)
+            timeRemaining += days + "day ";
+
+        if (hours > 0) {
+            if (hours < 10)
+                timeRemaining += "0" + hours + ":";
+            else
+                timeRemaining += hours + ":";
+        }
+
+        if (minutes < 10)
+            timeRemaining += "0" + minutes + ":";
+        else
+            timeRemaining += minutes + ":";
+
+        if (seconds < 10)
+            timeRemaining += "0" + seconds;
+        else
+            timeRemaining += seconds;
+
+        document.getElementById("clock").innerHTML = timeRemaining;
+
+        // If the count down is over, write some text
+        if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("clock").innerHTML = "Time Over";
+            document.getElementById("ExamSelectForm").submit();            
+        }
+    }, 1000);
+</script>

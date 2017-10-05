@@ -80,7 +80,7 @@ namespace NetCoreCMS.LinkShare.Controllers
             {
                 //unique name check
                 model.Name = model.Name.Trim();
-                var itemCount = _lsCategoryService.LoadAllByName(model.Name).Where(x => x.Id != model.Id).ToList().Count();
+                var itemCount = _lsCategoryService.LoadAll(true, 0, model.Name).Where(x => x.Id != model.Id).ToList().Count();
                 if (itemCount > 0)
                 {
                     ViewBag.Message = "Duplicate name found.";

@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {
@@ -19,12 +20,12 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
     public class MediaHomeController : NccController
     {
         #region Initialization
-        
+
         private IHostingEnvironment _env;
         private readonly string _imageRoot = "\\media\\Images\\";
         private readonly string _imagePathPrefix = "/media/Images/";
         private readonly string _imageUploadPrefix = "media\\Images\\";
-        string[] _allowedImageExtentions = { ".jpg", ".jpeg", ".bmp", ".png", ".gif", };
+        string[] _allowedImageExtentions = { ".jpg", ".jpeg", ".bmp", ".png", ".gif", ".ico", ".svg" };
 
         private readonly string _fileRoot = "\\media\\Files\\";
         private readonly string _filePathPrefix = "/media/Files/";
@@ -40,17 +41,25 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
         #region Operations
 
         #region Upload operation
-        [AdminMenuItem(Name = "Upload", Url = "/MediaHome/Upload", IconCls = "fa-upload", Order = 1)]
-        public ActionResult Upload(bool isFile = false)
+        [AdminMenuItem(Name = "Upload", Url = "/MediaHome/Upload", IconCls = "fa-upload", Order = 5)]
+        public ActionResult Upload(bool isFile = false, string inputId = "")
         {
             ViewBag.IsFile = isFile;
+            ViewBag.InputId = inputId;
+            ViewBag.Layout = Constants.AdminLayoutName;
+            if (!string.IsNullOrEmpty(inputId))
+                ViewBag.Layout = "_SimpleFullWidthLayout";
             ViewBag.UploadPath = "";
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upload(ICollection<IFormFile> files, bool isFile)
+        public async Task<IActionResult> Upload(ICollection<IFormFile> files, bool isFile, string inputId = "")
         {
+            ViewBag.InputId = inputId;
+            ViewBag.Layout = Constants.AdminLayoutName;
+            if (!string.IsNullOrEmpty(inputId))
+                ViewBag.Layout = "_SimpleFullWidthLayout";
             string responseSuccess = "";
             string responseError = "";
             string uploadPath = _imageUploadPrefix + DateTime.Now.Year.ToString() + "/" + (DateTime.Now.Month < 10 ? "0" + DateTime.Now.Month.ToString() : DateTime.Now.Month.ToString());
@@ -117,11 +126,15 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
         #endregion
 
         #region Manage Operation
-        [AdminMenuItem(Name = "Manage Gallary", Url = "/MediaHome/Index", IconCls = "fa-image", Order = 3)]
-
-        public ActionResult Index(bool isFile = false, string sq = "", string successMessage = "", string errorMessage = "")
+        [AdminMenuItem(Name = "Manage Gallary", Url = "/MediaHome/Index", IconCls = "fa-image", Order = 1)]
+        public ActionResult Index(bool isFile = false, string inputId = "", string sq = "", string successMessage = "", string errorMessage = "")
         {
             ViewBag.IsFile = isFile;
+            ViewBag.InputId = inputId;
+            ViewBag.Layout = Constants.AdminLayoutName;
+            if (!string.IsNullOrEmpty(inputId))
+                ViewBag.Layout = "_SimpleFullWidthLayout";
+
             var dirFileList = new List<NccMediaViewModel>();
             if (successMessage.Trim() != "")
                 TempData["SuccessMessage"] = successMessage;
@@ -162,11 +175,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
                     if (isFile == false)
                     {
                         ImageCount = SubDir.GetFiles("*.*", SearchOption.AllDirectories)
-                                         .Where(f => f.Name.EndsWith(".jpg") == true ||
-                                            f.Name.EndsWith(".jpeg") == true ||
-                                            f.Name.EndsWith(".bmp") == true ||
-                                            f.Name.EndsWith(".png") == true ||
-                                            f.Name.EndsWith(".gif") == true)
+                                         .Where(f => _allowedImageExtentions.Any(x => f.Name.ToLower().EndsWith(x)))
                                          .Count();
                     }
 
@@ -184,11 +193,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
 
                 #region File Listing
                 FileInfo[] FileList = Dir.GetFiles("*.*", SearchOption.TopDirectoryOnly)
-                                         .Where(f => f.Name.EndsWith(".jpg") == true ||
-                                            f.Name.EndsWith(".jpeg") == true ||
-                                            f.Name.EndsWith(".bmp") == true ||
-                                            f.Name.EndsWith(".png") == true ||
-                                            f.Name.EndsWith(".gif") == true)
+                                         .Where(f => _allowedImageExtentions.Any(x => f.Name.ToLower().EndsWith(x)))
                                          .ToArray();
                 if (isFile)
                 {
@@ -218,7 +223,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
             return View(dirFileList);
         }
 
-        [AdminMenuItem(Name = "Manage Files", Url = "/MediaHome/ManageFiles", IconCls = "fa-files-o", Order = 5)]
+        [AdminMenuItem(Name = "Manage Files", Url = "/MediaHome/ManageFiles", IconCls = "fa-files-o", Order = 3)]
         public ActionResult ManageFiles()
         {
             return RedirectToAction("Index", "MediaHome", new { isFile = true });
@@ -226,8 +231,12 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
         #endregion
 
         #region Delete Operation
-        public ActionResult Delete(string fullPath, string parrentDir, bool isFile = false)
+        public ActionResult Delete(string fullPath, string parrentDir, bool isFile = false, string inputId = "")
         {
+            ViewBag.InputId = inputId;
+            ViewBag.Layout = Constants.AdminLayoutName;
+            if (!string.IsNullOrEmpty(inputId))
+                ViewBag.Layout = "_SimpleFullWidthLayout";
             ViewBag.IsFile = isFile;
             var file = new NccMediaViewModel
             {
@@ -241,14 +250,18 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
             {
                 //ViewBag.MessageType = "ErrorMessage";
                 //ViewBag.Message = "File does not exists";
-                return RedirectToAction("Index", new { sq = parrentDir, errorMessage = "File does not exists.", isFile = isFile });
+                return RedirectToAction("Index", new { sq = parrentDir, errorMessage = "File does not exists.", isFile = isFile, inputId = inputId });
             }
             return View(file);
         }
 
         [HttpPost]
-        public ActionResult Delete(string fullPath, string parrentDir, int status, bool isFile)
+        public ActionResult Delete(string fullPath, string parrentDir, int status, bool isFile, string inputId = "")
         {
+            ViewBag.InputId = inputId;
+            ViewBag.Layout = Constants.AdminLayoutName;
+            if (!string.IsNullOrEmpty(inputId))
+                ViewBag.Layout = "_SimpleFullWidthLayout";
             ViewBag.IsFile = isFile;
             string deletePath = Path.Combine(_env.WebRootPath, fullPath.Substring(1));
             if (System.IO.File.Exists(deletePath))
@@ -257,9 +270,9 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
             }
             //ViewBag.MessageType = "SuccessMessage";
             //ViewBag.Message = "File deleted successful";
-            return RedirectToAction("Index", new { sq = parrentDir, successMessage = "File deleted successfully.", isFile = isFile });
+            return RedirectToAction("Index", new { sq = parrentDir, successMessage = "File deleted successfully.", isFile = isFile, inputId = inputId });
         }
-        #endregion 
+        #endregion
         #endregion
 
         #region Helper
