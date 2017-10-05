@@ -11,12 +11,12 @@ NetCoreCMS is a Content Management System developed using ASP.Net Core 1.1. It i
 
 The software is complete for internal testing which can be performed by people other than its developers. The testers are within the same organization or community. 
 
-Here is a detailed [roadmap](https://github.com/TecRT/NetCoreCMS/wiki/Roadmap).
+Here is a detailed [roadmap](https://github.com/OnnorokomSoftware/NetCoreCMS/wiki/Roadmap).
 
 ## Getting Started
 
 - To clone the repository, use the following command: 
-`git clone https://github.com/TecRT/NetCoreCMS.git` 
+`git clone https://github.com/OnnorokomSoftware/NetCoreCMS.git` 
 and check the `master` branch. 
 
 ### Command line
