@@ -45,16 +45,13 @@ and check the `master` branch.
 ## Creators
 
 [**S.M. Qumruzzaman Rahmani**](http://byronbd.com)
-> Project Manager
-> [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
+> Project Manager, [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
 
 [**G.M. Nazmul Hossain**](http://gmnazmul.com)
-> System Analyst
-> [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
+> System Analyst, [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
 
 [**Md. Rashidul Hasan**](http://masums.com)
-> Software Architect
-> [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
+> Software Architect, [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
 
 ## Copyright and license
 
