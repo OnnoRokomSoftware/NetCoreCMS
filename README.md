@@ -41,13 +41,25 @@ and check the `master` branch.
 - If make any mistake at installation period and project does not run then delete setup.json from root directory and run project again.
 - After install/uninstall any module or theme restart project.
 
-### Developers
--S.M. Qumruzzaman Rahmani
- Project Manager - OnnoRokom Software Ltd.
+ 
+## Creators
 
- -G.M. Nazmul Hossain
- System Analyst - OnnoRokom Software Ltd.
+[**S.M. Qumruzzaman Rahmani**](http://byronbd.com)
 
- -Md. Rashidul Hasan
- Software Architect - OnnoRokom Software Ltd.
+- Project Manager
+- [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
+
+[**G.M. Nazmul Hossain**](http://gmnazmul.com)
+
+- System Analyst
+- [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
+
+[**Md. Rashidul Hasan**](http://masums.com)
+
+- Software Architect
+- [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
+
+## Copyright and license
+
+Code and documentation copyright 2017 the [NetCoreCMS Authors](http://onnorokomsoftware.com) Code released under the [BSD-3 Clause](https://github.com/OnnorokomSoftware/NetCoreCMS/blob/master/LICENSE).
 
