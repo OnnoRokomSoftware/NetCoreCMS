@@ -1,0 +1,176 @@
+﻿@using NetCoreCMS.ImageSlider.Models
+@using System.Collections
+
+@model NccImageSlider
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Image Slider Create";
+    ViewData["PageSubtitle"] = "Create a new slider";
+    if (Model.Id > 0)
+    {
+        ViewData["PageTitle"] = "Image Slider Update";
+        ViewData["PageSubtitle"] = "Update an existing slider";
+    }
+}
+    
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                @*<div class="pull-right"><a asp-controller="NoticeHome" asp-action="CreateEdit" class="btn btn-outline btn-primary btn-xs">Add New</a></div>*@
+            </div>
+            <div class="panel-body">
+
+                <form id="createEditForm" class="form-horizontal" asp-controller="ImageSliderHome" asp-action="CreateEdit" method="post">
+                    <input type="hidden" asp-for="Id" value="@Model.Id" />
+                    <input type="hidden" asp-for="Status" value="@Model.Status" />
+                    <div class="col-sm-6 pull-left">
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Name </label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Interval (sec) </label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" asp-for="Interval" placeholder="" value="@Model.Interval" />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Image Width </label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" asp-for="ImageWidth" placeholder="" value="@Model.ImageWidth" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Image Height </label>
+                                <div class="col-md-6">
+                                    <input type="text" class="form-control" asp-for="ImageHeight" placeholder="" value="@Model.ImageHeight" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Show Nav </label>
+                                <div class="col-md-6">
+                                    <input type="checkbox" class="" asp-for="ShowNav" @Model.ShowNav />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="col-md-6 text-right">Show Side Nav </label>
+                                <div class="col-md-6">
+                                    <input type="checkbox" class="" asp-for="ShowSideNav" @Model.ShowSideNav />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Container Style </label>
+                            <div class="col-md-9">
+                                @*<input type="text" class="form-control" asp-for="ContainerStyle" placeholder="" value="@Model.ContainerStyle" />*@
+                                <textarea class="form-control" asp-for="ContainerStyle" placeholder="">@Model.ContainerStyle</textarea>
+                            </div>
+                        </div>
+
+                        <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Sl.</th>
+                                    <th class="text-center">Image</th>
+                                    <th class="text-center">Description (Html)</th>
+                                    <th class="text-center">
+                                        <input type="button" class="btn btn-primary" value="Add" onclick="addRow()" /> 
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model.ImageItems != null)
+                                {
+                                    foreach (var item in Model.ImageItems)
+                                    {
+                                        <tr>
+                                            <td class="text-center">@(item.Order + 1)</td>
+                                            <td>
+                                                <img src="@item.Path" width="250" />
+                                                <input type="hidden" class="ImageUrlHiddenInput" id='ImageUrl_@item.Order' name="itemPath[]" placeholder="Enter Image Path" value="@item.Path" /><br />
+                                                <input type="button" class="btn btn-default" id="ImageSelect" value="Select" onclick="openFFPromotionPopup('/MediaHome/?inputId=ImageUrl_'+@item.Order)" />
+                                            </td>
+                                            <td>
+                                                <textarea class="form-control" name="description[]" placeholder="Enter HTML Description">@item.Description</textarea>
+                                            </td>
+                                            <td class="text-center">
+                                                <input type="button" class="btn btn-danger removeRow" value="Remove" />
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+
+                        </table>
+
+                        <div>
+                            <a asp-controller="ImageSliderHome" asp-action="Manage" class="btn btn-default">Back</a>
+                            <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                            <input type="submit" class="btn btn-default" name="Save" value="Save And Edit" />
+                        </div>
+
+                    </div>
+
+
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+
+
+@section Scripts{
+    <script>
+        function addRow() {
+            var rows = $('#pageListDt').find('tr').length;
+            var path = "/MediaHome/?inputId=ImageUrl_" + rows;
+            $("#pageListDt").append("<tr><td class='text-center'>" + rows + "</td><td><img src='' width='250' /><input type='hidden' class='ImageUrlHiddenInput' id='ImageUrl_" + rows + "' name='itemPath[]' placeholder='Enter Image Path' value='' /><br /><input type='button' class='btn btn-default' id='ImageSelect' value='Select' onclick=\"openFFPromotionPopup('" + path+"')\" /></td><td><textarea class='form-control' name='description[]' placeholder='Enter HTML Description'></textarea></td><td class='text-center'><input type='button' class='btn btn-danger removeRow' value='Remove' /></td></tr>");
+        }
+        $('#pageListDt').on('click', '.removeRow', function (e) {
+            $(this).closest('tr').remove()
+        })
+
+
+        /*Image select*/
+        var windowObjectReference = null; // global variable
+
+        function openFFPromotionPopup(siteUrl) {
+            if (windowObjectReference == null || windowObjectReference.closed) {
+                windowObjectReference = window.open(siteUrl, "PromoteFirefoxWindowName", "resizable,scrollbars,status");
+            }
+            else {
+                windowObjectReference.focus();
+            };
+        }
+
+        //setInterval(function () {
+        //    //$(".ImageUrlHiddenInput").attr("src", $("#SiteLogoUrl").val());
+        //    //console.log($("#SiteLogoUrl").val());
+        //    var x = document.getElementsByClassName("ImageUrlHiddenInput");
+        //    var i;
+        //    for (i = 0; i < x.length; i++) {
+        //        console.log(x[i].value);
+        //        console.log(x[i].previousSibling.src);
+        //        x[i].previousSibling.src = x[i].value;
+        //    }
+        //}, 500);
+
+    </script>
+
+}

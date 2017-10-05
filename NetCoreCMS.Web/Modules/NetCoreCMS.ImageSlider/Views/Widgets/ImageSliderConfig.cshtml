@@ -1,0 +1,15 @@
+﻿@using NetCoreCMS.ImageSlider.Models
+@model List<NccImageSlider>
+<div class="form-group">
+    <label class="col-sm-3 control-label">Slider</label>
+    <div class="col-sm-9">
+        @*<input type="text" class="form-control" id="name" name="name" placeholder="Enter Slider Name">*@
+        <select class="form-control" id="name" name="name">
+            @*<option value="">None</option>*@
+            @foreach (var item in Model)
+            {
+                <option value="@item.Name">@item.Name</option>
+            }
+        </select>
+    </div>
+</div>
