@@ -33,6 +33,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Web", "NetCoreCM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.DemoData", "NetCoreCMS.Web\Modules\NetCoreCMS.DemoData\NetCoreCMS.DemoData.csproj", "{1B0343E2-5042-4C8F-B71A-849F043C3AA9}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "License", "License", "{B8921F6F-C83E-4873-B322-3DF82E1D4B74}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

@@ -41,3 +41,13 @@ and check the `master` branch.
 - If make any mistake at installation period and project does not run then delete setup.json from root directory and run project again.
 - After install/uninstall any module or theme restart project.
 
+### Developers
+-S.M. Qumruzzaman Rahmani
+ Project Manager - OnnoRokom Software Ltd.
+
+ -G.M. Nazmul Hossain
+ System Analyst - OnnoRokom Software Ltd.
+
+ -Md. Rashidul Hasan
+ Software Architect - OnnoRokom Software Ltd.
+
