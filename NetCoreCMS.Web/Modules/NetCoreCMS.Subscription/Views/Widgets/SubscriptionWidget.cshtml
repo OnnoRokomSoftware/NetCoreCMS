@@ -1,16 +1,21 @@
 ﻿<style>
+    .subscription{
+        max-width:450px;
+    }
     .subscribe{
         margin-bottom: 5px;
     }
 </style>
-<h1 id="subscribeMessage" class="text-center" style="display:none;">Thank you for subscription</h1>
-<div class="col-md-12" id="subscribeForm" style="display:block;">
-    <input type="email" class="form-control subscribe" id="email" placeholder="Email" name="email">
-    @*<input type="text" class="form-control subscribe" id="name" placeholder="Name" name="name">*@
-    @*<input type="text" class="form-control subscribe" id="mobile" placeholder="Mobile" name="mobile">*@
-    @*<textarea class="form-control subscribe" id="remarks" placeholder="Put your comments here" name="remarks" rows="5"></textarea>*@
-    <input type="button" name="submit" id="submit" value="Submit" onclick="SubmitSubscription()" style="float:left;" class="form-control" />    
-    <div style="color:red; float:left; margin-left:10px;" id="errorMessage"></div>
+<div class="subscription">
+    <h1 id="subscribeMessage" class="text-center" style="display:none;">Thank you for subscription</h1>
+    <div class="col-md-12" id="subscribeForm" style="display:block;">
+        <input type="email" class="form-control subscribe" id="email" placeholder="Email" name="email">
+        @*<input type="text" class="form-control subscribe" id="name" placeholder="Name" name="name">*@
+        @*<input type="text" class="form-control subscribe" id="mobile" placeholder="Mobile" name="mobile">*@
+        @*<textarea class="form-control subscribe" id="remarks" placeholder="Put your comments here" name="remarks" rows="5"></textarea>*@
+        <input type="button" name="submit" id="submit" value="Submit" onclick="SubmitSubscription()" style="float:left;" class="form-control" />
+        <div style="color:red; float:left; margin-left:10px;" id="errorMessage"></div>
+    </div>
 </div>
 <script>
     function SubmitSubscription() {
