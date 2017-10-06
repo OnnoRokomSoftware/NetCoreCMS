@@ -43,13 +43,16 @@ namespace NetCoreCMS.Framework.Core.Services
 
             if (oldEntity != null)
             {
+                 
                 RecursiveLoad(oldEntity);
 
-                foreach (var mi in oldEntity.MenuItems)
+                for(var i = 0; i < oldEntity.MenuItems.Count; i++)
                 {
-                    RecursiveNccMenuItemDelete(mi);
+                    RecursiveNccMenuItemDelete(oldEntity.MenuItems[i]);
                 }
-                _menuItemRepository.SaveChange();
+
+                _menuItemRepository.SaveChange();  
+
                 oldEntity = _entityRepository.Query().Include("MenuItems").FirstOrDefault(x => x.Id == entity.Id);
                 using (var txn = _entityRepository.BeginTransaction())
                 {
@@ -76,14 +79,16 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public void DeletePermanently(long entityId)
         {
-            var entity = _entityRepository.Get(entityId,false,new List<string>() { "MenuItems" } );
+            var entity = _entityRepository.Get(entityId, false, new List<string>() { "MenuItems" } );
 
             if (entity != null)
             {
-                foreach (var menuItem in entity.MenuItems)
+                RecursiveLoad(entity);                
+                for (var i = 0; i < entity.MenuItems.Count; i++)
                 {
-                    RecursiveNccMenuItemDelete(menuItem);
+                    RecursiveNccMenuItemDelete(entity.MenuItems[i]);
                 }
+                //_menuItemRepository.SaveChange();
                 _entityRepository.Remove(entity);
                 _entityRepository.SaveChange();
             }
@@ -104,11 +109,12 @@ namespace NetCoreCMS.Framework.Core.Services
          
         private void RecursiveNccMenuItemDelete(NccMenuItem nccMenuItem)
         {
-            foreach (var mi in nccMenuItem.Childrens)
+            for (int i = 0; i <  nccMenuItem.Childrens.Count; i++)
             {
-                RecursiveNccMenuItemDelete(mi);
+                RecursiveNccMenuItemDelete(nccMenuItem.Childrens[i]);
             }
-            _menuItemRepository.DeletePermanently(nccMenuItem);    
+            _menuItemRepository.DeletePermanently(nccMenuItem);
+            _menuItemRepository.SaveChange();
             
         }
 
@@ -118,7 +124,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 .Include("MenuItems").ToList();
             foreach (var item in list)
             {
-                RecursiveChieldLoad(item.MenuItems);
+                RecursiveChildrenLoad(item.MenuItems);
             }
             return list;
         }
@@ -126,17 +132,17 @@ namespace NetCoreCMS.Framework.Core.Services
         private void RecursiveLoad(NccMenu parent)
         {
             var ParentFromDatabase = _entityRepository.GetEntityEntry(parent).Collection("MenuItems");
-            RecursiveChieldLoad(parent.MenuItems);
+            RecursiveChildrenLoad(parent.MenuItems);
         }
 
-        private void RecursiveChieldLoad(List<NccMenuItem> menuItems)
+        private void RecursiveChildrenLoad(List<NccMenuItem> menuItems)
         {
             foreach (var child in menuItems)
             {
                 _menuItemRepository.GetEntityEntry(child).Collection("Childrens").Load();
                 _menuItemRepository.GetEntityEntry(child).Collection("SubActions").Load();
                 if (child.Childrens.Count > 0)
-                    RecursiveChieldLoad(child.Childrens);
+                    RecursiveChildrenLoad(child.Childrens);
             }
         }
 
