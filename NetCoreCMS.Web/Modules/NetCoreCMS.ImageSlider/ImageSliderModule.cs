@@ -58,9 +58,9 @@ namespace NetCoreCMS.Modules.ImageSlider
 
         public void Init(IServiceCollection services)
         {
-            services.AddTransient<NccImageSliderRepository>();
-            services.AddTransient<NccImageSliderItemRepository>();
-            services.AddTransient<NccImageSliderService>();
+            //services.AddTransient<NccImageSliderRepository>();
+            //services.AddTransient<NccImageSliderItemRepository>();
+            //services.AddTransient<NccImageSliderService>();
         }
 
         public void RegisterRoute(IRouteBuilder routes)

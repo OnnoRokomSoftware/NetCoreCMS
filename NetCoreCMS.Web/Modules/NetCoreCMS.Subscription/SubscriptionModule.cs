@@ -56,8 +56,8 @@ namespace NetCoreCMS.Modules.Subscription
 
         public void Init(IServiceCollection services)
         {            
-            services.AddTransient<SubscriptionUserRepository>();
-            services.AddTransient<SubscriptionUserService>();
+            //services.AddTransient<SubscriptionUserRepository>();
+            //services.AddTransient<SubscriptionUserService>();
         }
 
         public void RegisterRoute(IRouteBuilder routes)

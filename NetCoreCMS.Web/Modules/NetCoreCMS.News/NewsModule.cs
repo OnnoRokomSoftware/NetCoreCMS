@@ -58,11 +58,11 @@ namespace NetCoreCMS.Modules.News
 
         public void Init(IServiceCollection services)
         {
-            services.AddTransient<NeNewsRepository>();
-            services.AddTransient<NeCategoryRepository>();
+            //services.AddTransient<NeNewsRepository>();
+            //services.AddTransient<NeCategoryRepository>();
 
-            services.AddTransient<NeNewsService>();
-            services.AddTransient<NeCategoryService>();
+            //services.AddTransient<NeNewsService>();
+            //services.AddTransient<NeCategoryService>();
         }
 
         public void RegisterRoute(IRouteBuilder routes)

@@ -16,6 +16,7 @@ using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Mvc.Repository;
 using NetCoreCMS.Framework.Core.Mvc.Services;
+using NetCoreCMS.Framework.Core.IoC;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -174,22 +175,43 @@ namespace NetCoreCMS.Framework.Modules
             {
                 if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
                 {
-                    var types = module.Assembly.GetTypes().Where(x=>x.BaseType.IsGenericType).ToList();
-
-                    foreach (var item in types)
+                    var repositoryTypes = module.Assembly.GetTypes().Where( x => x.BaseType.IsGenericType).Where( y =>  y.BaseType.GetGenericTypeDefinition() == typeof(BaseRepository<,>)).ToList();
+                    foreach (var item in repositoryTypes)
                     {
-                        if (item.BaseType.IsGenericType)
+                        var singleton = item.GetInterfaces().Where(x => typeof(ISingleton).IsAssignableFrom(x)).FirstOrDefault();
+                        if (singleton != null)
                         {
-                            if (item.BaseType.GetGenericTypeDefinition() == typeof(BaseRepository<,>))
-                            {
-                                services.AddTransient(item);
-                            }
+                            services.AddSingleton(item);
+                            continue;
                         }
+
+                        var scoped = item.GetInterfaces().Where(x => typeof(IScoped).IsAssignableFrom(x)).FirstOrDefault();
+                        if (scoped != null)
+                        {
+                            services.AddScoped(item);
+                            continue;
+                        }
+
+                        services.AddTransient(item);
                     }
                     
-                    var serviceTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IBaseService<>))).ToList();
-                    foreach (var item in serviceTypeList)
+                    var serviceTypes = module.Assembly.GetTypes().Where(x => x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IBaseService<>))).ToList();
+                    foreach (var item in serviceTypes)
                     {
+                        var singleton = item.GetInterfaces().Where(x => typeof(ISingleton).IsAssignableFrom(x)).FirstOrDefault();
+                        if (singleton != null)
+                        {
+                            services.AddSingleton(item);
+                            continue;
+                        }
+
+                        var scoped = item.GetInterfaces().Where(x => typeof(IScoped).IsAssignableFrom(x)).FirstOrDefault();
+                        if (scoped != null)
+                        {
+                            services.AddScoped(item);
+                            continue;
+                        }
+
                         services.AddTransient(item);
                     }
                 }
