@@ -9,6 +9,7 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
@@ -26,12 +27,14 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         #region Initialization
         NccPageService _pageService;
         NccPageDetailsService _pageDetailsService;
+        NccShortCodeProvider _nccShortCodeProvider;
         IMediator _mediator;
 
-        public CmsPageController(NccPageService pageService, NccPageDetailsService nccPageDetailsService, IMediator mediator, ILoggerFactory factory)
+        public CmsPageController(NccPageService pageService, NccPageDetailsService nccPageDetailsService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, ILoggerFactory factory)
         {
             _pageService = pageService;
             _pageDetailsService = nccPageDetailsService;
+            _nccShortCodeProvider = nccShortCodeProvider;
             _mediator = mediator;
             _logger = factory.CreateLogger<CmsPageController>();
         }
@@ -49,6 +52,10 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 if (page != null)
                 {
                     page = _mediator.Send(new OnPageShow(page)).Result;
+                    foreach (var item in page.PageDetails)
+                    {
+                        item.Content = _nccShortCodeProvider.ReplaceShortContent(item.Content);
+                    }
                     return View(page);
                 }
             }

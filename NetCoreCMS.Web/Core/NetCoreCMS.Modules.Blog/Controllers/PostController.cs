@@ -358,6 +358,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             if (post == null)
                 return Redirect(Constants.NotFoundUrl);
             post = _mediator.Send(new OnPostShow(post)).Result;
+            SetShortCodeContent(post);
             return View(post);
         }
         #endregion
