@@ -53,6 +53,7 @@ and check the `master` branch.
 [**Md. Rashidul Hasan**](http://masums.com)
 > Software Architect, [OnnoRokom Software Ltd.](https://onnorokomsoftware.com)
 
+
 ## Copyright and license
 
 Code and documentation copyright 2017 the [NetCoreCMS Authors](http://onnorokomsoftware.com) Code released under the [BSD-3 Clause](https://github.com/OnnorokomSoftware/NetCoreCMS/blob/master/LICENSE).
