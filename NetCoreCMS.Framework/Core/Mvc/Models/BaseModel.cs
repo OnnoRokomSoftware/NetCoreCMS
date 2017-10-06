@@ -14,6 +14,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
             CreateBy = ModifyBy = GetCurrentUserId();
             Status = EntityStatus.Active;
             VersionNumber = 1;
+            Metadata = "";
+            Name = "";
         }
 
         [Key]

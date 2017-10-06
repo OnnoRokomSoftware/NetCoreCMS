@@ -17,6 +17,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace NetCoreCMS.Core.Modules.Blog.Controllers
 {
@@ -30,17 +31,19 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         NccPostDetailsService _nccPostDetailsService;
         NccCategoryService _nccCategoryService;
         NccTagService _nccTagService;
+        NccShortCodeProvider _nccShortCodeProvider;
 
         IMediator _mediator;
         NccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
 
-        public PostController(NccPostService nccPostService, NccPostDetailsService nccPostDetailsService, NccCategoryService nccCategoryService, NccTagService nccTagService, NccUserService nccUserService, IMediator mediator, ILoggerFactory loggerFactory)
+        public PostController(NccPostService nccPostService, NccPostDetailsService nccPostDetailsService, NccCategoryService nccCategoryService, NccTagService nccTagService, NccUserService nccUserService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, ILoggerFactory loggerFactory)
         {
             _nccPostService = nccPostService;
             _nccPostDetailsService = nccPostDetailsService;
             _nccCategoryService = nccCategoryService;
             _nccTagService = nccTagService;
+            _nccShortCodeProvider = nccShortCodeProvider;
             _loggerFactory = loggerFactory;
             _nccUserService = nccUserService;
             _mediator = mediator;
@@ -343,22 +346,10 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         {
             foreach (var item in post.PostDetails)
             {
-                item.Content = GetRenderedContent(item.Content);
+                item.Content = _nccShortCodeProvider.ReplaceShortContent(item.Content);
             }
         }
-
-        private string GetRenderedContent(string content)
-        {
-            foreach (DictionaryEntry item in GlobalConfig.ShortCodes)
-            {
-                if (content.Contains(item.Key.ToString()))
-                {
-                    //var start = FindShortCodePosition(content);
-                }
-            }
-            return "";
-        }
-
+         
         [AllowAnonymous]
         public ActionResult Details(string slug)
         {
