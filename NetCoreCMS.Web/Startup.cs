@@ -163,12 +163,14 @@ namespace NetCoreCMS.Web
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
                 GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services, _serviceProvider);
+                _moduleManager.RegisterModuleRepositoryAndServices(_mvcBuilder, _services, _serviceProvider);
 
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
                 GlobalConfig.Widgets = _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);
                 var themeWidgets = _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
-                if(themeWidgets != null && themeWidgets.Count>0)
+
+                if(themeWidgets != null && themeWidgets.Count > 0)
                 {
                     GlobalConfig.Widgets.AddRange(themeWidgets);
                 }

@@ -14,6 +14,8 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.ShotCodes;
+using NetCoreCMS.Framework.Core.Mvc.Repository;
+using NetCoreCMS.Framework.Core.Mvc.Services;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -164,6 +166,34 @@ namespace NetCoreCMS.Framework.Modules
                 }
             }
             return widgetList;
+        }
+
+        public void RegisterModuleRepositoryAndServices(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            foreach (var module in instantiatedModuleList)
+            {
+                if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
+                {
+                    var types = module.Assembly.GetTypes().Where(x=>x.BaseType.IsGenericType).ToList();
+
+                    foreach (var item in types)
+                    {
+                        if (item.BaseType.IsGenericType)
+                        {
+                            if (item.BaseType.GetGenericTypeDefinition() == typeof(BaseRepository<,>))
+                            {
+                                services.AddTransient(item);
+                            }
+                        }
+                    }
+                    
+                    var serviceTypeList = module.Assembly.GetTypes().Where(x => x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IBaseService<>))).ToList();
+                    foreach (var item in serviceTypeList)
+                    {
+                        services.AddTransient(item);
+                    }
+                }
+            }            
         }
 
         private NccModule CreateNccModuleEntity(IModule module)

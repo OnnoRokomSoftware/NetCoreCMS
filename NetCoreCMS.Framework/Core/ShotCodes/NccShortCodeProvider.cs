@@ -105,12 +105,14 @@ namespace NetCoreCMS.Framework.Core.ShotCodes
 
         private ShortCode GetShortCode(string content, string code)
         {
-            var shortCode = new ShortCode();
+            ShortCode shortCode;
             var start = content.IndexOf("[" + code);
             var end = content.IndexOf(code + "]");
 
             if (start > 0 && end > 0)
             {
+                shortCode = new ShortCode();
+
                 shortCode.Start = start;
                 shortCode.End = end;
                 shortCode.Name = code;
@@ -119,20 +121,22 @@ namespace NetCoreCMS.Framework.Core.ShotCodes
                 end = end - 1;
 
                 var contentLength = end - start;
-                var shortCodeContent = content.Substring(start, contentLength);
-                var paramsParts = shortCodeContent.Split(",".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var item in paramsParts)
+                if(contentLength > 0)
                 {
-                    var dItem = WebUtility.HtmlDecode(item);
-                    var keyValPart = dItem.Split("=".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-                    if (keyValPart.Length >= 2)
-                    {
-                        var p = keyValPart[1].Replace('"', ' ').Trim();
-                        shortCode.Paramiters.Add(p);
-                    }
-                }
+                    var shortCodeContent = content.Substring(start, contentLength);
+                    var paramsParts = shortCodeContent.Split(",".ToArray(), StringSplitOptions.RemoveEmptyEntries);
 
+                    foreach (var item in paramsParts)
+                    {
+                        var dItem = WebUtility.HtmlDecode(item);
+                        var keyValPart = dItem.Split("=".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+                        if (keyValPart.Length >= 2)
+                        {
+                            var p = keyValPart[1].Replace('"', ' ').Trim();
+                            shortCode.Paramiters.Add(p);
+                        }
+                    }
+                }  
                 return shortCode;
             }
 
