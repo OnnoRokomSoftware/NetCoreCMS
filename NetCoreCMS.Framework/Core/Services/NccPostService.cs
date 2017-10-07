@@ -35,6 +35,16 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string> { "Parent", "PostDetails", "Categories", "Tags", "Tags.Tag" });
         }
 
+        public List<NccPost> LoadSpecialPosts(bool isSticky, bool isFeatured)
+        {
+            return _entityRepository.LoadPosts(isSticky, isFeatured);
+        } 
+
+        public long GetPublishedPostCount()
+        {
+            return _entityRepository.GetCount(NccPost.NccPostStatus.Published);
+        }
+
         public NccPost Save(NccPost entity)
         {
             using (var txn = _entityRepository.BeginTransaction())
@@ -183,11 +193,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return pages;
         }
 
-        public List<NccPost> LoadPublished(int from = 0, int total = 10)
+        public List<NccPost> LoadPublished(int from = 0, int total = 10, bool withSticky = true, bool withFeatured = true)
         {
-            return _entityRepository.LoadPublished(from, total);
+            return _entityRepository.LoadPublished(from, total, withSticky, withFeatured);
         }
-
+        
         public int TotalPublishedPostCount()
         {
             return _entityRepository

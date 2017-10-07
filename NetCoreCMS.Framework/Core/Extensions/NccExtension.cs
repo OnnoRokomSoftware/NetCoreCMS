@@ -39,9 +39,10 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
             services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
+            services.AddTransient<LanguageDetector>();
 
-            services.AddSingleton<NccShortCodeProvider, NccShortCodeProvider>();
-            services.AddSingleton<ThemeManager, ThemeManager>();
+            services.AddScoped<NccShortCodeProvider, NccShortCodeProvider>();
+            services.AddScoped<ThemeManager, ThemeManager>();
 
             services.AddTransient<NccCategoryDetailsRepository>();
             services.AddTransient<NccCategoryDetailsService>();

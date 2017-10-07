@@ -88,8 +88,8 @@ namespace NetCoreCMS.Web
             
             _services.AddOptions();            
             //services.AddSingleton(typeof(IStringLocalizerFactory), typeof(ClassLibraryStringLocalizerFactory));
-            services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
-            
+            services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));            
+
             _services.AddLocalization();
 
             _mvcBuilder = services.AddMvc();            

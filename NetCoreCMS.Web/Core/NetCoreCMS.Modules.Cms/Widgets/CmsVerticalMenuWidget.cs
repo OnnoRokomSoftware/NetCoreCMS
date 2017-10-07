@@ -25,6 +25,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Widgets
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/CmsVerticalMenu";
             var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
+
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
             {
                 var configJson = webSiteWidget.WidgetConfigJson;

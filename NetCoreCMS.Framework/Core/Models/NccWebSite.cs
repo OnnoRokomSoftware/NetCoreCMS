@@ -8,6 +8,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public NccWebSite()
         {
             WebSiteInfos = new List<NccWebSiteInfo>();
+            PerPagePostSize = 10;
         }
         
 

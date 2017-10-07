@@ -5,8 +5,9 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Setup;
-using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Modules.Cms.Models.ViewModels;
+using System;
 using System.Linq;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
@@ -15,30 +16,37 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
     public class CmsHomeController : NccController
     {
         private NccPageService _pageService;
+        private NccPostService _postService;
         
-        public CmsHomeController(NccPageService pageService, ILoggerFactory factory)
+        public CmsHomeController(NccPageService pageService, NccPostService nccPostService, ILoggerFactory factory)
         {
             _pageService = pageService;
+            _postService = nccPostService;
             _logger = factory.CreateLogger<CmsHomeController>();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int pageNumber = 0)
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                ViewBag.Content = "";
-                ViewBag.Layout = "";
-                NccPage page = null;// _pageService.GetBySlugs("Home");
-                if (page != null)
-                {
-                    //ViewBag.Content = page.Content;
-                    if (GlobalConfig.ActiveTheme.Layouts.Where(l => l.Name.Contains(page.Layout)).Count() > 0)
-                    {
-                        ViewBag.Layout = page.Layout;
-                    }
+                var postPerPage = GlobalConfig.WebSite.PerPagePostSize;
+                var totalPost = _postService.GetPublishedPostCount();
+                var stickyPost = _postService.LoadSpecialPosts(true, false);
+                var featuredPosts = _postService.LoadSpecialPosts(false,true);
+                var allPost = _postService.LoadPublished(pageNumber, postPerPage, false, false);
 
-                }
-                return View();
+                return View(new HomePageViewModel() {
+                    AllPosts = allPost,
+                    CurrentLanguage = CurrentLanguage,
+                    FeaturedPosts = featuredPosts,
+                    StickyPost = stickyPost.FirstOrDefault(),
+                    PageNumber = pageNumber,
+                    PostPerPage = postPerPage,
+                    TotalPost = totalPost,
+                    PreviousPage = pageNumber - 1,
+                    NextPage = pageNumber + 1,
+                    TotalPage = (int) Math.Ceiling(totalPost/(decimal)postPerPage),
+                });
             }
             return Redirect("/SetupHome/Index");
         }

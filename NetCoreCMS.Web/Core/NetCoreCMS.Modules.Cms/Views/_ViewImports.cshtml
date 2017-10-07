@@ -15,8 +15,10 @@
 @using NetCoreCMS.Framework.i18n
 @using NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
 @using NetCoreCMS.Modules.Cms.Models.ViewModels;
+@using NetCoreCMS.Modules.Cms.Lib;
 
 @inject IStringLocalizer _T
+@inject LanguageDetector LanguageDetector
 
 @addTagHelper *, NetCoreCMS.Framework
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

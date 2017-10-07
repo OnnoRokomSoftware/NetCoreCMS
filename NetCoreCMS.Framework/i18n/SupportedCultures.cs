@@ -20,5 +20,6 @@ namespace NetCoreCMS.Framework.i18n
         public static string LanguageSessionKey { get { return "ncc_lang_session"; } }
         public static string LanguageCookieKey { get { return "ncc_lang_cookie"; } }
         public static object SharedResourceTranslatorObjectKey { get { return "ncc_shared_resource_translator_object"; } }
+        
     }
 }
