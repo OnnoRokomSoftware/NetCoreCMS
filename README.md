@@ -1,4 +1,4 @@
-# NetCoreCMS
+![NetCoreCMS](https://raw.githubusercontent.com/OnnorokomSoftware/NetCoreCMS/master/NetCoreCMS.Web/wwwroot/NetCoreCMS-full-logo.png)
 NetCoreCMS is a Content Management System developed using ASP.Net Core 1.1. It is usable as web application framework.  
 
 ## Build Status
