@@ -117,6 +117,11 @@ namespace NetCoreCMS.Web.Controllers
                 }
             }
 
+            if(returnUrl.StartsWith("/") == false)
+            {
+                returnUrl = "/" + returnUrl;
+            }
+
             returnUrl = NccUrlHelper.EncodeUrl(returnUrl);
 
             return Redirect(returnUrl);

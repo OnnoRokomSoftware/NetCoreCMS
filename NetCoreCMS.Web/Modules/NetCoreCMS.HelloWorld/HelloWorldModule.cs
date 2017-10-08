@@ -56,7 +56,7 @@ namespace NetCoreCMS.Modules.HelloWorld
 
         public void Init(IServiceCollection services)
         {
-            
+            //You can also register your services and repositories here.
         }
 
         public void RegisterRoute(IRouteBuilder routes)
@@ -66,7 +66,24 @@ namespace NetCoreCMS.Modules.HelloWorld
 
         public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            return true;
+            var createQuery = @"
+                CREATE TABLE IF NOT EXISTS `Ncc_Hello` ( 
+                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
+                    `VersionNumber` INT NOT NULL , 
+                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
+                    `Name` VARCHAR(250) NOT NULL , 
+                    `CreationDate` DATETIME NOT NULL , 
+                    `ModificationDate` DATETIME NOT NULL , 
+                    `CreateBy` BIGINT NOT NULL , 
+                    `ModifyBy` BIGINT NOT NULL , 
+                    `Status` INT NOT NULL , 
+
+                    `Hello` TEXT NULL ,                     
+                PRIMARY KEY (`Id`)) ENGINE = MyISAM;";
+            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = createQuery };
+            var retVal = executeQuery(nccDbQueryText);
+            
+            return string.IsNullOrEmpty(retVal) == false;
         }
         public bool Update(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
@@ -74,7 +91,12 @@ namespace NetCoreCMS.Modules.HelloWorld
         }
         public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
         {
-            return true;
+            var deleteQuery = @"DROP TABLE IF EXISTS `Ncc_Hello`;";
+
+            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };
+            var retVal = executeQuery(nccDbQueryText);
+            
+            return string.IsNullOrEmpty(retVal) == false;
         }
     }
 }

@@ -14,6 +14,9 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.ShotCodes;
+using NetCoreCMS.Framework.Core.Mvc.Repository;
+using NetCoreCMS.Framework.Core.Mvc.Services;
+using NetCoreCMS.Framework.Core.IoC;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -164,6 +167,55 @@ namespace NetCoreCMS.Framework.Modules
                 }
             }
             return widgetList;
+        }
+
+        public void RegisterModuleRepositoryAndServices(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            foreach (var module in instantiatedModuleList)
+            {
+                if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
+                {
+                    var repositoryTypes = module.Assembly.GetTypes().Where( x => x.BaseType.IsGenericType).Where( y =>  y.BaseType.GetGenericTypeDefinition() == typeof(BaseRepository<,>)).ToList();
+                    foreach (var item in repositoryTypes)
+                    {
+                        var singleton = item.GetInterfaces().Where(x => typeof(ISingleton).IsAssignableFrom(x)).FirstOrDefault();
+                        if (singleton != null)
+                        {
+                            services.AddSingleton(item);
+                            continue;
+                        }
+
+                        var scoped = item.GetInterfaces().Where(x => typeof(IScoped).IsAssignableFrom(x)).FirstOrDefault();
+                        if (scoped != null)
+                        {
+                            services.AddScoped(item);
+                            continue;
+                        }
+
+                        services.AddTransient(item);
+                    }
+                    
+                    var serviceTypes = module.Assembly.GetTypes().Where(x => x.GetInterfaces().Any(y => y.IsGenericType && y.GetGenericTypeDefinition() == typeof(IBaseService<>))).ToList();
+                    foreach (var item in serviceTypes)
+                    {
+                        var singleton = item.GetInterfaces().Where(x => typeof(ISingleton).IsAssignableFrom(x)).FirstOrDefault();
+                        if (singleton != null)
+                        {
+                            services.AddSingleton(item);
+                            continue;
+                        }
+
+                        var scoped = item.GetInterfaces().Where(x => typeof(IScoped).IsAssignableFrom(x)).FirstOrDefault();
+                        if (scoped != null)
+                        {
+                            services.AddScoped(item);
+                            continue;
+                        }
+
+                        services.AddTransient(item);
+                    }
+                }
+            }            
         }
 
         private NccModule CreateNccModuleEntity(IModule module)

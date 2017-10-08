@@ -56,7 +56,7 @@ namespace NetCoreCMS.Modules.News.Controllers
         [AdminMenuItem(Name = "Manage News", Url = "/NeNews/Manage", IconCls = "", Order = 1)]
         public ActionResult Manage()
         {
-            var itemList = _neNewsService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
+            var itemList = _neNewsService.LoadAll().OrderByDescending(x => x.Id).ToList();
             return View(itemList);
         }
 
