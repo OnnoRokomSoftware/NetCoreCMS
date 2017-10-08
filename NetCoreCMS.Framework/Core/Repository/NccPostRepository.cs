@@ -65,17 +65,17 @@ namespace NetCoreCMS.Framework.Core.Repository
                 .Include("Categories.Category.CategoryDetails")
                 .Include("Tags")
                 .Include("Tags.Tag")
-                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now && x.IsFeatured);
+                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now );
 
             if (isSticky)
             {
-                query.Where(x => x.IsStiky);
+                query = query.Where(x => x.IsStiky);
             }
             if (isFeature)
             {
-                query.Where(x => x.IsFeatured);
-            }                
-            query.OrderByDescending(x => x.PublishDate);
+                query = query.Where(x => x.IsFeatured);
+            }
+            query = query.OrderByDescending(x => x.PublishDate);
             return query.ToList();
         }
 
