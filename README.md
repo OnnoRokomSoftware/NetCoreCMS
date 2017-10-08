@@ -4,8 +4,8 @@ NetCoreCMS is a Content Management System developed using ASP.Net Core 1.1. It i
 ## Build Status
 | Build server| Platform       | Status      |
 |-------------|----------------|-------------|
-|Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/TecRT/NetCoreCMS.svg?branch=master)](https://travis-ci.org/TecRT/NetCoreCMS) |
-|Appveyor      | Windows/Vs2017 |[![Build status](https://ci.appveyor.com/api/projects/status/17khtxlyevlddlag/branch/master?svg=true)](https://ci.appveyor.com/project/TecRT/netcorecms/branch/master)|
+|Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/OnnorokomSoftware/NetCoreCMS.svg?branch=master)](https://travis-ci.org/OnnorokomSoftware/NetCoreCMS) |
+|Appveyor      | Windows/Vs2017 |[![Build status](https://ci.appveyor.com/api/projects/status/59vf48ehnbd3m7bf?svg=true)](https://ci.appveyor.com/project/OnnorokomSoftware/netcorecms/branch/master)|
 
 ## Alpha
 
