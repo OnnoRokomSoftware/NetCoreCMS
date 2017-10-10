@@ -52,12 +52,13 @@
                         <div class="item @active" >
                             @if (string.IsNullOrEmpty(item.ThumImage) == false)
                             {
-                                <a href="/Post/?slug=@post.Slug"><img src="@item.ThumImage" alt="" class="img-responsive" width="100%" /></a>
+                                <a href="/Post/@post.Slug"><img src="@item.ThumImage" alt="" class="img-responsive" width="100%" /></a>
                             }
                             <div role="option" style="z-index:1000000; padding: 10px 10px;">
-                                <a href="/Post/?slug=@post.Slug"><h3>@post.Title</h3></a>
+                                <a href="/Post/@post.Slug"><h3>@post.Title</h3></a>
                                 <p >
                                     @Html.Raw(post.Content)
+                                     ...<a href="/Post/@post.Slug">More</a>
                                 </p>
                             </div>
                         </div>
