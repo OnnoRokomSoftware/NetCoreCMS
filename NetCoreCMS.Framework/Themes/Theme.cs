@@ -1,4 +1,5 @@
-﻿using NetCoreCMS.Framework.Modules.Widgets;
+﻿using NetCoreCMS.Framework.Core;
+using NetCoreCMS.Framework.Modules.Widgets;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace NetCoreCMS.Framework.Themes
             MenuLocations = new List<string>();
             Settings = new Hashtable();
             Type = ThemeType.WebSite;
-            Settings.Add("NccVersion", "0.4.1");
+            Settings.Add("NccVersion", NccInfo.Version);
         }
 
         public string ThemeId { get; set; }

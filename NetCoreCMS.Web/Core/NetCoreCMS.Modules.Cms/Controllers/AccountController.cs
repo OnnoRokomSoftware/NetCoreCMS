@@ -15,6 +15,7 @@ using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels;
 using NetCoreCMS.Core.Modules.Cms.Lib;
 using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
 { 
@@ -224,8 +225,15 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
+            if (GlobalConfig.WebSite.AllowRegistration == false)
+            {
+                TempData["ErrorMessage"] = "Registration is not allowed.";
+                return Redirect("Home/Error");
+            }
+
             ViewData["ReturnUrl"] = returnUrl;
             return View();
+           
         }
 
         [HttpPost]
@@ -233,22 +241,33 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
+            if (GlobalConfig.WebSite.AllowRegistration == false)
+            {
+                TempData["ErrorMessage"] = "Registration is not allowed.";
+                return Redirect("Home/Error");
+            }
+
             ViewData["ReturnUrl"] = returnUrl;
+
             if (ModelState.IsValid)
             {
                 var user = new NccUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    result = await _userManager.AddToRoleAsync(user, GlobalConfig.WebSite.NewUserRole);
                     _logger.LogInformation("User created a new account with password.");
 
-                    var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                    var callbackUrl = Url.EmailConfirmationLink(user.Id.ToString(), code, Request.Scheme);
-                    await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
+                    if (result.Succeeded)
+                    {
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var callbackUrl = Url.EmailConfirmationLink(user.Id.ToString(), code, Request.Scheme);
+                        await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    _logger.LogInformation("User created a new account with password.");
-                    return RedirectToLocal(returnUrl);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        _logger.LogInformation("User created a new account with password.");
+                        return RedirectToLocal(returnUrl);
+                    }
                 }
                 AddErrors(result);
             }

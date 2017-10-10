@@ -1,0 +1,7 @@
+﻿@if (TempData.Keys.Contains("ErrorMessage"))
+{
+    <div>
+        <h3>@TempData["ErrorMessage"]</h3>
+        <h5><a href="/CmsHome">Home</a></h5>
+    </div>
+}

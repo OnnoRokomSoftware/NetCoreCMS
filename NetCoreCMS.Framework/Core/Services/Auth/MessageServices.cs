@@ -7,6 +7,7 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using MailKit.Security;
 using MimeKit.Text;
+using System.Net;
 
 namespace NetCoreCMS.Framework.Core.Services.Auth
 {
@@ -59,8 +60,9 @@ namespace NetCoreCMS.Framework.Core.Services.Auth
 
                 using (var client = new SmtpClient())
                 {
-                    client.LocalDomain = smtpSettings.Host;
+                    client.LocalDomain = smtpSettings.Host;                    
                     client.ConnectAsync(smtpSettings.Host, smtpSettings.Port, smtpSettings.UseSSL).Wait();
+                    client.Authenticate(new NetworkCredential(smtpSettings.UserName, smtpSettings.Password));
                     client.SendAsync(emailMessage).Wait();
                     client.DisconnectAsync(true).Wait();
                 }
@@ -71,7 +73,8 @@ namespace NetCoreCMS.Framework.Core.Services.Auth
 
         public Task SendEmailConfirmationAsync(string email, string callbackUrl)
         {
-            throw new System.NotImplementedException();
+            SendEmailAsync(email, "NetCoreCMS new signup", "Thank you for your registration. Please confirm your registration <a href='" + callbackUrl + "'>Verify</a>");
+            return Task.FromResult(0);
         }
     }
 }
