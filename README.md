@@ -10,7 +10,7 @@ CMS Demo site [Demo](http://demo.dotnetcorecms.com)
 ## Build Status
 | Build server| Platform       | Status      |
 |-------------|----------------|-------------|
-|Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/OnnoRokomSoftware/NetCoreCMS.svg?branch=master)](https://travis-ci.org/OnnorokomSoftware/NetCoreCMS) |
+|Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/OnnoRokomSoftware/NetCoreCMS.svg?branch=master)](https://travis-ci.org/OnnoRokomSoftware/NetCoreCMS) |
 |Appveyor      | Windows/Vs2017 |[![Build status](https://ci.appveyor.com/api/projects/status/59vf48ehnbd3m7bf?svg=true)](https://ci.appveyor.com/project/OnnoRokomSoftware/netcorecms/branch/master)|
 
 ## Alpha
@@ -62,5 +62,5 @@ and check the `master` branch.
 
 ## Copyright and license
 
-Code and documentation copyright 2017 the [NetCoreCMS Authors](http://onnorokomsoftware.com) Code released under the [BSD-3 Clause](https://github.com/OnnorokomSoftware/NetCoreCMS/blob/master/LICENSE).
+Code and documentation copyright 2017 the [NetCoreCMS Authors](http://onnorokomsoftware.com) Code released under the [BSD-3 Clause](https://github.com/OnnoRokomSoftware/NetCoreCMS/blob/master/LICENSE).
 
