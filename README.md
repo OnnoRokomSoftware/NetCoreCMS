@@ -1,22 +1,28 @@
-# NetCoreCMS
-NetCoreCMS is a Content Management System developed using ASP.Net Core 1.1. It is usable as web application framework.  
+![NetCoreCMS](https://raw.githubusercontent.com/OnnorokomSoftware/NetCoreCMS/master/NetCoreCMS.Web/wwwroot/NetCoreCMS-full-logo.png)
+## NetCoreCMS
+NetCoreCMS is a Content Management System developed using ASP.Net Core 2.0. It is usable as web application framework. This is a modular theme supported web application. NetCoreCMS also support multiple language. This time we have added language support for only English and Bangla.  
+## Screenshots
+Admin panel screenshots [Screenshot](https://github.com/OnnoRokomSoftware/NetCoreCMS/blob/master/Screenshots.md)
+
+## Demo
+CMS Demo site [Demo](http://demo.dotnetcorecms.com)
 
 ## Build Status
 | Build server| Platform       | Status      |
 |-------------|----------------|-------------|
-|Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/OnnorokomSoftware/NetCoreCMS.svg?branch=master)](https://travis-ci.org/OnnorokomSoftware/NetCoreCMS) |
-|Appveyor      | Windows/Vs2017 |[![Build status](https://ci.appveyor.com/api/projects/status/59vf48ehnbd3m7bf?svg=true)](https://ci.appveyor.com/project/OnnorokomSoftware/netcorecms/branch/master)|
+|Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/OnnoRokomSoftware/NetCoreCMS.svg?branch=master)](https://travis-ci.org/OnnorokomSoftware/NetCoreCMS) |
+|Appveyor      | Windows/Vs2017 |[![Build status](https://ci.appveyor.com/api/projects/status/59vf48ehnbd3m7bf?svg=true)](https://ci.appveyor.com/project/OnnoRokomSoftware/netcorecms/branch/master)|
 
 ## Alpha
 
 The software is complete for internal testing which can be performed by people other than its developers. The testers are within the same organization or community. 
 
-Here is a detailed [roadmap](https://github.com/OnnorokomSoftware/NetCoreCMS/wiki/Roadmap).
+Here is a detailed [roadmap](https://github.com/OnnoRokomSoftware/NetCoreCMS/wiki/Roadmap).
 
 ## Getting Started
 
 - To clone the repository, use the following command: 
-`git clone https://github.com/OnnorokomSoftware/NetCoreCMS.git` 
+`git clone https://github.com/OnnoRokomSoftware/NetCoreCMS.git` 
 and check the `master` branch. 
 
 ### Command line
