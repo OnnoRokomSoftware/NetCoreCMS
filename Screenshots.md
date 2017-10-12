@@ -1,4 +1,4 @@
-## NetCoreCMS v0.4.3 Screenshots
+## NetCoreCMS v0.4.3 Admin Panel Screenshots
 
 ### Dashboard
 ![Dashboard](https://github.com/OnnoRokomSoftware/NetCoreCMS/blob/master/Resources/Screenshots/v0.4.3/Dashboard.png)
