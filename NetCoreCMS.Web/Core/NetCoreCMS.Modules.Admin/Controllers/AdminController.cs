@@ -240,10 +240,11 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult EmailSettings(SmtpSettings model)
+        public ActionResult EmailSettings(SmtpSettings model, bool UseSSL)
         {
             if (ModelState.IsValid)
             {
+                model.UseSSL = UseSSL;
                 var settings = _settingsService.SetByKey<SmtpSettings>(Constants.SMTPSettingsKey, model);
                 TempData["SuccessMessage"] = "Settings save successful.";
             }
