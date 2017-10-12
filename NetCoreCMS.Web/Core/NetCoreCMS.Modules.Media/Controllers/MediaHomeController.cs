@@ -15,7 +15,7 @@ using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "SuperAdmin,Administrator,Editor,Author")]
     [AdminMenu(Name = "Media", IconCls = "fa-folder-open-o", Order = 9)]
     public class MediaHomeController : NccController
     {

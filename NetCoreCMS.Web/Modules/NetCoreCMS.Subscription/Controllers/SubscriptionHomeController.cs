@@ -13,10 +13,12 @@ using NetCoreCMS.Modules.Subscription.Models;
 using Newtonsoft.Json;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Network;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NetCoreCMS.Subscription.Controllers
 {
     [AdminMenu(Name = "Subscription", Order = 100)]
+    [Authorize(Roles = "SuperAdmin,Administrator")]
     public class SubscriptionHomeController : NccController
     {
         #region Initialization

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Adimistrator,Editor")]
+    [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
     [SiteMenu(Name = "Blog", Order = 100)]
     [AdminMenu(Name = "Blog", Order = 5)]
     public class CategoryController : NccController

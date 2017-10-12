@@ -21,7 +21,7 @@ using System.Net;
 
 namespace NetCoreCMS.Core.Modules.Blog.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Adimistrator,Editor")]
+    [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
     [SiteMenu(IconCls = "fa-newspaper-o", Name = "Blog", Order = 100)]
     [AdminMenu(IconCls = "fa-newspaper-o", Name = "Blog", Order = 3)]
     public class PostController : NccController

@@ -279,6 +279,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //[HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
