@@ -14,7 +14,7 @@ Admin panel screenshots [Screenshot](https://github.com/OnnoRokomSoftware/NetCor
 
 The software is complete for internal testing which can be performed by people other than its developers. The testers are within the same organization or community. 
 
-Here is a detailed [roadmap](https://github.com/OnnorokomSoftware/NetCoreCMS/wiki/Roadmap).
+Here is a detailed [roadmap](https://github.com/OnnoRokomSoftware/NetCoreCMS/wiki/Roadmap).
 
 ## Getting Started
 
