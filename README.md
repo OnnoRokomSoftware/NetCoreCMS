@@ -19,7 +19,7 @@ Here is a detailed [roadmap](https://github.com/OnnoRokomSoftware/NetCoreCMS/wik
 ## Getting Started
 
 - To clone the repository, use the following command: 
-`git clone https://github.com/OnnorokomSoftware/NetCoreCMS.git` 
+`git clone https://github.com/OnnoRokomSoftware/NetCoreCMS.git` 
 and check the `master` branch. 
 
 ### Command line
