@@ -65,5 +65,5 @@ and check the `master` branch.
 Code and documentation copyright 2017 the [NetCoreCMS Authors](http://onnorokomsoftware.com) Code released under the [BSD-3 Clause](https://github.com/OnnoRokomSoftware/NetCoreCMS/blob/master/LICENSE).
 
 ## Tags
-### Asp.Net Core CMS, Asp.Net Core MVC CMS, C# Core CMS, NetCoreCMS, Core CMS, Modular Architecture, CMS Theme, CMS Widget, Multilangual CMS, .Net CMS Platform, .Net CMS Open Source, .Net CMS Comparison 2017, .Net CMS System, .Net CMS Framework, .Net CMS Open Source MVC, .Net CMS tools, .Net CMS website
+#### Asp.Net Core CMS, Asp.Net Core MVC CMS, C# Core CMS, NetCoreCMS, Core CMS, Modular Architecture, CMS Theme, CMS Widget, Multilangual CMS, .Net CMS Platform, .Net CMS Open Source, .Net CMS Comparison 2017, .Net CMS System, .Net CMS Framework, .Net CMS Open Source MVC, .Net CMS tools, .Net CMS website
 
