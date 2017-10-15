@@ -9,12 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Shared\Layouts\Parts\**" />
-    <EmbeddedResource Remove="Shared\Layouts\Parts\**" />
-    <None Remove="Shared\Layouts\Parts\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Shared\Layouts\_FullWidthLayout.cshtml">
       <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
     </Content>

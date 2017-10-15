@@ -6,9 +6,17 @@ namespace NetCoreCMS.Framework.Themes
 {
     public class NccResource
     {
+        public NccResource()
+        {
+            UseMinify = true;
+            Dependencies = new List<NccResource>();
+        }
+
         public string Name { get; set; }
         public string Version { get; set; }
         public string FilePath { get; set; }
+        public string Content { get; set; }
+        public bool UseMinify { get; set; }
         public ResourceType Type { get; set; }
         public int Order { get; set; }
         public IncludeLocation Location{ get; set; }
@@ -16,10 +24,12 @@ namespace NetCoreCMS.Framework.Themes
 
         public enum ResourceType
         {
-            Js,
-            Css,
-            Sass,
-            Lcss
+            JsFile,
+            JsContent,
+            CssFile,
+            CssContent,
+            SassFile,
+            LcssFile
         }
 
         public enum IncludeLocation

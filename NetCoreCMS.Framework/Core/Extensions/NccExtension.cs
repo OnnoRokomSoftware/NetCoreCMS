@@ -39,7 +39,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
             services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
-            services.AddTransient<LanguageDetector>();
+            services.AddTransient<NccLanguageDetector>();
 
             services.AddScoped<NccShortCodeProvider, NccShortCodeProvider>();
             services.AddScoped<ThemeManager, ThemeManager>();
@@ -123,6 +123,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
                     SupportedUICultures = SupportedCultures.Cultures
                 });
             }
+            
             return null;
         }
     }

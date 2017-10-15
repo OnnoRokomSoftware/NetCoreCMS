@@ -1,9 +1,8 @@
 ﻿using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Setup;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 
 namespace NetCoreCMS.Framework.Themes
 {
@@ -11,6 +10,7 @@ namespace NetCoreCMS.Framework.Themes
     {
         public static NccWebSite WebSite { get; set; }
 
+        #region Website Informations
         public static NccWebSiteInfo GetWebSiteInfoForLanguae(List<NccWebSiteInfo> webSiteInfos, string currentLanguage)
         {
             var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == currentLanguage.ToLower()).FirstOrDefault();
@@ -248,9 +248,8 @@ namespace NetCoreCMS.Framework.Themes
             }
             return ret;
         }
-
-
-
+        #endregion
+        
         #region Common Helper
         public static string GetJquery()
         {

@@ -204,7 +204,8 @@ namespace NetCoreCMS.Web
                     var provider = new RouteDataRequestCultureProvider();
                     provider.RouteDataStringKey = "lang";
                     provider.UIRouteDataStringKey = "lang";
-                    provider.Options = opts; opts.RequestCultureProviders = new[] { provider };
+                    provider.Options = opts;
+                    opts.RequestCultureProviders = new[] { provider };
                 }
             );
             

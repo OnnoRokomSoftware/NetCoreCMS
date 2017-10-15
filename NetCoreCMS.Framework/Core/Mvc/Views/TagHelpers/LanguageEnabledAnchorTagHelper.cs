@@ -2,21 +2,14 @@
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Razor.TagHelpers;
-
 using NetCoreCMS.Framework.i18n;
-using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
-
 using System.Text.RegularExpressions;
 using System.ComponentModel.DataAnnotations;
 
-
 namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
 {
-
 
     [HtmlTargetElement("a")]
     [HtmlTargetElement("a", Attributes = "asp-controller")]
@@ -25,6 +18,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
     public class LanguageEnabledAnchorTagHelper : TagHelper
     {
         IHttpContextAccessor _httpContextAccessor;
+        NccLanguageDetector _nccLanguageDetector;
         public override int Order { get; } = int.MaxValue;
 
         [HtmlAttributeName("asp-for")]
@@ -36,9 +30,10 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
         [HtmlAttributeName("href")]
         public string Href { get; set; }
 
-        public LanguageEnabledAnchorTagHelper(IHttpContextAccessor httpContextAccessor)
+        public LanguageEnabledAnchorTagHelper(IHttpContextAccessor httpContextAccessor, NccLanguageDetector nccLanguageDetector)
         {
             _httpContextAccessor = httpContextAccessor;
+            _nccLanguageDetector = nccLanguageDetector;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -48,7 +43,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
 
             if (GlobalConfig.WebSite != null && GlobalConfig.WebSite.IsMultiLangual)
             {
-                var lang = GetCurrentLanguage();
+                var lang = _nccLanguageDetector.GetCurrentLanguage();
                 if (context.AllAttributes["asp-action"] != null && context.AllAttributes["asp-controller"] != null)
                 {
                     output.TagName = "a";                    
@@ -125,37 +120,51 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
             return queryString;
         }
 
-        private string GetCurrentLanguage()
-        {
-            var lang = "";
+        //private string GetCurrentLanguage()
+        //{
+        //    var lang = "";
 
-            if (GlobalConfig.WebSite != null && GlobalConfig.WebSite.IsMultiLangual)
-            {
-                lang = _httpContextAccessor.HttpContext.GetRouteValue("lang") as string;
+        //    if (GlobalConfig.WebSite != null && GlobalConfig.WebSite.IsMultiLangual)
+        //    {
+        //        lang = _httpContextAccessor.HttpContext.GetRouteValue("lang") as string;
 
-                if (string.IsNullOrEmpty(lang))
-                {
-                    var feature = _httpContextAccessor.HttpContext?.Features?.Get<IRequestCultureFeature>();
-                    lang = feature?.RequestCulture.Culture.TwoLetterISOLanguageName;                    
-                }
+        //        if (string.IsNullOrEmpty(lang))
+        //        {
+        //            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(CookieRequestCultureProvider.DefaultCookieName))
+        //            {
+        //                var culture = _httpContextAccessor.HttpContext.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName].ToString();
+        //                if (string.IsNullOrEmpty(culture) == false)
+        //                {
+        //                    var cultureParts = culture.Split("|".ToArray(), System.StringSplitOptions.RemoveEmptyEntries);
+        //                    if (cultureParts.Length >= 2)
+        //                    {
+        //                        var parts = cultureParts[0].Split("=".ToArray(), System.StringSplitOptions.RemoveEmptyEntries);
+        //                        if (parts.Length >= 2)
+        //                        {
+        //                            lang = parts[1];
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
 
-                if (string.IsNullOrEmpty(lang))
-                {
-                    lang = SetupHelper.Language;
-                }
+        //        if (string.IsNullOrEmpty(lang))
+        //        {
+        //            lang = SetupHelper.Language;
+        //        }
 
-                if (string.IsNullOrEmpty(lang))
-                {
-                    lang = "en";
-                }
-            }
-            else
-            {
-                lang = SetupHelper.Language;
-            }
+        //        if (string.IsNullOrEmpty(lang))
+        //        {
+        //            lang = "en";
+        //        }
+        //    }
+        //    else
+        //    {
+        //        lang = SetupHelper.Language;
+        //    }
             
-            return lang;            
-        }
+        //    return lang;            
+        //}
 
         private static int GetMaxLength(IReadOnlyList<object> validatorMetadata)
         {

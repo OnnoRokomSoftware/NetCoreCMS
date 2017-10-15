@@ -2,8 +2,6 @@
     int bodyClassWidth = 12;
     bool hasLeftColumn = false;
     bool hasRightColumn = false;
-    //var WebSite = GlobalConfig.WebSite;
-    //ViewBag.WebSite = GlobalConfig.WebSite;
     ViewBag.CurrentLayout = "SiteLayout";
 
     /*Special Calculation for left and right column show hide*/
@@ -23,13 +21,8 @@
         bodyClassWidth = bodyClassWidth - 2;
     }
     /*Special Calculation for left and right column show hide*/
-
-    /* Getting Current Language */
-    var writer = new System.IO.StringWriter();
-    Component.InvokeAsync("Language").Result.WriteTo(writer, HtmlEncoder);
-    var currentLanguage = writer.GetStringBuilder().ToString();
-
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    var currentLanguage = LanguageDetector.GetCurrentLanguage();
+    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);    
 }
 
 <!DOCTYPE html>
@@ -52,7 +45,7 @@
 
         <link href="~/css/ncc-common.css" rel="stylesheet" />
         <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
-
+        
         @Html.Raw(ThemeHelper.GetJquery())
         @Html.Raw(ThemeHelper.GetBootstrap())
         <script src="~/js/ncc-common.js" asp-append-version="true"></script>
@@ -63,8 +56,7 @@
         @RenderSection("Styles", required: false)
     </head>
 
-    <body id="body">     
-
+    <body id="body">        
         <!-- Loading -->
         <div id="loadingMask" class="loader loader-double"></div>
         <!-- Zone TOP Start-->
