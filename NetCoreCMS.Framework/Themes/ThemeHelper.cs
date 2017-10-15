@@ -1,6 +1,6 @@
-﻿using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Setup;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.i18n;
 using System.Linq;
 
 
@@ -9,247 +9,128 @@ namespace NetCoreCMS.Framework.Themes
     public static class ThemeHelper
     {
         public static NccWebSite WebSite { get; set; }
+        public static string GetCurrentLanguage()
+        {
+            var languageDetector = new NccLanguageDetector(new HttpContextAccessor());
+            var currentLanguage = languageDetector.GetCurrentLanguage();
+            return currentLanguage;
+        }
 
         #region Website Informations
-        public static NccWebSiteInfo GetWebSiteInfoForLanguae(List<NccWebSiteInfo> webSiteInfos, string currentLanguage)
-        {
-            var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == currentLanguage.ToLower()).FirstOrDefault();
-            return webInfo;
-        }
-
-        public static string GetWebSiteName(string currentLanguage)
+         
+        public static string GetWebSiteName()
         {
             var ret = "";
             if (WebSite != null)
             {
-                if (WebSite.IsMultiLangual)
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    if (webInfo == null)
-                    {
-                        webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    }
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.Name;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.Name;
-                    }
+                    ret = webInfo.Name;
                 }
             }
             return ret;
         }
 
-        public static string GetWebSiteTitle(string currentLanguage)
+        public static string GetWebSiteTitle()
         {
             var ret = "";
             if (WebSite != null)
-            {
-                if (WebSite.IsMultiLangual)
+            { 
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    if (webInfo == null)
-                    {
-                        webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    }
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.SiteTitle;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.SiteTitle;
-                    }
-                }
+                    ret = webInfo.SiteTitle;
+                } 
             }
             return ret;
         }
 
-        public static string GetWebSiteTagline(string currentLanguage)
+        public static string GetWebSiteTagline()
         {
             var ret = "";
             if (WebSite != null)
-            {
-                if (WebSite.IsMultiLangual)
+            { 
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    if (webInfo == null)
-                    {
-                        webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    }
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.Tagline;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.Tagline;
-                    }
-                }
+                    ret = webInfo.Tagline;
+                } 
             }
             return ret;
         }
 
-        public static string GetWebSiteFaviconUrl(string currentLanguage)
+        public static string GetWebSiteFaviconUrl()
         {
             var ret = "";
             if (WebSite != null)
-            {
-                if (WebSite.IsMultiLangual)
+            { 
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    if (webInfo == null)
-                    {
-                        webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    }
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.FaviconUrl;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.FaviconUrl;
-                    }
-                }
+                    ret = webInfo.FaviconUrl;
+                } 
             }
             return ret;
         }
 
-        public static string GetWebSiteLogoUrl(string currentLanguage)
+        public static string GetWebSiteLogoUrl()
         {
             var ret = "";
             if (WebSite != null)
             {
-                if (WebSite.IsMultiLangual)
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    //if (webInfo == null)
-                    //{
-                    //    webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    //}
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.SiteLogoUrl;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.SiteLogoUrl;
-                    }
-                }
+                    ret = webInfo.SiteLogoUrl;
+                } 
             }
             return ret;
         }
 
-        public static string GetWebSiteCopyright(string currentLanguage)
+        public static string GetWebSiteCopyright()
         {
             var ret = "";
             if (WebSite != null)
-            {
-                if (WebSite.IsMultiLangual)
+            { 
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    if (webInfo == null)
-                    {
-                        webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    }
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.Copyrights;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.Copyrights;
-                    }
-                }
+                    ret = webInfo.Copyrights;
+                } 
             }
             return ret;
         }
 
-        public static string GetWebSitePrivacyPolicyUrl(string currentLanguage)
+        public static string GetWebSitePrivacyPolicyUrl()
         {
             var ret = "";
             if (WebSite != null)
-            {
-                if (WebSite.IsMultiLangual)
+            { 
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    if (webInfo == null)
-                    {
-                        webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    }
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.PrivacyPolicyUrl;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.PrivacyPolicyUrl;
-                    }
-                }
+                    ret = webInfo.PrivacyPolicyUrl;
+                } 
             }
             return ret;
         }
 
-        public static string GetWebSiteTermsAndConditionsUrl(string currentLanguage)
+        public static string GetWebSiteTermsAndConditionsUrl()
         {
             var ret = "";
             if (WebSite != null)
-            {
-                if (WebSite.IsMultiLangual)
+            { 
+                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
                 {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, currentLanguage);
-                    if (webInfo == null)
-                    {
-                        webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, WebSite.Language);
-                    }
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.TermsAndConditionsUrl;
-                    }
-                }
-                else
-                {
-                    var webInfo = GetWebSiteInfoForLanguae(WebSite.WebSiteInfos, SetupHelper.Language);
-                    if (webInfo != null)
-                    {
-                        ret = webInfo.TermsAndConditionsUrl;
-                    }
-                }
+                    ret = webInfo.TermsAndConditionsUrl;
+                } 
             }
             return ret;
         }
-        #endregion
-        
+        #endregion 
+
         #region Common Helper
         public static string GetJquery()
         {

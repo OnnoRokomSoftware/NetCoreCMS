@@ -1,12 +1,7 @@
 ﻿@{
     int bodyClassWidth = 12;
-    
-    /* Getting Current Language */
-    var writer = new System.IO.StringWriter();
-    Component.InvokeAsync("Language").Result.WriteTo(writer, HtmlEncoder);
-    var currentLanguage = writer.GetStringBuilder().ToString();
-
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    var currentLanguage = LanguageDetector.GetCurrentLanguage();
+    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);    
 }
 
 <!DOCTYPE html>
@@ -20,11 +15,11 @@
 
     @if (ViewData["Title"] != null)
     {
-        <title>@_T[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+        <title>@_T[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle()</title>
     }
     else
     {
-        <title>@ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+        <title>@ThemeHelper.GetWebSiteTitle()</title>
     }
 
     <link href="~/css/ncc-common.css" rel="stylesheet" />
@@ -48,15 +43,15 @@
     <div class="container-fluid topHeader">
         <div class="container">
             <div class="topLogo">
-                @if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteLogoUrl(currentLanguage)))
+                @if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteLogoUrl()))
                 {
-                    <a href="/"><h1>@ThemeHelper.GetWebSiteName(currentLanguage)</h1></a>
-                        <h4>@ThemeHelper.GetWebSiteTagline(currentLanguage)</h4>
+                    <a href="/"><h1>@ThemeHelper.GetWebSiteName()</h1></a>
+                        <h4>@ThemeHelper.GetWebSiteTagline()</h4>
                 }
                 else
                 {
                     <a href="/">
-                        <img src="@ThemeHelper.GetWebSiteLogoUrl(currentLanguage)" alt="@ThemeHelper.GetWebSiteName(currentLanguage)" title="@ThemeHelper.GetWebSiteTagline(currentLanguage)" width="200px" />
+                        <img src="@ThemeHelper.GetWebSiteLogoUrl()" alt="@ThemeHelper.GetWebSiteName()" title="@ThemeHelper.GetWebSiteTagline()" width="200px" />
                     </a>
                 }
             </div>
@@ -319,7 +314,7 @@
         }
         <div class="container">
             <div class="row">
-                <div class="col-md-6 copyright"> @_T["Copyrights"] &copy; @Html.Raw(ThemeHelper.GetWebSiteCopyright(currentLanguage)) @_T[DateTime.Now.Year.ToString()]</div>
+                <div class="col-md-6 copyright"> @_T["Copyrights"] &copy; @Html.Raw(ThemeHelper.GetWebSiteCopyright()) @_T[DateTime.Now.Year.ToString()]</div>
                 <div class="col-md-6 poweredby"> @Html.Raw(string.Format(_T["Developed using {0}"].ToString(), "<a href=\"" + @NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
             </div>
         </div>

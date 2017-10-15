@@ -1,5 +1,5 @@
 ﻿@{
-    string currentLanguage = this.ViewContext.HttpContext.Items["currentLanguage"].ToString();
+    string currentLanguage = LanguageDetector.GetCurrentLanguage();
     NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
 
     var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn" && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage == currentLanguage)).ToList();

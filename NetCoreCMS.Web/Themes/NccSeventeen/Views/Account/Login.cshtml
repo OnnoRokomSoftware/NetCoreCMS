@@ -9,7 +9,7 @@
 @{
     Layout = "_LoginLayout";
 
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>((string)this.ViewContext.HttpContext.Items["currentLanguage"]);
+    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(LanguageDetector.GetCurrentLanguage());
     ViewData["Title"] = _TT["Log in"];
 }
 

@@ -3,4 +3,8 @@
 @using NetCoreCMS.Framework.Modules
 @using NetCoreCMS.Framework.Modules.Widgets
 
+@using Microsoft.Extensions.Localization
+@using NetCoreCMS.Framework.i18n
+
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@inject NccLanguageDetector LanguageDetector

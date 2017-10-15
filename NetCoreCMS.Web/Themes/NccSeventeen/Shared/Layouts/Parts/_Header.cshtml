@@ -1,5 +1,5 @@
 ﻿@{
-    string currentLanguage = this.ViewContext.HttpContext.Items["currentLanguage"].ToString();
+    string currentLanguage = LanguageDetector.GetCurrentLanguage();
     NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
 }
 <!-- Loading -->
@@ -9,15 +9,15 @@
 <div class="container-fluid topHeader">
     <div class="container">
         <div class="topLogo">
-            @if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteLogoUrl(currentLanguage)))
+            @if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteLogoUrl()))
             {
-                <a href="/"><h1>@ThemeHelper.GetWebSiteName(currentLanguage)</h1></a>
-                        <h4>@ThemeHelper.GetWebSiteTagline(currentLanguage)</h4>
+                <a href="/"><h1>@ThemeHelper.GetWebSiteName()</h1></a>
+                        <h4>@ThemeHelper.GetWebSiteTagline()</h4>
             }
             else
             {
                 <a href="/">
-                    <img src="@ThemeHelper.GetWebSiteLogoUrl(currentLanguage)" alt="@ThemeHelper.GetWebSiteName(currentLanguage)" title="@ThemeHelper.GetWebSiteTagline(currentLanguage)" width="200px" />
+                    <img src="@ThemeHelper.GetWebSiteLogoUrl()" alt="@ThemeHelper.GetWebSiteName()" title="@ThemeHelper.GetWebSiteTagline()" width="200px" />
                 </a>
             }
         </div>

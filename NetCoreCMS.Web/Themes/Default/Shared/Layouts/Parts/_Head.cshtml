@@ -33,11 +33,11 @@
 
 @if (ViewData["Title"] != null)
 {
-    <title>@_T[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+    <title>@_T[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle()</title>
 }
 else
 {
-    <title>@ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+    <title>@ThemeHelper.GetWebSiteTitle()</title>
 }
 
 <link href="~/css/ncc-common.css" rel="stylesheet" />
