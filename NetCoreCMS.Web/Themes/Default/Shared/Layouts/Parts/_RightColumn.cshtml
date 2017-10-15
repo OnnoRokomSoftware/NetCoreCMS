@@ -1,6 +1,6 @@
 ﻿@{  
     var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
-    var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+    var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == CurrentLayout).ToList();
     if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
     {
         HasRightColumn = true;

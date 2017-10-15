@@ -1,6 +1,6 @@
 ﻿@{ 
     var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
-    var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+    var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == CurrentLayout).ToList();
     if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
     {
         HasLeftColumn = true;

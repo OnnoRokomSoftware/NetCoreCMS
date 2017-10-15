@@ -1,6 +1,8 @@
 ﻿@{
     var currentLanguage = LanguageDetector.GetCurrentLanguage();
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    CurrentLanguage = currentLanguage;
+    CurrentLayout = ThemeResources.Layouts.SiteLayout.Name;
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(currentLanguage);
 }
 
 <meta charset="utf-8" />

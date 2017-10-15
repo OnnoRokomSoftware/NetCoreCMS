@@ -44,7 +44,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderHead(string headViewFile = "Parts/_Head")
         {
             var renderService = GetViewRenderer();
-            var content = renderService.RenderToStringAsync<TModel>(headViewFile, Model).Result;
+            var content = renderService.RenderToStringAsync(typeof(TModel), headViewFile, Model).Result;
             return content;
         }
 
@@ -56,41 +56,34 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public IHtmlContent NccRenderHeaderScripts()
         {
             throw new System.Exception();
-        }
+        } 
 
-        public IHtmlContent NccRenderMessageAria(string messageAriaViewFile = "Parts/_Message")
-        {
-            var renderService = GetViewRenderer();
-            var content = renderService.RenderToStringAsync(typeof(TModel), messageAriaViewFile, Model).Result;
-            return new HtmlContentBuilder().Append(content);
-        }
-
-        public IHtmlContent NccRenderHeader(string headerViewFile = "Parts/_Header")
+        public string NccRenderHeader(string headerViewFile = "Parts/_Header")
         {
             var renderService = GetViewRenderer();
             var content = renderService.RenderToStringAsync(typeof(TModel), headerViewFile, Model).Result;
-            return new HtmlContentBuilder().Append(content);
+            return content;
         }
 
-        public IHtmlContent NccRenderNavigation(string navigationViewFile = "Parts/_Navigation")
+        public string NccRenderNavigation(string navigationViewFile = "Parts/_Navigation")
         {
             var renderService = GetViewRenderer();
             var content = renderService.RenderToStringAsync(typeof(TModel), navigationViewFile, Model).Result;
-            return new HtmlContentBuilder().Append(content);
+            return content;
         }
 
-        public IHtmlContent NccRenderFeaturedSection(string featuredViewFile = "Parts/_Featured")
+        public string NccRenderFeaturedSection(string featuredViewFile = "Parts/_Featured")
         {
             var renderService = GetViewRenderer();
             var content = renderService.RenderToStringAsync(typeof(TModel), featuredViewFile, Model).Result;
-            return new HtmlContentBuilder().Append(content);
+            return content;
         }
 
-        public IHtmlContent NccRenderLeftColumn(string leftColumnViewFile = "Parts/_LeftColumn")
+        public string NccRenderLeftColumn(string leftColumnViewFile = "Parts/_LeftColumn")
         {
             var renderService = GetViewRenderer();
             var content = renderService.RenderToStringAsync(typeof(TModel), leftColumnViewFile, Model).Result;
-            return new HtmlContentBuilder().Append(content);
+            return content;
         }
         
         public IHtmlContent NccRenderBody()
@@ -98,18 +91,18 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             return RenderBody();
         }
 
-        public IHtmlContent NccRenderRightColumn(string rightColumnViewFile = "Parts/_RightColumn")
+        public string NccRenderRightColumn(string rightColumnViewFile = "Parts/_RightColumn")
         {
             var renderService = GetViewRenderer();
             var content = renderService.RenderToStringAsync(typeof(TModel), rightColumnViewFile, Model).Result;
-            return new HtmlContentBuilder().Append(content);
+            return content;
         }
 
-        public IHtmlContent NccRenderFooter(string footerViewFile = "Parts/_Footer")
+        public string NccRenderFooter(string footerViewFile = "Parts/_Footer")
         {
             var renderService = GetViewRenderer();
             var content = renderService.RenderToStringAsync(typeof(TModel), footerViewFile, Model).Result;
-            return new HtmlContentBuilder().Append(content);
+            return content;
         }
 
         public IHtmlContent NccRenderFooterCss()
@@ -120,6 +113,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public IHtmlContent NccRenderFooterScripts()
         {
             throw new System.Exception();
+        }
+
+        public string NccRenderLoadingMaskContainer()
+        {
+            return "<div id=\"loadingMask\" class=\"loader loader - double\"></div>";
+        }
+
+        public string NccRenderGlobalMessageContainer()
+        {
+            return "<div id=\"globalMessageContainer\" class=\"ncc-global-message\"></div>";
         }
     }
 }
