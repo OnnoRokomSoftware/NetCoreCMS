@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.i18n;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -8,6 +9,7 @@ namespace NetCoreCMS.Framework.Themes
 {
     public static class ThemeHelper
     {
+        public static Theme ActiveTheme { get; set; }
         public static NccWebSite WebSite { get; set; }
         public static string GetCurrentLanguage()
         {
@@ -142,5 +144,13 @@ namespace NetCoreCMS.Framework.Themes
                 "<script src=\"/lib/bootstrap/dist/js/bootstrap.js\"></script>";
         }
         #endregion
+
+        public static class Sections
+        {
+            public static string StyleHeader { get { return "StyleHeader"; } }
+            public static string StyleFooter { get { return "StyleFooter"; } }
+            public static string ScriptHeader { get { return "ScriptHeader"; } }
+            public static string ScriptFooter { get { return "ScriptFooter"; } }            
+        }
     }
 }

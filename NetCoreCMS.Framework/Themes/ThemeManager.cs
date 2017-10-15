@@ -1,19 +1,20 @@
-﻿using Microsoft.Extensions.Logging;
-using NetCoreCMS.Framework.Core;
-using NetCoreCMS.Framework.Core.Messages;
-using NetCoreCMS.Framework.Utility;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
-using Microsoft.CodeAnalysis;
+using System.Collections.Generic;
+
+using NetCoreCMS.Framework.Core;
+using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Core.Messages;
 using NetCoreCMS.Framework.Modules.Widgets;
 
+using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.DependencyInjection;
+
+using Newtonsoft.Json;
 namespace NetCoreCMS.Framework.Themes
 {
     public class ThemeManager
@@ -38,21 +39,28 @@ namespace NetCoreCMS.Framework.Themes
                         var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
                         theme.Folder = themeDir.Name;
                         theme.ConfigFilePath = configFileLocation;
-                        theme.ResourceFolder = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
-
-                        var themeAssemblyPath = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
-                        var themeAssembly = Assembly.LoadFile(themeAssemblyPath);
-
-                        if (RuntimeUtil.IsRelease(themeAssembly)) 
-                        {
-                            theme.ResourceFolder = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\Resources";
-                        }
-
-                        themes.Add(theme);
                         
-                        if (theme.IsActive)
+                        if (Directory.Exists(themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0"))
                         {
-                            GlobalConfig.ActiveTheme = theme;
+                            theme.ResourceFolder    = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
+                            theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
+                        }
+                        else if(Directory.Exists(themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0"))
+                        {
+                            theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
+                            theme.ResourceFolder    = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\Resources";
+                        }
+                        
+                        if (string.IsNullOrEmpty(theme.AssemblyPath) && File.Exists(theme.AssemblyPath))
+                        {                            
+                            var themeAssembly = Assembly.LoadFile(theme.AssemblyPath);
+                            themes.Add(theme);
+
+                            if (theme.IsActive)
+                            {
+                                ThemeHelper.ActiveTheme     = theme;
+                                GlobalConfig.ActiveTheme    = theme;
+                            }
                         }
                     }
                     else
@@ -89,10 +97,12 @@ namespace NetCoreCMS.Framework.Themes
                     {
                         if (InactivateTheme(GlobalConfig.ActiveTheme.ThemeName))
                         {
-                            theme.IsActive = true;
-                            GlobalConfig.ActiveTheme = theme;
+                            theme.IsActive = true;                           
                             var themeJson = JsonConvert.SerializeObject(theme,Formatting.Indented);
                             File.WriteAllText(infoFileLocation, themeJson);
+
+                            GlobalConfig.ActiveTheme    = theme;
+                            ThemeHelper.ActiveTheme     = theme;
                         }
                         else
                         {
@@ -129,7 +139,7 @@ namespace NetCoreCMS.Framework.Themes
                     if (theme.IsActive == true)
                     {
                         theme.IsActive = false;
-                        GlobalConfig.ActiveTheme = theme;
+                        //GlobalConfig.ActiveTheme = theme;
                         var themeJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
                         File.WriteAllText(infoFileLocation, themeJson);
                     }
@@ -158,10 +168,13 @@ namespace NetCoreCMS.Framework.Themes
                 {
                     var themeInfoFileContent = File.ReadAllText(infoFileLocation);
                     var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
-                    theme.IsActive = true;
-                    GlobalConfig.ActiveTheme = theme;
+                    theme.IsActive = true;                    
                     var themeJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
-                    File.WriteAllText(infoFileLocation, themeJson); 
+                    File.WriteAllText(infoFileLocation, themeJson);
+
+                    GlobalConfig.ActiveTheme    = theme;
+                    ThemeHelper.ActiveTheme     = theme;
+
                     return true;
                 }
                 else

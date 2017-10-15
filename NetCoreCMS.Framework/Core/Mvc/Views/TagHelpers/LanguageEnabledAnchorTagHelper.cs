@@ -119,53 +119,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
             }
             return queryString;
         }
-
-        //private string GetCurrentLanguage()
-        //{
-        //    var lang = "";
-
-        //    if (GlobalConfig.WebSite != null && GlobalConfig.WebSite.IsMultiLangual)
-        //    {
-        //        lang = _httpContextAccessor.HttpContext.GetRouteValue("lang") as string;
-
-        //        if (string.IsNullOrEmpty(lang))
-        //        {
-        //            if (_httpContextAccessor.HttpContext.Request.Cookies.ContainsKey(CookieRequestCultureProvider.DefaultCookieName))
-        //            {
-        //                var culture = _httpContextAccessor.HttpContext.Request.Cookies[CookieRequestCultureProvider.DefaultCookieName].ToString();
-        //                if (string.IsNullOrEmpty(culture) == false)
-        //                {
-        //                    var cultureParts = culture.Split("|".ToArray(), System.StringSplitOptions.RemoveEmptyEntries);
-        //                    if (cultureParts.Length >= 2)
-        //                    {
-        //                        var parts = cultureParts[0].Split("=".ToArray(), System.StringSplitOptions.RemoveEmptyEntries);
-        //                        if (parts.Length >= 2)
-        //                        {
-        //                            lang = parts[1];
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-
-        //        if (string.IsNullOrEmpty(lang))
-        //        {
-        //            lang = SetupHelper.Language;
-        //        }
-
-        //        if (string.IsNullOrEmpty(lang))
-        //        {
-        //            lang = "en";
-        //        }
-        //    }
-        //    else
-        //    {
-        //        lang = SetupHelper.Language;
-        //    }
-            
-        //    return lang;            
-        //}
-
+         
         private static int GetMaxLength(IReadOnlyList<object> validatorMetadata)
         {
             for (var i = 0; i < validatorMetadata.Count; i++)
