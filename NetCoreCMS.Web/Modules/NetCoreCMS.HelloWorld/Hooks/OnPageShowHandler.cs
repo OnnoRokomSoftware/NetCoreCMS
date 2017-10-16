@@ -1,8 +1,6 @@
 ﻿using MediatR;
 using NetCoreCMS.Framework.Core.Events.Page;
-using NetCoreCMS.Framework.Core.Events.Post;
 using NetCoreCMS.Framework.Core.Models;
- 
 
 namespace NetCoreCMS.HelloWorld.Hooks
 {
