@@ -65,7 +65,7 @@
     }
   ],
   "Settings": {
-    "style": "light",
-    "NccVersion": "0.4.1"
+    "NccVersion": "0.4.1",
+    "style": "light"
   }
 }

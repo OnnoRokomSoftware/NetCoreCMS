@@ -1,11 +1,4 @@
-﻿@{
-    var currentLanguage = LanguageDetector.GetCurrentLanguage();
-    CurrentLanguage = currentLanguage;
-    CurrentLayout = ThemeResources.Layouts.SiteLayout.Name;
-    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(currentLanguage);
-}
-
-<meta charset="utf-8" />
+﻿<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="description" content="@MetaDescription">
@@ -23,12 +16,4 @@ else
     <title>@ThemeHelper.GetWebSiteTitle()</title>
 }
 
-<link href="~/css/ncc-common.css" rel="stylesheet" />
-<link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
-<link rel="stylesheet" href=@string.Concat("/Themes/Default/css/",@GlobalConfig.ActiveTheme.Settings["style"],".css") />
 
-@Html.Raw(ThemeHelper.GetJquery())
-@Html.Raw(ThemeHelper.GetBootstrap())
-
-<script src="~/js/ncc-common.js" asp-append-version="true"></script>
-<script src="~/lib/notifyjs/notify.min.js"></script>

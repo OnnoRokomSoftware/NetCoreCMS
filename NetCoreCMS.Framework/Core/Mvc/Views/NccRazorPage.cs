@@ -309,7 +309,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     sw,
                     new HtmlHelperOptions()
                 );
-
                 viewContext.RouteData = ViewContext.RouteData;
                 await viewResult.View.RenderAsync(viewContext);
                 viewContent = sw.GetStringBuilder().ToString();
@@ -325,14 +324,18 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             return string.Empty;
         }
 
-        public IHtmlContent NccRenderHeaderCss()
+        public string NccRenderHeaderCss(string headCssViewFile = "Parts/_HeaderCss")
         {
-            throw new System.Exception();
+            var content = RenderToStringAsync(headCssViewFile, Model).Result;
+            ViewContext.Writer.WriteLine(content);
+            return string.Empty;
         }
 
-        public IHtmlContent NccRenderHeaderScripts()
+        public string NccRenderHeaderScripts(string headCssViewFile = "Parts/_HeaderScripts")
         {
-            throw new System.Exception();
+            var content = RenderToStringAsync(headCssViewFile, Model).Result;
+            ViewContext.Writer.WriteLine(content);
+            return string.Empty;
         } 
 
         public string NccRenderHeader(string headerViewFile = "Parts/_Header")
@@ -382,14 +385,18 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             return string.Empty;
         }
 
-        public IHtmlContent NccRenderFooterCss()
+        public string NccRenderFooterCss(string footerCssViewFile = "Parts/_FooterCss")
         {
-            throw new System.Exception();
+            var content = RenderToStringAsync(footerCssViewFile, Model).Result;
+            ViewContext.Writer.WriteLine(content);
+            return string.Empty;
         }
 
-        public IHtmlContent NccRenderFooterScripts()
+        public string NccRenderFooterScripts(string footerScriptsViewFile = "Parts/_FooterScripts")
         {
-            throw new System.Exception();
+            var content = RenderToStringAsync(footerScriptsViewFile, Model).Result;
+            ViewContext.Writer.WriteLine(content);
+            return string.Empty;
         }
 
         public string NccRenderLoadingMaskContainer()
