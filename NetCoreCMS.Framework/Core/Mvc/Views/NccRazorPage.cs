@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -286,6 +287,53 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }
         }
 
+
+        public Dictionary<string,object> PageProperty {
+            get
+            {
+                object val;
+                Context.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_DICTIONARY", out val);
+                if (val == null)
+                {
+                    val = new Dictionary<string, object>();
+                    PageProperty = (Dictionary<string, object>)val;
+                }   
+                return (Dictionary<string, object>)val;
+            }
+            set
+            {
+                Context.Items["NCC_RAZOR_PAGE_PROPERTY_DICTIONARY"] = value;
+            }
+        }
+
+        public void SetProperty(string key, object value)
+        {
+            var property = PageProperty;
+            if (property.ContainsKey(key))
+            {
+                property[key] = value;
+            }
+            else
+            {
+                property.Add(key, value);
+            }
+            PageProperty = property;
+        }
+
+        public object GetProperty(string key)
+        {
+            var property = PageProperty;
+            if (property.ContainsKey(key))
+            {
+                return property[key];
+            }
+            else
+            {
+                return null;
+            }            
+        }
+
+
         public async Task<string> RenderToStringAsync(string viewName, object model)
         {
             var ac = new ActionContext(Context, ViewContext.RouteData, ViewContext.ActionDescriptor);
@@ -315,6 +363,13 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }
             
             return viewContent;
+        }
+
+        public string NccRenderPertial(string partialViewFileName, object model)
+        {
+            var content = RenderToStringAsync(partialViewFileName, model).Result;
+            ViewContext.Writer.WriteLine(content);
+            return string.Empty;
         }
 
         public string NccRenderHead(string headViewFile = "Parts/_Head")

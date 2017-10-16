@@ -2,14 +2,13 @@
 using System.Text;
 using Newtonsoft.Json;
 using System.Linq;
-using NetCoreCMS.Framework.Core.Exceptions;
 using System.Collections.Generic;
 using System;
-using NetCoreCMS.Framework.Setup;
+
 
 namespace NetCoreCMS.Framework.i18n
 {
-    public sealed class NccTranslator<T>
+    public sealed class NccTranslator<T> : INccTranslator<T>
     {
         private string _fileName;
         private string _resourceFilePath;

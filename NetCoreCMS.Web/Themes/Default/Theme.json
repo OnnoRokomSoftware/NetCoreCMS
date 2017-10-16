@@ -16,8 +16,8 @@
   "MenuLocations": [
     "Top",
     "Navigation",
-    "LeftColumn",
-    "RightColumn",
+    "LeftSidebar",
+    "RightSidebar",
     "Footer"
   ],
   "Layouts": [
@@ -65,7 +65,7 @@
     }
   ],
   "Settings": {
-    "NccVersion": "0.4.1",
-    "style": "light"
+    "style": "light",
+    "NccVersion": "0.4.1"
   }
 }

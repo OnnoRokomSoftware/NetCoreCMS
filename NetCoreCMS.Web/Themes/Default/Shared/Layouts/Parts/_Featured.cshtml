@@ -1,19 +1,16 @@
-﻿@{ 
-    var currentLanguage = LanguageDetector.GetCurrentLanguage();
-}
-<div class="Featured">
+﻿<div class="Featured">
     @{
-        var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+        var featured = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, ThemeResources.Zones.Featured);
         if (featured != null && featured.Count > 0)
         {
             <div style="width:100%;">
                 @foreach (var item in featured)
                 {
-                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                    var widgets = ThemeHelper.GetWidgets(item.WidgetId);
                     foreach (var widget in widgets)
                     {
                         widget.Init(item.Id);
-                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage.ToLower() == widget.Language.ToLower())
+                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language.ToLower())
                         {
                             if (widget.DisplayTitle != "" || widget.Footer != "")
                             {

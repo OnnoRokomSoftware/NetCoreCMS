@@ -1,6 +1,6 @@
 ﻿@{
-    BodyWidth = 12;
-    CurrentLayout   = ThemeResources.Layouts.SiteLayout.Name;
+    BodyWidth = 12; //Uses for bootstrap grid system
+    CurrentLayout   = ThemeResources.Layouts.SiteLayout;
     CurrentLanguage = ThemeHelper.GetCurrentLanguage();
     NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
@@ -19,42 +19,43 @@
         @RenderSection("Styles", required: false)
     </head>
 
-    <body id="body">   
+    <body id="body">
+        
         <!-- Loading -->
         @NccRenderLoadingMaskContainer()
         <!-- Header -->
         @NccRenderHeader()
 
         <!-- Navbar -->
-        @Html.Raw(NccRenderNavigation())    
+        @NccRenderNavigation()
         <!-- Zone TOP End-->
 
         <!--  Main Body Start -->
         <div class="container mainBody">   
             <!-- Left Column start -->
-            @Html.Raw(NccRenderLeftColumn())
+            @NccRenderLeftColumn()
             <!-- Left Column end -->
 
             <!-- Right Column start -->
-            @Html.Raw(NccRenderRightColumn())
+            @NccRenderRightColumn()
             <!-- Right Column end -->
 
             <!-- Main content Start -->
             <div class="col-md-@BodyWidth">
                 <!-- Featured -->
-                @Html.Raw(NccRenderFeaturedSection())
+                @NccRenderFeaturedSection()
                 <!-- Container for showing global messages. -->
                 <div class="row">
-                    @Html.Raw(NccRenderGlobalMessageContainer())
+                    @NccRenderGlobalMessageContainer()
                 </div>
-                @RenderBody()
+                @NccRenderBody()
             </div>
             <!-- Main content End -->
         </div>
         <!--  Main Body End -->
 
         <!--  Footer Start -->
-        @Html.Raw(NccRenderFooter())
+        @NccRenderFooter()
         <!--  Footer End -->
 
         @NccRenderFooterCss()

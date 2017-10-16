@@ -3,8 +3,9 @@
     <div class="container">
         <div class="row">
             @{
-                var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer" && x.MenuLanguage == CurrentLanguage).ToList();
-                var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == CurrentLayout).ToList();
+                var menusFooter = ThemeHelper.GetMenus(ThemeResources.MenuLocation.Footer, CurrentLanguage);
+                var zoneFooterWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, ThemeResources.Zones.Footer);
+
                 if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
                 {
                     HasFooter = true;
@@ -42,7 +43,7 @@
                     <div class="col-md-12">
                         @foreach (var item in zoneFooterWidgets)
                         {
-                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                            var widgets = ThemeHelper.GetWidgets(item.WidgetId);
                             foreach (var widget in widgets)
                             {
                                 widget.Init(item.Id);

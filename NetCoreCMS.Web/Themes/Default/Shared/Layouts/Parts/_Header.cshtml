@@ -21,7 +21,7 @@
                 @await Html.PartialAsync("_SelectLanguagePartial")
             }
             @{
-                var menus = GlobalConfig.Menus.Where(x => x.Position == "Top" && (x.MenuLanguage == ThemeHelper.GetCurrentLanguage() || x.MenuLanguage == "")).ToList();
+                var menus = ThemeHelper.GetMenus(ThemeResources.MenuLocation.Top, CurrentLanguage);
                 foreach (var item in menus)
                 {
                     foreach (var menuItem in item.MenuItems)
@@ -44,17 +44,17 @@
         </div>
         <div class="topWidgetZone">
             @{
-                var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "TopBar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+                var zoneTopWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, ThemeResources.Zones.TopBar);
                 if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
                 {
                     <div style="width:100%;">
                         @foreach (var item in zoneTopWidgets)
                         {
-                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                            var widgets = ThemeHelper.GetWidgets(item.WidgetId);
                             foreach (var widget in widgets)
                             {
                                 widget.Init(item.Id);
-                                if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(ThemeHelper.GetCurrentLanguage()) || ThemeHelper.GetCurrentLanguage().ToLower() == widget.Language)
+                                if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language)
                                 {
                                     if (widget.DisplayTitle != "" || widget.Footer != "")
                                     {
