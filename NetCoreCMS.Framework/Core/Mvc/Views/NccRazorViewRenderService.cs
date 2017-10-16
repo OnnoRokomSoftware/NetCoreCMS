@@ -33,47 +33,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             _serviceProvider = serviceProvider;
             _httpContextAccessor = httpContextAccessor;
         }
-
-        public async Task<string> RenderToStringAsync(Type controllerType, string viewName, object model)
-        {
-            var httpContext = _httpContextAccessor.HttpContext;  
-            var ac = new ActionContext(httpContext, httpContext.GetRouteData(), new ControllerActionDescriptor());
-            var actionContext = new ControllerContext(ac);
-
-            var typeInfo = controllerType.GetTypeInfo();
-            actionContext.ActionDescriptor.ActionName = "Index";
-            actionContext.ActionDescriptor.ControllerName = "Home";
-            actionContext.ActionDescriptor.DisplayName = typeInfo.Module.Name;
-            actionContext.ActionDescriptor.ControllerTypeInfo = typeInfo;
-
-            using (var sw = new StringWriter())
-            {
-                var viewResult = _razorViewEngine.FindView(actionContext, viewName, false);
-
-                if (viewResult.View == null)
-                {
-                    throw new ArgumentNullException($"{viewName} does not match any available view");
-                }
-
-                var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
-                {
-                    Model = model
-                };
-
-                var viewContext = new ViewContext(
-                    actionContext,
-                    viewResult.View,
-                    viewDictionary,
-                    new TempDataDictionary(actionContext.HttpContext, _tempDataProvider),
-                    sw,
-                    new HtmlHelperOptions()
-                );
-                viewContext.RouteData = httpContext.GetRouteData();   
-                await viewResult.View.RenderAsync(viewContext);
-                return sw.ToString();
-            }
-        }
-
+        
         public async Task<string> RenderToStringAsync<T>(string viewName, object model)
         {
             var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };            
