@@ -15,3 +15,4 @@ config
 /NetCoreCMS.Web/Logs/*.log
 .vs
 __Logs
+node_modules

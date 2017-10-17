@@ -250,7 +250,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                         try
                         {
                             _nccPostService.Save(model);
-                            _mediator.Send(new OnPostCreated(model));
+                            FireEvent("PostCreated",model);
                             ViewBag.MessageType = "SuccessMessage";
                             ViewBag.Message = "Page save successful";
                         }
@@ -279,6 +279,18 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
 
             SetPostViewData(model);
             return View(model);
+        }
+
+        private void FireEvent(string actionType, NccPost model)
+        {
+            try
+            {
+                _mediator.Send(new OnPostCreated(model));
+            }
+            catch (Exception ex)
+            {
+                //Ignore exception
+            }
         }
 
         [AdminMenuItem(Name = "Manage post", Url = "/Post/Manage", IconCls = "fa-th-list", Order = 1)]

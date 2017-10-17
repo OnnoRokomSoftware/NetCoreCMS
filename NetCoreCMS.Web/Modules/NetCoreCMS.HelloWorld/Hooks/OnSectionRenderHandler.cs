@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using NetCoreCMS.Framework.Core.Events.Theme;
+using NetCoreCMS.Framework.Core.Events.Themes;
 
 namespace NetCoreCMS.HelloWorld.Hooks
 {

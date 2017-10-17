@@ -289,12 +289,12 @@ namespace NetCoreCMS.Framework.Themes
         #region Common Helper
         public static string GetJquery()
         {
-            return "<script src=\"/lib/jquery/dist/jquery.js\"></script>";
+            return "<script src=\"/lib/jquery/dist/jquery.min.js\"></script>";
         }
         public static string GetBootstrap()
         {
-            return "<link rel=\"stylesheet\" href=\"/lib/bootstrap/dist/css/bootstrap.css\" />" +
-                "<script src=\"/lib/bootstrap/dist/js/bootstrap.js\"></script>";
+            return "<link rel=\"stylesheet\" href=\"/lib/bootstrap/css/bootstrap.css\" />" +
+                "<script src=\"/lib/bootstrap/js/bootstrap.min.js\"></script>";
         }
         #endregion
 

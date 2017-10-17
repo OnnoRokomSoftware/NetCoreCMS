@@ -1,16 +1,17 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
+using MediatR;
 using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using System.Collections.Generic;
-using NetCoreCMS.Framework.Core.Events.Theme;
-using MediatR;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+
+using NetCoreCMS.Framework.Core.Events.Themes;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -336,7 +337,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 return null;
             }            
         }
-
+        
         private ThemeSection FireEvent(string name, string headViewFile, string content, TModel model)
         {
             var themeSection = new ThemeSection()
@@ -344,13 +345,24 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Name = name,
                 Content = content,
                 Model = Model,
-                ViewFileName = headViewFile
+                ViewFileName = headViewFile,
+                Language = CurrentLanguage
             };
-            if(_mediator == null)
+
+            try
             {
-                _mediator = (IMediator) ViewContext.HttpContext.RequestServices.GetService(typeof(IMediator));
+                if (_mediator == null)
+                {
+                    _mediator = (IMediator)ViewContext.HttpContext.RequestServices.GetService(typeof(IMediator));
+                }
+
+                themeSection = _mediator.Send(new OnThemeSectionRender(themeSection)).Result;
             }
-            themeSection = _mediator.Send(new OnThemeSectionRender(themeSection)).Result;
+            catch (Exception ex)
+            {
+                //If this event does not have any handler then this send will throw an exception. We can ignore this exception.
+            }
+
             return themeSection;
         }
 
@@ -475,6 +487,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderRightColumn(string rightColumnViewFile = "Parts/_RightColumn")
         {
             var content = RenderToStringAsync(rightColumnViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.RightColumn, rightColumnViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -482,6 +496,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderFooter(string footerViewFile = "Parts/_Footer")
         {
             var content = RenderToStringAsync(footerViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.Footer, footerViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -489,6 +505,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderFooterCss(string footerCssViewFile = "Parts/_FooterCss")
         {
             var content = RenderToStringAsync(footerCssViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.FooterCss, footerCssViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -496,6 +514,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderFooterScripts(string footerScriptsViewFile = "Parts/_FooterScripts")
         {
             var content = RenderToStringAsync(footerScriptsViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.FooterScripts, footerScriptsViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -503,6 +523,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderLoadingMaskContainer()
         {
             var loadingMaskDiv = "<div id=\"loadingMask\" class=\"loader loader - double\"></div>";
+            var themeSection = FireEvent(ThemeSection.Sections.LoadingMask, CurrentLayout, loadingMaskDiv, Model);
+            loadingMaskDiv = themeSection.Content;
             ViewContext.Writer.WriteLine(loadingMaskDiv);
             return string.Empty;
         }
@@ -510,6 +532,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderGlobalMessageContainer()
         {
             var globalMessageContainer = "<div id=\"globalMessageContainer\" class=\"ncc-global-message\"></div>";
+            var themeSection = FireEvent(ThemeSection.Sections.LoadingMask, CurrentLayout, globalMessageContainer, Model);
+            globalMessageContainer = themeSection.Content;
             ViewContext.Writer.WriteLine(globalMessageContainer);
             return string.Empty;            
         }

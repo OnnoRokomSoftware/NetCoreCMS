@@ -15,9 +15,9 @@
         postDetails = Model.PostDetails.FirstOrDefault();
     }
 
-    ViewData["Title"] = postDetails?.Title;
-    ViewData["MetaDescription"] = postDetails?.MetaDescription;
-    ViewData["MetaKeyword"] = postDetails?.MetaKeyword;
+    Title = postDetails?.Title;
+    MetaDescription = postDetails?.MetaDescription;
+    MetaKeyword = postDetails?.MetaKeyword;
 }
 
 @section Styles{
