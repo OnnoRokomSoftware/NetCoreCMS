@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Events.Theme;
+using MediatR;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -287,6 +290,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }
         }
 
+        private IMediator _mediator;
 
         public Dictionary<string,object> PageProperty {
             get
@@ -333,6 +337,22 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }            
         }
 
+        private ThemeSection FireEvent(string name, string headViewFile, string content, TModel model)
+        {
+            var themeSection = new ThemeSection()
+            {
+                Name = name,
+                Content = content,
+                Model = Model,
+                ViewFileName = headViewFile
+            };
+            if(_mediator == null)
+            {
+                _mediator = (IMediator) ViewContext.HttpContext.RequestServices.GetService(typeof(IMediator));
+            }
+            themeSection = _mediator.Send(new OnThemeSectionRender(themeSection)).Result;
+            return themeSection;
+        }
 
         public async Task<string> RenderToStringAsync(string viewName, object model)
         {
@@ -368,6 +388,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderPertial(string partialViewFileName, object model)
         {
             var content = RenderToStringAsync(partialViewFileName, model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.PartialView, partialViewFileName, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -375,13 +397,17 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderHead(string headViewFile = "Parts/_Head")
         {
             var content = RenderToStringAsync(headViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.Head,headViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
-        }
+        } 
 
         public string NccRenderHeaderCss(string headCssViewFile = "Parts/_HeaderCss")
         {
             var content = RenderToStringAsync(headCssViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.HeaderCss, headCssViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -389,6 +415,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderHeaderScripts(string headCssViewFile = "Parts/_HeaderScripts")
         {
             var content = RenderToStringAsync(headCssViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.HeaderScripts, headCssViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         } 
@@ -396,6 +424,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderHeader(string headerViewFile = "Parts/_Header")
         {
             var content =  RenderToStringAsync(headerViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.Header, headerViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -403,6 +433,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderNavigation(string navigationViewFile = "Parts/_Navigation")
         {
             var content = RenderToStringAsync(navigationViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.Navigation, navigationViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -410,6 +442,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderFeaturedSection(string featuredViewFile = "Parts/_Featured")
         {
             var content = RenderToStringAsync(featuredViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.Featured, featuredViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -417,13 +451,25 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderLeftColumn(string leftColumnViewFile = "Parts/_LeftColumn")
         {
             var content = RenderToStringAsync(leftColumnViewFile, Model).Result;
+            var themeSection = FireEvent(ThemeSection.Sections.LeftColumn, leftColumnViewFile, content, Model);
+            content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
         
         public IHtmlContent NccRenderBody()
         {
-            return RenderBody();
+            var bodyBuff = (ViewBuffer)RenderBody();
+            var content = "";
+            using(var sw = new StringWriter())
+            {
+                bodyBuff.WriteTo(sw, HtmlEncoder);
+                content = sw.GetStringBuilder().ToString();
+            }            
+            var themeSection = FireEvent(ThemeSection.Sections.Body, ViewContext.View.Path, content, Model);
+            bodyBuff.Clear();
+            bodyBuff.SetHtmlContent(themeSection.Content);
+            return bodyBuff;
         }
 
         public string NccRenderRightColumn(string rightColumnViewFile = "Parts/_RightColumn")
