@@ -1,5 +1,5 @@
 ﻿@{
-    string currentLanguage = this.ViewContext.HttpContext.Items["currentLanguage"].ToString();
+    string currentLanguage = LanguageDetector.GetCurrentLanguage();
     NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
 }
 <!--  Footer Start -->
@@ -96,7 +96,7 @@
     }
     <div class="container">
         <div class="row">
-            <div class="col-md-6 copyright"> @_TT["Copyrights"] &copy; @Html.Raw(@ThemeHelper.GetWebSiteCopyright(currentLanguage)) @_TT[DateTime.Now.Year.ToString()]</div>
+            <div class="col-md-6 copyright"> @_TT["Copyrights"] &copy; @Html.Raw(@ThemeHelper.GetWebSiteCopyright()) @_TT[DateTime.Now.Year.ToString()]</div>
             <div class="col-md-6 poweredby"> @Html.Raw(string.Format(_TT["Developed using {0}"].ToString(), "<a href=\"" + NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
         </div>
     </div>

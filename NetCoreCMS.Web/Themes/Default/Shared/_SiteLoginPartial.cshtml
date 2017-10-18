@@ -10,13 +10,8 @@
 @inject UserManager<NccUser> UserManager
 
 @{ 
-    /* Getting Current Language */
-    var writer = new System.IO.StringWriter();
-    Component.InvokeAsync("Language").Result.WriteTo(writer, HtmlEncoder);
-    var currentLanguage = writer.GetStringBuilder().ToString();
-    TempData["CurrentLanguage"] = currentLanguage;
-    //NccTranslator<SharedResource> _T = new NccTranslator<SharedResource>(currentLanguage);
-
+    /* Getting Current Language */    
+    var currentLanguage = LanguageDetector.GetCurrentLanguage();
 }
 
 @if (SignInManager.IsSignedIn(User))

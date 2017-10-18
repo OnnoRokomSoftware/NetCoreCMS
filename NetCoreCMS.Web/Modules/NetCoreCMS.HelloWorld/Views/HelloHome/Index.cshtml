@@ -3,7 +3,7 @@
 
 @{
     Layout = Constants.SiteLayoutName;
-    var _T = new NccTranslator<SharedResource>(TempData["CurrentLanguage"].ToString());
+    var _T = new NccTranslator<SharedResource>(LanguageDetector.GetCurrentLanguage());
 }
 
 <h1> Holaaaaaaaaa !!! It's a sample module</h1>

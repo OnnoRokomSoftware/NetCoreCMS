@@ -1,0 +1,41 @@
+﻿<script type="text/javascript">
+            $(document).ready(function () {
+                var didScroll = true;
+
+                $(window).scroll(function () {
+                    didScroll = true;
+                });
+                setInterval(function () {
+                    if (didScroll) {
+                        didScroll = false;
+                        var scroll = $(window).scrollTop();
+                        //console.log(scroll);
+                        //Same that all the if else statements
+                        switch (true) {
+                            case (scroll >= 100):
+                                $("#mainNavbar").addClass("navbar-fixed-top");
+                                $("#navbarWebsiteName").removeClass("navbar-brand-with-top-menu");
+                                break;
+                            case (scroll <= 50):
+                                $("#mainNavbar").removeClass("navbar-fixed-top");
+                                $("#navbarWebsiteName").addClass("navbar-brand-with-top-menu");
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }, 50);
+
+                $('.ncc-main-menu').find('a').each(function () {
+                    var pathname = decodeURI(window.location.pathname);
+                    if (pathname == '/CmsHome')
+                        pathname = "/";
+                    if ($(this).attr('href') == pathname) {
+                        $(this).parents("li").addClass('active');
+                    }
+                    /*console.log($(this).attr('href'));
+                    console.log(pathname);*/
+                });
+
+            });
+</script>

@@ -16,8 +16,8 @@
   "MenuLocations": [
     "Top",
     "Navigation",
-    "LeftColumn",
-    "RightColumn",
+    "LeftSidebar",
+    "RightSidebar",
     "Footer"
   ],
   "Layouts": [
@@ -57,6 +57,7 @@
       "Name": "LoginLayout",
       "PreviewImage": "LoginLayoutScreenShot.png",
       "LayoutZones": [
+        "TopBar",
         "LeftSidebar",
         "RightSidebar",
         "Footer"
@@ -64,7 +65,7 @@
     }
   ],
   "Settings": {
-    "NccVersion": "0.4.1",
-    "style": "light"
+    "style": "light",
+    "NccVersion": "0.4.1"
   }
 }

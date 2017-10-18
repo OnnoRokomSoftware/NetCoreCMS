@@ -16,12 +16,12 @@
         pageDetails = Model.PageDetails.FirstOrDefault();
     }
 
-    ViewData["Title"] = pageDetails.Title;
-    ViewData["MetaDescription"] = pageDetails.MetaDescription;
-    ViewData["MetaKeyword"] = pageDetails.MetaKeyword;
+    Title = pageDetails?.Title;
+    MetaDescription = pageDetails?.MetaDescription;
+    MetaKeyword = pageDetails?.MetaKeyword;
 }
  
-@section Styles{
+@section StyleFooter{
     <style>
        @Html.Raw("        ");
     </style>
@@ -30,6 +30,6 @@
     @Html.Raw(pageDetails.Content)
 </div>
  
-@section Scripts{
+@section ScriptFooter{
 
 }

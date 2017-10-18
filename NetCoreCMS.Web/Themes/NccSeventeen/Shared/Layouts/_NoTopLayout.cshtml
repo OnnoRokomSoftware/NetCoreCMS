@@ -22,10 +22,10 @@
                         <span class="icon-bar"></span>
                     </button>
                     @*<a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">@GlobalConfig.WebSite.Name</a>*@
-                    <div class="navbar-brand">@ThemeHelper.GetWebSiteName((string)this.ViewContext.HttpContext.Items["currentLanguage"])</div>
+                    <div class="navbar-brand">@ThemeHelper.GetWebSiteName()</div>
                 </div>
                 <div class="navbar-collapse collapse">
-                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation"))
+                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation", LanguageDetector.GetCurrentLanguage()))
                     @await Html.PartialAsync("_SiteLoginPartial")
                 </div>
             </div>

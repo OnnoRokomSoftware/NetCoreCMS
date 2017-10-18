@@ -1,0 +1,47 @@
+﻿<div class="Featured">
+    @{
+        var featured = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, ThemeResources.Zones.Featured);
+        if (featured != null && featured.Count > 0)
+        {
+            <div style="width:100%;">
+                @foreach (var item in featured)
+                {
+                    var widgets = ThemeHelper.GetWidgets(item.WidgetId);
+                    foreach (var widget in widgets)
+                    {
+                        widget.Init(item.Id);
+                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language.ToLower())
+                        {
+                            if (widget.DisplayTitle != "" || widget.Footer != "")
+                            {
+                                <div class='panel panel-default'>
+                                    @if (widget.DisplayTitle != "")
+                                    {
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.DisplayTitle)
+                                        </div>
+                                    }
+                                    <div class='panel-body'>
+                                        @Html.Raw(widget.RenderBody())
+                                    </div>
+                                    @if (widget.Footer != "")
+                                    {
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.Footer)
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+                                    @Html.Raw(widget.RenderBody())
+                                </div>
+                            }
+                        }
+                    }
+                }
+            </div>
+        }
+    }
+</div>

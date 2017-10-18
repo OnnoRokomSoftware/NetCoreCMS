@@ -28,6 +28,11 @@ namespace NetCoreCMS.Framework.i18n
 
                 if (string.IsNullOrEmpty(lang))
                 {
+                    lang = GlobalConfig.WebSite.Language;
+                }
+
+                if (string.IsNullOrEmpty(lang))
+                {
                     lang = SetupHelper.Language;
                 }
 

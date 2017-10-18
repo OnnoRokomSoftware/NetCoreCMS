@@ -1,15 +1,16 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Controllers;
-using System.Reflection;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -23,20 +24,23 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         private readonly IRazorViewEngine _razorViewEngine;
         private readonly ITempDataProvider _tempDataProvider;
         private readonly IServiceProvider _serviceProvider;
-
-        public NccRazorViewRenderService(IRazorViewEngine razorViewEngine,
-            ITempDataProvider tempDataProvider,
-            IServiceProvider serviceProvider)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        
+        public NccRazorViewRenderService(IRazorViewEngine razorViewEngine, ITempDataProvider tempDataProvider, IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
         {
             _razorViewEngine = razorViewEngine;
             _tempDataProvider = tempDataProvider;
             _serviceProvider = serviceProvider;
+            _httpContextAccessor = httpContextAccessor;
         }
-
+        
         public async Task<string> RenderToStringAsync<T>(string viewName, object model)
         {
-            var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };
-            var actionContext = new ControllerContext(new ActionContext(httpContext, new RouteData(), new ControllerActionDescriptor()));
+            var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };            
+            var routeData = httpContext.GetRouteData();
+            var cad = new ControllerActionDescriptor();            
+            var ac = new ActionContext(httpContext, new RouteData(), cad);
+            var actionContext = new ControllerContext(ac);
 
             var typeInfo = typeof(T).GetTypeInfo();
             actionContext.ActionDescriptor.ActionName = "Index";

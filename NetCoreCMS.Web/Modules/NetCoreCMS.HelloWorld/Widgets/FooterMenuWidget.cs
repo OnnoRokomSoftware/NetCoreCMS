@@ -3,9 +3,6 @@ using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.HelloWorld.Controllers;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace NetCoreCMS.HelloWorld.Widgets
 {

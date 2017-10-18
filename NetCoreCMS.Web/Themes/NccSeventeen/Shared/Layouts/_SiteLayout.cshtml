@@ -21,7 +21,7 @@
                     @Html.Partial("Parts/_NavbarPart")
                 </div>
                 <div class="navbar-collapse collapse">
-                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation"))
+                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation", LanguageDetector.GetCurrentLanguage()))
                     <div class="userMenu">
                         @await Html.PartialAsync("_SiteLoginPartial")
                     </div>

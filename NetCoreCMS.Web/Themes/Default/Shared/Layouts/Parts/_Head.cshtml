@@ -1,53 +1,19 @@
-﻿@{
-    int bodyClassWidth = 12;
-    bool hasLeftColumn = false;
-    bool hasRightColumn = false;
-    ViewBag.CurrentLayout = "SiteLayout";
-
-    /*Special Calculation for left and right column show hide*/
-    var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
-    var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-    if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
-    {
-        hasLeftColumn = true;
-        bodyClassWidth = bodyClassWidth - 2;
-    }
-
-    var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
-    var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-    if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
-    {
-        hasRightColumn = true;
-        bodyClassWidth = bodyClassWidth - 2;
-    }
-    /*Special Calculation for left and right column show hide*/
-    var currentLanguage = LanguageDetector.GetCurrentLanguage();
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
-}
-
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="description" content="@ViewData["MetaDescription"]">
-<meta name="keywords" content="@ViewData["MetaKeyword"]">
+﻿<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="description" content="@MetaDescription">
+<meta name="keywords" content="@MetaKeyword">
+<meta name="author" content="@MetaAuthor">
+<meta name="application-name" content="@MetaApplicationName">
+<meta name="generator" content="@MetaGenerator">
 
-@if (ViewData["Title"] != null)
-{
-    <title>@_T[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+@if (Title != null)
+{    
+    <title>@_T[Title] - @ThemeHelper.GetWebSiteTitle()</title>
 }
 else
 {
-    <title>@ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+    <title>@ThemeHelper.GetWebSiteTitle()</title>
 }
 
-<link href="~/css/ncc-common.css" rel="stylesheet" />
-<link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
 
-@Html.Raw(ThemeHelper.GetJquery())
-@Html.Raw(ThemeHelper.GetBootstrap())
-<script src="~/js/ncc-common.js" asp-append-version="true"></script>
-<script src="~/lib/notifyjs/notify.min.js"></script>
-
-<link rel="stylesheet" href=@string.Concat("/Themes/Default/css/",@GlobalConfig.ActiveTheme.Settings["style"],".css") />
-@Html.Raw(JavaScriptSnippet.FullScript)
-@RenderSection("Styles", required: false)

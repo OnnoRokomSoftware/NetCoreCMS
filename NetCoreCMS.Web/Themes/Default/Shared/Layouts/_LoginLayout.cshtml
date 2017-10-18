@@ -1,290 +1,51 @@
 ﻿@{
-    int bodyClassWidth = 12;
-    bool hasLeftColumn = false;
-    bool hasRightColumn = false;
-    //var WebSite = GlobalConfig.WebSite;
-    //ViewBag.WebSite = GlobalConfig.WebSite;
-    ViewBag.CurrentLayout = "LoginLayout";
-
-    /*Special Calculation for left and right column show hide*/
-    var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
-    var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-    if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
-    {
-        hasLeftColumn = true;
-        bodyClassWidth = bodyClassWidth - 2;
-    }
-
-    var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
-    var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-    if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
-    {
-        hasRightColumn = true;
-        bodyClassWidth = bodyClassWidth - 2;
-    }
-    /*Special Calculation for left and right column show hide*/
-
-    /* Getting Current Language */
-    var writer = new System.IO.StringWriter();
-    Component.InvokeAsync("Language").Result.WriteTo(writer, HtmlEncoder);
-    var currentLanguage = writer.GetStringBuilder().ToString();
-
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    BodyWidth = 12;
+    CurrentLayout = ThemeResources.Layouts.LoginLayout;
+    CurrentLanguage = ThemeHelper.GetCurrentLanguage();
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
-
+ 
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <meta name="description" content="@ViewData["MetaDescription"]">
-        <meta name="keywords" content="@ViewData["MetaKeyword"]">
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-        @if (ViewData["Title"] != null)
-        {
-            <title>@_T[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
-        }
-        else
-        {
-            <title>@ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
-        }
-
-        <link href="~/css/ncc-common.css" rel="stylesheet" />
-        <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
-
-        @Html.Raw(ThemeHelper.GetJquery())
-        @Html.Raw(ThemeHelper.GetBootstrap())
-        <script src="~/js/ncc-common.js" asp-append-version="true"></script>
-        <script src="~/lib/notifyjs/notify.min.js"></script>
-
-        <link rel="stylesheet" href=@string.Concat("/Themes/Default/css/",@GlobalConfig.ActiveTheme.Settings["style"],".css") />
+        @NccRenderHead()
         @Html.Raw(JavaScriptSnippet.FullScript)
+        @NccRenderHeaderCss()
+        @NccRenderHeaderScripts()
+
+        @RenderSection(ThemeHelper.Sections.StyleHeader, required: false)
+        @RenderSection(ThemeHelper.Sections.ScriptHeader, required: false)
         @RenderSection("Styles", required: false)
     </head>
     <body id="body">     
 
         <!-- Loading -->
-        <div id="loadingMask" class="loader loader-double"></div>
+        @NccRenderLoadingMaskContainer()
         <!-- Zone TOP Start-->
         <!-- Header -->
-        <div class="container-fluid topHeader">
-            <div class="container">
-                <div class="topLogo">
-                    @if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteLogoUrl(currentLanguage)))
-                    {
-                        <a href="/"><h1>@ThemeHelper.GetWebSiteName(currentLanguage)</h1></a>
-                        <h4>@ThemeHelper.GetWebSiteTagline(currentLanguage)</h4>
-                    }
-                    else
-                    {
-                        <a href="/">
-                            <img src="@ThemeHelper.GetWebSiteLogoUrl(currentLanguage)" alt="@ThemeHelper.GetWebSiteName(currentLanguage)" title="@ThemeHelper.GetWebSiteTagline(currentLanguage)" width="200px" />
-                        </a>
-                    }
-                </div>
-                <div id="topMenu" class="topMenu pull-right">
-                    
-                </div>
-                <div class="topWidgetZone">
-
-                </div>
-            </div>
-        </div>
+        @NccRenderHeader()
 
         <!-- Navbar -->
-        <nav id = "mainNavbar" class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type = "button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @*<a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">@WebSite.Name</a>*@
-                    <div id="navbarWebsiteName" class="navbar-brand navbar-brand-with-top-menu">@GlobalConfig.WebSite.Name</div>
-                </div>
-                <div class="navbar-collapse collapse">
-                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation", currentLanguage))
-                    <div class="userMenu">
-                        @await Html.PartialAsync("_SiteLoginPartial")
-                    </div>
-                </div>
-            </div>
-        </nav>        
+        @NccRenderNavigation()        
         <!-- Zone TOP End-->
 
         <!--  Main Body Start -->
         <div class="container mainBody">   
             <!-- Left Column start -->
-            @if (hasLeftColumn)
-            {
-                <div class="col-sm-2 pull-left">
-                    <!-- Left Menu Start -->
-                    @if (menusLeft != null && menusLeft.Count > 0)
-                    {
-                        <div class="col-md-12">
-                            @foreach (var item in menusLeft)
-                            {
-                                foreach (var menuItem in item.MenuItems)
-                                {
-                                    <a href="@menuItem.Url">@menuItem.Name</a><br />
-                                    foreach (var mi2 in menuItem.Childrens)
-                                    {
-                                        <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                                        foreach (var mi3 in mi2.Childrens)
-                                        {
-                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
-                                            foreach (var mi4 in mi3.Childrens)
-                                            {
-                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        </div>
-                        <div class="clearfix"></div>
-                    }
-                    <!-- Left Menu End -->
-                    <!-- Left Sidebar Start -->
-                    @if (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0)
-                    {
-                        <div class="row">
-                            @foreach (var item in zoneLeftWidgets)
-                            {
-                                var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                                foreach (var widget in widgets)
-                                {
-                                    widget.Init(item.Id);
-                                    if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage.ToLower() == widget.Language.ToLower())
-                                    {
-                                        if (widget.DisplayTitle.Trim() != "" || widget.Footer.Trim() != "")
-                                        {
-                                            <div class='panel panel-default'>
-                                                @if (widget.DisplayTitle != "")
-                                                {
-                                                    <div class='panel-heading'>
-                                                        @Html.Raw(widget.DisplayTitle)
-                                                    </div>
-                                                }
-                                                <div class='panel-body'>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div>
-                                                @if (widget.Footer != "")
-                                                {
-                                                    <div class='panel-footer'>
-                                                        @Html.Raw(widget.Footer)
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div>
-                                                @Html.Raw(widget.RenderBody())
-                                            </div>
-                                        }
-                                    }
-                                }
-                            }
-                        </div>
-                    }
-                    <!-- Left Sidebar End -->
-                </div>
-            }
+            @NccRenderLeftColumn()
             <!-- Left Column end -->
 
             <!-- Right Column start -->
-            @if (hasRightColumn)
-            {
-                <div class="col-sm-2 pull-right">
-                    <!-- Right Menu Start -->
-                    @if (menusRight != null && menusRight.Count > 0)
-                    {
-                        <div class="col-md-12">
-                            @foreach (var item in menusRight)
-                            {
-                                foreach (var menuItem in item.MenuItems)
-                                {
-                                    <a href="@menuItem.Url">@menuItem.Name</a><br />
-                                    foreach (var mi2 in menuItem.Childrens)
-                                    {
-                                        <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                                        foreach (var mi3 in mi2.Childrens)
-                                        {
-                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
-                                            foreach (var mi4 in mi3.Childrens)
-                                            {
-                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        </div>
-                        <div class="clearfix"></div>
-                    }
-                    <!-- Right Menu End -->
-                    <!-- Right Sidebar Start -->
-                    @if (zoneRightWidgets != null && zoneRightWidgets.Count > 0)
-                    {
-                        <div class="row">
-                            @foreach (var item in zoneRightWidgets)
-                            {
-                                var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                                foreach (var widget in widgets)
-                                {
-                                    widget.Init(item.Id);
-                                    if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage.ToLower() == widget.Language.ToLower())
-                                    {
-                                        if (widget.DisplayTitle != "" || widget.Footer != "")
-                                        {
-                                            <div class='panel panel-default'>
-                                                @if (widget.DisplayTitle != "")
-                                                {
-                                                    <div class='panel-heading'>
-                                                        @Html.Raw(widget.DisplayTitle)
-                                                    </div>
-                                                }
-                                                <div class='panel-body'>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div>
-                                                @if (widget.Footer != "")
-                                                {
-                                                    <div class='panel-footer'>
-                                                        @Html.Raw(widget.Footer)
-                                                    </div>
-                                                }
-                                            </div>
-                                        }
-                                        else
-                                        {
-                                            <div>
-                                                @Html.Raw(widget.RenderBody())
-                                            </div>
-                                        }
-                                    }
-                                }
-                            }
-                        </div>
-                    }
-                    <!-- Right Sidebar End -->
-                </div>
-            }
+            @NccRenderRightColumn()
             <!-- Right Column end -->
 
             <!-- Main content Start -->
-            <div class="col-md-@bodyClassWidth">
+            <div class="col-md-@BodyWidth">
                 <!-- Container for showing global messages. -->
                 <div class="row">
-                    <div id="globalMessageContainer" class="ncc-global-message">
-
-                    </div>
+                    @NccRenderGlobalMessageContainer()
                 </div>
-
-                @RenderBody()
+                @NccRenderBody()
             </div>
             <!-- Main content End -->
 
@@ -292,146 +53,13 @@
         <!--  Main Body End -->
 
         <!--  Footer Start -->
-        <footer>
-            <hr />
-            <div class="container">
-                <div class="row">
-                    @{
-                        bool hasFooter = false;
-                        var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer").ToList();
-                        var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-                        if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
-                        {
-                            hasFooter = true;
-                        }
-                <!-- Footer Menu Start -->
-                        if (menusFooter != null && menusFooter.Count > 0)
-                        {
-                            <div class="col-md-6">
-                                @foreach (var item in menusFooter)
-                                {
-                                    foreach (var menuItem in item.MenuItems)
-                                    {
-                                        <a href="@menuItem.Url">@menuItem.Name</a><br />
-                                        foreach (var mi2 in menuItem.Childrens)
-                                        {
-                                            <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                                            foreach (var mi3 in mi2.Childrens)
-                                            {
-                                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
-                                                foreach (var mi4 in mi3.Childrens)
-                                                {
-                                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                        }
-                <!-- Footer Menu End -->
-
-                <!-- Footer Widgets Start -->
-                        if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
-                        {
-                            <div class="col-md-12">
-                                @foreach (var item in zoneFooterWidgets)
-                                {
-                                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                                    foreach (var widget in widgets)
-                                    {
-                                        widget.Init(item.Id);
-                                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage.ToLower() == widget.Language.ToLower())
-                                        { 
-                                            if (widget.DisplayTitle != "" || widget.Footer != "")
-                                            {
-                                                <div class='panel panel-default'>
-                                                    @if (widget.DisplayTitle != "")
-                                                    {
-                                                        <div class='panel-heading'>
-                                                            @Html.Raw(widget.DisplayTitle)
-                                                        </div>
-                                                    }
-                                                    <div class='panel-body'>
-                                                        @Html.Raw(widget.RenderBody())
-                                                    </div>
-                                                    @if (widget.Footer != "")
-                                                    {
-                                                        <div class='panel-footer'>
-                                                            @Html.Raw(widget.Footer)
-                                                        </div>
-                                                    }
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div>
-                                            }
-                                        }
-                                    }
-                                }
-                            </div>
-                        }
-                <!-- Footer Widgets End -->
-                    }
-
-                </div>
-            </div>
-            @if (hasFooter)
-            {
-                <hr />
-            }
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 copyright"> @_T["Copyrights"] &copy; @Html.Raw(ThemeHelper.GetWebSiteCopyright(currentLanguage)) @_T[DateTime.Now.Year.ToString()]</div>
-                    <div class="col-md-6 poweredby"> @Html.Raw( string.Format(_T["Developed using {0}"].ToString(), "<a href=\"" + @NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
-                </div>
-            </div>
-        </footer>
+        @NccRenderFooter()
         <!--  Footer End -->
-        <script type="text/javascript">
-            $(document).ready(function () {
-                var didScroll = true;
+        @NccRenderFooterCss()
+        @NccRenderFooterScripts()
 
-                $(window).scroll(function () {
-                    didScroll = true;
-                });
-                setInterval(function () {
-                    if (didScroll) {
-                        didScroll = false;
-                        var scroll = $(window).scrollTop();
-                        //console.log(scroll);
-                        //Same that all the if else statements
-                        switch (true) {
-                            case (scroll >= 100):
-                                $("#mainNavbar").addClass("navbar-fixed-top");
-                                $("#navbarWebsiteName").removeClass("navbar-brand-with-top-menu");
-                                break;
-                            case (scroll <= 50):
-                                $("#mainNavbar").removeClass("navbar-fixed-top");
-                                $("#navbarWebsiteName").addClass("navbar-brand-with-top-menu");
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }, 50);
-
-                $('.ncc-main-menu').find('a').each(function () {
-                    var pathname = decodeURI(window.location.pathname);
-                    if (pathname == '/CmsHome')
-                        pathname = "/";
-                    if ($(this).attr('href') == pathname) {
-                        $(this).parents("li").addClass('active');
-                    }
-                    /*console.log($(this).attr('href'));
-                    console.log(pathname);*/
-                });
-
-            });
-        </script>
+        @RenderSection(ThemeHelper.Sections.StyleFooter, required: false)
+        @RenderSection(ThemeHelper.Sections.ScriptFooter, required: false)
         @RenderSection("Scripts", required: false)
     </body>
 </html>

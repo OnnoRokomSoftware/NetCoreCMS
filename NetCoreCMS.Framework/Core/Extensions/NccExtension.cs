@@ -43,6 +43,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
 
             services.AddScoped<NccShortCodeProvider, NccShortCodeProvider>();
             services.AddScoped<ThemeManager, ThemeManager>();
+            services.AddScoped<NccRazorViewRenderService, NccRazorViewRenderService>();
 
             services.AddTransient<NccCategoryDetailsRepository>();
             services.AddTransient<NccCategoryDetailsService>();

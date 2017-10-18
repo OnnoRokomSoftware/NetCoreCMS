@@ -1,10 +1,6 @@
 ﻿@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
 
 @using NetCoreCMS.Framework.Core
-@using NetCoreCMS.Core.Modules.Cms
-@using NetCoreCMS.Core.Modules.Cms.Models
-@using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels
-@using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels
 @using Microsoft.AspNetCore.Identity
 
 @using NetCoreCMS.Framework.Utility
@@ -12,8 +8,10 @@
 @using NetCoreCMS.Framework.Modules.Widgets
 @using NetCoreCMS.Framework.Core.Models
 @using NetCoreCMS.Framework.Themes
+@using NetCoreCMS.Framework.Core.Mvc.Views
 @using NetCoreCMS.Framework.Core.Mvc.Views.Extensions
-
+@using Microsoft.Extensions.Localization
+@using NetCoreCMS.Framework.i18n
 @using NetCoreCMS.Themes.NccSeventeen.Lib
 
 @addTagHelper *, NetCoreCMS.Framework
@@ -21,6 +19,4 @@
 
 @inject SignInManager<NccUser> SignInManager
 @inject UserManager<NccUser> UserManager
-
-@using Microsoft.Extensions.Localization
-@using NetCoreCMS.Framework.i18n
+@inject NccLanguageDetector LanguageDetector

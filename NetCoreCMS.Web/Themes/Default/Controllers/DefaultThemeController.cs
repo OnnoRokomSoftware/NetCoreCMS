@@ -10,13 +10,13 @@ namespace Default.Controllers
     {
         public DefaultThemeController()
         {
-
+           
         }
 
         public ActionResult Index()
         {
             Dictionary<string, string> style = new Dictionary<string, string>() { { "light", "Light" }, { "dark", "Dark" } };
-
+            
             ViewBag.style = new SelectList(style, "Key", "Value", GlobalConfig.ActiveTheme.Settings["style"]);
             return View();
         }

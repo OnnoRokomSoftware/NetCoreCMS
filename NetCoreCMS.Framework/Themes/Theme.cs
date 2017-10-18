@@ -41,18 +41,26 @@ namespace NetCoreCMS.Framework.Themes
         public string Category { get; set; }
         public string PreviewImage { get; set; }
         public bool IsActive { get; set; }
+
         public List<string> MenuLocations { get; set; }
         public List<Layout> Layouts { get; set; }
         public Hashtable Settings { get; set; }
+
         [JsonIgnore]
         public List<Widget> Widgets { get; set; }
+
         [JsonIgnore]
         public string Folder { get; set; }
+
         [JsonIgnore]
         public string ResourceFolder { get; set; }
+
         [JsonIgnore]
         public string ConfigFilePath { get; set; }
-        
+
+        [JsonIgnore]
+        public string AssemblyPath { get; set; }
+
         public void Save()
         {
             if (File.Exists(ConfigFilePath))

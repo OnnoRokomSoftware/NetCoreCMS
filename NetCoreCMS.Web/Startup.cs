@@ -122,7 +122,6 @@ namespace NetCoreCMS.Web
 
             GlobalConfig.Modules.AddRange(userModules);
             
-
             _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
 
             if (SetupHelper.IsDbCreateComplete)

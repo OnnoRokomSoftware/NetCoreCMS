@@ -1,19 +1,18 @@
-﻿@using Microsoft.Extensions.Localization
-@using Microsoft.AspNetCore.Identity
+﻿@inherits NccRazorPage<TModel>
 
-@using NetCoreCMS.Core.Modules.Cms
-@using NetCoreCMS.Core.Modules.Cms.Models
-@using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels
-@using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels
+@using NetCoreCMS.Framework.Themes
+
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Identity
 
 @using NetCoreCMS.Framework.Utility
 @using NetCoreCMS.Framework.Modules
 @using NetCoreCMS.Framework.Modules.Widgets
 @using NetCoreCMS.Framework.Core.Models
 @using NetCoreCMS.Framework.Core.Mvc.Models
+@using NetCoreCMS.Framework.Core.Mvc.Views
 
 @using NetCoreCMS.Framework.i18n
-@using NetCoreCMS.Modules.Cms.Models.ViewModels;
 @using NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
 
 @inject IStringLocalizer _T

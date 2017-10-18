@@ -25,11 +25,8 @@
     /*Special Calculation for left and right column show hide*/
 
     /* Getting Current Language */
-    var writer = new System.IO.StringWriter();
-    Component.InvokeAsync("Language").Result.WriteTo(writer, HtmlEncoder);
-    string currentLanguage = writer.GetStringBuilder().ToString().ToLower();
-    this.ViewContext.HttpContext.Items["currentLanguage"] = currentLanguage;
 
+    string currentLanguage = LanguageDetector.GetCurrentLanguage(); 
     NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
 }
 <meta charset="utf-8" />
@@ -39,21 +36,17 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 @if (ViewData["Title"] != null)
 {
-    <title>@_TT[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+    <title>@_TT[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle()</title>
 }
 else
 {
-    <title>@ThemeHelper.GetWebSiteTitle(currentLanguage)</title>
+    <title>@ThemeHelper.GetWebSiteTitle()</title>
 }
 
 <link href="~/css/ncc-common.css" rel="stylesheet" />
 <script src="~/js/ncc-common.js" asp-append-version="true"></script>
-
 <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
 
-@*<script src="~/lib/jquery/dist/jquery.js"></script>*@
-@*<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>*@
 @Html.Raw(ThemeHelper.GetJquery())
 @Html.Raw(ThemeHelper.GetBootstrap())
 
