@@ -63,21 +63,22 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         //[AdminMenuItem(Name = "Dashboard", Url = "/Admin", IconCls = "fa-dashboard", Order = 1)]
         public ActionResult Index()
         {
-            var webSite = new NccWebSite();
-            var webSites = _webSiteService.LoadAll();
+            //var webSite = new NccWebSite();
+            //var webSites = _webSiteService.LoadAll();
 
-            if (webSites != null && webSites.Count > 0)
-            {
-                webSite = webSites.FirstOrDefault();
-            }
-            ViewBag.TotalPublishedPage = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published).Count();
-            ViewBag.TotalPage = _pageService.LoadAll(true).Count();
-            ViewBag.TotalPublishedPost = _postService.TotalPublishedPostCount();
-            ViewBag.TotalPost = _postService.LoadAll(true).Count();
-            ViewBag.TotalUser = _userManager.Users.Count();
-            ViewBag.TotalModule = _moduleService.LoadAll().Count();
-            ViewBag.TotalTheme = GlobalConfig.Themes.Count();
-            return View(webSite);
+            //if (webSites != null && webSites.Count > 0)
+            //{
+            //    webSite = webSites.FirstOrDefault();
+            //}
+            //ViewBag.TotalPublishedPage = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published).Count();
+            //ViewBag.TotalPage = _pageService.LoadAll(true).Count();
+            //ViewBag.TotalPublishedPost = _postService.TotalPublishedPostCount();
+            //ViewBag.TotalPost = _postService.LoadAll(true).Count();
+            //ViewBag.TotalUser = _userManager.Users.Count();
+            //ViewBag.TotalModule = _moduleService.LoadAll().Count();
+            //ViewBag.TotalTheme = GlobalConfig.Themes.Count();
+            //return View(webSite);
+            return RedirectToAction("Index", "Dashboard", new { });
         }
 
         #region Settings
