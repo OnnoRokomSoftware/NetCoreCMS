@@ -44,7 +44,7 @@ namespace NetCoreCMS.Framework.Core.Messages
             List<string> removeList = new List<string>();
             foreach (var item in _messageCache)
             {
-                if(item.Value.ExpireTime >= DateTime.Now)
+                if(item.Value.ExpireTime < DateTime.Now)
                 {
                     removeList.Add(item.Key);
                 }

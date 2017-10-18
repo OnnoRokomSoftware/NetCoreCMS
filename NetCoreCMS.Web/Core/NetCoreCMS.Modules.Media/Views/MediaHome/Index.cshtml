@@ -5,12 +5,12 @@
 
 @{
     Layout = ViewBag.Layout;
-    ViewData["PageTitle"] = "Image Gallary";
-    ViewData["PageSubtitle"] = "Manage existing image media";
+    Title = "Image Gallary";
+    SubTitle = "Manage existing image media";
     if (ViewBag.IsFile)
     {
-        ViewData["PageTitle"] = "File Storage";
-        ViewData["PageSubtitle"] = "Manage existing files";
+        Title = "File Storage";
+        SubTitle = "Manage existing files";
     }
 
     var class1 = "";

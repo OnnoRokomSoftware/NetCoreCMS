@@ -5,6 +5,7 @@
         public string Name { get; set; }
         public string Content { get; set; }
         public object Model { get; set; }
+        public object ExtraData { get; set; }
         public string ViewFileName { get; set; }
         public string Language { get; set; }
 
