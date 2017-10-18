@@ -7,6 +7,7 @@ var gulp = require("gulp"),
     uglify = require("gulp-uglify"),
     merge = require("merge-stream"),
     del = require("del"),
+    sass = require('gulp-sass'),
     bundleconfig = require("./bundleconfig.json");
 
 var regex = {
@@ -27,6 +28,12 @@ paths.concatJsDest = paths.webroot + "js/site.min.js";
 paths.concatCssDest = paths.webroot + "css/site.min.css";
 
 gulp.task("min", ["min:js", "min:css", "min:html"]);
+
+gulp.task('sass', function () {
+    gulp.src('./wwwroot/*.scss')
+        .pipe(sass({ outputStyle: 'compressed' }))
+        .pipe(gulp.dest('./wwwroot/content/'));
+});
 
 gulp.task("min:js", function () {
     var tasks = getBundles(regex.js).map(function (bundle) {

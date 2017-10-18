@@ -9,7 +9,7 @@
             </button>            
             <div id="navbarWebsiteName" class="navbar-brand navbar-brand-with-top-menu">@ThemeHelper.GetWebSiteName()</div>
         </div>
-        <div class="navbar-collapse collapse">
+        <div class="navbar-collapse collapse">            
             @Html.Raw(ThemeHelper.PrepareMenuHtml(ThemeResources.MenuLocation.Navigation, CurrentLanguage))
             <div class="userMenu">
                 @await Html.PartialAsync("_SiteLoginPartial")

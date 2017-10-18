@@ -51,7 +51,7 @@ namespace NetCoreCMS.Framework.Themes
                             theme.ResourceFolder    = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\Resources";
                         }
                         
-                        if (string.IsNullOrEmpty(theme.AssemblyPath) && File.Exists(theme.AssemblyPath))
+                        if (string.IsNullOrEmpty(theme.AssemblyPath) == false && File.Exists(theme.AssemblyPath))
                         {                            
                             var themeAssembly = Assembly.LoadFile(theme.AssemblyPath);
                             themes.Add(theme);
