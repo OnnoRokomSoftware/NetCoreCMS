@@ -1,4 +1,14 @@
-﻿using System;
+﻿/*************************************************************  
+ *          Project: NetCoreCMS                              *
+ *           Author: OnnoRokom Software Ltd.                 *
+ *          Website: www.onnorokomsoftware.com               *
+ *            Email: info@onnorokomsoftware.com              *
+ *        Copyright: OnnoRokom Software Ltd.                 *
+ *           Mobile: +88 017 08 166 003                      *
+ *          License: BSD-3-Clause                            *
+ *************************************************************/
+ 
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -339,14 +349,14 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }            
         }
         
-        private ThemeSection FireEvent(string name, string headViewFile, string content, TModel model)
+        private ThemeSection FireEvent(string name, string viewFile, string content, TModel model)
         {
             var themeSection = new ThemeSection()
             {
                 Name = name,
                 Content = content,
                 Model = Model,
-                ViewFileName = headViewFile,
+                ViewFileName = viewFile,
                 Language = CurrentLanguage
             };
 
@@ -419,7 +429,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderHeaderCss()
         {
             var content = MakeResourceList(NccResource.ResourceType.CssFile, NccResource.IncludePosition.Header);
-            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereHeaderCss", content, Model);
+            var themeSection = FireEvent(ThemeSection.Sections.HeaderCss, "RegistereHeaderCss", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
@@ -428,7 +438,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderHeaderScripts()
         {
             var content = MakeResourceList(NccResource.ResourceType.JsFile, NccResource.IncludePosition.Header);
-            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereHeaderScripts", content, Model);
+            var themeSection = FireEvent(ThemeSection.Sections.HeaderScripts, "RegistereHeaderScripts", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
@@ -506,7 +516,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderFooterCss()
         {
             var content = MakeResourceList(NccResource.ResourceType.CssFile, NccResource.IncludePosition.Footer);
-            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereFooterCss", content, Model);
+            var themeSection = FireEvent(ThemeSection.Sections.FooterCss, "RegistereFooterCss", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
@@ -515,7 +525,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderFooterScripts()
         {
             var content = MakeResourceList(NccResource.ResourceType.JsFile, NccResource.IncludePosition.Footer);
-            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereFooterScripts", content, Model);
+            var themeSection = FireEvent(ThemeSection.Sections.FooterScripts, "RegistereFooterScripts", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
@@ -533,7 +543,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public string NccRenderGlobalMessageContainer()
         {
             var globalMessageContainer = "<div id=\"globalMessageContainer\" class=\"ncc-global-message\"></div>";
-            var themeSection = FireEvent(ThemeSection.Sections.LoadingMask, CurrentLayout, globalMessageContainer, Model);
+            var themeSection = FireEvent(ThemeSection.Sections.GlobalMessageContainer, CurrentLayout, globalMessageContainer, Model);
             globalMessageContainer = themeSection.Content;
             ViewContext.Writer.WriteLine(globalMessageContainer);
             return string.Empty;            

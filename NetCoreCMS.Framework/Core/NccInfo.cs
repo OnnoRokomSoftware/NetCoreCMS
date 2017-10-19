@@ -5,6 +5,7 @@
  *            Email: info@onnorokomsoftware.com              *
  *        Copyright: OnnoRokom Software Ltd.                 *
  *           Mobile: +88 017 08 166 003                      *
+ *          License: BSD-3-Clause                            *
  *************************************************************/
 
 using System;
@@ -15,10 +16,10 @@ namespace NetCoreCMS.Framework.Core
     {
         public static string Name { get; } = "NetCoreCMS";
         public static string Slogan { get; } = "An ASP.Net Core CMS as Site Engine";
-        public static Version Version { get; } = new Version(0,4,3);
+        public static Version Version { get; } = new Version(0,4,4);
         public static string Description { get; } = "A Content Management System developed using ASP.NET Core.";
-        public static string Website { get; } = "http://DotNetCoreCMS.com";
-        public static string Email { get; } = "netcorecms@gmail.com";
+        public static string Website { get; } = "http://DotNetCoreCMS.org";
+        public static string Email { get; } = "info@onnorokomsoftware.com";
         public static string Author { get; } = "DotNetCoreCMS.com";
         public static string CoreModuleFolder { get; } = "Core";
         public static string ModuleFolder { get; } = "Modules";

@@ -1,4 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿/*************************************************************  
+ *          Project: NetCoreCMS                              *
+ *           Author: OnnoRokom Software Ltd.                 *
+ *          Website: www.onnorokomsoftware.com               *
+ *            Email: info@onnorokomsoftware.com              *
+ *        Copyright: OnnoRokom Software Ltd.                 *
+ *           Mobile: +88 017 08 166 003                      *
+ *          License: BSD-3-Clause                            *
+ *************************************************************/
+ 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;

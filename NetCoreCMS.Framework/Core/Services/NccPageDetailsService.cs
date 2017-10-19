@@ -1,4 +1,14 @@
-﻿using System.Collections.Generic;
+﻿/*************************************************************  
+ *          Project: NetCoreCMS                              *
+ *           Author: OnnoRokom Software Ltd.                 *
+ *          Website: www.onnorokomsoftware.com               *
+ *            Email: info@onnorokomsoftware.com              *
+ *        Copyright: OnnoRokom Software Ltd.                 *
+ *           Mobile: +88 017 08 166 003                      *
+ *          License: BSD-3-Clause                            *
+ *************************************************************/
+
+using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
