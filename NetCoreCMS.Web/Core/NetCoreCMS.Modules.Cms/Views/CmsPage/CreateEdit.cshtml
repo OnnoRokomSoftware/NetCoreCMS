@@ -4,12 +4,13 @@
 @{
     Layout = Constants.AdminLayoutName;
     var controllerName = "CmsPage";
-    ViewData["PageTitle"] = "Page Create";
-    ViewData["PageSubtitle"] = "Create a new page";
+    Title = "Page Create";
+    SubTitle = "Create a new page";
+
     if (Model.Id > 0)
     {
-        ViewData["PageTitle"] = "Page Edit";
-        ViewData["PageSubtitle"] = "Update information of a page";
+        Title = "Page Edit";
+        SubTitle = "Update information of a page";
     }
 }
 <style>

@@ -287,7 +287,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         #region Helper
         private void SetPageViewData(NccPage page)
         {
-            ViewBag.Layouts = new SelectList(GlobalConfig.ActiveTheme.Layouts, "Name", "Name", page.Layout);
+            ViewBag.Layouts = new SelectList(ThemeHelper.ActiveTheme.Layouts, "Name", "Name", page.Layout);
             ViewBag.AllPages = new SelectList(_pageService.LoadAll().Where(p => p.PageStatus == NccPageStatus.Published && p.Id != page.Id), "Id", "Name", page.Parent != null ? page.Parent.Id : 0);
 
             var PageStatus = Enum.GetValues(typeof(NccPageStatus)).Cast<NccPageStatus>().Select(v => new SelectListItem

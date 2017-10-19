@@ -1,12 +1,9 @@
-﻿@using NetCoreCMS.Framework.Utility
-@using System.Collections
-@using System.Text
-@using System.Linq
+﻿@using System.Linq
 
 @model NccPage
 @{
 
-    if (!string.IsNullOrEmpty(Model.Layout) && GlobalConfig.ActiveTheme.Layouts.Where(x=>x.Name == Model.Layout).FirstOrDefault() != null) {
+    if (!string.IsNullOrEmpty(Model.Layout) && ThemeHelper.ActiveTheme.Layouts.Where(x=>x.Name == Model.Layout).FirstOrDefault() != null) {
         Layout = "_" + Model.Layout;
     }
 

@@ -64,7 +64,7 @@ namespace NetCoreCMS.Framework.Modules
 
         private static void RegisterActiveThemeResourcePath(IHostingEnvironment env, IApplicationBuilder app, List<Theme> themes)
         {
-            var activeSiteTheme = GlobalConfig.ActiveTheme.ThemeName;
+            var activeSiteTheme = ThemeHelper.ActiveTheme.ThemeName;
             var themePath = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
 
             var activeThemePath = Path.Combine(themePath, activeSiteTheme);

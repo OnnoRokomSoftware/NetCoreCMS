@@ -1,7 +1,24 @@
-﻿namespace NetCoreCMS.Themes.Default.Lib
+﻿using NetCoreCMS.Framework.Themes;
+
+namespace NetCoreCMS.Themes.Default.Lib
 {
     public class ThemeResources
     {
+        public static string RegisterResources(string layoutName = "")
+        {
+            ThemeHelper.RegisterCss("/css/ncc-common.css", NccResource.IncludePosition.Header);
+            ThemeHelper.RegisterCss("/lib/css-loader/dist/css-loader.css", NccResource.IncludePosition.Header);
+            ThemeHelper.RegisterCss(string.Concat("/Themes/Default/css/", ThemeHelper.ActiveTheme.Settings["style"], ".css"), NccResource.IncludePosition.Header);
+
+            ThemeHelper.RegisterResource(NccResource.JQuery);
+            ThemeHelper.RegisterResource(NccResource.Bootstrap);
+
+            ThemeHelper.RegisterJs("/js/ncc-common.min.js", NccResource.IncludePosition.Header);            
+            ThemeHelper.RegisterJs("/lib/notifyjs/notify.min.js", NccResource.IncludePosition.Header);
+            
+            return string.Empty;
+        }
+
         public static class MenuLocation
         {
             public static string Top { get { return "Top"; } }

@@ -1,27 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NetCoreCMS.Framework.Themes
+﻿namespace NetCoreCMS.Framework.Themes
 {
     public class NccResource
     {
+        public static string JQuery { get { return "JQuery"; } }
+        public static string Bootstrap { get { return "Bootstrap"; } }
+        public static string BootstrapDateTimePicker { get { return "BootstrapDateTimePicker"; } }
+        public static string CkEditor { get { return "CkEditor"; } }
+        public static string DataTable { get { return "DataTable"; } }
+
         public NccResource()
         {
-            UseMinify = true;
-            Dependencies = new List<NccResource>();
+            UseMinify = true;            
         }
-
-        public string Name { get; set; }
+        
         public string Version { get; set; }
-        public string FilePath { get; set; }
-        public string Content { get; set; }
+        public string FilePath { get; set; }        
         public bool UseMinify { get; set; }
         public ResourceType Type { get; set; }
         public int Order { get; set; }
-        public IncludeLocation Location{ get; set; }
-        public List<NccResource> Dependencies { get; set; }
-
+        public IncludePosition Position{ get; set; }
+        
         public enum ResourceType
         {
             JsFile,
@@ -32,7 +30,7 @@ namespace NetCoreCMS.Framework.Themes
             LcssFile
         }
 
-        public enum IncludeLocation
+        public enum IncludePosition
         {
             Header,
             Footer

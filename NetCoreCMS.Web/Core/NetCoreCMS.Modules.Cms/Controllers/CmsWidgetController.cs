@@ -35,8 +35,8 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         {
             ViewBag.sLayout = "";
             ViewBag.Modules = GlobalConfig.GetActiveModules();
-            ViewBag.Theme = GlobalConfig.ActiveTheme;
-            if (GlobalConfig.ActiveTheme.Layouts.Where(x => x.Name == sLayout).Count() > 0)
+            ViewBag.Theme = ThemeHelper.ActiveTheme;
+            if (ThemeHelper.ActiveTheme.Layouts.Where(x => x.Name == sLayout).Count() > 0)
             {
                 ViewBag.sLayout = sLayout;
             }

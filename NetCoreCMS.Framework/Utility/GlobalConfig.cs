@@ -30,7 +30,7 @@ namespace NetCoreCMS.Framework.Utility
         public static string ContentRootPath { get; set; }
         
         public static IApplicationBuilder App { get; set; }
-        public static Theme ActiveTheme { get; set; }
+        //public static Theme ActiveTheme { get; set; }
         
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }

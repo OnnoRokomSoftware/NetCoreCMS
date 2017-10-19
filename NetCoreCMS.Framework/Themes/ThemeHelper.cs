@@ -6,11 +6,13 @@ using NetCoreCMS.Framework.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System;
 
 namespace NetCoreCMS.Framework.Themes
 {
     public static class ThemeHelper
     {
+        private static List<NccResource> _nccResources = new List<NccResource>();
         public static Theme ActiveTheme { get; set; }
         public static NccWebSite WebSite { get; set; }
         public static string GetCurrentLanguage()
@@ -18,6 +20,72 @@ namespace NetCoreCMS.Framework.Themes
             var languageDetector = new NccLanguageDetector(new HttpContextAccessor());
             var currentLanguage = languageDetector.GetCurrentLanguage();
             return currentLanguage;
+        }
+
+        public static void RegisterCss(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
+        {
+            RegisterNccResource(NccResource.ResourceType.CssFile, resourcePath, position, version, order, minify);            
+        }
+
+        public static void RegisterResource(string resourceLibName)
+        {
+            if(resourceLibName == NccResource.JQuery)
+            {
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/jquery/jquery.min.js", NccResource.IncludePosition.Header, "2.3.3", 1, false);
+            }
+            else if (resourceLibName == NccResource.Bootstrap)
+            {
+                RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/bootstrap/css/bootstrap.min.css", NccResource.IncludePosition.Header, "2.3.3", 2, false);
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/bootstrap/js/bootstrap.min.js", NccResource.IncludePosition.Header, "2.3.3", 4, false);
+            }
+            else if (resourceLibName == NccResource.BootstrapDateTimePicker)
+            {
+                RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css", NccResource.IncludePosition.Header, "2.3.3", 2, false);
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js", NccResource.IncludePosition.Header, "2.3.3", 3, false);
+            }
+            else if (resourceLibName == NccResource.DataTable)
+            {
+                
+            }
+        }
+        
+
+        public static void RegisterResource(NccResource resource)
+        {
+            _nccResources.Add(resource);
+        }
+
+        public static void RegisterResource(List<NccResource> resources)
+        {
+            _nccResources.AddRange(resources);
+        }
+
+        public static void RegisterJs(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
+        {
+            RegisterNccResource(NccResource.ResourceType.JsFile, resourcePath, position, version, order, minify);            
+        }
+
+        private static void RegisterNccResource(NccResource.ResourceType type, string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
+        {
+            var nccResource = new NccResource()
+            {
+                FilePath = resourcePath,
+                Order = order,
+                Position = position,
+                Type = type,
+                UseMinify = minify,
+                Version = version
+            };
+
+            if(_nccResources.Where(x=>x.FilePath.ToLower() == resourcePath.ToLower()).Count() == 0)
+            {
+                _nccResources.Add(nccResource);
+            }
+        }
+
+        public static List<NccResource> GetAllResources(NccResource.ResourceType type, NccResource.IncludePosition position)
+        {
+            return _nccResources.Where(x=>x.Type == type && x.Position == position).OrderBy(x=>x.Order).ToList();
         }
 
         #region Website Informations

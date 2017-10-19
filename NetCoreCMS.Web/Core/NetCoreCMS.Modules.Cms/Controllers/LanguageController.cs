@@ -96,7 +96,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         private List<TranslationFile> GetThemeResources()
         {
             var translationFileList = new List<TranslationFile>();
-            var activeTheme = GlobalConfig.ActiveTheme;
+            var activeTheme = ThemeHelper.ActiveTheme;
             translationFileList = GetTranslationFiles(activeTheme.ThemeName, activeTheme.ResourceFolder);
             return translationFileList;
         }

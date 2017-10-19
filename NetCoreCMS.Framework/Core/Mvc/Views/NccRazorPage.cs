@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 using NetCoreCMS.Framework.Core.Events.Themes;
+using NetCoreCMS.Framework.Themes;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -413,21 +414,21 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
-        } 
+        }
 
-        public string NccRenderHeaderCss(string headCssViewFile = "Parts/_HeaderCss")
+        public string NccRenderHeaderCss()
         {
-            var content = RenderToStringAsync(headCssViewFile, Model).Result;
-            var themeSection = FireEvent(ThemeSection.Sections.HeaderCss, headCssViewFile, content, Model);
+            var content = MakeResourceList(NccResource.ResourceType.CssFile, NccResource.IncludePosition.Header);
+            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereHeaderCss", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
 
-        public string NccRenderHeaderScripts(string headCssViewFile = "Parts/_HeaderScripts")
+        public string NccRenderHeaderScripts()
         {
-            var content = RenderToStringAsync(headCssViewFile, Model).Result;
-            var themeSection = FireEvent(ThemeSection.Sections.HeaderScripts, headCssViewFile, content, Model);
+            var content = MakeResourceList(NccResource.ResourceType.JsFile, NccResource.IncludePosition.Header);
+            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereHeaderScripts", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
@@ -502,19 +503,19 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             return string.Empty;
         }
 
-        public string NccRenderFooterCss(string footerCssViewFile = "Parts/_FooterCss")
+        public string NccRenderFooterCss()
         {
-            var content = RenderToStringAsync(footerCssViewFile, Model).Result;
-            var themeSection = FireEvent(ThemeSection.Sections.FooterCss, footerCssViewFile, content, Model);
+            var content = MakeResourceList(NccResource.ResourceType.CssFile, NccResource.IncludePosition.Footer);
+            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereFooterCss", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
 
-        public string NccRenderFooterScripts(string footerScriptsViewFile = "Parts/_FooterScripts")
+        public string NccRenderFooterScripts()
         {
-            var content = RenderToStringAsync(footerScriptsViewFile, Model).Result;
-            var themeSection = FireEvent(ThemeSection.Sections.FooterScripts, footerScriptsViewFile, content, Model);
+            var content = MakeResourceList(NccResource.ResourceType.JsFile, NccResource.IncludePosition.Footer);
+            var themeSection = FireEvent(ThemeSection.Sections.Head, "RegistereFooterScripts", content, Model);
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
@@ -536,6 +537,30 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             globalMessageContainer = themeSection.Content;
             ViewContext.Writer.WriteLine(globalMessageContainer);
             return string.Empty;            
+        }
+
+        private string MakeResourceList(NccResource.ResourceType type, NccResource.IncludePosition position)
+        {
+            var content = "";
+            var resourceList = ThemeHelper.GetAllResources(type, position);
+            foreach (var item in resourceList)
+            {
+                var version = "";
+                if (string.IsNullOrEmpty(item.Version) == false)
+                {
+                    version = $"?{item.Version}";
+                }
+                if(type == NccResource.ResourceType.JsFile)
+                {
+                    content += $"<script type=\"text/javascript\" src=\"{item.FilePath}{version}\"></script>" + Environment.NewLine;
+                }
+                else if(type == NccResource.ResourceType.CssFile)
+                {
+                    content += $"<link rel=\"stylesheet\" type=\"text/css\" href=\"{item.FilePath}{version}\" />" + Environment.NewLine;
+                }
+            }
+            
+            return content;
         }
     }
 }

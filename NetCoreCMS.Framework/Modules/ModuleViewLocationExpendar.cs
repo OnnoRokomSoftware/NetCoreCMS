@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
+using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,9 +19,9 @@ namespace NetCoreCMS.Framework.Modules
                 {
                     var moduleViewLocations = new string[]
                     {
-                    "/Themes/"+ GlobalConfig.ActiveTheme.ThemeName +"/Views/{1}/{0}.cshtml",
-                    "/Themes/"+ GlobalConfig.ActiveTheme.ThemeName +"/Shared/{0}.cshtml",
-                    "/Themes/"+ GlobalConfig.ActiveTheme.ThemeName +"/Shared/Layouts/{0}.cshtml",
+                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/{1}/{0}.cshtml",
+                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/{0}.cshtml",
+                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/Layouts/{0}.cshtml",
                     "/Core/" + module + "/Views/{1}/{0}.cshtml",
                     "/Core/" + module + "/Views/Shared/{0}.cshtml",
                     "/Modules/" + module + "/Views/{1}/{0}.cshtml",

@@ -378,7 +378,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         #region Helper
         private void SetPostViewData(NccPost post)
         {            
-            ViewBag.Layouts = new SelectList(GlobalConfig.ActiveTheme.Layouts, "Name", "Name", post.Layout);
+            ViewBag.Layouts = new SelectList(ThemeHelper.ActiveTheme.Layouts, "Name", "Name", post.Layout);
 
             ViewBag.CategoryList = _nccCategoryService.LoadAll();
             ViewBag.Categories = new SelectList(_nccCategoryService.LoadAll(), "Id", "Name", post.Categories);

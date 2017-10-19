@@ -58,8 +58,7 @@ namespace NetCoreCMS.Framework.Themes
 
                             if (theme.IsActive)
                             {
-                                ThemeHelper.ActiveTheme     = theme;
-                                GlobalConfig.ActiveTheme    = theme;
+                                ThemeHelper.ActiveTheme     = theme;                                
                             }
                         }
                     }
@@ -76,10 +75,11 @@ namespace NetCoreCMS.Framework.Themes
                 }                
             }
 
-            if(GlobalConfig.ActiveTheme == null)
+            if(ThemeHelper.ActiveTheme == null)
             {
                 ActivateDefaultTheme();
             }
+
             return themes;
         }
 
@@ -95,13 +95,11 @@ namespace NetCoreCMS.Framework.Themes
                     
                     if (theme.IsActive == false)
                     {
-                        if (InactivateTheme(GlobalConfig.ActiveTheme.ThemeName))
+                        if (InactivateTheme(ThemeHelper.ActiveTheme.ThemeName))
                         {
                             theme.IsActive = true;                           
                             var themeJson = JsonConvert.SerializeObject(theme,Formatting.Indented);
-                            File.WriteAllText(infoFileLocation, themeJson);
-
-                            GlobalConfig.ActiveTheme    = theme;
+                            File.WriteAllText(infoFileLocation, themeJson);                            
                             ThemeHelper.ActiveTheme     = theme;
                         }
                         else
@@ -170,11 +168,8 @@ namespace NetCoreCMS.Framework.Themes
                     var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
                     theme.IsActive = true;                    
                     var themeJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
-                    File.WriteAllText(infoFileLocation, themeJson);
-
-                    GlobalConfig.ActiveTheme    = theme;
+                    File.WriteAllText(infoFileLocation, themeJson);                    
                     ThemeHelper.ActiveTheme     = theme;
-
                     return true;
                 }
                 else
@@ -223,7 +218,7 @@ namespace NetCoreCMS.Framework.Themes
                         if (assembly.FullName.Contains(themeFolder.Name))
                         {
                             _themeDlls.Add(assembly);
-                            if (GlobalConfig.ActiveTheme.Folder == themeFolder.Name)
+                            if (ThemeHelper.ActiveTheme.Folder == themeFolder.Name)
                             {
                                 mvcBuilder.AddApplicationPart(assembly);
                                 var widgetTypeList = assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
@@ -256,7 +251,7 @@ namespace NetCoreCMS.Framework.Themes
 
             foreach (var themeFolder in themes.Where(x => x.IsDirectory))
             {
-                if (GlobalConfig.ActiveTheme.Folder == themeFolder.Name)
+                if (ThemeHelper.ActiveTheme.Folder == themeFolder.Name)
                 {
                     var assembly = _themeDlls.Where(x => x.ManifestModule.Name == themeFolder.Name+".dll").FirstOrDefault();
                     if(assembly != null)
@@ -267,7 +262,7 @@ namespace NetCoreCMS.Framework.Themes
                             //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                            
                             var widgetInstance = (Widget)serviceProvider.GetService(widgetType);
                             widgets.Add(widgetInstance);
-                            GlobalConfig.ActiveTheme.Widgets.Add(widgetInstance);
+                            ThemeHelper.ActiveTheme.Widgets.Add(widgetInstance);
                         }
                     }
                 }

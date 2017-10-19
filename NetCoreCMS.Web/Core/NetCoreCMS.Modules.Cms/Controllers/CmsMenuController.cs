@@ -387,7 +387,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             ViewBag.ModuleSiteMenus = NccMenuHelper.GetModulesSiteMenus();
 
             ViewBag.MenuList = _menuService.LoadAll();
-            ViewBag.MenuLocations = GlobalConfig.ActiveTheme.MenuLocations.ToList();
+            ViewBag.MenuLocations = ThemeHelper.ActiveTheme.MenuLocations.ToList();
 
             ViewBag.CurrentMenu = new NccMenu();
             ViewBag.CurrentMenuItems = "";
