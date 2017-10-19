@@ -10,11 +10,7 @@
 
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Utility;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Modules.Widgets
 {

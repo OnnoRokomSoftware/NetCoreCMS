@@ -8,8 +8,6 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Microsoft.Extensions.DependencyInjection;
-using NetCoreCMS.Framework.Modules;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -18,8 +16,8 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using Microsoft.AspNetCore.Routing;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Modules.News.Services;
-using NetCoreCMS.Modules.News.Repository;
+using Microsoft.Extensions.DependencyInjection;
+using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Modules.News
