@@ -3,6 +3,7 @@
     CurrentLayout = ThemeResources.Layouts.HomeLayout;
     CurrentLanguage = ThemeHelper.GetCurrentLanguage();
     NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
+    ThemeResources.RegisterResources(CurrentLayout);
 }
 <!DOCTYPE html>
 <html>
