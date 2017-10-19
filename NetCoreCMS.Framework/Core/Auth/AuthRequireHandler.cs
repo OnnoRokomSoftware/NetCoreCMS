@@ -8,12 +8,9 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Microsoft.AspNetCore.Authorization;
-using System;
-using System.Collections.Generic;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NetCoreCMS.Framework.Core.Auth
 {
