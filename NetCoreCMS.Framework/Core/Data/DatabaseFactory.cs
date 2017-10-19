@@ -1,10 +1,10 @@
-﻿/*************************************************************  
+﻿/*************************************************************
  *          Project: NetCoreCMS                              *
+ *              Web: http://dotnetcorecms.org                *
  *           Author: OnnoRokom Software Ltd.                 *
  *          Website: www.onnorokomsoftware.com               *
  *            Email: info@onnorokomsoftware.com              *
  *        Copyright: OnnoRokom Software Ltd.                 *
- *           Mobile: +88 017 08 166 003                      *
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
@@ -104,14 +104,12 @@ namespace NetCoreCMS.Framework.Core.Data
             {
                 case DatabaseEngine.MSSQL:                    
                     optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
-                    return optionBuilder.Options;
-                    break;
+                    return optionBuilder.Options;                    
                 case DatabaseEngine.MsSqlLocalStorage:
                     break;
                 case DatabaseEngine.MySql:                    
                     optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
-                    return optionBuilder.Options;
-                    break;
+                    return optionBuilder.Options;                    
                 case DatabaseEngine.PgSql:
                     break;
                 case DatabaseEngine.SqLite:                    

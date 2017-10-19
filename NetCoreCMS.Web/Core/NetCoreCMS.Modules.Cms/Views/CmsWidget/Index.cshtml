@@ -126,7 +126,7 @@
                                 var active = "active";
                                 var ariaExpanded = "aria-expanded=\"true\"";
                             }
-                            @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
+                            @foreach (var layout in ThemeHelper.ActiveTheme.Layouts)
                             {
                                 if (!string.IsNullOrEmpty(ViewBag.sLayout))
                                 {
@@ -147,7 +147,7 @@
                             @{
                                 active = "active";
                             }
-                            @foreach (var layout in GlobalConfig.ActiveTheme.Layouts)
+                            @foreach (var layout in ThemeHelper.ActiveTheme.Layouts)
                             {
                                 if (!string.IsNullOrEmpty(ViewBag.sLayout))
                                 {
@@ -164,7 +164,7 @@
                                                 <div class="panel-heading">
                                                     @zone
                                                 </div>
-                                                <div data-theme-id="@GlobalConfig.ActiveTheme.ThemeId" data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">                                            
+                                                <div data-theme-id="@ThemeHelper.ActiveTheme.ThemeId" data-layout-name="@layout.Name" data-layout-zone="@zone" class="panel-body" ondrop="drop(event)" ondragover="allowDrop(event)">                                            
                                                      @{ 
                                                          var wZones = ((List<NccWebSiteWidget>)ViewBag.WebsiteWidgetZones).Where(x => x.Zone == zone && x.LayoutName == layout.Name).OrderBy(x=>x.WidgetOrder).ToList();
                                                          if (wZones.Count <= 0)
@@ -178,9 +178,9 @@
                                                              foreach (var x in (List<NetCoreCMS.Framework.Modules.IModule>)ViewBag.Modules) {
                                                                  wList.AddRange(x.Widgets);
                                                              }
-                                                             if(GlobalConfig.ActiveTheme.Widgets != null && GlobalConfig.ActiveTheme.Widgets.Count > 0)
+                                                             if(ThemeHelper.ActiveTheme.Widgets != null && ThemeHelper.ActiveTheme.Widgets.Count > 0)
                                                              {
-                                                                 wList.AddRange(GlobalConfig.ActiveTheme.Widgets);
+                                                                 wList.AddRange(ThemeHelper.ActiveTheme.Widgets);
                                                              }
                                                              var w = wList.Where(x => x.WidgetId == wZone.WidgetId).FirstOrDefault();
                                                              if (w != null) {
