@@ -5,7 +5,7 @@ NetCoreCMS is a Content Management System developed using ASP.Net Core 2.0. It i
 Admin panel screenshots [Screenshot](https://github.com/OnnoRokomSoftware/NetCoreCMS/blob/master/Screenshots.md)
 
 ## Demo
-CMS Demo site [Demo](http://demo.dotnetcorecms.com)
+CMS Demo site [Demo](http://demo.dotnetcorecms.org)
 
 ## Build Status
 | Build server| Platform       | Status      |
