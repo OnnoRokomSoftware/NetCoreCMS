@@ -1,13 +1,18 @@
-﻿using NetCoreCMS.Framework.Core.Services.Auth;
+﻿/*************************************************************
+ *          Project: NetCoreCMS                              *
+ *              Web: http://dotnetcorecms.org                *
+ *           Author: OnnoRokom Software Ltd.                 *
+ *          Website: www.onnorokomsoftware.com               *
+ *            Email: info@onnorokomsoftware.com              *
+ *        Copyright: OnnoRokom Software Ltd.                 *
+ *          License: BSD-3-Clause                            *
+ *************************************************************/
+// For more details see https://go.microsoft.com/fwlink/?LinkID=532713
+using NetCoreCMS.Framework.Core.Services.Auth;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
-namespace NetCoreCMS.Web.Services
-{
-    // This class is used by the application to send email for account confirmation and password reset.
-    // For more details see https://go.microsoft.com/fwlink/?LinkID=532713
+namespace NetCoreCMS.Web.Services { 
     public class EmailSender : IEmailSender
     {
         public Task SendEmailAsync(string email, string subject, string message)

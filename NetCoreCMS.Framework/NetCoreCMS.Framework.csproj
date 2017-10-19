@@ -51,8 +51,6 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.ViewCompilation" Version="2.0.0" PrivateAssets="All" />
-    <PackageReference Include="NSass.Handler" Version="0.0.3" />
-    <PackageReference Include="NSass.Optimization" Version="0.0.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.0.0-rtm-10058" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql.Design" Version="1.1.2" />
     <PackageReference Include="Serilog.Extensions.Logging" Version="2.0.2" />
