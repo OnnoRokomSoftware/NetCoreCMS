@@ -25,6 +25,7 @@ using NetCoreCMS.Framework.Core.App;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Messages;
+using System.Collections.Generic;
 
 namespace NetCoreCMS.Web.Controllers
 {
@@ -197,8 +198,9 @@ namespace NetCoreCMS.Web.Controllers
                     MessageId = Guid.NewGuid().ToString(),
                     Registrater = "Web",
                     Text = "Registered message from website",
-                    Type = GlobalMessage.MessageType.Error
-                }, new TimeSpan(0, 1, 0)
+                    Type = GlobalMessage.MessageType.Info,
+                    ForUsers = new List<string>() { "admin"}
+                }, new TimeSpan(0, 10, 0)
             );
             return View();
         }

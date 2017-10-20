@@ -585,11 +585,17 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 if (item.ForUsers.Count > 0)
                 {
                     var user = GlobalConfig.GetCurrentUserName();
-                    if(item.ForUsers.Contains(user))
-                    close = $"<a href='#' data-ncc-global-message-id='{item.MessageId}' class='close-ncc-global-message pull-right'>X</a>";
+                    if (string.IsNullOrEmpty(user) == false && item.ForUsers.Contains(user))
+                    {
+                        close = $"<a href='#' data-ncc-global-message-id='{item.MessageId}' class='close-ncc-global-message pull-right'>X</a>";
+                        content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{item.Text} {close}</div>";
+                    }
+                }
+                else
+                {
+                    content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{item.Text} {close}</div>";
                 }
                 
-                content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{item.Text} {close}</div>";
             }
 
             if (string.IsNullOrEmpty(content) == false)
