@@ -216,7 +216,7 @@ namespace NetCoreCMS.Framework.Themes
         #region Menu
         public static List<NccMenu> GetMenus(string menuLocation, string language)
         {
-            return GlobalConfig.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || x.MenuLanguage == "") ).ToList();
+            return GlobalConfig.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || string.IsNullOrEmpty(x.MenuLanguage))).ToList();
         }
 
         public static string PrepareMenuHtml(string position)

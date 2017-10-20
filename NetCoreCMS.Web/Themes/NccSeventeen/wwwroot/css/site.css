@@ -1,5 +1,5 @@
-﻿.home{
-    border:solid 1px;
+﻿.home {
+    border: solid 1px;
 }
 
 /*Side design*/
@@ -36,7 +36,6 @@
         }
     .topLogo h4 {
         padding-left: 100px;
-        color: gray;
     }
 
 @media only screen and (max-width: 766px) {
@@ -64,7 +63,6 @@
 
         .topLogo h4 {
             padding-left: initial;
-            color: gray;
         }
 }
 
@@ -77,11 +75,19 @@
     margin-top: -20px;
     margin-bottom: 20px;
 }
+
+footer{
+    padding-bottom: 20px;
+}
 .copyright {
     float: left;
 }
 .poweredby{
     float:right;
     text-align:right;
+}
+
+.two-column-div {
+    column-count: 2;
 }
 /*site design*/

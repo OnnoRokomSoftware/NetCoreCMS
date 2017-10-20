@@ -1,80 +1,90 @@
 ﻿@{
-    string currentLanguage = LanguageDetector.GetCurrentLanguage();
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 
-    var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn" && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage == currentLanguage)).ToList();
-    var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-}
-<div class="col-sm-2 pull-right">
-    <!-- Right Menu Start -->
-    @if (menusRight != null && menusRight.Count > 0)
+    var menusRight = ThemeHelper.GetMenus("RightColumn", CurrentLanguage);
+    var zoneRightWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, "RightSidebar");
+
+    if (menusRight.Count > 0 || zoneRightWidgets.Count > 0)
     {
-        <div class="col-md-12">
-            @foreach (var item in menusRight)
-            {
-                foreach (var menuItem in item.MenuItems)
+        HasRightColumn = true;
+        BodyWidth = BodyWidth - 2;
+    }
+}
+
+
+@if (HasRightColumn)
+{
+    <div class="col-sm-2 pull-right">
+        <!-- Right Menu Start -->
+        @if (menusRight != null && menusRight.Count > 0)
+        {
+            <div class="col-md-12">
+                @foreach (var item in menusRight)
                 {
-                    <a href="@menuItem.Url">@menuItem.Name</a><br />
-                    foreach (var mi2 in menuItem.Childrens)
+                    foreach (var menuItem in item.MenuItems)
                     {
-                        <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                        foreach (var mi3 in mi2.Childrens)
+                        <a href="@menuItem.Url">@menuItem.Name</a><br />
+                        foreach (var mi2 in menuItem.Childrens)
                         {
-                            <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
-                            foreach (var mi4 in mi3.Childrens)
+                            <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                            foreach (var mi3 in mi2.Childrens)
                             {
-                                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                foreach (var mi4 in mi3.Childrens)
+                                {
+                                    <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                }
                             }
                         }
                     }
                 }
-            }
-        </div>
-        <div class="clearfix"></div>
-    }
-    <!-- Right Menu End -->
-    <!-- Right Sidebar Start -->
-    @if (zoneRightWidgets != null && zoneRightWidgets.Count > 0)
-    {
-        <div class="row">
-            @foreach (var item in zoneRightWidgets)
-            {
-                var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                foreach (var widget in widgets)
+            </div>
+            <div class="clearfix"></div>
+        }
+        <!-- Right Menu End -->
+        <!-- Right Sidebar Start -->
+        @if (zoneRightWidgets != null && zoneRightWidgets.Count > 0)
+        {
+            <div class="row">
+                @foreach (var item in zoneRightWidgets)
                 {
-                    widget.Init(item.Id);
-                    if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage == widget.Language)
-                    { 
-                        if (widget.DisplayTitle != "" || widget.Footer != "")
+                    var widgets = ThemeHelper.GetWidgets(item.WidgetId);
+                    foreach (var widget in widgets)
+                    {
+                        widget.Init(item.Id);
+                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage == widget.Language)
                         {
-                            <div class='panel panel-default'>
-                                @if (widget.DisplayTitle != "")
-                                {
-                                    <div class='panel-heading'>
-                                        @Html.Raw(widget.DisplayTitle)
+                            if (widget.DisplayTitle != "" || widget.Footer != "")
+                            {
+                                <div class='panel panel-default'>
+                                    @if (widget.DisplayTitle != "")
+                                    {
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.DisplayTitle)
+                                        </div>
+                                    }
+                                    <div class='panel-body'>
+                                        @Html.Raw(widget.RenderBody())
                                     </div>
-                                }
-                                <div class='panel-body'>
+                                    @if (widget.Footer != "")
+                                    {
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.Footer)
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
                                     @Html.Raw(widget.RenderBody())
                                 </div>
-                                @if (widget.Footer != "")
-                                {
-                                    <div class='panel-footer'>
-                                        @Html.Raw(widget.Footer)
-                                    </div>
-                                }
-                            </div>
-                        }
-                        else
-                        {
-                            <div>
-                                @Html.Raw(widget.RenderBody())
-                            </div>
+                            }
                         }
                     }
                 }
-            }
-        </div>
-    }
-    <!-- Right Sidebar End -->
-</div>
+            </div>
+        }
+        <!-- Right Sidebar End -->
+    </div>
+}

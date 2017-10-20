@@ -1,99 +1,99 @@
 ﻿@{
-    string currentLanguage = LanguageDetector.GetCurrentLanguage();
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
+
 }
 <!--  Footer Start -->
 <footer>
     <hr />
     <div class="container">
         <div class="row">
-            @{
-                bool hasFooter = false;
-                var menusFooter = GlobalConfig.Menus.Where(x => x.Position == "Footer" && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage == currentLanguage)).ToList();
-                var zoneFooterWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Footer" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-                if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
-                {
-                    hasFooter = true;
-                }
-                <!-- Footer Menu Start -->
-                if (menusFooter != null && menusFooter.Count > 0)
-                {
-                    <div class="col-md-6">
-                        @foreach (var item in menusFooter)
-                        {
-                            foreach (var menuItem in item.MenuItems)
+            <div class="col-md-4">
+
+            </div>
+            <div class="col-md-4">
+                @{
+                    var menusFooter = ThemeHelper.GetMenus("Footer", CurrentLanguage);
+                    <!-- Footer Menu Start -->
+                    if (menusFooter != null && menusFooter.Count > 0)
+                    {
+                        <div class="two-column-div">
+                            @foreach (var item in menusFooter)
                             {
-                                <a href="@menuItem.Url">@menuItem.Name</a><br />
-                                foreach (var mi2 in menuItem.Childrens)
+                                foreach (var menuItem in item.MenuItems)
                                 {
-                                    <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                                    foreach (var mi3 in mi2.Childrens)
+                                    <a href="@menuItem.Url">@menuItem.Name</a><br />
+                                    foreach (var mi2 in menuItem.Childrens)
                                     {
-                                        <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
-                                        foreach (var mi4 in mi3.Childrens)
+                                        <span>--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                                        foreach (var mi3 in mi2.Childrens)
                                         {
-                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                            <span>----</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                            foreach (var mi4 in mi3.Childrens)
+                                            {
+                                                <span>------</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                    </div>
+                        </div>
+                    }
+                    <!-- Footer Menu End -->
                 }
-                <!-- Footer Menu End -->
-
-                <!-- Footer Widgets Start -->
-                if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
-                {
-                    <div class="col-md-12">
-                        @foreach (var item in zoneFooterWidgets)
-                        {
-                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
-                            foreach (var widget in widgets)
+            </div>
+            <div class="col-md-4">
+                @{
+                    var zoneFooterWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, "Footer");
+                    <!-- Footer Widgets Start -->
+                    if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
+                    {
+                        <div style="float:right;">
+                            @foreach (var item in zoneFooterWidgets)
                             {
-                                widget.Init(item.Id);
-                                if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage == widget.Language)
-                                { 
-                                    if (widget.DisplayTitle != "" || widget.Footer != "")
+                                var widgets = ThemeHelper.GetWidgets(item.WidgetId);
+                                foreach (var widget in widgets)
+                                {
+                                    widget.Init(item.Id);
+                                    if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage == widget.Language)
                                     {
-                                        <div class='panel panel-default'>
-                                            @if (widget.DisplayTitle != "")
-                                            {
-                                                <div class='panel-heading'>
-                                                    @Html.Raw(widget.DisplayTitle)
+                                        if (widget.DisplayTitle != "" || widget.Footer != "")
+                                        {
+                                            <div class='panel panel-default'>
+                                                @if (widget.DisplayTitle != "")
+                                                {
+                                                    <div class='panel-heading'>
+                                                        @Html.Raw(widget.DisplayTitle)
+                                                    </div>
+                                                }
+                                                <div class='panel-body'>
+                                                    @Html.Raw(widget.RenderBody())
                                                 </div>
-                                            }
-                                            <div class='panel-body'>
+                                                @if (widget.Footer != "")
+                                                {
+                                                    <div class='panel-footer'>
+                                                        @Html.Raw(widget.Footer)
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div>
                                                 @Html.Raw(widget.RenderBody())
                                             </div>
-                                            @if (widget.Footer != "")
-                                            {
-                                                <div class='panel-footer'>
-                                                    @Html.Raw(widget.Footer)
-                                                </div>
-                                            }
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            @Html.Raw(widget.RenderBody())
-                                        </div>
+                                        }
                                     }
                                 }
                             }
-                        }
-                    </div>
+                        </div>
+                    }
+                    <!-- Footer Widgets End -->
                 }
-                <!-- Footer Widgets End -->
-            }
+            </div>
 
         </div>
     </div>
-    @if (hasFooter)
-    {
-        <hr />
-    }
+    <hr />
     <div class="container">
         <div class="row">
             <div class="col-md-6 copyright"> @_TT["Copyrights"] &copy; @Html.Raw(@ThemeHelper.GetWebSiteCopyright()) @_TT[DateTime.Now.Year.ToString()]</div>
@@ -117,11 +117,11 @@ $(document).ready(function () {
             //console.log(scroll);
             //Same that all the if else statements
             switch (true) {
-                case (scroll >= 100):
+                case (scroll >= 200):
                     $("#mainNavbar").addClass("navbar-fixed-top");
                     $("#navbarWebsiteName").removeClass("navbar-brand-with-top-menu");
                     break;
-                case (scroll <= 50):
+                case (scroll <= 70):
                     $("#mainNavbar").removeClass("navbar-fixed-top");
                     $("#navbarWebsiteName").addClass("navbar-brand-with-top-menu");
                     break;

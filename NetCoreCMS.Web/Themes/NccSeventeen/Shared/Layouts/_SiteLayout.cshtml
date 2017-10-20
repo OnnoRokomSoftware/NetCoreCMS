@@ -1,66 +1,58 @@
 ﻿@{
-    ViewBag.CurrentLayout = "SiteLayout";
+    CurrentLayout = "SiteLayout";
+    CurrentLanguage = ThemeHelper.GetCurrentLanguage();
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
 
 <!DOCTYPE html>
 <html>
-    <head>
-        @Html.Partial("Parts/_Head")
-        @Html.Raw(JavaScriptSnippet.FullScript)
-        @RenderSection("Styles", required: false)
-    </head>
-    <body id="body">
-        <!-- Zone TOP Start-->
-        <!-- Header -->
-        @Html.Partial("Parts/_Header")    
+<head>
+    @NccRenderHead()
+    @Html.Raw(JavaScriptSnippet.FullScript)
+    @NccRenderHeaderCss()
+    @NccRenderHeaderScripts()
 
-        <!-- Navbar -->
-        <nav id="mainNavbar" class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    @Html.Partial("Parts/_NavbarPart")
-                </div>
-                <div class="navbar-collapse collapse">
-                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation", LanguageDetector.GetCurrentLanguage()))
-                    <div class="userMenu">
-                        @await Html.PartialAsync("_SiteLoginPartial")
-                    </div>
-                </div>
-            </div>
-        </nav>        
-        <!-- Zone TOP End-->
+    @RenderSection(ThemeHelper.Sections.StyleHeader, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptHeader, required: false)
+    @RenderSection("Styles", required: false)
+</head>
+<body id="body">
+    <!-- Loading -->
+    @NccRenderLoadingMaskContainer()
+    <!-- Header -->
+    @NccRenderHeader()
+    <!-- Navbar -->
+    @NccRenderNavigation()
 
-        <!--  Main Body Start -->
-        <div class="container mainBody">   
-            <!-- Left Column start -->
-            @if ((bool)this.ViewContext.HttpContext.Items["hasLeftColumn"])
-            {
-                @Html.Partial("Parts/_LeftColumn");
-            }
-            <!-- Left Column end -->
+    <!--  Main Body -->
+    <div class="container mainBody">
+        <!-- Left Column -->
+        @NccRenderLeftColumn()
 
-            <!-- Right Column start -->
-            @if ((bool)this.ViewContext.HttpContext.Items["hasRightColumn"])
-            {
-                @Html.Partial("Parts/_RightColumn");
-            }
-            <!-- Right Column end -->
+        <!-- Right Column -->
+        @NccRenderRightColumn()
 
-            <!-- Main content Start -->
-            <div class="col-md-@this.ViewContext.HttpContext.Items["bodyClassWidth"]">
-                <!-- Featured Start -->
-                @Html.Partial("Parts/_Featured")
-                <!-- Featured End -->
+        <!-- Main content -->
+        <div class="col-md-@BodyWidth">
+            <!-- Featured -->
+            @NccRenderFeaturedSection()
 
-                @RenderBody()
-            </div>
-            <!-- Main content End -->
-
+            <!-- Container for showing global messages. -->
+            @*<div class="row">
+                @NccRenderGlobalMessageContainer()
+            </div>*@
+            @NccRenderBody()
         </div>
-        <!--  Main Body End -->
 
-        @Html.Partial("Parts/_Footer")
-        @RenderSection("Scripts", required: false)
-    </body>
+    </div>
+
+    <!--  Footer -->
+    @NccRenderFooter()
+    @NccRenderFooterCss()
+    @NccRenderFooterScripts()
+    @RenderSection(ThemeHelper.Sections.StyleFooter, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptFooter, required: false)
+    @RenderSection("Scripts", required: false)
+</body>
 </html>
 

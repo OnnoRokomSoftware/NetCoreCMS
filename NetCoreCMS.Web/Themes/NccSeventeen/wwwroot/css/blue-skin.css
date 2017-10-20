@@ -1,0 +1,94 @@
+﻿:root {
+    --main-txt-color: #FFF;
+    --sub-txt-color: #DDD;
+    --link-txt-color: #FFF;
+    --link-txt-color-1: #a3bdf8;
+}
+.topHeader {
+    background: linear-gradient( 150deg, rgb(38, 112, 189) 0%, rgba(38, 112, 189, 0.7) 50%, rgb(38, 112, 189) 100%);
+    /*background-color: #346CEA;*/
+    color: var(--main-txt-color);
+}
+.topLogo h4{
+    color: var(--sub-txt-color);
+}
+.topMenu a {
+    color: var(--link-txt-color);
+}
+.navbar {
+    border-radius: 0px;
+}
+.navbar-default {
+    background: linear-gradient( 150deg, rgba(39, 79, 169, .80) 0%, rgb(39, 79, 169) 50%, rgba(39, 79, 169, .70) 100%);
+    /*background-color: #274FA9;*/
+    border-color: #486AB6;
+}
+    .navbar-default a {
+        color: var(--link-txt-color) !important;
+    }
+    .navbar-default a:hover {
+        background: linear-gradient( 150deg, rgb(38, 112, 189) 0%, rgba(0, 112, 189, 0.6) 50%, rgb(38, 112, 189) 100%);
+    }
+    .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+        /*background-color: #346CEA;*/
+        background: linear-gradient( 150deg, rgb(38, 112, 189) 0%, rgba(0, 112, 189, 0.6) 50%, rgb(38, 112, 189) 100%);
+    }
+    .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+        /*background-color: #1748B7;*/
+        background: linear-gradient( 150deg, rgb(38, 112, 189) 0%, rgba(0, 112, 189, 0.6) 50%, rgb(38, 112, 189) 100%);
+    }
+
+.navbar-brand {
+    color: var(--main-txt-color) !important;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: var(--main-txt-color);
+}
+
+    .navbar-default .navbar-toggle .icon-bar {
+        background-color: var(--main-txt-color);
+    }
+
+.dropdown-menu {
+    /*background-color: #274FA9;*/
+    background: linear-gradient( 150deg, rgba(39, 79, 169, .60) 0%, rgb(39, 79, 169) 50%, rgba(39, 79, 169, .70) 100%);
+}
+    .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+        background-color: #486AB6;
+    }
+    .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+        /*background-color: #346CEA;*/
+        background: linear-gradient( 150deg, rgb(38, 112, 189) 0%, rgba(0, 112, 189, 0.6) 50%, rgb(38, 112, 189) 100%);
+    }
+.selectLanguage select {
+    background-color: #346CEA;
+    border-color: #346CEA;
+    color: var(--main-txt-color);
+}
+    .selectLanguage select:hover {
+        background-color: #346CEA;
+        border-color: #346CEA;
+        color: var(--main-txt-color);
+    }
+    .selectLanguage select option {
+        background-color: #346CEA;
+        border-color: #346CEA;
+        color: var(--main-txt-color);
+    }
+
+footer {
+    background-color: #043878;
+    color: var(--main-txt-color);
+}
+
+    footer hr {
+        border-top: 1px solid #1D4CB3;
+    }
+
+    footer a {
+        color: var(--link-txt-color-1);
+    }
+        footer a:hover {
+            color: var(--link-txt-color-1);
+        }

@@ -5,18 +5,18 @@
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
 @{    
-    var currentLanguage = LanguageDetector.GetCurrentLanguage();
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName })
+        .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.TwoLetterISOLanguageName.ToUpper()})
         .ToList();
-    var selectList = new SelectList(cultureItems, "Value", "Text", currentLanguage);
+    var selectList = new SelectList(cultureItems, "Value", "Text", CurrentLanguage);
 }
-<form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline" role="form" style="display:inline;">
+<form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline selectLanguage" role="form" style="display:inline;">
     <div class="form-group">
         <label for="exampleInputName2">@_TT["Language"]</label>
-        <select class="btn btn-mini btn-default" name="culture" id="culture" onchange="this.form.submit();" asp-items="selectList"></select>
+        <select class="btn" name="culture" id="culture" onchange="this.form.submit();" asp-items="selectList"></select>
     </div>
 </form>
+<span>|</span>

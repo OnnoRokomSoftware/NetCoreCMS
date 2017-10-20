@@ -1,73 +1,57 @@
 ﻿@{
-    ViewBag.CurrentLayout = "NoTopLayout";
+    CurrentLayout = "NoTopLayout";
+    CurrentLanguage = ThemeHelper.GetCurrentLanguage();
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
 
 <!DOCTYPE html>
 <html>
-    <head>
-        @Html.Partial("Parts/_Head")
-        @Html.Raw(JavaScriptSnippet.FullScript)
-        @RenderSection("Styles", required: false)
-    </head>
-    <body id="body">
-        <!-- Zone TOP Start-->
-        <!-- Navbar -->
-        <nav id="mainNavbar" class="navbar navbar-default navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    @*<a asp-area="" asp-controller="CmsHome" asp-action="Index" class="navbar-brand">@GlobalConfig.WebSite.Name</a>*@
-                    <div class="navbar-brand">@ThemeHelper.GetWebSiteName()</div>
-                </div>
-                <div class="navbar-collapse collapse">
-                    @Html.Raw(MenuHelper.PrepareMenuHtml("Navigation", LanguageDetector.GetCurrentLanguage()))
-                    @await Html.PartialAsync("_SiteLoginPartial")
-                </div>
+<head>
+    @NccRenderHead()
+    @Html.Raw(JavaScriptSnippet.FullScript)
+    @NccRenderHeaderCss()
+    @NccRenderHeaderScripts()
+
+    @RenderSection(ThemeHelper.Sections.StyleHeader, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptHeader, required: false)
+    @RenderSection("Styles", required: false)
+</head>
+<body id="body">
+    <!-- Loading -->
+    @NccRenderLoadingMaskContainer()
+    <!-- Navbar -->
+    @NccRenderNavigation("Parts/_NavigationNoTop")
+    <!-- Featured -->
+    @NccRenderFeaturedSection("Parts/_FullWidthSlider")
+
+    <!--  Main Body Start -->
+    <div class="container mainBody">
+        <!-- Left Column -->
+        @NccRenderLeftColumn()
+
+        <!-- Right Column -->
+        @NccRenderRightColumn()
+
+        <!-- Main content -->
+        <div class="col-md-@BodyWidth">
+            <!-- Featured -->
+            @NccRenderFeaturedSection()
+
+            <!-- Container for showing global messages. -->
+            <div class="row">
+                @NccRenderGlobalMessageContainer()
             </div>
-        </nav>  
-        
-        <div style="margin-top:70px;"></div>        
-        <!-- Zone TOP End-->
-
-        <!-- Full Width Slider Start -->
-        @Html.Partial("Parts/_FullWidthSlider")
-        <!-- Full Width Slider End -->
-
-        <!--  Main Body Start -->
-        <div class="container mainBody">   
-            <!-- Left Column start -->
-            @if((bool)this.ViewContext.HttpContext.Items["hasLeftColumn"])
-            {
-                @Html.Partial("Parts/_LeftColumn");
-            }
-            <!-- Left Column end -->
-            <!-- Right Column start -->
-            @if((bool)this.ViewContext.HttpContext.Items["hasRightColumn"])
-            {
-                @Html.Partial("Parts/_RightColumn");
-            }
-            <!-- Right Column end -->
-
-            <!-- Main content Start -->
-            <div class="col-md-@this.ViewContext.HttpContext.Items["bodyClassWidth"]">
-                <!-- Featured Start -->
-                @Html.Partial("Parts/_Featured")
-                <!-- Featured End -->
-
-                @RenderBody()
-            </div>
-            <!-- Main content End -->
-
+            @NccRenderBody()
         </div>
-        <!--  Main Body End -->
-        
-        @Html.Partial("Parts/_Footer")
-        @RenderSection("Scripts", required: false)
-    </body>
+    </div>
+
+    <!--  Footer -->
+    @NccRenderFooter()
+    @NccRenderFooterCss()
+    @NccRenderFooterScripts()
+    @RenderSection(ThemeHelper.Sections.StyleFooter, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptFooter, required: false)
+    @RenderSection("Scripts", required: false)
+</body>
 </html>
 

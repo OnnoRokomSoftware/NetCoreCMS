@@ -1,21 +1,20 @@
 ﻿@{
-    string currentLanguage = LanguageDetector.GetCurrentLanguage();
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
+
 <div class="Featured">
-    @*<p>@this.ViewContext.HttpContext.Items["currentLanguage"]</p>*@
     @{
-        var featured = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "Featured" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+        var featured = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, "Featured");
         if (featured != null && featured.Count > 0)
         {
             <div style="width:100%;">
                 @foreach (var item in featured)
                 {
-                    var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                    var widgets = ThemeHelper.GetWidgets(item.WidgetId);
                     foreach (var widget in widgets)
                     {
                         widget.Init(item.Id);
-                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage == widget.Language)
+                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage == widget.Language)
                         { 
                             if (widget.DisplayTitle != "" || widget.Footer != "")
                             {
@@ -49,11 +48,4 @@
             </div>
         }
     }
-</div>
-
-<!-- Container for showing global messages. -->
-<div class="row">
-    <div id="globalMessageContainer" class="ncc-global-message">
-
-    </div>
 </div>
