@@ -18,8 +18,12 @@
         @RenderSection(ThemeHelper.Sections.ScriptHeader, required: false)
         @RenderSection("Styles", required: false)
     </head>
-    <body id="body">     
-
+    <body id="body">   
+        
+        <!-- Container for showing global messages. -->
+        <div class="row">
+            @NccRenderGlobalMessages()
+        </div>
         <!-- Loading -->
         @NccRenderLoadingMaskContainer()
         <!-- Zone TOP Start-->
@@ -41,11 +45,7 @@
             <!-- Right Column end -->
 
             <!-- Main content Start -->
-            <div class="col-md-@BodyWidth">
-                <!-- Container for showing global messages. -->
-                <div class="row">
-                    @NccRenderGlobalMessageContainer()
-                </div>
+            <div class="col-md-@BodyWidth">               
                 @NccRenderBody()
             </div>
             <!-- Main content End -->

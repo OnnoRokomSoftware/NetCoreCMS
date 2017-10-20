@@ -7,6 +7,7 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
+
 using System;
 using Serilog;
 using System.Text;
@@ -39,6 +40,7 @@ using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Extensions;
 using NetCoreCMS.Framework.Core.ShotCodes;
+using NetCoreCMS.Framework.Core.Messages;
 
 namespace NetCoreCMS.Web
 {
@@ -185,6 +187,7 @@ namespace NetCoreCMS.Web
             {
                 GlobalConfig.SetupConfig = SetupHelper.LoadSetup();
                 defaultCulture = new RequestCulture(GlobalConfig.SetupConfig.Language);
+                GlobalMessageRegistry.LoadMessagesFromStorage();
             }
 
             services.Configure<RouteOptions>(options =>

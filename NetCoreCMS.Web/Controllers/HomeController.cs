@@ -8,23 +8,23 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
+using System.Net;
+
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Utility;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authorization;
-using NetCoreCMS.Framework.Setup;
-using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
-using System;
 using Microsoft.Extensions.Localization;
+
 using NetCoreCMS.Framework.i18n;
-using System.Web;
-using System.Text;
-using System.Net;
-using System.Linq;
 using NetCoreCMS.Framework.Core.App;
+using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Messages;
 
 namespace NetCoreCMS.Web.Controllers
 {
@@ -191,9 +191,15 @@ namespace NetCoreCMS.Web.Controllers
 
         public ActionResult Temp()
         {
-            var nccTranslator = new NccTranslator<HomeController>(CurrentLanguage);            
-            ViewBag.Name = nccTranslator["Name"];
-
+            GlobalMessageRegistry.RegisterMessage(
+                new GlobalMessage() {
+                    For = GlobalMessage.MessageFor.Both,
+                    MessageId = Guid.NewGuid().ToString(),
+                    Registrater = "Web",
+                    Text = "Registered message from website",
+                    Type = GlobalMessage.MessageType.Error
+                }, new TimeSpan(0, 1, 0)
+            );
             return View();
         }
 
