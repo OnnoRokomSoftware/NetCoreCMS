@@ -4,7 +4,7 @@
 
 <div class="Featured">
     @{
-        var featured = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, "Featured");
+        var featured = ThemeHelper.GetWebsiteWidgets(CurrentLayout, "Featured");
         if (featured != null && featured.Count > 0)
         {
             <div style="width:100%;">

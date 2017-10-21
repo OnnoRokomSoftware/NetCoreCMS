@@ -424,7 +424,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         {
             var content = RenderToStringAsync(headViewFile, Model).Result;
             var themeSection = FireEvent(ThemeSection.Sections.Head,headViewFile, content, Model);
-            content = themeSection.Content;
+            content = themeSection.Content??"";
+            content += Environment.NewLine + $"<meta name=\"generator\" content=\"NetCoreCMS v{NccInfo.Version}\" />";
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }

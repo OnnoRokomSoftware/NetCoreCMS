@@ -2,7 +2,7 @@
     NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 
     var menusRight = ThemeHelper.GetMenus("RightColumn", CurrentLanguage);
-    var zoneRightWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, "RightSidebar");
+    var zoneRightWidgets = ThemeHelper.GetWebsiteWidgets(CurrentLayout, "RightSidebar");
 
     if (menusRight.Count > 0 || zoneRightWidgets.Count > 0)
     {

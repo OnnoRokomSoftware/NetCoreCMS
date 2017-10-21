@@ -44,7 +44,7 @@
         </div>
         <div class="topWidgetZone">
             @{
-                var zoneTopWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, ThemeResources.Zones.TopBar);
+                var zoneTopWidgets = ThemeHelper.GetWebsiteWidgets(CurrentLayout, ThemeResources.Zones.TopBar);
                 if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
                 {
                     <div style="width:100%;">

@@ -4,7 +4,7 @@
 <!-- Full Width Slider Start -->
 <div>
     @{
-        var fullWidthSlider = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, "FullWidthSlider");
+        var fullWidthSlider = ThemeHelper.GetWebsiteWidgets(CurrentLayout, "FullWidthSlider");
         if (fullWidthSlider != null && fullWidthSlider.Count > 0)
         {
             <div class="fullWidthSlider">

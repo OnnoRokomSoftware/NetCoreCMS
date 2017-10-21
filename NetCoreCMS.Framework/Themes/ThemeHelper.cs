@@ -352,7 +352,7 @@ namespace NetCoreCMS.Framework.Themes
         #endregion
 
         #region Widgets
-        public static List<NccWebSiteWidget> GetLayoutZoneWebsiteWidgets(string layout, string zone)
+        public static List<NccWebSiteWidget> GetWebsiteWidgets(string layout, string zone)
         {
             return GlobalConfig.WebSiteWidgets.Where(x => x.LayoutName == layout && x.Zone == zone).ToList();
         }
