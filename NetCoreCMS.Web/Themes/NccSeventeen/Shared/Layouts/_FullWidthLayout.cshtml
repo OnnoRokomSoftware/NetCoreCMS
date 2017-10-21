@@ -17,6 +17,8 @@
     @RenderSection("Styles", required: false)
 </head>
 <body id="body">
+    <!-- Container for showing global messages. -->
+    @NccRenderGlobalMessages()
     <!-- Loading -->
     @NccRenderLoadingMaskContainer()
     <!-- Header -->
@@ -30,12 +32,7 @@
         <div class="col-md-12">
             <!-- Featured Start -->
             @NccRenderFeaturedSection()
-
-            <!-- Container for showing global messages. -->
-            <div class="row">
-                @NccRenderGlobalMessageContainer()
-            </div>
-
+            
             @NccRenderBody()
         </div>
     </div>

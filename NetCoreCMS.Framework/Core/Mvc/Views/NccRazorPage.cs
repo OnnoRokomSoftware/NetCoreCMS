@@ -614,11 +614,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                                         $('#'+id).remove();
                                     }
                                     else{
-                                        Ncc.ShowError('Could not remove');
+                                        NccAlert.ShowError('Could not remove');
                                     }
                                 },
                                 error:function(){
-                                    Ncc.ShowError('Could not remove');
+                                    NccAlert.ShowError('Could not remove');
                                 }
                             }); 
                         });
