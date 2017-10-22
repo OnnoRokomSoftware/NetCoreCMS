@@ -12,7 +12,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccWebSiteWidget : BaseModel, IBaseModel<long>
+    public class NccWebSiteWidget : BaseModel<long>
     {   
         public string ThemeId { get; set; }
         public string ModuleId { get; set; }

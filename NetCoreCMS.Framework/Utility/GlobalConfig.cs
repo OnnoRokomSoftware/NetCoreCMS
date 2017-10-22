@@ -20,6 +20,7 @@ using System;
 using NetCoreCMS.Framework.Setup;
 using System.Collections;
 using Microsoft.AspNetCore.Http;
+using NetCoreCMS.Framework.Core.Mvc.Extensions;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -67,6 +68,15 @@ namespace NetCoreCMS.Framework.Utility
             {
                 Widgets.AddRange(item.Widgets);
             }
+        }
+
+        public static long GetCurrentUserId()
+        {
+            HttpContextAccessor hca = new HttpContextAccessor();
+            long? userId = hca.HttpContext?.User?.GetUserId();
+            if (userId == null)
+                return 0;
+            return userId.Value;
         }
 
         public static string GetCurrentUserName()

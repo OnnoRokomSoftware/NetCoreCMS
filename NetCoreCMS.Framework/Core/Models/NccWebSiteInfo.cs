@@ -12,7 +12,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccWebSiteInfo : BaseModel, IBaseModel<long>
+    public class NccWebSiteInfo : BaseModel<long>
     {  
         //[Required]
         public string SiteTitle { get; set; }

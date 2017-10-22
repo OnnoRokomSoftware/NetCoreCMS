@@ -13,7 +13,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccMenuItem : BaseModel, IBaseModel<long>
+    public class NccMenuItem : BaseModel<long>
     { 
         public NccMenuItem()
         {

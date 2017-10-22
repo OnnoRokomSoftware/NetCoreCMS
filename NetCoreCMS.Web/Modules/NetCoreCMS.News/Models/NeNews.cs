@@ -11,22 +11,17 @@
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Modules.News.Models
 {
-    public class NeNews : BaseModel, IBaseModel<long>
+    public class NeNews : BaseModel<long>
     {
         public NeNews()
         {
-            CreationDate = DateTime.Now;
-            ModificationDate = DateTime.Now;
-            CreateBy = ModifyBy = BaseModel.GetCurrentUserId();
-            Status = EntityStatus.Active;
-            VersionNumber = 1;
             Order = 1;
             PublishDate = DateTime.Now;
             ExpireDate = DateTime.Now.AddDays(7);
+            CategoryList = new List<NeNewsCategory>();
         } 
 
         public string Content { get; set; }

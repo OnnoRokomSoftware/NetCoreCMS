@@ -228,7 +228,7 @@ namespace NetCoreCMS.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {    
-            app.UseNetCoreCms(env, _serviceProvider, loggerFactory);
+            app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
             app.UseNccRoutes(env, _serviceProvider, loggerFactory); 
         }
     }

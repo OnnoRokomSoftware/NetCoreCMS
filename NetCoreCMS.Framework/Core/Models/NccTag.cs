@@ -13,7 +13,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccTag : BaseModel, IBaseModel<long>
+    public class NccTag : BaseModel<long>
     { 
         public NccTag()
         {

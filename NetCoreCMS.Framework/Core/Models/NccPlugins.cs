@@ -13,7 +13,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPlugins : BaseModel, IBaseModel<long>
+    public class NccPlugins : BaseModel<long>
     { 
         public NccPlugins()
         {

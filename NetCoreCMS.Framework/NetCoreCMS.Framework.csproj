@@ -16,6 +16,10 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DocumentationFile>bin\Debug\netcoreapp2.0\NetCoreCMS.Framework.xml</DocumentationFile>
+  </PropertyGroup>
+  
   <ItemGroup>
     <None Remove="Resources\NetCoreCMS.Framework.i18n.SharedResource.bn.lang" />
   </ItemGroup>

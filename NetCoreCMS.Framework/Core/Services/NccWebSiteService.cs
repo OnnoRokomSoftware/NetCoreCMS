@@ -15,6 +15,7 @@ using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using System.Linq;
 using System;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -126,7 +127,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 oldWsInfo.FaviconUrl = item.FaviconUrl;
                 //oldWsInfo.Language = item.Language;
                 oldWsInfo.ModificationDate = modificationDate;
-                oldWsInfo.ModifyBy = BaseModel.GetCurrentUserId();
+                oldWsInfo.ModifyBy = GlobalConfig.GetCurrentUserId();
                 oldWsInfo.Name = item.Name;
                 oldWsInfo.PrivacyPolicyUrl = item.PrivacyPolicyUrl;
                 oldWsInfo.SiteLogoUrl = item.SiteLogoUrl;

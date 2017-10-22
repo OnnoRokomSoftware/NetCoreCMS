@@ -7,7 +7,9 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
+using System;
+using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -30,10 +32,6 @@ using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
@@ -84,7 +82,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
             return services;
         }
          
-        public static IApplicationBuilder UseNetCoreCms(this IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
+        public static IApplicationBuilder UseNetCoreCMS(this IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
 

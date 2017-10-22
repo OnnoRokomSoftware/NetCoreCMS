@@ -14,7 +14,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPost : BaseModel, IBaseModel<long>
+    public class NccPost : BaseModel<long>
     {
         public NccPost()
         { 
