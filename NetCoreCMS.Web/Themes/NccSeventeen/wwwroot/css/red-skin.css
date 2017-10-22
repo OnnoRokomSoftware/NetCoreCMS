@@ -157,3 +157,10 @@ footer a {
 .label-info {
     background-color: #f7160b;
 }
+.panel-primary {
+    border-color: #ad140c;
+}
+
+    .panel-primary .panel-heading {
+        background-color: #ad140c;
+    }

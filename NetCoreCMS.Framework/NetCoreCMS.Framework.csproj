@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
     <PackageId>NetCoreCMS.Framework</PackageId>
-    <PackageVersion>1.0.5</PackageVersion>
+    <PackageVersion>1.0.6</PackageVersion>
     <Authors>NetCoreCMS</Authors>
     <Description>Application framework for NetCoreCMS</Description>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
