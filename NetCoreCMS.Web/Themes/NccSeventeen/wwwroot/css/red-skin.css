@@ -1,41 +1,41 @@
 ﻿/*
-    Main color deep         : #1b7936
-    Main color light        : #348e4e
-    Main color very light   : #5fcf80
+    Main color deep         : #ad140c
+    Main color light        : #d81910
+    Main color very light   : #f7160b
 
     Head txt color          : #FFF
     Head sub txt color      : #DDD
     Head link color         : #FFF
     
     Body txt color          : #000
-    Body link color         : #1b7936
+    Body link color         : #ad140c
     
     Foot txt color          : #FFF
     Foot link color         : #DDD
 */
 
 body h1 {
-    color: #1b7936;
+    color: #ad140c;
 }
 
 body h2 {
-    color: #1b7936;
+    color: #ad140c;
 }
 
 body h3 {
-    color: #1b7936;
+    color: #ad140c;
 }
 
 body h4 {
-    color: #1b7936;
+    color: #ad140c;
 }
 
 body h5 {
-    color: #1b7936;
+    color: #ad140c;
 }
 
 body h6 {
-    color: #1b7936;
+    color: #ad140c;
 }
 
 body {
@@ -44,12 +44,12 @@ body {
 }
 
     body a {
-        color: #1b7936;
+        color: #ad140c;
     }
 
 .topHeader {
     /*background: var(--top-header-bg);*/
-    background-color: #1b7936;
+    background-color: #ad140c;
     color: #FFF;
 }
 
@@ -66,8 +66,8 @@ body {
 }
 
 .navbar-default {
-    background-color: #348e4e !important;
-    border-color: #348e4e;
+    background-color: #d81910 !important;
+    border-color: #d81910;
 }
 
     .navbar-default a {
@@ -75,15 +75,15 @@ body {
     }
 
         .navbar-default a:hover {
-            background-color: #1b7936;
+            background-color: #ad140c;
         }
 
     .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-        background-color: #1b7936;
+        background-color: #ad140c;
     }
 
     .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
-        background-color: #1b7936;
+        background-color: #ad140c;
     }
 
 .navbar-brand {
@@ -99,37 +99,37 @@ body {
     }
 
 .dropdown-menu {
-    background-color: #348e4e;
+    background-color: #d81910;
 }
 
     .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
-        background-color: #348e4e;
+        background-color: #d81910;
     }
 
     .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-        background-color: #1b7936;
+        background-color: #ad140c;
     }
 
 .selectLanguage select {
-    background-color: #1b7936;
-    border-color: #348e4e;
+    background-color: #ad140c;
+    border-color: #d81910;
     color: #FFF;
 }
 
     .selectLanguage select:hover {
-        background-color: #1b7936;
-        border-color: #348e4e;
+        background-color: #ad140c;
+        border-color: #d81910;
         color: #FFF;
     }
 
     .selectLanguage select option {
-        background-color: #1b7936;
-        border-color: #348e4e;
+        background-color: #ad140c;
+        border-color: #d81910;
         color: #FFF;
     }
 
 footer {
-    background-color: #348e4e;
+    background-color: #d81910;
     color: #FFF;
 }
     footer h4 {
@@ -140,7 +140,7 @@ footer {
         color: #DDD;
     }
 .footer-bottom {
-    background-color: #1b7936;
+    background-color: #ad140c;
 }
 
 footer a {
@@ -152,8 +152,8 @@ footer a {
 
 
 .label-primary{
-    background-color:#1b7936;
+    background-color:#ad140c;
 }
 .label-info {
-    background-color: #5fcf80;
+    background-color: #f7160b;
 }

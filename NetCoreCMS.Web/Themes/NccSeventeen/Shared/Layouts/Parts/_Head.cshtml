@@ -2,7 +2,13 @@
     BodyWidth = 12;
     NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
-
+@*<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<META HTTP-EQUIV="EXPIRES" CONTENT="@DateTime.Now.ToString()">*@
+<meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0" />
+<meta http-equiv="cache-control" content="max-age=0" />
+<meta http-equiv="expires" content="0" />
+<meta http-equiv="expires" content="@DateTime.Now.ToString()" />
+<meta http-equiv="pragma" content="no-cache" />
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -32,13 +38,14 @@ else
 @{
     ThemeHelper.RegisterCss("/css/ncc-common.css", NccResource.IncludePosition.Header);
     ThemeHelper.RegisterCss("/lib/css-loader/dist/css-loader.css", NccResource.IncludePosition.Header);
-    ThemeHelper.RegisterCss("/Themes/NccSeventeen/css/site.css", NccResource.IncludePosition.Header);
-    ThemeHelper.RegisterCss(string.Concat("/Themes/NccSeventeen/css/", ThemeHelper.ActiveTheme.Settings["style"]), NccResource.IncludePosition.Header, string.Concat("v=",ThemeHelper.ActiveTheme.Settings["version"]));
-
+    ThemeHelper.RegisterCss("/Themes/NccSeventeen/css/site.css", NccResource.IncludePosition.Header, DateTime.Now.Ticks.ToString());
+    if (ThemeHelper.ActiveTheme.Settings["style"] != null && !string.IsNullOrEmpty(ThemeHelper.ActiveTheme.Settings["style"].ToString()))
+    {
+        ThemeHelper.RegisterCss(string.Concat("/Themes/NccSeventeen/css/", ThemeHelper.ActiveTheme.Settings["style"]), NccResource.IncludePosition.Header, ThemeHelper.ActiveTheme.Settings["version"].ToString());
+    }
     ThemeHelper.RegisterResource(NccResource.JQuery);
     ThemeHelper.RegisterResource(NccResource.Bootstrap);
 
     ThemeHelper.RegisterJs("/js/ncc-common.min.js", NccResource.IncludePosition.Header);
     ThemeHelper.RegisterJs("/lib/notifyjs/notify.min.js", NccResource.IncludePosition.Header);
 }
-
