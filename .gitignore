@@ -16,3 +16,4 @@ config
 .vs
 __Logs
 node_modules
+/NetCoreCMS.Web/Data/GlobalMessages/global_message_db.json
