@@ -87,9 +87,28 @@ namespace NetCoreCMS.Framework.Themes
                 Version = version
             };
 
-            if(_nccResources.Where(x=>x.FilePath.ToLower() == resourcePath.ToLower()).Count() == 0)
+            var old = _nccResources.Where(x => x.FilePath.ToLower() == resourcePath.ToLower()).FirstOrDefault();
+
+            if (old != null)
+            {   
+                if(old.Version != version)
+                {
+                    _nccResources.Remove(old);
+                    _nccResources.Add(nccResource);
+                }                
+            }
+            else
             {
                 _nccResources.Add(nccResource);
+            }
+        }
+
+        private static void UnRegisterNccResource(NccResource.ResourceType type, string resourcePath)
+        {
+            var resource = _nccResources.Where(x => x.FilePath.ToLower() == resourcePath.ToLower()).FirstOrDefault();
+            if (resource != null)
+            {   
+                _nccResources.Remove(resource);
             }
         }
 
