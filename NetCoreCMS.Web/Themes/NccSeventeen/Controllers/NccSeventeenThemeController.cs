@@ -19,6 +19,8 @@ namespace Default.Controllers
 {
     public class NccSeventeenThemeController : NccController
     {
+        Dictionary<string, string> style = new Dictionary<string, string>() { { "blue-skin.css", "Blue" }, { "green-skin.css", "Green" }, { "orange-skin.css", "Orange" }, { "red-skin.css", "Red" }, { "white-skin.css", "White" } };
+
         public NccSeventeenThemeController()
         {
 
@@ -26,14 +28,16 @@ namespace Default.Controllers
 
         public ActionResult Index()
         {
-            Dictionary<string, string> style = new Dictionary<string, string>() { { "blue-skin.css", "Blue" }, { "green-skin.css", "Green" }, { "orange-skin.css", "Orange" }, { "red-skin.css", "Red" }, { "white-skin.css", "White" } };
-
             ViewBag.style = new SelectList(style, "Key", "Value", ThemeHelper.ActiveTheme.Settings["style"]);
             return View();
         }
         [HttpPost]
         public ActionResult Index(string[] key, string[] value)
         {
+            foreach (var item in style)
+            {
+                ThemeHelper.UnRegisterResource(NccResource.ResourceType.CssFile, string.Concat("/Themes/NccSeventeen/css/", item.Value));
+            }
             double version = 1.0;
             try
             {
@@ -41,7 +45,7 @@ namespace Default.Controllers
                 version += 0.1;
                 ThemeHelper.ActiveTheme.Settings.Remove("version");
             }
-            catch(Exception ex) { }
+            catch (Exception ex) { }
             ThemeHelper.ActiveTheme.Settings.Add("version", version);
 
             for (int i = 0; i < key.Length; i++)
