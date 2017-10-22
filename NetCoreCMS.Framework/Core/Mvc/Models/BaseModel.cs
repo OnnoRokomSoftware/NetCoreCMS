@@ -46,6 +46,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
             if (userId == null)
                 return 0;
             return userId.Value;
-        }
+        } 
     }
 }

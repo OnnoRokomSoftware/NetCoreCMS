@@ -162,12 +162,12 @@
                                         <hr />
                                         for (var i = 0; i < item.PostDetails.Count; i++)
                                         {
-                                            <a asp-controller="@controllerName" asp-action="Details" asp-route-slug="@item.PostDetails[i].Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PostDetails[i].Language</a>
+                                            <a href="/@item.PostDetails[i].Language/Post/@item.PostDetails[i].Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PostDetails[i].Language</a>
                                         }
                                     }
                                     else
                                     {
-                                        <a asp-controller="@controllerName" asp-action="Details" asp-route-slug="@item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" target="_blank">
+                                        <a href="/Post/@item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" target="_blank">
                                             View-@item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Language
                                         </a>
                                     }

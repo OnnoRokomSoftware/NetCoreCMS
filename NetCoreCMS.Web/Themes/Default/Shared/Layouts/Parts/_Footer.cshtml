@@ -4,7 +4,7 @@
         <div class="row">
             @{
                 var menusFooter = ThemeHelper.GetMenus(ThemeResources.MenuLocation.Footer, CurrentLanguage);
-                var zoneFooterWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, ThemeResources.Zones.Footer);
+                var zoneFooterWidgets = ThemeHelper.GetWebsiteWidgets(CurrentLayout, ThemeResources.Zones.Footer);
 
                 if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
                 {

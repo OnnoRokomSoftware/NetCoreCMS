@@ -32,12 +32,12 @@
                         {
                             for (var j = 0; j < Model.PageDetails.Count; j++)
                             {
-                                <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@Model.PageDetails[j].Slug" target="_blank">View-@Model.PageDetails[j].Language</a><span> | </span>
+                                <a href="/@Model.PageDetails[j].Language/@Model.PageDetails[j].Slug"  target="_blank">View-@Model.PageDetails[j].Language</a><span> | </span>
                             }
                         }
                         else
                         {
-                            <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@Model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" target="_blank">View-@Model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Language</a><span> | </span>
+                            <a href="/@Model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" target="_blank">View-@Model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Language</a><span> | </span>
                         }
                         @*<a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@Model.Slug" target="_blank" class="btn btn-outline btn-info btn-xs">View</a>*@
                         <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>

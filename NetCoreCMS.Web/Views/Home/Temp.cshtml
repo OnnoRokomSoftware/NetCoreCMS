@@ -4,12 +4,6 @@
 
 @{
     ViewData["Title"] = "About";
-    var lang = TempData["CurrentLanguage"].ToString();
-    var _T = new NccTranslator<SharedResource>(lang);
+     
 }
-<h2>@ViewData["Title"]</h2>
-<h3>@ViewBag.Name</h3>
-
-<h4>@_T["Type"]</h4>
-<h4>@_T["FileName"]</h4>
-<p>Use this area to provide additional information.</p>
+ 

@@ -19,6 +19,7 @@ using NetCoreCMS.Framework.Themes;
 using System;
 using NetCoreCMS.Framework.Setup;
 using System.Collections;
+using Microsoft.AspNetCore.Http;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -28,6 +29,7 @@ namespace NetCoreCMS.Framework.Utility
         {
             
         }
+
         public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<IModule> Modules { get; set; } = new List<IModule>();
@@ -65,6 +67,13 @@ namespace NetCoreCMS.Framework.Utility
             {
                 Widgets.AddRange(item.Widgets);
             }
+        }
+
+        public static string GetCurrentUserName()
+        {
+            HttpContextAccessor hca = new HttpContextAccessor();
+            string userName = hca.HttpContext?.User?.Identity.Name;
+            return userName;
         }
     }
 }

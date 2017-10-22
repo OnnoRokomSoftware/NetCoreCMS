@@ -23,6 +23,9 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
 
 using NetCoreCMS.Framework.Core.Events.Themes;
 using NetCoreCMS.Framework.Themes;
+using NetCoreCMS.Framework.Core.Messages;
+using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -421,7 +424,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         {
             var content = RenderToStringAsync(headViewFile, Model).Result;
             var themeSection = FireEvent(ThemeSection.Sections.Head,headViewFile, content, Model);
-            content = themeSection.Content;
+            content = themeSection.Content??"";
+            content += Environment.NewLine + $"<meta name=\"generator\" content=\"NetCoreCMS v{NccInfo.Version}\" />";
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
         }
@@ -442,8 +446,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             content = themeSection.Content;
             ViewContext.Writer.WriteLine(content);
             return string.Empty;
-        } 
-
+        }
+        
         public string NccRenderHeader(string headerViewFile = "Parts/_Header")
         {
             var content =  RenderToStringAsync(headerViewFile, Model).Result;
@@ -540,13 +544,91 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             return string.Empty;
         }
 
-        public string NccRenderGlobalMessageContainer()
+        public string NccRenderGlobalMessages()
         {
-            var globalMessageContainer = "<div id=\"globalMessageContainer\" class=\"ncc-global-message\"></div>";
+            var globalMessageContainer = "";
+            var content = GetGlobalMessages();
+            if(string.IsNullOrEmpty(content) == false)
+            {
+                globalMessageContainer = "<div id=\"globalMessageContainer\" class=\"ncc-global-message\">" + content + "</div>";
+            }
             var themeSection = FireEvent(ThemeSection.Sections.GlobalMessageContainer, CurrentLayout, globalMessageContainer, Model);
             globalMessageContainer = themeSection.Content;
             ViewContext.Writer.WriteLine(globalMessageContainer);
             return string.Empty;            
+        }
+
+        private string GetGlobalMessages()
+        {
+            var content = "";
+            var messages = GlobalMessageRegistry.GetMessages(GlobalMessage.MessageFor.Site);
+            foreach (var item in messages)
+            {
+                var cssClass = "";
+                if(item.Type == GlobalMessage.MessageType.Error)
+                {
+                    cssClass = "alert alert-danger";
+                }
+                else if(item.Type == GlobalMessage.MessageType.Info)
+                {
+                    cssClass = "alert alert-info";
+                }
+                else if(item.Type == GlobalMessage.MessageType.Success)
+                {
+                    cssClass = "alert alert-success";
+                }
+                else if(item.Type == GlobalMessage.MessageType.Warning)
+                {
+                    cssClass = "alert alert-warning";
+                }
+
+                var close = "";
+                if (item.ForUsers.Count > 0)
+                {
+                    var user = GlobalConfig.GetCurrentUserName();
+                    if (string.IsNullOrEmpty(user) == false && item.ForUsers.Contains(user))
+                    {
+                        close = $"<a href='#' data-ncc-global-message-id='{item.MessageId}' class='close-ncc-global-message pull-right'>X</a>";
+                        content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{item.Text} {close}</div>";
+                    }
+                }
+                else
+                {
+                    content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{item.Text} {close}</div>";
+                }
+                
+            }
+
+            if (string.IsNullOrEmpty(content) == false)
+            {
+                content += "<script>";
+                content += @"
+                    $(document).ready(function(){
+                        $('.close-ncc-global-message').on('click',function(){
+                            var id = $(this).attr('data-ncc-global-message-id');  
+                            $.ajax({
+                                url:'/CmsHome/RemoveGlobalMessage',
+                                method:'POST',
+                                data:{id:id},
+                                success: function(rsp){
+                                    if(rsp.isSuccess){
+                                        $('#'+id).remove();
+                                    }
+                                    else{
+                                        NccAlert.ShowError('Could not remove');
+                                    }
+                                },
+                                error:function(){
+                                    NccAlert.ShowError('Could not remove');
+                                }
+                            }); 
+                        });
+                    });
+                ";
+                content += "</script>";
+            }
+
+            return content;
         }
 
         private string MakeResourceList(NccResource.ResourceType type, NccResource.IncludePosition position)

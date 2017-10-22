@@ -1,9 +1,9 @@
 ﻿.ncc-global-message {
-    left:0px;
-    top:0px;
-    margin-top: 5px;
-    position: fixed;
-    width:100%;
+    left: 20px;
+    top: 0px;
+    margin-top: 4px;
+    position: relative;
+    width: 97%;
 }
 
 #messageContainer {
