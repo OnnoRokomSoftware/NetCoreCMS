@@ -14,7 +14,8 @@ using System.Text;
 
 namespace NetCoreCMS.Themes.NccSeventeen.Lib
 {
-    public class ThemeTranslation
+    public class ThemeResources
     {
+
     }
 }

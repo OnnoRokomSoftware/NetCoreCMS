@@ -1,5 +1,14 @@
-﻿.home{
-    border:solid 1px;
+﻿body {
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Slab', serif;
+}
+footer {
+    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto Slab', serif;
+}
+
+.home {
+    border: solid 1px;
 }
 
 /*Side design*/
@@ -36,9 +45,11 @@
         }
     .topLogo h4 {
         padding-left: 100px;
-        color: gray;
     }
 
+.navbar {
+    border-radius: 0px;
+}
 @media only screen and (max-width: 766px) {
     .topMenu {
         display: none;
@@ -64,7 +75,6 @@
 
         .topLogo h4 {
             padding-left: initial;
-            color: gray;
         }
 }
 
@@ -77,11 +87,27 @@
     margin-top: -20px;
     margin-bottom: 20px;
 }
+
+footer {
+    margin-top: 15px;
+}
+.footer-content {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.footer-bottom {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
 .copyright {
     float: left;
 }
 .poweredby{
     float:right;
     text-align:right;
+}
+
+.two-column-div {
+    column-count: 2;
 }
 /*site design*/
