@@ -111,11 +111,16 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 return t => (IEnumerable<object>)c.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
             });
 
-            foreach (var module in GlobalConfig.Modules)
+            foreach (var module in GlobalConfig.GetActiveModules())
             {
                 builder.RegisterAssemblyTypes(module.Assembly).AsImplementedInterfaces();
                 services.AddMediatR(module.Assembly);
             }
+
+            //Added into MediatR because default handlers are decleard at NetCoreCMS.Framework library.
+            var coreFrameworkAssembly = typeof(NccInfo).Assembly;
+            builder.RegisterAssemblyTypes(coreFrameworkAssembly).AsImplementedInterfaces();
+            services.AddMediatR(coreFrameworkAssembly);
 
             builder.RegisterInstance(configuration);
             builder.RegisterInstance(hostingEnvironment);
