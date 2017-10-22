@@ -18,6 +18,10 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Content { get; set; }
 
         public NccPost Post { get; set; }
-        public NccUser Author { get; set; } 
+        public NccUser Author { get; set; }
+
+        public string AuthorName { get; set; }
+        public string Email { get; set; }
+        public string WebSite { get; set; }
     }
 }
