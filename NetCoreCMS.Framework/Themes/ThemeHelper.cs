@@ -42,7 +42,7 @@ namespace NetCoreCMS.Framework.Themes
             RegisterNccResource(NccResource.ResourceType.JsFile, resourcePath, position, version, order, minify);
         }
 
-        public static void UnRegister(NccResource.ResourceType type, string resourcePath)
+        public static void UnRegisterResource(NccResource.ResourceType type, string resourcePath)
         {
             UnRegisterNccResource(type,resourcePath);
         }
