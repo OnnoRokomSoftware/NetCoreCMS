@@ -36,7 +36,7 @@ namespace Default.Controllers
         {
             foreach (var item in style)
             {
-                ThemeHelper.UnRegisterResource(NccResource.ResourceType.CssFile, string.Concat("/Themes/NccSeventeen/css/", item.Value));
+                ThemeHelper.UnRegisterResource(NccResource.ResourceType.CssFile, string.Concat("/Themes/NccSeventeen/css/", item.Key));
             }
             double version = 1.0;
             try
