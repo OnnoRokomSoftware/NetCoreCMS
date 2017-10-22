@@ -24,7 +24,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
         {
             app.UseMvc(routes =>
             {
-                if (SetupHelper.IsAdminCreateComplete && GlobalConfig.WebSite.IsMultiLangual)
+                if (SetupHelper.IsAdminCreateComplete && GlobalContext.WebSite.IsMultiLangual)
                 {
                     routes.MapRoute(
                         name: "MultiLangAnyControlerAction",

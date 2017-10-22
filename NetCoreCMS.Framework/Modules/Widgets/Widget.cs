@@ -72,7 +72,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                 langOptions += "<option value='" + item.TwoLetterISOLanguageName + "'>" + item.DisplayName + "</option>";
             }
             var languageInput = "";
-            if (GlobalConfig.WebSite.IsMultiLangual == true)
+            if (GlobalContext.WebSite.IsMultiLangual == true)
             {
                 languageInput = @"<div class='form-group'>
                                     <label class='col-sm-3 control-label'>Language</label>

@@ -97,7 +97,7 @@ namespace NetCoreCMS.Framework.Themes
         {
             try
             {
-                var infoFileLocation = Path.Combine(GlobalConfig.ContentRootPath, NccInfo.ThemeFolder, themeName,ThemeInfoFileName);
+                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, themeName,ThemeInfoFileName);
                 if (File.Exists(infoFileLocation))
                 {
                     var themeInfoFileContent = File.ReadAllText(infoFileLocation);
@@ -138,7 +138,7 @@ namespace NetCoreCMS.Framework.Themes
         {
             try
             {
-                var infoFileLocation = Path.Combine(GlobalConfig.ContentRootPath, NccInfo.ThemeFolder, themeName, ThemeInfoFileName);
+                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, themeName, ThemeInfoFileName);
                 if (File.Exists(infoFileLocation))
                 {
                     var themeInfoFileContent = File.ReadAllText(infoFileLocation);
@@ -171,7 +171,7 @@ namespace NetCoreCMS.Framework.Themes
         {
             try
             {
-                var infoFileLocation = Path.Combine(GlobalConfig.ContentRootPath, NccInfo.ThemeFolder, "Default", ThemeInfoFileName);
+                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, "Default", ThemeInfoFileName);
                 if (File.Exists(infoFileLocation))
                 {
                     var themeInfoFileContent = File.ReadAllText(infoFileLocation);

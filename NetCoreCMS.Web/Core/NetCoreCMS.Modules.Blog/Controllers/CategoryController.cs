@@ -66,7 +66,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
             NccCategory category = new NccCategory();
 
             NccCategoryDetails nccCategoryDetails = new NccCategoryDetails();
-            nccCategoryDetails.Language = GlobalConfig.WebSite.Language;
+            nccCategoryDetails.Language = GlobalContext.WebSite.Language;
             category.CategoryDetails.Add(nccCategoryDetails);
 
             if (Id > 0)
@@ -74,7 +74,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
                 category = _nccCategoryService.Get(Id);
             }
 
-            if (GlobalConfig.WebSite.IsMultiLangual)
+            if (GlobalContext.WebSite.IsMultiLangual)
             {
                 foreach (var item in SupportedCultures.Cultures)
                 {
@@ -103,7 +103,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
                 bool isSuccess = true;
 
                 #region For default language
-                var defaultCategoryDetails = model.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                var defaultCategoryDetails = model.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                 if (defaultCategoryDetails == null)
                 {
                     isSuccess = false;
@@ -142,7 +142,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
 
                 #region Check validation for other languages 
                 List<NccCategoryDetails> deletedList = new List<NccCategoryDetails>();
-                foreach (var item in model.CategoryDetails.Where(x => x.Language != GlobalConfig.WebSite.Language).ToList())
+                foreach (var item in model.CategoryDetails.Where(x => x.Language != GlobalContext.WebSite.Language).ToList())
                 {
                     if (item.Id == 0 && string.IsNullOrEmpty(item.Title) && string.IsNullOrEmpty(item.Slug) && string.IsNullOrEmpty(item.Name))
                     {

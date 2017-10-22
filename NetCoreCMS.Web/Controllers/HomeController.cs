@@ -46,12 +46,12 @@ namespace NetCoreCMS.Web.Controllers
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                if(GlobalConfig.SetupConfig == null)
+                if(GlobalContext.SetupConfig == null)
                 {
-                    GlobalConfig.SetupConfig = SetupHelper.LoadSetup();
+                    GlobalContext.SetupConfig = SetupHelper.LoadSetup();
                 }
 
-                var setupConfig = GlobalConfig.SetupConfig;
+                var setupConfig = GlobalContext.SetupConfig;
 
                 if (setupConfig == null)
                 {

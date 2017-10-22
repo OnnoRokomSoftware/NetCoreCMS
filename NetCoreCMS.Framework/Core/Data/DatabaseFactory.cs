@@ -56,7 +56,7 @@ namespace NetCoreCMS.Framework.Core.Data
                     else
                         return string.Format(_pgSqlConString, dbInfo.DatabaseHost, dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                 case DatabaseEngine.SqLite:
-                    var path = GlobalConfig.ContentRootPath;
+                    var path = GlobalContext.ContentRootPath;
                     return string.Format(_sqLiteConString, Path.Combine(path,"Data"), "NetCoreCMS.Database.SqLite");
                 default:
                     return "";
@@ -77,7 +77,7 @@ namespace NetCoreCMS.Framework.Core.Data
                 case DatabaseEngine.PgSql:
                     break;
                 case DatabaseEngine.SqLite:
-                    string path = GlobalConfig.ContentRootPath;
+                    string path = GlobalContext.ContentRootPath;
                     path = Path.Combine(path, "Data");
                     string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
                     using (var dbFile = File.Create(dbFileName)) { };                    

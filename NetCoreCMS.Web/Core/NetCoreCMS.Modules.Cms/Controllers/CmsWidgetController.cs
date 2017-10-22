@@ -44,7 +44,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         public ActionResult Index(string sLayout = "")
         {
             ViewBag.sLayout = "";
-            ViewBag.Modules = GlobalConfig.GetActiveModules();
+            ViewBag.Modules = GlobalContext.GetActiveModules();
             ViewBag.Theme = ThemeHelper.ActiveTheme;
             if (ThemeHelper.ActiveTheme.Layouts.Where(x => x.Name == sLayout).Count() > 0)
             {
@@ -71,7 +71,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             };
 
             _nccWebSiteWidgetService.Save(nccWebSiteWidget);
-            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
+            GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
 
             return Json(new ApiResponse() { IsSuccess=true, Message="Save Successful.", Data = nccWebSiteWidget });
         }
@@ -80,7 +80,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         public JsonResult RemoveZoneWidget(string module, string theme, string layout, string zone, string widget)
         {
             _nccWebSiteWidgetService.RemoveByModuleThemeLayoutZoneWidget(module,theme,layout,zone,widget);
-            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
+            GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
         }
 
@@ -92,7 +92,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             {
                 Json(new ApiResponse() { IsSuccess = false, Message = "Remove Failed." });
             }
-            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
+            GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
         }
 
@@ -108,7 +108,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 _nccWebSiteWidgetService.DownOrder(webSiteWidgetId, oldOrder);
             }
             
-            GlobalConfig.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x=>x.WidgetOrder).ToList();
+            GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x=>x.WidgetOrder).ToList();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Order update Successful." });
         }
         

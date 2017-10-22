@@ -33,7 +33,7 @@ namespace NetCoreCMS.Framework.Utility
 
         private static string CreateLanguageEnabledUrl(string currentLanguage, string url)
         {
-            if (GlobalConfig.WebSite.IsMultiLangual == true)
+            if (GlobalContext.WebSite.IsMultiLangual == true)
             {  
                 var urlPrefix = "/";
                 var urlSuffix = url;

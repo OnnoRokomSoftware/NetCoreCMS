@@ -84,7 +84,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             page.PageStatus = NccPageStatus.Draft;
 
             NccPageDetails nccPageDetails = new NccPageDetails();
-            nccPageDetails.Language = GlobalConfig.WebSite.Language;
+            nccPageDetails.Language = GlobalContext.WebSite.Language;
             page.PageDetails.Add(nccPageDetails);
 
             if (Id > 0)
@@ -92,7 +92,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 page = _pageService.Get(Id);
             }
 
-            if (GlobalConfig.WebSite.IsMultiLangual)
+            if (GlobalContext.WebSite.IsMultiLangual)
             {
                 foreach (var item in SupportedCultures.Cultures)
                 {
@@ -122,7 +122,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 bool isSuccess = true;
 
                 #region For default language
-                var defaultPageDetails = model.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                var defaultPageDetails = model.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                 if (defaultPageDetails == null)
                 {
                     isSuccess = false;
@@ -161,7 +161,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
                 #region Check validation for other languages 
                 List<NccPageDetails> deletedList = new List<NccPageDetails>();
-                foreach (var item in model.PageDetails.Where(x => x.Language != GlobalConfig.WebSite.Language).ToList())
+                foreach (var item in model.PageDetails.Where(x => x.Language != GlobalContext.WebSite.Language).ToList())
                 {
                     if (item.Id == 0 && string.IsNullOrEmpty(item.Title) && string.IsNullOrEmpty(item.Slug) && string.IsNullOrEmpty(item.Content) && string.IsNullOrEmpty(item.MetaKeyword) && string.IsNullOrEmpty(item.MetaDescription))
                     {

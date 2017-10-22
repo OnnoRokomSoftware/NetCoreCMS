@@ -10,8 +10,6 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
-using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Models
@@ -22,7 +20,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         {
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
-            CreateBy = ModifyBy = GlobalConfig.GetCurrentUserId();
+            CreateBy = ModifyBy = GlobalContext.GetCurrentUserId();
             Status = EntityStatus.Active;
             VersionNumber = 1;
             Metadata = "";

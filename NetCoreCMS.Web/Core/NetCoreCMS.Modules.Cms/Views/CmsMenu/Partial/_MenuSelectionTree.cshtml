@@ -27,7 +27,7 @@
                     </select>
                 </div>
                 <div class="col-md-2">
-                    @if (GlobalConfig.WebSite.IsMultiLangual)
+                    @if (GlobalContext.WebSite.IsMultiLangual)
                     {
                         <select id="menuLanguage" class="form-control input-sm" asp-items="ViewBag.MenuLanguages"></select>
                     }

@@ -48,7 +48,7 @@
                         {
                             <tr>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.CategoryDetails.Count; i++)
                                         {
@@ -61,11 +61,11 @@
                                     }
                                     else
                                     {
-                                        <span>@item.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Name</span>
+                                        <span>@item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Name</span>
                                     }
                                 </td>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.CategoryDetails.Count; i++)
                                         {
@@ -78,7 +78,7 @@
                                     }
                                     else
                                     {
-                                        <span>@item.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug </span>
+                                        <span>@item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug </span>
                                     }
                                 </td>
                                 <td style="text-align:center;"><img src="@item.CategoryImage" style="max-width:300px;max-height:100px;" /></td>
@@ -116,7 +116,7 @@
                                     }
                                     <a asp-controller="@controllerName" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-xs btn-danger">Delete</a>
 
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.CategoryDetails.Count; i++)
                                         {
@@ -125,7 +125,7 @@
                                     }
                                     else
                                     {
-                                        <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@item.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" class="btn btn-xs btn-info btn-outline" target="_blank"><i class="fa fa-eye"></i> @GlobalConfig.WebSite.Language</a>
+                                        <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug" class="btn btn-xs btn-info btn-outline" target="_blank"><i class="fa fa-eye"></i> @GlobalContext.WebSite.Language</a>
                                     }
                                 </td>
                             </tr>

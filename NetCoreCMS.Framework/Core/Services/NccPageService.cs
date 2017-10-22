@@ -77,7 +77,7 @@ namespace NetCoreCMS.Framework.Core.Services
             if (oldEntity != null)
             {
                 oldEntity.ModificationDate = DateTime.Now;
-                oldEntity.ModifyBy = GlobalConfig.GetCurrentUserId();
+                oldEntity.ModifyBy = GlobalContext.GetCurrentUserId();
                 using (var txn = _entityRepository.BeginTransaction())
                 {
                     CopyNewData(entity, oldEntity);
@@ -114,7 +114,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public NccPage CopyNewData(NccPage copyFrom, NccPage copyTo)
         {
             copyTo.ModificationDate = copyFrom.ModificationDate;
-            copyTo.ModifyBy = GlobalConfig.GetCurrentUserId();
+            copyTo.ModifyBy = GlobalContext.GetCurrentUserId();
             copyTo.Name = copyFrom.Name;
             copyTo.Status = copyFrom.Status;
             copyTo.ModificationDate = copyFrom.ModificationDate;
@@ -137,11 +137,11 @@ namespace NetCoreCMS.Framework.Core.Services
                     isNew = true;
                     temp = new NccPageDetails();
                     temp.CreationDate = currentDateTime;
-                    temp.CreateBy = GlobalConfig.GetCurrentUserId();
+                    temp.CreateBy = GlobalContext.GetCurrentUserId();
                     temp.Language = item.Language;
                 }
                 temp.ModificationDate = currentDateTime;
-                temp.ModifyBy = GlobalConfig.GetCurrentUserId();
+                temp.ModifyBy = GlobalContext.GetCurrentUserId();
 
                 temp.Title = item.Title;
                 temp.Slug = item.Slug;

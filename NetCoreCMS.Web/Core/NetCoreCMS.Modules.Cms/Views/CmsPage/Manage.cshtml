@@ -48,7 +48,7 @@
                         {
                             <tr>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PageDetails.Count; i++)
                                         {
@@ -61,11 +61,11 @@
                                     }
                                     else
                                     {
-                                        <span>@item.PageDetails.Where(x=>x.Language== GlobalConfig.WebSite.Language).FirstOrDefault().Title</span>
+                                        <span>@item.PageDetails.Where(x=>x.Language== GlobalContext.WebSite.Language).FirstOrDefault().Title</span>
                                     }
                                 </td>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PageDetails.Count; i++)
                                         {
@@ -78,7 +78,7 @@
                                     }
                                     else
                                     {
-                                        <span>@item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug </span>
+                                        <span>@item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug </span>
                                     }
                                 </td>
                                 <td>
@@ -92,7 +92,7 @@
                                     }
                                 </td>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PageDetails.Count; i++)
                                         {
@@ -105,11 +105,11 @@
                                     }
                                     else
                                     {
-                                        <span>@item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().MetaKeyword </span>
+                                        <span>@item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().MetaKeyword </span>
                                     }
                                 </td>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PageDetails.Count; i++)
                                         {
@@ -122,7 +122,7 @@
                                     }
                                     else
                                     {
-                                        <span>@item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().MetaDescription </span>
+                                        <span>@item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().MetaDescription </span>
                                     }
                                 </td>
                                 <td>@item.CreateBy</td>
@@ -144,7 +144,7 @@
                                     @*<a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@item.PageDetails.FirstOrDefault().Slug" target="_blank">View</a> |*@
                                     <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="@item.Id" class="btn btn-outline btn-success btn-xs">Edit</a>
                                     <a asp-controller="@controllerName" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline btn-danger btn-xs">Delete</a>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PageDetails.Count; i++)
                                         {
@@ -155,7 +155,7 @@
                                     else
                                     {
                                         @*<a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Language</a>*@
-                                        <a href="/@item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug"  target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Language</a>
+                                        <a href="/@item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug"  target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language</a>
                                     }
                                 </td>
                             </tr>

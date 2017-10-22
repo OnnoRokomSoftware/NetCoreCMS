@@ -117,7 +117,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             {
                 module.ModuleStatus = status;
                 _moduleService.Update(module);
-                var loadedModule = GlobalConfig.Modules.Where(x => x.ModuleId == module.ModuleId).FirstOrDefault();
+                var loadedModule = GlobalContext.Modules.Where(x => x.ModuleId == module.ModuleId).FirstOrDefault();
                 if (loadedModule != null)
                 {
                     loadedModule.ModuleStatus = (int)status;
@@ -131,7 +131,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Inactive);
             if (entity != null)
             {
-                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+                var module = GlobalContext.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
                 if (module != null)
                 {
                     module.Inactivate();
@@ -156,7 +156,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
             if (entity != null)
             {
-                var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+                var module = GlobalContext.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
                 module.Install(_settingsService, ExecuteQuery);
                 module.ModuleStatus = (int)NccModule.NccModuleStatus.Installed;
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
@@ -172,7 +172,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         public ActionResult UninstallModule(string id)
         {
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.UnInstalled);
-            var module = GlobalConfig.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
+            var module = GlobalContext.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
             if (module != null)
             {
                 module.Uninstall(_settingsService, ExecuteQuery);

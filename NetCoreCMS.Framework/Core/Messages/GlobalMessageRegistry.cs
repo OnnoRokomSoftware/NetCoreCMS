@@ -38,7 +38,7 @@ namespace NetCoreCMS.Framework.Core.Messages
         private static void WriteMessagesToStorage()
         {
             var messages = JsonConvert.SerializeObject(_messageCache, Formatting.Indented);
-            var messageDbFolder = Path.Combine(GlobalConfig.ContentRootPath,"Data","GlobalMessages");
+            var messageDbFolder = Path.Combine(GlobalContext.ContentRootPath,"Data","GlobalMessages");
             if (Directory.Exists(messageDbFolder) == false)
             {
                 Directory.CreateDirectory(messageDbFolder);
@@ -54,7 +54,7 @@ namespace NetCoreCMS.Framework.Core.Messages
         public static void LoadMessagesFromStorage()
         {
            
-            var messageDbFolder = Path.Combine(GlobalConfig.ContentRootPath, "Data", "GlobalMessages"); 
+            var messageDbFolder = Path.Combine(GlobalContext.ContentRootPath, "Data", "GlobalMessages"); 
             var messageDbFilePath = Path.Combine(messageDbFolder, MessageDbFile);
             if (File.Exists(messageDbFilePath))
             {

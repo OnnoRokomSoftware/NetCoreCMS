@@ -10,7 +10,6 @@
 
 using System;
 using NetCoreCMS.Framework.Core.IoC;
-using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using System.Collections.Generic;
 using NetCoreCMS.HelloWorld.Models;

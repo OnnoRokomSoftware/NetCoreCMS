@@ -24,7 +24,7 @@ namespace NetCoreCMS.Framework.Utility
         {
             Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic = new Dictionary<AdminMenu, List<AdminMenuItem>>();
 
-            foreach (var module in GlobalConfig.Modules)
+            foreach (var module in GlobalContext.Modules)
             {
                 if (module.ModuleStatus == (int) NccModule.NccModuleStatus.Active)
                 {
@@ -68,7 +68,7 @@ namespace NetCoreCMS.Framework.Utility
         {
             Dictionary<SiteMenu, List<SiteMenuItem>> siteMenuDic = new Dictionary<SiteMenu, List<SiteMenuItem>>();
 
-            foreach (var module in GlobalConfig.Modules)
+            foreach (var module in GlobalContext.Modules)
             {
                 if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
                 {

@@ -7,11 +7,8 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
-
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using System;
+ 
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Modules.News.Models
 {

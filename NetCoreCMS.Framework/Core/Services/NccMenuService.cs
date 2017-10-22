@@ -108,7 +108,7 @@ namespace NetCoreCMS.Framework.Core.Services
         private void CopyNewData(NccMenu oldEntity, NccMenu entity)
         {                
             oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.ModifyBy = GlobalConfig.GetCurrentUserId();
+            oldEntity.ModifyBy = GlobalContext.GetCurrentUserId();
             oldEntity.Name = entity.Name;            
             oldEntity.Status = entity.Status;            
             oldEntity.MenuIconCls = entity.MenuIconCls;

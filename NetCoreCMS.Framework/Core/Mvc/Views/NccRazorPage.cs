@@ -585,7 +585,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 var close = "";
                 if (item.ForUsers.Count > 0)
                 {
-                    var user = GlobalConfig.GetCurrentUserName();
+                    var user = GlobalContext.GetCurrentUserName();
                     if (string.IsNullOrEmpty(user) == false && item.ForUsers.Contains(user))
                     {
                         close = $"<a href='#' data-ncc-global-message-id='{item.MessageId}' class='close-ncc-global-message pull-right'>X</a>";

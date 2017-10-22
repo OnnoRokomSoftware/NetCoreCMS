@@ -56,8 +56,8 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
         private void SetThemeViewData()
         {
-            var themePath = Path.Combine(GlobalConfig.ContentRootPath, NccInfo.ThemeFolder);
-            ViewBag.Themes = GlobalConfig.Themes.OrderByDescending(x=>x.IsActive);
+            var themePath = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder);
+            ViewBag.Themes = GlobalContext.Themes.OrderByDescending(x=>x.IsActive);
             ViewBag.ThemePath = themePath;
         }
 

@@ -53,7 +53,6 @@ namespace NetCoreCMS.Core.Modules.Cms.Widgets
         {
             var body = _viewRenderService.RenderToStringAsync<CmsWidgetController>(ViewFileName, null).Result;
             return body;
-        }
-        
+        } 
     }
 }

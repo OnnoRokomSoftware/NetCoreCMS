@@ -94,7 +94,7 @@ namespace NetCoreCMS.Framework.Core.ShotCodes
 
         public string ReplaceShortContent(string content)
         {
-            foreach (DictionaryEntry item in GlobalConfig.ShortCodes)
+            foreach (DictionaryEntry item in GlobalContext.ShortCodes)
             {
                 var key = item.Key.ToString();
                 if (content.Contains(key))

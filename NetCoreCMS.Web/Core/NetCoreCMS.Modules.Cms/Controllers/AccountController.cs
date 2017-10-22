@@ -235,7 +235,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         [AllowAnonymous]
         public IActionResult Register(string returnUrl = null)
         {
-            if (GlobalConfig.WebSite.AllowRegistration == false)
+            if (GlobalContext.WebSite.AllowRegistration == false)
             {
                 TempData["ErrorMessage"] = "Registration is not allowed.";
                 return Redirect("Home/Error");
@@ -251,7 +251,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model, string returnUrl = null)
         {
-            if (GlobalConfig.WebSite.AllowRegistration == false)
+            if (GlobalContext.WebSite.AllowRegistration == false)
             {
                 TempData["ErrorMessage"] = "Registration is not allowed.";
                 return Redirect("Home/Error");
@@ -265,7 +265,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddToRoleAsync(user, GlobalConfig.WebSite.NewUserRole);
+                    result = await _userManager.AddToRoleAsync(user, GlobalContext.WebSite.NewUserRole);
                     _logger.LogInformation("User created a new account with password.");
 
                     if (result.Succeeded)

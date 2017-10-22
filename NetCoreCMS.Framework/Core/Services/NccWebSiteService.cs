@@ -127,7 +127,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 oldWsInfo.FaviconUrl = item.FaviconUrl;
                 //oldWsInfo.Language = item.Language;
                 oldWsInfo.ModificationDate = modificationDate;
-                oldWsInfo.ModifyBy = GlobalConfig.GetCurrentUserId();
+                oldWsInfo.ModifyBy = GlobalContext.GetCurrentUserId();
                 oldWsInfo.Name = item.Name;
                 oldWsInfo.PrivacyPolicyUrl = item.PrivacyPolicyUrl;
                 oldWsInfo.SiteLogoUrl = item.SiteLogoUrl;

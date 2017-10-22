@@ -84,7 +84,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
          
         public static IApplicationBuilder UseNetCoreCMS(this IApplicationBuilder app, IHostingEnvironment env, IServiceProvider serviceProvider, ILoggerFactory loggerFactory)
         {
-            ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
+            ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalContext.Modules, GlobalContext.Themes);
 
             //app.UseThemeActivator(env, loggerFactory);
             //app.UseModuleActivator(env, _mvcBuilder, _services, loggerFactory);
@@ -105,7 +105,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 app.UseExceptionHandler("/Home/Error");
             }
 
-            GlobalConfig.App = app;
+            GlobalContext.App = app;
 
             if (SetupHelper.IsDbCreateComplete)
             {
@@ -115,10 +115,10 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 NccWebSiteService nccWebsiteService = serviceProvider.GetService<NccWebSiteService>();
                 NccMenuService menuServic = serviceProvider.GetService<NccMenuService>();
 
-                GlobalConfig.WebSite = nccWebsiteService.LoadAll().FirstOrDefault();
-                ThemeHelper.WebSite = GlobalConfig.WebSite;
-                GlobalConfig.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();
-                GlobalConfig.Menus = menuServic.LoadAllSiteMenus();
+                GlobalContext.WebSite = nccWebsiteService.LoadAll().FirstOrDefault();
+                ThemeHelper.WebSite = GlobalContext.WebSite;
+                GlobalContext.WebSiteWidgets = nccWebsiteWidgetServices.LoadAll();
+                GlobalContext.Menus = menuServic.LoadAllSiteMenus();
             }
 
             app.UseMaintenance();

@@ -86,7 +86,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             ViewBag.TotalPost = _postService.LoadAll(true).Count();
             ViewBag.TotalUser = _userManager.Users.Count();
             ViewBag.TotalModule = _moduleService.LoadAll().Count();
-            ViewBag.TotalTheme = GlobalConfig.Themes.Count();
+            ViewBag.TotalTheme = GlobalContext.Themes.Count();
             return View(webSite);
         }
     }

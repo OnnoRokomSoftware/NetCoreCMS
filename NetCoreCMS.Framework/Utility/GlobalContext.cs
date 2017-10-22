@@ -7,7 +7,8 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
+ using System; 
 using System.Linq;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Modules;
@@ -16,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Themes;
-using System;
+
 using NetCoreCMS.Framework.Setup;
 using System.Collections;
 using Microsoft.AspNetCore.Http;
@@ -24,9 +25,9 @@ using NetCoreCMS.Framework.Core.Mvc.Extensions;
 
 namespace NetCoreCMS.Framework.Utility
 {
-    public class GlobalConfig
+    public class GlobalContext
     {
-        public GlobalConfig()
+        public GlobalContext()
         {
             
         }

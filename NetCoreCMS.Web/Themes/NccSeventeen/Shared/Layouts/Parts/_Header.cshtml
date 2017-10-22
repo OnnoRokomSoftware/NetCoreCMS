@@ -18,7 +18,7 @@
             }
         </div>
         <div id="topMenu" class="topMenu pull-right">
-            @if (GlobalConfig.WebSite.IsMultiLangual == true)
+            @if (GlobalContext.WebSite.IsMultiLangual == true)
             {
                 @await Html.PartialAsync("_SelectLanguagePartial")
             }

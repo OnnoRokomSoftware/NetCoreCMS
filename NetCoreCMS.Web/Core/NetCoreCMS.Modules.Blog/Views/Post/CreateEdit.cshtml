@@ -37,7 +37,7 @@
                 <div class="pull-right">
                     @if (Model.Id > 0)
                     {
-                        if (GlobalConfig.WebSite.IsMultiLangual == true || Model.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                        if (GlobalContext.WebSite.IsMultiLangual == true || Model.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                         {
                             for (var j = 0; j < Model.PostDetails.Count; j++)
                             {
@@ -48,7 +48,7 @@
                         }
                         else
                         {
-                            var temp = Model.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                            var temp = Model.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                             <a asp-controller="@controllerName" asp-action="Details" asp-route-slug="@temp.Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @temp.Language</a>
                         }
                         <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Post</a>
@@ -67,12 +67,12 @@
                                 @{
                                     var tabBorderDesign = "";
                                 }
-                                @if (GlobalConfig.WebSite.IsMultiLangual == true)
+                                @if (GlobalContext.WebSite.IsMultiLangual == true)
                                 {
                                     <ul class="nav nav-tabs" role="tablist">
                                         @foreach (var item in Model.PostDetails)
                                         {
-                                            if (GlobalConfig.WebSite.Language == item.Language)
+                                            if (GlobalContext.WebSite.Language == item.Language)
                                             {
                                                 <li role="presentation" class="active">
                                                     <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
@@ -105,7 +105,7 @@
                                     @{ var activeClass = ""; var i = 0;}
                                     @foreach (var item in Model.PostDetails)
                                     {
-                                        if (GlobalConfig.WebSite.Language == item.Language)
+                                        if (GlobalContext.WebSite.Language == item.Language)
                                         { activeClass = "active"; }
                                         else { activeClass = ""; }
                                         <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">

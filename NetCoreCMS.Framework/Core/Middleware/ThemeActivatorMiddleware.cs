@@ -32,9 +32,9 @@ namespace NetCoreCMS.Framework.Core.Middleware
             {
                 var _themeManager = new ThemeManager();
                 var themeFolder = Path.Combine(env.ContentRootPath, NccInfo.ThemeFolder);
-                GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
+                GlobalContext.Themes = _themeManager.ScanThemeDirectory(themeFolder);
 
-                ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalConfig.Modules, GlobalConfig.Themes);
+                ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalContext.Modules, GlobalContext.Themes);
                 
                 return next();
             });            

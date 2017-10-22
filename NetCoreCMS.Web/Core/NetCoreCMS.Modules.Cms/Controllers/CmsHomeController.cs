@@ -41,7 +41,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                var postPerPage = GlobalConfig.WebSite.PerPagePostSize;
+                var postPerPage = GlobalContext.WebSite.PerPagePostSize;
                 var totalPost = _postService.GetPublishedPostCount();
                 var stickyPost = _postService.LoadSpecialPosts(true, false);
                 var featuredPosts = _postService.LoadSpecialPosts(false,true);

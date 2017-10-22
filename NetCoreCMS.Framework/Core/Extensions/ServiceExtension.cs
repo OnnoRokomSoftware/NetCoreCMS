@@ -111,7 +111,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 return t => (IEnumerable<object>)c.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
             });
 
-            foreach (var module in GlobalConfig.GetActiveModules())
+            foreach (var module in GlobalContext.GetActiveModules())
             {
                 builder.RegisterAssemblyTypes(module.Assembly).AsImplementedInterfaces();
                 services.AddMediatR(module.Assembly);

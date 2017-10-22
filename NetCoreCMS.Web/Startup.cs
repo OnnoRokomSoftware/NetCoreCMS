@@ -61,8 +61,8 @@ namespace NetCoreCMS.Web
             Configuration = configuration;
             _hostingEnvironment = env;
 
-            GlobalConfig.ContentRootPath    = env.ContentRootPath;
-            GlobalConfig.WebRootPath        = env.WebRootPath;
+            GlobalContext.ContentRootPath    = env.ContentRootPath;
+            GlobalContext.WebRootPath        = env.WebRootPath;
             
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
 
@@ -112,7 +112,7 @@ namespace NetCoreCMS.Web
 
             _themeManager = new ThemeManager();
             var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
-            GlobalConfig.Themes = _themeManager.ScanThemeDirectory(themeFolder);
+            GlobalContext.Themes = _themeManager.ScanThemeDirectory(themeFolder);
 
             var themesDirectoryContents = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
             _themeManager.RegisterThemes(_mvcBuilder, _services,_serviceProvider, themesDirectoryContents);
@@ -122,7 +122,7 @@ namespace NetCoreCMS.Web
             var coreModules = _moduleManager.LoadModules(coreModuleFolder);
             var userModules = _moduleManager.LoadModules(moduleFolder);
 
-            GlobalConfig.Modules.AddRange(userModules);
+            GlobalContext.Modules.AddRange(userModules);
             
             _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
 
@@ -163,21 +163,21 @@ namespace NetCoreCMS.Web
                 _services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
-                GlobalConfig.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services, _serviceProvider);
+                GlobalContext.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services, _serviceProvider);
                 _moduleManager.RegisterModuleRepositoryAndServices(_mvcBuilder, _services, _serviceProvider);
 
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
-                GlobalConfig.Widgets = _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);
+                GlobalContext.Widgets = _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);
                 var themeWidgets = _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
 
                 if(themeWidgets != null && themeWidgets.Count > 0)
                 {
-                    GlobalConfig.Widgets.AddRange(themeWidgets);
+                    GlobalContext.Widgets.AddRange(themeWidgets);
                 }
 
                 _nccShortCodeProvider = _serviceProvider.GetService<NccShortCodeProvider>();
-                GlobalConfig.ShortCodes = _nccShortCodeProvider.ScanAndRegisterShortCodes(GlobalConfig.Modules);
+                GlobalContext.ShortCodes = _nccShortCodeProvider.ScanAndRegisterShortCodes(GlobalContext.Modules);
 
             }
 
@@ -185,8 +185,8 @@ namespace NetCoreCMS.Web
 
             if (SetupHelper.IsAdminCreateComplete)
             {
-                GlobalConfig.SetupConfig = SetupHelper.LoadSetup();
-                defaultCulture = new RequestCulture(GlobalConfig.SetupConfig.Language);
+                GlobalContext.SetupConfig = SetupHelper.LoadSetup();
+                defaultCulture = new RequestCulture(GlobalContext.SetupConfig.Language);
                 GlobalMessageRegistry.LoadMessagesFromStorage();
             }
 
@@ -221,8 +221,8 @@ namespace NetCoreCMS.Web
 
             _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
-            GlobalConfig.ServiceProvider = _serviceProvider;
-            GlobalConfig.Services = _services;            
+            GlobalContext.ServiceProvider = _serviceProvider;
+            GlobalContext.Services = _services;            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

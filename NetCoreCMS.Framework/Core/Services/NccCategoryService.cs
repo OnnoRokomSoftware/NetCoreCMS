@@ -110,7 +110,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 tmpCategoryDetails.MetaDescription = item.MetaDescription;
                 tmpCategoryDetails.MetaKeyword = item.MetaKeyword;
                 tmpCategoryDetails.ModificationDate = creationDate;
-                tmpCategoryDetails.ModifyBy = GlobalConfig.GetCurrentUserId();
+                tmpCategoryDetails.ModifyBy = GlobalContext.GetCurrentUserId();
                 tmpCategoryDetails.Name = item.Name;
                 tmpCategoryDetails.Slug = item.Slug;
                 tmpCategoryDetails.Status = item.Status;

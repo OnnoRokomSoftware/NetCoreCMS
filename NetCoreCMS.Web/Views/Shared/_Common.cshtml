@@ -5,7 +5,7 @@
 {
     public string _T(string text)
     {
-        IStringLocalizer<SharedResource> localizer = (IStringLocalizer<SharedResource>) GlobalConfig.ServiceProvider.GetService(typeof(IStringLocalizer<SharedResource>));
+        IStringLocalizer<SharedResource> localizer = (IStringLocalizer<SharedResource>)GlobalContext.ServiceProvider.GetService(typeof(IStringLocalizer<SharedResource>));
         return localizer[text];
     }
 }
