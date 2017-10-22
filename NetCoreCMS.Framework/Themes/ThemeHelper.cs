@@ -37,6 +37,16 @@ namespace NetCoreCMS.Framework.Themes
             RegisterNccResource(NccResource.ResourceType.CssFile, resourcePath, position, version, order, minify);            
         }
 
+        public static void RegisterJs(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
+        {
+            RegisterNccResource(NccResource.ResourceType.JsFile, resourcePath, position, version, order, minify);
+        }
+
+        public static void UnRegister(NccResource.ResourceType type, string resourcePath)
+        {
+            UnRegisterNccResource(type,resourcePath);
+        }
+
         public static void RegisterResource(string resourceLibName)
         {
             if(resourceLibName == NccResource.JQuery)
@@ -68,12 +78,7 @@ namespace NetCoreCMS.Framework.Themes
         public static void RegisterResource(List<NccResource> resources)
         {
             _nccResources.AddRange(resources);
-        }
-
-        public static void RegisterJs(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
-        {
-            RegisterNccResource(NccResource.ResourceType.JsFile, resourcePath, position, version, order, minify);            
-        }
+        } 
 
         private static void RegisterNccResource(NccResource.ResourceType type, string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
         {
