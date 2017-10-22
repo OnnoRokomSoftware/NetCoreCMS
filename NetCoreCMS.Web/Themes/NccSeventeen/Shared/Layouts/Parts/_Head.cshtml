@@ -30,7 +30,7 @@ else
 @{
     ThemeHelper.RegisterCss("/css/ncc-common.css", NccResource.IncludePosition.Header);
     ThemeHelper.RegisterCss("/lib/css-loader/dist/css-loader.css", NccResource.IncludePosition.Header);
-    ThemeHelper.RegisterCss("/Themes/NccSeventeen/css/site.css", NccResource.IncludePosition.Header, DateTime.Now.Ticks.ToString());
+    ThemeHelper.RegisterCss("/Themes/NccSeventeen/css/site.css", NccResource.IncludePosition.Header);
     if (ThemeHelper.ActiveTheme.Settings["style"] != null && !string.IsNullOrEmpty(ThemeHelper.ActiveTheme.Settings["style"].ToString()))
     {
         ThemeHelper.RegisterCss(string.Concat("/Themes/NccSeventeen/css/", ThemeHelper.ActiveTheme.Settings["style"]), NccResource.IncludePosition.Header, ThemeHelper.ActiveTheme.Settings["version"].ToString());
