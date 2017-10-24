@@ -595,8 +595,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 else
                 {
                     content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{item.Text} {close}</div>";
-                }
-                
+                }                
             }
 
             if (string.IsNullOrEmpty(content) == false)

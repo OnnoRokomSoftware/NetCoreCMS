@@ -226,6 +226,9 @@ namespace NetCoreCMS.Web
 
             GlobalContext.ServiceProvider = _serviceProvider;
             GlobalContext.Services = _services;
+            NetCoreCmsHost.Mediator = _serviceProvider.GetService<IMediator>();            
+            NetCoreCmsHost.Services = _services;
+            NetCoreCmsHost.ServiceProvider = _serviceProvider;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -233,11 +236,8 @@ namespace NetCoreCMS.Web
         {    
             app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
             app.UseNccRoutes(env, _serviceProvider, loggerFactory);
-            NetCoreCmsHost.Mediator = mediator;
             NetCoreCmsHost.Logger = loggerFactory.CreateLogger<Startup>();
             NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;
-            NetCoreCmsHost.Services = _services;
-            NetCoreCmsHost.ServiceProvider = _serviceProvider;
         }
     }
 }

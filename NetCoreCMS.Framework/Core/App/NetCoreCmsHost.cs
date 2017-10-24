@@ -45,6 +45,8 @@ namespace NetCoreCMS.Framework.Core.App
                 if (_starterThread.ThreadState == ThreadState.Unstarted)
                 {
                     _starterThread.Start(args);
+                    Thread.Sleep(5000);
+                    FireEvent(AppActivity.Type.Started);
                 }
 
                 while (_isShutdown == false)
@@ -100,6 +102,7 @@ namespace NetCoreCMS.Framework.Core.App
 
         public static async Task StopAppAsync(IWebHost webHost)
         {
+            FireEvent(AppActivity.Type.BeforeRestart);
             new Task(() => {
                 Thread.Sleep(1000);
                 webHost.StopAsync(new TimeSpan(0, 0, 3));
