@@ -19,7 +19,8 @@ namespace NetCoreCMS.Framework.Core.Events.App
     /// </summary>
     public class AppActivity
     {
-        public HttpContext Context { get; set; }
+        public HttpContext Context { get; set; }  
+        
         public IServiceCollection Services { get; set; }
         public IServiceProvider ServiceProvider { get; set; }
         public Type ActivityType { get; set; }

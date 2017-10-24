@@ -26,6 +26,9 @@ using NetCoreCMS.Core.Modules.Cms.Models.AccountViewModels;
 using NetCoreCMS.Core.Modules.Cms.Lib;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Utility;
+using MediatR;
+using NetCoreCMS.Framework.Core.Events.App;
+using NetCoreCMS.Framework.Core.Network;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
 { 
@@ -35,6 +38,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         private readonly UserManager<NccUser> _userManager;
         private readonly SignInManager<NccUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly IMediator _mediator;
         private readonly ILogger _logger;
         NccStartupService _startupService;
 
@@ -42,6 +46,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             UserManager<NccUser> userManager,
             SignInManager<NccUser> signInManager,
             IEmailSender emailSender,
+            IMediator mediator,
             ILogger<AccountController> logger,
              NccStartupService startupService
             )
@@ -49,6 +54,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _mediator = mediator;
             _logger = logger;
             _startupService = startupService;
         }
@@ -83,6 +89,11 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                     _logger.LogInformation("User logged in.");
                     var user = await _userManager.FindByNameAsync(model.Email);
                     var roles = await _userManager.GetRolesAsync(user);
+                    var rsp = FireEvent(UserActivity.Type.Logedin, model.Email, user, roles, returnUrl);
+                    if(rsp != null)
+                    {
+                        returnUrl = rsp.ReturnUrl;
+                    }
 
                     var startups = _startupService.LoadAll();
                     foreach (var item in startups)
@@ -113,7 +124,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             // If we got this far, something failed, redisplay form
             return View(model);
         }
-
+        
         [HttpGet]
         [AllowAnonymous]
         public async Task<IActionResult> LoginWith2fa(bool rememberMe, string returnUrl = null)
@@ -270,13 +281,24 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
                     if (result.Succeeded)
                     {
+                        var rsp = FireEvent(UserActivity.Type.Registered, model.Email, user, new List<string>() { GlobalContext.WebSite.NewUserRole }, "");
+                        if (rsp != null)
+                        {
+                            returnUrl = rsp.ReturnUrl;
+                        }
+
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         var callbackUrl = Url.EmailConfirmationLink(user.Id.ToString(), code, Request.Scheme);
+                        
                         await _emailSender.SendEmailConfirmationAsync(model.Email, callbackUrl);
-
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created a new account with password.");
-                        return RedirectToLocal(returnUrl);
+
+                        if (string.IsNullOrEmpty(returnUrl))
+                        {
+                            return Redirect("/CmsHome");
+                        }
+                        return Redirect(returnUrl);
                     }
                 }
                 AddErrors(result);
@@ -292,9 +314,19 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Logout()
         {
+            var user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-            return RedirectToAction(nameof(CmsHomeController.Index), "Home");
+
+            var roles = await _userManager.GetRolesAsync(user);            
+            var returnUrl = nameof(CmsHomeController.Index);
+            var rsp = FireEvent(UserActivity.Type.Logedout, user.Email, user, roles, "/CmsHome");
+
+            if(rsp != null)
+            {
+                returnUrl = rsp.ReturnUrl;
+            }
+            return Redirect(returnUrl);
         }
 
         [HttpPost]
@@ -390,6 +422,16 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 throw new ApplicationException($"Unable to load user with ID '{userId}'.");
             }
             var result = await _userManager.ConfirmEmailAsync(user, code);
+            IList<string> roleList = new List<string>();
+            foreach (var item in user.Roles)
+            {
+                roleList.Add(item.Role.Name);
+            }
+            if (result.Succeeded)
+            {
+                var rsp = FireEvent(UserActivity.Type.EmailConfirmed, user.Email, user, roleList, "");
+
+            }
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -464,7 +506,18 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             var result = await _userManager.ResetPasswordAsync(user, model.Code, model.Password);
             if (result.Succeeded)
             {
-                return RedirectToAction(nameof(ResetPasswordConfirmation));
+                IList<string> roleList = new List<string>();
+                foreach (var item in user.Roles)
+                {
+                    roleList.Add(item.Role.Name);
+                }
+                var returnUrl = "/Account/ResetPasswordConfirmation";
+                var rsp = FireEvent(UserActivity.Type.EmailConfirmed, user.Email, user, roleList, returnUrl);
+                if(rsp != null)
+                {
+                    returnUrl = rsp.ReturnUrl;
+                }
+                return Redirect(returnUrl);
             }
             AddErrors(result);
             return View();
@@ -485,6 +538,29 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         }
 
         #region Helpers
+
+        private UserActivity FireEvent(UserActivity.Type type, string email, NccUser user, IList<string> roles, string returnUrl)
+        {
+            try
+            {
+                var rsp = _mediator.SendAll(new OnUserActivity(new UserActivity()
+                {
+                    ActivityType = type,
+                    Email = email,
+                    Ip = NetworkUtility.GetUserIp(HttpContext),
+                    NewRoles = roles,
+                    User = user,
+                    ReturnUrl = returnUrl
+                })).Result;
+
+                return rsp.LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
+            return null;
+        }
 
         private void AddErrors(IdentityResult result)
         {

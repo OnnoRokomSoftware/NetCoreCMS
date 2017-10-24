@@ -43,6 +43,7 @@ using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Messages;
 using MediatR;
 using NetCoreCMS.Framework.Core.App;
+using System.Diagnostics;
 
 namespace NetCoreCMS.Web
 {
@@ -103,7 +104,13 @@ namespace NetCoreCMS.Web
             });
 
             _services.AddResponseCaching();
-            _services.AddSession();
+            _services.AddSession(options =>
+            {
+                options.Cookie.Name = ".NetCoreCMS.Cookie.Session";
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+                options.Cookie.HttpOnly = true;
+            });
+
             _services.AddDistributedMemoryCache();
             _services.AddResponseCompression();            
             _services.AddSingleton(Configuration);
@@ -233,11 +240,12 @@ namespace NetCoreCMS.Web
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMediator mediator, ILoggerFactory loggerFactory)
-        {    
+        {
+            app.UseRequestTracker();
             app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
             app.UseNccRoutes(env, _serviceProvider, loggerFactory);
             NetCoreCmsHost.Logger = loggerFactory.CreateLogger<Startup>();
-            NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;
+            NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;            
         }
     }
 }

@@ -24,12 +24,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
         EntityT Edit(EntityT entity);
         //EntityT Get(IdT id);
         EntityT Get(IdT id, bool isAsNoTracking = false, List<string> includeChilds = null);
-        List<EntityT> LoadAll(bool isActive = true, int status = 0, string name = "", bool isLikeSearch = false, List<string> includeChilds = null);
-        //List<EntityT> LoadAll();
-        //List<EntityT> LoadAllActive();
-        //List<EntityT> LoadAllByStatus(int status);
-        //List<EntityT> LoadAllByName(string name);
-        //List<EntityT> LoadAllByNameContains(string name);
+        List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeChilds = null);        
         IDbContextTransaction BeginTransaction();
         void Remove(EntityT entity);
         void DeletePermanently(EntityT entity);
