@@ -41,6 +41,8 @@ namespace NetCoreCMS.Framework.Test
         [Fact]
         public void Add_language_to_url_should_work_2()
         {
+            FakeGlobalContext.DisableMultiLanguage();
+
             var url = NccUrlHelper.AddLanguageToUrl("en", "CmsHome");
             Assert.Equal("/CmsHome", url);
 

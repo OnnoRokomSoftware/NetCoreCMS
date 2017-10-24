@@ -10,5 +10,11 @@ namespace UnitTests.Lib
             GlobalContext.WebSite = FakeNccWebSite.GetNccWebsite();
             GlobalContext.WebSite.IsMultiLangual = true;
         }
+        public static void DisableMultiLanguage()
+        {
+            GlobalContext.WebSite = FakeNccWebSite.GetNccWebsite();
+            GlobalContext.WebSite.IsMultiLangual = false;
+        }
+
     }
 }
