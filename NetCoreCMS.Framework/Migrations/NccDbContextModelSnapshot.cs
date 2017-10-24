@@ -214,6 +214,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("VersionNumber");
 
+                    b.Property<int>("CommentStatus");
+
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");

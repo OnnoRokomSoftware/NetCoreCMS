@@ -43,6 +43,12 @@ namespace NetCoreCMS.Framework.Utility
                     var uri = new Uri(url);
                     urlPrefix = uri.Scheme;
                     urlPrefix += "://";
+                    urlPrefix += uri.Authority;                     
+                    var fUrl = urlPrefix + "/" + currentLanguage  + uri.AbsolutePath;
+                    if(string.IsNullOrEmpty(uri.Query) == false)
+                    {
+                        fUrl += "/"+ uri.Query;
+                    }
                 }
 
                 if (!urlSuffix.StartsWith("/"))

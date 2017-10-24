@@ -822,7 +822,8 @@ namespace NetCoreCMS.Framework.Migrations
                     AuthorName = table.Column<string>(type: "longtext", nullable: true),
                     Email = table.Column<string>(type: "longtext", nullable: true),
                     WebSite = table.Column<string>(type: "longtext", nullable: true),
-                    VersionNumber = table.Column<int>(type: "int", nullable: false)
+                    VersionNumber = table.Column<int>(type: "int", nullable: false),
+                    CommentStatus = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {

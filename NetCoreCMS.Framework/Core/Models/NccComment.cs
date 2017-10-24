@@ -23,5 +23,16 @@ namespace NetCoreCMS.Framework.Core.Models
         public string AuthorName { get; set; }
         public string Email { get; set; }
         public string WebSite { get; set; }
+        public Status CommentStatus { get; set; }
+
+        public enum Status
+        {
+            New,
+            Approved,
+            Rejected,
+            Spam
+        }
     }
+
+    
 }
