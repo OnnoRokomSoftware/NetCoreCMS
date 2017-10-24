@@ -3,5 +3,5 @@ init:
   - git config --global core.autocrlf true
 before_build:
   - appveyor-retry dotnet restore
-test: off
+test: on
 deploy: off
