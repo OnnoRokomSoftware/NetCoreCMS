@@ -3,10 +3,10 @@ using Xunit;
 
 namespace NetCoreCMS.Framework.Test
 {
-    public class UnitTest1
+    public class HelloTest
     {
         [Fact]
-        public void Test1()
+        public void HelloTestWorld()
         {
             Assert.True(true);
         }
