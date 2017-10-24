@@ -80,11 +80,21 @@ namespace NetCoreCMS.Framework.Utility
             return userId.Value;
         }
 
+        public static Theme GetThemeByName(string themeName)
+        {
+            return Themes.Where(x => x.ThemeName == themeName).FirstOrDefault();
+        } 
+
         public static string GetCurrentUserName()
         {
             HttpContextAccessor hca = new HttpContextAccessor();
             string userName = hca.HttpContext?.User?.Identity.Name;
             return userName;
+        }
+
+        public static IModule GetModuleByModuleId(string moduleId)
+        {
+            return Modules.Where(x => x.ModuleId == moduleId).FirstOrDefault();
         }
     }
 }

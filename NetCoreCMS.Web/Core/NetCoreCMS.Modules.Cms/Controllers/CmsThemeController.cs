@@ -7,13 +7,15 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.App;
+using NetCoreCMS.Framework.Core.Events.Themes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Themes;
@@ -39,11 +41,12 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         ThemeManager _themeManager;
         //ILoggerFactory _loggerFactory;
         private readonly string _themePath = "Themes\\";
+        private readonly IMediator _mediator;
 
-        public CmsThemeController(ThemeManager themeManager, ILoggerFactory factory)
+        public CmsThemeController(ThemeManager themeManager, IMediator mediator, ILoggerFactory factory)
         {
             _themeManager = themeManager;
-            //_loggerFactory = factory;
+            _mediator = mediator;
             _logger = factory.CreateLogger<CmsThemeController>();
         }
 
@@ -67,6 +70,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             NetCoreCmsHost.IsRestartRequired = true;
             string successMessage = "Theme " + themeName + " Activated Successfully.";
             TempData["ThemeSuccessMessage"] = successMessage;
+            FireEvent(ThemeActivity.Type.Activated, GlobalContext.GetThemeByName(themeName));
             return RedirectToAction("Index");
         }
 
@@ -243,5 +247,25 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         //    SetThemeViewData();
         //    return View();
         //}
+
+        #region Private Methods
+        private ThemeActivity FireEvent(ThemeActivity.Type type, Theme theme)
+        {
+            try
+            {
+                var rsp = _mediator.SendAll(new OnThemeActivity(new ThemeActivity()
+                {
+                    ActivityType = type,
+                    Theme = theme
+                })).Result;
+                return rsp.LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
+            return null;
+        }
+        #endregion
     }
 }

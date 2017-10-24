@@ -8,12 +8,14 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Events.Modules;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
@@ -47,12 +49,14 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         List<IModule> _coreModules;
         List<IModule> _publicModules;
         IHostingEnvironment _hostingEnvironment;
+        private readonly IMediator _mediator;
         private readonly string _modulePath = "Modules\\";
 
         public CmsModuleController(
             NccModuleService moduleService,
             NccSettingsService settingsService,
             IHostingEnvironment hostingEnvironment,
+            IMediator mediator,
             ILoggerFactory factory,
             IHostingEnvironment env
             )
@@ -60,6 +64,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _moduleService = moduleService;
             _settingsService = settingsService;
             _hostingEnvironment = hostingEnvironment;
+            _mediator = mediator;
             _logger = factory.CreateLogger<CmsModuleController>();
             _env = env;
             moduleManager = new ModuleManager();
@@ -99,6 +104,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Active);
             if (entity != null)
             {
+                FireEvent(ModuleActivity.Type.Activated, GlobalContext.GetModuleByModuleId(entity.ModuleId));
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -135,6 +141,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 if (module != null)
                 {
                     module.Inactivate();
+                    FireEvent(ModuleActivity.Type.Deactivated, GlobalContext.GetModuleByModuleId(entity.ModuleId));
                     TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
                 }
                 else
@@ -159,6 +166,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 var module = GlobalContext.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
                 module.Install(_settingsService, ExecuteQuery);
                 module.ModuleStatus = (int)NccModule.NccModuleStatus.Installed;
+                FireEvent(ModuleActivity.Type.Installed, module);
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -181,6 +189,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
             if (entity != null)
             {
+                FireEvent(ModuleActivity.Type.Uninstalled, module);
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
             }
             else
@@ -195,6 +204,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             var nId = long.Parse(id);
             _moduleService.DeletePermanently(nId);
             TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
+            FireEvent(ModuleActivity.Type.Removed, GlobalContext.GetModuleByModuleId(id));
             return RedirectToAction("Index");
         }
 
@@ -360,6 +370,22 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         #endregion
 
         #region PrivetMethods
+        private ModuleActivity FireEvent(ModuleActivity.Type type, IModule module)
+        {
+            try
+            {
+                var rsp = _mediator.SendAll(new OnModuleActivity(new ModuleActivity() {
+                    ActivityType = type,
+                    Module = module
+                })).Result;
+                return rsp.LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
+            return null;
+        }
         public static void DeleteDirectory(string target_dir)
         {
             string[] files = Directory.GetFiles(target_dir);
