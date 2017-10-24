@@ -18,7 +18,7 @@ namespace NetCoreCMS.Framework.Core.Hooks
     {
         public NccPage Handle(OnPageShow message)
         {
-            var post = message.Page; 
+            var post = message.Page;            
             return post;
         }
     }

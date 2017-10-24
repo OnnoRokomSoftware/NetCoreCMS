@@ -41,6 +41,8 @@ using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Extensions;
 using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Messages;
+using MediatR;
+using NetCoreCMS.Framework.Core.App;
 
 namespace NetCoreCMS.Web
 {
@@ -109,7 +111,7 @@ namespace NetCoreCMS.Web
             _services.AddNccCoreModuleRepositoryAndServices();
 
             _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-
+            
             _themeManager = new ThemeManager();
             var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
             GlobalContext.Themes = _themeManager.ScanThemeDirectory(themeFolder);
@@ -220,16 +222,22 @@ namespace NetCoreCMS.Web
             );
 
             _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
+            _serviceProvider = _services.BuildModules(ConfigurationRoot, _hostingEnvironment);
 
             GlobalContext.ServiceProvider = _serviceProvider;
-            GlobalContext.Services = _services;            
+            GlobalContext.Services = _services;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMediator mediator, ILoggerFactory loggerFactory)
         {    
             app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
-            app.UseNccRoutes(env, _serviceProvider, loggerFactory); 
+            app.UseNccRoutes(env, _serviceProvider, loggerFactory);
+            NetCoreCmsHost.Mediator = mediator;
+            NetCoreCmsHost.Logger = loggerFactory.CreateLogger<Startup>();
+            NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;
+            NetCoreCmsHost.Services = _services;
+            NetCoreCmsHost.ServiceProvider = _serviceProvider;
         }
     }
 }

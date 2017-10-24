@@ -61,7 +61,8 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 NccPage page = _pageService.GetBySlug(slug);
                 if (page != null)
                 {
-                    page = _mediator.Send(new OnPageShow(page)).Result;
+                    var rsp = _mediator.SendAll(new OnPageShow(page)).Result;
+                    page = rsp.LastOrDefault();
                     foreach (var item in page.PageDetails)
                     {
                         item.Content = _nccShortCodeProvider.ReplaceShortContent(item.Content);
