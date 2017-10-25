@@ -44,12 +44,12 @@
                                 @{
                                     var tabBorderDesign = "";
                                 }
-                                @if (GlobalConfig.WebSite.IsMultiLangual == true)
+                                @if (GlobalContext.WebSite.IsMultiLangual == true)
                                 {
                                     <ul class="nav nav-tabs" role="tablist">
                                         @foreach (var item in Model.CategoryDetails)
                                     {
-                                        if (GlobalConfig.WebSite.Language == item.Language)
+                                        if (GlobalContext.WebSite.Language == item.Language)
                                         {
                                                 <li role="presentation" class="active">
                                                     <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
@@ -82,7 +82,7 @@
                                     @{ var activeClass = ""; var i = 0;}
                                     @foreach (var item in Model.CategoryDetails)
                                     {
-                                        if (GlobalConfig.WebSite.Language == item.Language)
+                                        if (GlobalContext.WebSite.Language == item.Language)
                                         { activeClass = "active"; }
                                         else { activeClass = ""; }
                                         <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">

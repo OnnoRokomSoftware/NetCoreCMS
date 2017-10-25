@@ -1,7 +1,17 @@
+version: 1.0.{build}
 image: Visual Studio 2017
+
+build:
+  verbosity: minimal
+
 init:
   - git config --global core.autocrlf true
+shallow_clone: true 
+
 before_build:
-  - appveyor-retry dotnet restore
-test: off
+  - nuget restore
+  - appveyor-retry dotnet restore  
+test: on
+test_script:
+  - ps: .\run-tests.ps1
 deploy: off

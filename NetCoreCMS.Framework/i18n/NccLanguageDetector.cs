@@ -28,7 +28,7 @@ namespace NetCoreCMS.Framework.i18n
 
         public string GetCurrentLanguage()
         {
-            if (GlobalConfig.WebSite != null && GlobalConfig.WebSite.IsMultiLangual)
+            if (GlobalContext.WebSite != null && GlobalContext.WebSite.IsMultiLangual)
             {
                 var lang = (string) _httpContext.GetRouteValue("lang");
                 if (string.IsNullOrEmpty(lang))
@@ -38,7 +38,7 @@ namespace NetCoreCMS.Framework.i18n
 
                 if (string.IsNullOrEmpty(lang))
                 {
-                    lang = GlobalConfig.WebSite.Language;
+                    lang = GlobalContext.WebSite.Language;
                 }
 
                 if (string.IsNullOrEmpty(lang))

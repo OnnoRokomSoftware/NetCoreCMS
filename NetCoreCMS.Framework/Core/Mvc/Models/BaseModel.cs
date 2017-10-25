@@ -10,18 +10,17 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
-using NetCoreCMS.Framework.Core.Mvc.Extensions;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Models
 {
-    public class BaseModel : ValidateableModel, IBaseModel<long>
+    public class BaseModel<IdT> : ValidateableModel, IBaseModel<IdT>
     {
         public BaseModel()
         {
             CreationDate = DateTime.Now;
             ModificationDate = DateTime.Now;
-            CreateBy = ModifyBy = GetCurrentUserId();
+            CreateBy = ModifyBy = GlobalContext.GetCurrentUserId();
             Status = EntityStatus.Active;
             VersionNumber = 1;
             Metadata = "";
@@ -29,7 +28,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         }
 
         [Key]
-        public long Id { get; set; }
+        public IdT Id { get; set; }
         public int VersionNumber { get; set; }
         public string Metadata { get; set; }
         public string Name { get; set; }
@@ -37,15 +36,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         public DateTime ModificationDate { get; set; }
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }        
-        public int Status { get; set; }
-
-        public static long GetCurrentUserId()
-        {
-            HttpContextAccessor hca = new HttpContextAccessor();
-            long? userId = hca.HttpContext?.User?.GetUserId();
-            if (userId == null)
-                return 0;
-            return userId.Value;
-        }
+        public int Status { get; set; }        
     }
 }

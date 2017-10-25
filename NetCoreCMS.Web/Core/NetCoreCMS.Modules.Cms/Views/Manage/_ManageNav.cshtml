@@ -1,5 +1,5 @@
 ﻿@using NetCoreCMS.Web.Views.Manage
-@inject SignInManager<ApplicationUser> SignInManager
+@inject SignInManager<NccUser> SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

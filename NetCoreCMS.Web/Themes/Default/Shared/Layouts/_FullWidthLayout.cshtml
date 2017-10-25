@@ -19,7 +19,10 @@
         @RenderSection("Styles", required: false)
     </head>
     <body id="body">
-
+        <!-- Container for showing global messages. -->
+        <div class="row">
+            @NccRenderGlobalMessages()
+        </div>
         <!-- Loading -->
         @NccRenderLoadingMaskContainer()
         <!-- Zone TOP Start-->
@@ -35,15 +38,9 @@
             <div class="col-md-@BodyWidth">
                 <!-- Featured -->
                 @NccRenderFeaturedSection()
-
-                <!-- Container for showing global messages. -->
-                <div class="row">
-                    @NccRenderGlobalMessageContainer()
-                </div> 
                 @NccRenderBody()
             </div>
-            <!-- Main content End -->
-
+            <!-- Main content End --> 
         </div>
         <!--  Main Body End -->
         <!--  Footer Start -->

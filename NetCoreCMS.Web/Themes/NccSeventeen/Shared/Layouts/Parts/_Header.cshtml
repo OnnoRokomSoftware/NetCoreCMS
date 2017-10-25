@@ -1,10 +1,6 @@
 ﻿@{
-    string currentLanguage = LanguageDetector.GetCurrentLanguage();
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
-<!-- Loading -->
-<div id="loadingMask" class="loader loader-double"></div>
-
 <!-- Header -->
 <div class="container-fluid topHeader">
     <div class="container">
@@ -22,17 +18,17 @@
             }
         </div>
         <div id="topMenu" class="topMenu pull-right">
-            @if (GlobalConfig.WebSite.IsMultiLangual == true)
+            @if (GlobalContext.WebSite.IsMultiLangual == true)
             {
                 @await Html.PartialAsync("_SelectLanguagePartial")
             }
             @{
-                var menus = GlobalConfig.Menus.Where(x => x.Position == "Top" && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage == currentLanguage));
+                var menus = ThemeHelper.GetMenus("Top", CurrentLanguage);
                 foreach (var item in menus)
                 {
                     foreach (var menuItem in item.MenuItems)
                     {
-                        <a href="@NccUrlHelper.AddLanguageToUrl(currentLanguage, menuItem.Url)">@menuItem.Name</a><span> | </span>
+                        <a href="@NccUrlHelper.AddLanguageToUrl(CurrentLanguage, menuItem.Url)">@menuItem.Name</a><span> | </span>
                     }
                 }
                 if (SignInManager.IsSignedIn(User))
@@ -51,18 +47,18 @@
 
         <div class="topWidgetZone">
             @{
-                var zoneTopWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "TopBar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
+                var zoneTopWidgets = ThemeHelper.GetWebsiteWidgets(CurrentLayout, "TopBar"); 
                 if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
                 {
                     <div style="width:100%;">
                         @foreach (var item in zoneTopWidgets)
                         {
-                            var widgets = GlobalConfig.Widgets.Where(x => x.WidgetId == item.WidgetId).ToList();
+                            var widgets = ThemeHelper.GetWidgets(item.WidgetId);
                             foreach (var widget in widgets)
                             {
                                 widget.Init(item.Id);
-                                if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(currentLanguage) || currentLanguage == widget.Language)
-                                { 
+                                if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage == widget.Language)
+                                {
                                     if (widget.DisplayTitle != "" || widget.Footer != "")
                                     {
                                         <div class='panel panel-default'>

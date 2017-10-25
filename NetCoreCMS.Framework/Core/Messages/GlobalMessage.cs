@@ -16,18 +16,34 @@ namespace NetCoreCMS.Framework.Core.Messages
 {
     public class GlobalMessage
     {
+        public GlobalMessage() { ForUsers = new List<string>(); }
+        public GlobalMessage(string text, MessageType type, MessageFor msgFor, string registerer, List<string> forUsers)
+        {
+            ForUsers = new List<string>();
+            if(forUsers != null)
+            {
+                ForUsers = forUsers;
+            }
+            MessageId = Guid.NewGuid().ToString();
+            Text = text;
+            Type = type;
+            For = msgFor;
+            Registrater = registerer;
+        }
+
         public string MessageId { get; set; }
         public string Text { get; set; }
         public MessageType Type { get; set; }
         public MessageFor For { get; set; }
         public string Registrater { get; set; }
+        public List<string> ForUsers { get; set; }
 
         public enum MessageType
         {
             Success,
+            Info,
             Warning,
-            Error,
-            Fatal
+            Error
         }
 
         public enum MessageFor

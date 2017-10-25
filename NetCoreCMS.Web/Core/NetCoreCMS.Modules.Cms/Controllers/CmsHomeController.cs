@@ -11,8 +11,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Messages;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
@@ -39,7 +41,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                var postPerPage = GlobalConfig.WebSite.PerPagePostSize;
+                var postPerPage = GlobalContext.WebSite.PerPagePostSize;
                 var totalPost = _postService.GetPublishedPostCount();
                 var stickyPost = _postService.LoadSpecialPosts(true, false);
                 var featuredPosts = _postService.LoadSpecialPosts(false,true);
@@ -61,6 +63,12 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             return Redirect("/SetupHome/Index");
         }
         
+        public JsonResult RemoveGlobalMessage(string id)
+        {
+            GlobalMessageRegistry.UnRegisterMessage(id);
+            return Json(new ApiResponse() { IsSuccess = true, Message = "Success" });
+        }
+
         public IActionResult ResourceNotFound()
         {
             return View();

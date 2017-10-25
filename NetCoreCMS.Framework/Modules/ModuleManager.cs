@@ -172,7 +172,7 @@ namespace NetCoreCMS.Framework.Modules
                         var widgetInstance = (Widget)serviceProvider.GetService(widgetType);                        
                         module.Widgets.Add(widgetInstance);
                         widgetList.Add(widgetInstance);
-                        GlobalConfig.Widgets.Add(widgetInstance);
+                        GlobalContext.Widgets.Add(widgetInstance);
                     }
                 }
             }

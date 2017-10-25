@@ -16,6 +16,7 @@ using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -107,7 +108,7 @@ namespace NetCoreCMS.Framework.Core.Services
         private void CopyNewData(NccMenu oldEntity, NccMenu entity)
         {                
             oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.ModifyBy = BaseModel.GetCurrentUserId();
+            oldEntity.ModifyBy = GlobalContext.GetCurrentUserId();
             oldEntity.Name = entity.Name;            
             oldEntity.Status = entity.Status;            
             oldEntity.MenuIconCls = entity.MenuIconCls;

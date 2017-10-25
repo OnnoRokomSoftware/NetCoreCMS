@@ -13,7 +13,7 @@ using System.Reflection;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccSettings : BaseModel, IBaseModel<long>
+    public class NccSettings : BaseModel<long>
     {
         public NccSettings()
         {

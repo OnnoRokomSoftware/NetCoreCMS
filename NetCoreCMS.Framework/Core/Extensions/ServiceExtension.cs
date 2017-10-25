@@ -98,6 +98,42 @@ namespace NetCoreCMS.Framework.Core.Extensions
         {
             var builder = new ContainerBuilder();
             
+            //builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
+            //builder.Register<SingleInstanceFactory>(ctx =>
+            //{
+            //    var c = ctx.Resolve<IComponentContext>();
+            //    return t => c.Resolve(t);
+            //});
+
+            //builder.Register<MultiInstanceFactory>(ctx =>
+            //{
+            //    var c = ctx.Resolve<IComponentContext>();
+            //    return t => (IEnumerable<object>)c.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
+            //});
+
+            ////Added into MediatR because default handlers are decleard at NetCoreCMS.Framework library.
+            //var coreFrameworkAssembly = typeof(NccInfo).Assembly;
+            //builder.RegisterAssemblyTypes(coreFrameworkAssembly).AsImplementedInterfaces();
+            //services.AddMediatR(coreFrameworkAssembly);
+
+            //foreach (var module in GlobalContext.GetActiveModules())
+            //{
+            //    builder.RegisterAssemblyTypes(module.Assembly).AsImplementedInterfaces();
+            //    services.AddMediatR(module.Assembly);
+            //}
+            
+            builder.RegisterInstance(configuration);
+            builder.RegisterInstance(hostingEnvironment);
+            builder.Populate(services);
+            var container = builder.Build();
+            
+            return container.Resolve<IServiceProvider>();
+        }
+
+        public static IServiceProvider BuildModules(this IServiceCollection services, IConfigurationRoot configuration, IHostingEnvironment hostingEnvironment)
+        {
+            var builder = new ContainerBuilder();
+
             builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
             builder.Register<SingleInstanceFactory>(ctx =>
             {
@@ -111,7 +147,12 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 return t => (IEnumerable<object>)c.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
             });
 
-            foreach (var module in GlobalConfig.Modules)
+            //Added into MediatR because default handlers are decleard at NetCoreCMS.Framework library.
+            var coreFrameworkAssembly = typeof(NccInfo).Assembly;
+            builder.RegisterAssemblyTypes(coreFrameworkAssembly).AsImplementedInterfaces();
+            services.AddMediatR(coreFrameworkAssembly);
+
+            foreach (var module in GlobalContext.GetActiveModules())
             {
                 builder.RegisterAssemblyTypes(module.Assembly).AsImplementedInterfaces();
                 services.AddMediatR(module.Assembly);
@@ -121,7 +162,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
             builder.RegisterInstance(hostingEnvironment);
             builder.Populate(services);
             var container = builder.Build();
-            
+
             return container.Resolve<IServiceProvider>();
         }
     }

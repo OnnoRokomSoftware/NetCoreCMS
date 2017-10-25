@@ -37,6 +37,16 @@ namespace NetCoreCMS.Framework.Themes
             RegisterNccResource(NccResource.ResourceType.CssFile, resourcePath, position, version, order, minify);            
         }
 
+        public static void RegisterJs(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
+        {
+            RegisterNccResource(NccResource.ResourceType.JsFile, resourcePath, position, version, order, minify);
+        }
+
+        public static void UnRegisterResource(NccResource.ResourceType type, string resourcePath)
+        {
+            UnRegisterNccResource(type,resourcePath);
+        }
+
         public static void RegisterResource(string resourceLibName)
         {
             if(resourceLibName == NccResource.JQuery)
@@ -68,12 +78,7 @@ namespace NetCoreCMS.Framework.Themes
         public static void RegisterResource(List<NccResource> resources)
         {
             _nccResources.AddRange(resources);
-        }
-
-        public static void RegisterJs(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
-        {
-            RegisterNccResource(NccResource.ResourceType.JsFile, resourcePath, position, version, order, minify);            
-        }
+        } 
 
         private static void RegisterNccResource(NccResource.ResourceType type, string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
         {
@@ -87,9 +92,28 @@ namespace NetCoreCMS.Framework.Themes
                 Version = version
             };
 
-            if(_nccResources.Where(x=>x.FilePath.ToLower() == resourcePath.ToLower()).Count() == 0)
+            var old = _nccResources.Where(x => x.FilePath.ToLower() == resourcePath.ToLower()).FirstOrDefault();
+
+            if (old != null)
+            {   
+                if(old.Version != version)
+                {
+                    _nccResources.Remove(old);
+                    _nccResources.Add(nccResource);
+                }                
+            }
+            else
             {
                 _nccResources.Add(nccResource);
+            }
+        }
+
+        private static void UnRegisterNccResource(NccResource.ResourceType type, string resourcePath)
+        {
+            var resource = _nccResources.Where(x => x.FilePath.ToLower() == resourcePath.ToLower()).FirstOrDefault();
+            if (resource != null)
+            {   
+                _nccResources.Remove(resource);
             }
         }
 
@@ -216,12 +240,12 @@ namespace NetCoreCMS.Framework.Themes
         #region Menu
         public static List<NccMenu> GetMenus(string menuLocation, string language)
         {
-            return GlobalConfig.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || x.MenuLanguage == "") ).ToList();
+            return GlobalContext.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || string.IsNullOrEmpty(x.MenuLanguage))).ToList();
         }
 
         public static string PrepareMenuHtml(string position)
         {
-            var menus = GlobalConfig.Menus.Where(x => x.Position == position).OrderBy(x => x.MenuOrder).ToList();
+            var menus = GlobalContext.Menus.Where(x => x.Position == position).OrderBy(x => x.MenuOrder).ToList();
             var menuTxt = "";
 
             foreach (var item in menus)
@@ -236,7 +260,7 @@ namespace NetCoreCMS.Framework.Themes
 
         public static string PrepareMenuHtml(string position, string currentLanguage)
         {
-            var menus = GlobalConfig.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();
+            var menus = GlobalContext.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();
             var menuTxt = "";
 
             foreach (var item in menus)
@@ -262,7 +286,7 @@ namespace NetCoreCMS.Framework.Themes
 
                     var subMenuText = "<li class=\"" + menuItemCls + "\">";
 
-                    if (!string.IsNullOrEmpty(currentLanguage) && GlobalConfig.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
+                    if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
                         subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
                     else
                         subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
@@ -333,7 +357,7 @@ namespace NetCoreCMS.Framework.Themes
             }
 
             url = urlPrefix + item.Url + data;
-            if (!string.IsNullOrEmpty(currentLanguage) && GlobalConfig.WebSite.IsMultiLangual && !IsExternalUrl(url))
+            if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(url))
             {
                 url = "/" + currentLanguage + url;
             }
@@ -352,14 +376,14 @@ namespace NetCoreCMS.Framework.Themes
         #endregion
 
         #region Widgets
-        public static List<NccWebSiteWidget> GetLayoutZoneWebsiteWidgets(string layout, string zone)
+        public static List<NccWebSiteWidget> GetWebsiteWidgets(string layout, string zone)
         {
-            return GlobalConfig.WebSiteWidgets.Where(x => x.LayoutName == layout && x.Zone == zone).ToList();
+            return GlobalContext.WebSiteWidgets.Where(x => x.LayoutName == layout && x.Zone == zone).ToList();
         }
 
         public static List<Widget> GetWidgets(string widgetId)
         {
-            return GlobalConfig.Widgets.Where(x => x.WidgetId == widgetId).ToList();
+            return GlobalContext.Widgets.Where(x => x.WidgetId == widgetId).ToList();
         }
 
         #endregion

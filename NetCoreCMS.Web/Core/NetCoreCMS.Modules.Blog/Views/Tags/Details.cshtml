@@ -75,44 +75,6 @@
             }
         }
 
-        @*@foreach (var item in Model.Posts)
-        {
-            var postDetails = item.Post.PostDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
-            if (postDetails == null)
-            {
-                postDetails = item.Post.PostDetails.FirstOrDefault();
-            }
-            if (postDetails != null)
-            {
-                <div style="border: dashed 1px gray;padding:10px 10px;">
-                    <h3>@postDetails.Title</h3>
-                    <p style="font-style:italic; font-size:12px;">
-                        Author:
-                        @if (item.Post.Author != null)
-                        { <span>@item.Post.Author.FullName</span> }
-                        else
-                        {<span>Anonymous</span> }
-                        <span> | Published Date: @item.Post.PublishDate.ToString("MMM dd, yyyy")</span>
-
-                        | <a href="#">@item.Post.Comments.Count() Comments</a>                       
-                    </p>
-
-                    <hr style="margin:0px;padding:0px;" />
-                    @{
-                        var len = postDetails.Content != null ? postDetails.Content.Length : 0;
-
-                        var content = postDetails.Content;
-                        if (len > 200)
-                        {
-                            len = 200;
-                            content = postDetails.Content?.Substring(0, len);
-                        }
-                        <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">More</a></p>
-                        }
-                </div>
-                <br />
-            }
-        }*@
     <hr />
     <a asp-controller="Tags" asp-action="Index" asp-route-id="0"> All Tags</a>
     </div>    

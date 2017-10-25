@@ -78,7 +78,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
             if (menuId > 0)
             {
-                NccMenu nccMenu = GlobalConfig.Menus.Where(x => x.Id == menuId).FirstOrDefault();
+                NccMenu nccMenu = GlobalContext.Menus.Where(x => x.Id == menuId).FirstOrDefault();
                 if (nccMenu != null)
                 {
                     ViewBag.SelectedLanguage = nccMenu.MenuLanguage;
@@ -166,7 +166,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 }
             }
 
-            GlobalConfig.Menus = _menuService.LoadAllSiteMenus();
+            GlobalContext.Menus = _menuService.LoadAllSiteMenus();
             ViewBag.MenuList = _menuService.LoadAll();
             //ApiResponse rsp = new ApiResponse();
             //rsp.IsSuccess = false;
@@ -194,7 +194,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
                 TempData["ErrorMessage"] = "Delete Failed";
             }
 
-            GlobalConfig.Menus = _menuService.LoadAllSiteMenus();
+            GlobalContext.Menus = _menuService.LoadAllSiteMenus();
 
             return RedirectToAction("Index", new { isManage = true });
         }
@@ -388,7 +388,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         #region Helper
         private void AddCmsMenuViewData()
         {
-            string lang = GlobalConfig.WebSite.IsMultiLangual ? "" : GlobalConfig.WebSite.Language;
+            string lang = GlobalContext.WebSite.IsMultiLangual ? "" : GlobalContext.WebSite.Language;
             ViewBag.RecentPages = _pageDetailsService.LoadRecentPageDetails(10, lang);            
             ViewBag.RecentPostDetails = _nccPostDetailsService.LoadRecentPostDetails(10,lang);            
             ViewBag.RecentCategoryDetails = _nccCategoryDetailsService.LoadRecentCategoryDetails(10, lang);            

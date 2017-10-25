@@ -12,7 +12,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPostDetails : BaseModel, IBaseModel<long>
+    public class NccPostDetails : BaseModel<long>
     { 
         public string Title { get; set; }
         public string Slug { get; set; }

@@ -14,7 +14,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPage : BaseModel, IBaseModel<long>
+    public class NccPage : BaseModel<long>
     { 
         public NccPage()
         {

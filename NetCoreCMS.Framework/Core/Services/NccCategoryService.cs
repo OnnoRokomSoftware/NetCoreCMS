@@ -15,6 +15,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -109,7 +110,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 tmpCategoryDetails.MetaDescription = item.MetaDescription;
                 tmpCategoryDetails.MetaKeyword = item.MetaKeyword;
                 tmpCategoryDetails.ModificationDate = creationDate;
-                tmpCategoryDetails.ModifyBy = BaseModel.GetCurrentUserId();
+                tmpCategoryDetails.ModifyBy = GlobalContext.GetCurrentUserId();
                 tmpCategoryDetails.Name = item.Name;
                 tmpCategoryDetails.Slug = item.Slug;
                 tmpCategoryDetails.Status = item.Status;

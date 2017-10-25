@@ -22,6 +22,10 @@
 
     <body id="body">
         
+        <!-- Container for showing global messages. -->
+        <div class="row">
+            @NccRenderGlobalMessages()
+        </div>
         <!-- Loading -->
         @NccRenderLoadingMaskContainer()
         <!-- Header -->
@@ -45,10 +49,6 @@
             <div class="col-md-@BodyWidth">
                 <!-- Featured -->
                 @NccRenderFeaturedSection()
-                <!-- Container for showing global messages. -->
-                <div class="row">
-                    @NccRenderGlobalMessageContainer()
-                </div>
                 @NccRenderBody()
             </div>
             <!-- Main content End -->

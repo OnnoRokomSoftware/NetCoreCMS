@@ -148,7 +148,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                 passwordValidatorList,
                 lookupNormalizer,
                 identityErrorDescriber,
-                GlobalConfig.App.ApplicationServices,
+                GlobalContext.App.ApplicationServices,
                 logger
             );
             

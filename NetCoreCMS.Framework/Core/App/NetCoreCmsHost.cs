@@ -11,7 +11,12 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
 using Microsoft.AspNetCore.Hosting;
+using NetCoreCMS.Framework.Core.Events.App;
+using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace NetCoreCMS.Framework.Core.App
 {
@@ -19,6 +24,11 @@ namespace NetCoreCMS.Framework.Core.App
     {
         public static bool IsRestartRequired { get; set; }
         public static string AppRootDirectory { get; set; }
+        public static IMediator Mediator { get; set; }
+        public static ILogger Logger{ get; set; }
+        public static HttpContext HttpContext { get; set; }
+        public static IServiceCollection Services { get; set; }
+        public static IServiceProvider ServiceProvider { get; set; }
 
         private static bool _isShutdown = false;
         private static int _heartBit = 2000;
@@ -35,6 +45,8 @@ namespace NetCoreCMS.Framework.Core.App
                 if (_starterThread.ThreadState == ThreadState.Unstarted)
                 {
                     _starterThread.Start(args);
+                    Thread.Sleep(5000);
+                    FireEvent(AppActivity.Type.Started);
                 }
 
                 while (_isShutdown == false)
@@ -64,10 +76,33 @@ namespace NetCoreCMS.Framework.Core.App
         {
             _starterThread = new Thread(webHostStarter);
             _starterThread.Start(args);
+            Thread.Sleep(5000);
+            FireEvent(AppActivity.Type.Started);
+        }
+
+        private static void FireEvent(AppActivity.Type started)
+        {
+            try
+            {
+                Mediator?.Send(
+                    new OnAppActivity(
+                        new AppActivity() {
+                            ActivityType = started,
+                            Context = HttpContext,
+                            Services = Services,
+                            ServiceProvider = ServiceProvider
+                        })
+                    );
+            }
+            catch (Exception ex)
+            {
+                Logger?.LogError(ex.Message);
+            }
         }
 
         public static async Task StopAppAsync(IWebHost webHost)
         {
+            FireEvent(AppActivity.Type.BeforeRestart);
             new Task(() => {
                 Thread.Sleep(1000);
                 webHost.StopAsync(new TimeSpan(0, 0, 3));

@@ -1,0 +1,171 @@
+﻿/*
+    Main color deep         : #324191
+    Main color light        : #3f51b5
+    Main color very light   : #34e8ee
+
+    Head txt color          : #FFF
+    Head sub txt color      : #d6e2ff
+    Head link color         : #FFF
+    
+    Body txt color          : #000
+    Body link color         : #324191
+    
+    Foot txt color          : #FFF
+    Foot link color         : #d6e2ff
+*/
+
+body h1 {
+    color: #324191;
+}
+
+body h2 {
+    color: #324191;
+}
+
+body h3 {
+    color: #324191;
+}
+
+body h4 {
+    color: #324191;
+}
+
+body h5 {
+    color: #324191;
+}
+
+body h6 {
+    color: #324191;
+}
+
+body {
+    background-color: #FFF;
+    color: #000;
+}
+
+    body a {
+        color: #324191;
+    }
+
+.topHeader {
+    /*background: var(--top-header-bg);*/
+    background-color: #324191;
+    color: #FFF;
+}
+
+    .topHeader h1 {
+        color: #FFF;
+    }
+
+.topLogo h4 {
+    color: #d6e2ff;
+}
+
+.topMenu a {
+    color: #FFF;
+}
+
+.navbar-default {
+    background-color: #3f51b5 !important;
+    border-color: #3f51b5;
+}
+
+    .navbar-default a {
+        color: #FFF !important;
+    }
+
+        .navbar-default a:hover {
+            background-color: #324191;
+        }
+
+    .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+        background-color: #324191;
+    }
+
+    .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+        background-color: #324191;
+    }
+
+.navbar-brand {
+    color: #FFF !important;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #FFF;
+}
+
+    .navbar-default .navbar-toggle .icon-bar {
+        background-color: #FFF;
+    }
+
+.dropdown-menu {
+    background-color: #3f51b5;
+}
+
+    .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+        background-color: #3f51b5;
+    }
+
+    .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+        background-color: #324191;
+    }
+
+.selectLanguage select {
+    background-color: #324191;
+    border-color: #3f51b5;
+    color: #FFF;
+}
+
+    .selectLanguage select:hover {
+        background-color: #324191;
+        border-color: #3f51b5;
+        color: #FFF;
+    }
+
+    .selectLanguage select option {
+        background-color: #324191;
+        border-color: #3f51b5;
+        color: #FFF;
+    }
+
+footer {
+    background-color: #3f51b5;
+    color: #FFF;
+}
+
+    footer h4 {
+        color: #d6e2ff;
+    }
+
+    footer h5 {
+        color: #d6e2ff;
+    }
+
+.footer-bottom {
+    background-color: #324191;
+}
+
+footer a {
+    color: #d6e2ff;
+}
+
+    footer a:hover {
+        color: #d6e2ff;
+    }
+
+
+.label-primary {
+    background-color: #324191;
+}
+
+.label-info {
+    background-color: #34e8ee;
+}
+
+.panel-primary {
+    border-color: #324191;
+}
+
+    .panel-primary .panel-heading {
+        background-color: #324191;
+    }

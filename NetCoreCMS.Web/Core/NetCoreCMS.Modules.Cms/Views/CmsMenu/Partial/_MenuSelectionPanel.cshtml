@@ -33,7 +33,7 @@
                                     {
                                         <div class="checkbox">
                                             <label>
-                                                @if (GlobalConfig.WebSite.IsMultiLangual)
+                                                @if (GlobalContext.WebSite.IsMultiLangual)
                                                 {
                                                     <span><input type="checkbox" class="recentPagesCheckBoxList" value="@item.Id" ncc-title="@item.Title" ncc-slug="@item.Slug">@item.Title                                                 (@item.Language)</span>
                                                 }
@@ -49,7 +49,7 @@
                         </div>
                         <div id="searchPages" class="tab-pane fade in">
                             <div class="panel-body finalPanelBodyPageHeight" style="">
-                                @if (GlobalConfig.WebSite.IsMultiLangual)
+                                @if (GlobalContext.WebSite.IsMultiLangual)
                                     {
                                     <div class="col-sm-8" style="padding:0;margin:0;">
                                         <input type="text" id="searchPage" class="form-control" />
@@ -109,7 +109,7 @@
                                     {
                                         <div class="checkbox">
                                             <label>
-                                                @if (GlobalConfig.WebSite.IsMultiLangual)
+                                                @if (GlobalContext.WebSite.IsMultiLangual)
                                                 {
                                                     <span><input type="checkbox" class="recentPostCheckBoxList" value="@item.Id" ncc-title="@item.Title" ncc-slug="@item.Slug">@item.Title (@item.Language)</span>
                                                 }
@@ -125,7 +125,7 @@
                         </div>
                         <div id="searchPosts" class="tab-pane fade in">
                             <div class="panel-body finalPanelBodyPageHeight">
-                                @if (GlobalConfig.WebSite.IsMultiLangual)
+                                @if (GlobalContext.WebSite.IsMultiLangual)
                                 {
                                     <div class="col-sm-8" style="padding:0;margin:0;">
                                         <input type="text" id="searchPost" class="form-control" />
@@ -190,7 +190,7 @@
                                     {
                                         <div class="checkbox">
                                             <label>
-                                                @if (GlobalConfig.WebSite.IsMultiLangual)
+                                                @if (GlobalContext.WebSite.IsMultiLangual)
                                                 {
                                                     <span><input type="checkbox" class="recentCategoryCheckBoxList" value="@item.Id" ncc-title="@item.Name" ncc-slug="@item.Slug">@item.Title (@item.Language)</span>
                                                 }
@@ -206,7 +206,7 @@
                         </div>
                         <div id="searchCategories" class="tab-pane fade in">
                             <div class="panel-body finalPanelBodyPageHeight">
-                                @if (GlobalConfig.WebSite.IsMultiLangual)
+                                @if (GlobalContext.WebSite.IsMultiLangual)
                                 {
                                     <div class="col-sm-8" style="padding:0;margin:0;">
                                         <input type="text" id="searchCategory" class="form-control" />

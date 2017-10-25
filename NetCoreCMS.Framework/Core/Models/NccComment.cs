@@ -12,12 +12,27 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccComment : BaseModel, IBaseModel<long>
+    public class NccComment : BaseModel<long>
     { 
         public string Title { get; set; }
         public string Content { get; set; }
 
         public NccPost Post { get; set; }
-        public NccUser Author { get; set; } 
+        public NccUser Author { get; set; }
+
+        public string AuthorName { get; set; }
+        public string Email { get; set; }
+        public string WebSite { get; set; }
+        public Status CommentStatus { get; set; }
+
+        public enum Status
+        {
+            New,
+            Approved,
+            Rejected,
+            Spam
+        }
     }
+
+    
 }

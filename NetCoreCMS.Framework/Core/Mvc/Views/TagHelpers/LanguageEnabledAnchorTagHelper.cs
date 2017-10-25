@@ -51,7 +51,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
             base.Process(context, output);
             TagHelperAttribute href;
 
-            if (GlobalConfig.WebSite != null && GlobalConfig.WebSite.IsMultiLangual)
+            if (GlobalContext.WebSite != null && GlobalContext.WebSite.IsMultiLangual)
             {
                 var lang = _nccLanguageDetector.GetCurrentLanguage();
                 if (context.AllAttributes["asp-action"] != null && context.AllAttributes["asp-controller"] != null)

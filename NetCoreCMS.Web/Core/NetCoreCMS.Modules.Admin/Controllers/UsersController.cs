@@ -201,7 +201,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
 
                     if (result.Succeeded)
                     {
-                        var webSite = GlobalConfig.WebSite.DomainName;
+                        var webSite = GlobalContext.WebSite.DomainName;
                         if (!webSite.StartsWith("http")) {
                             webSite = "http://" + webSite;
                         }

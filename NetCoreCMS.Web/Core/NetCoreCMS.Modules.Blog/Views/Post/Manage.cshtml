@@ -48,7 +48,7 @@
                         {
                             <tr>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PostDetails.Count; i++)
                                         {
@@ -61,7 +61,7 @@
                                     }
                                     else
                                     {
-                                        <span>@item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Title</span>
+                                        <span>@item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Title</span>
                                     }
                                 </td>
                                 @*<td>
@@ -92,7 +92,7 @@
                                     }
                                 </td>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PostDetails.Count; i++)
                                         {
@@ -108,7 +108,7 @@
                                     }
                                     else
                                     {
-                                        var mk = item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().MetaKeyword;
+                                        var mk = item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().MetaKeyword;
                                         if (!string.IsNullOrEmpty(mk))
                                         {
                                             <span>@mk</span>
@@ -116,7 +116,7 @@
                                     }
                                 </td>
                                 <td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         for (var i = 0; i < item.PostDetails.Count; i++)
                                         {
@@ -132,7 +132,7 @@
                                     }
                                     else
                                     {
-                                        var md = item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().MetaDescription;
+                                        var md = item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().MetaDescription;
                                         if (!string.IsNullOrEmpty(md))
                                         {
                                             <span>@md</span>
@@ -157,18 +157,18 @@
                                 <td style="text-align:center;">
                                     <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="@item.Id" class="btn btn-outline btn-success btn-xs">Edit</a>
                                     <a asp-controller="@controllerName" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline btn-danger btn-xs">Delete</a>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
+                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
                                     {
                                         <hr />
                                         for (var i = 0; i < item.PostDetails.Count; i++)
                                         {
-                                            <a asp-controller="@controllerName" asp-action="Details" asp-route-slug="@item.PostDetails[i].Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PostDetails[i].Language</a>
+                                            <a href="/@item.PostDetails[i].Language/Post/@item.PostDetails[i].Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PostDetails[i].Language</a>
                                         }
                                     }
                                     else
                                     {
-                                        <a asp-controller="@controllerName" asp-action="Details" asp-route-slug="@item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug" target="_blank">
-                                            View-@item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Language
+                                        <a href="/Post/@item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug" target="_blank">
+                                            View-@item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language
                                         </a>
                                     }
                                 </td>
@@ -183,8 +183,6 @@
         <!-- /.panel -->
     </div>
 </div>
-
-
 
 @section Scripts{
     <link href="~/lib/DataTables/dataTables.bootstrap.css" rel="stylesheet" />

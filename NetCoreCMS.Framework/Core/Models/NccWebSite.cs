@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccWebSite : BaseModel, IBaseModel<long>
+    public class NccWebSite : BaseModel<long>
     {
         public NccWebSite()
         {

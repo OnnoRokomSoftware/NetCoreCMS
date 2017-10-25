@@ -7,7 +7,8 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
+ using System; 
 using System.Linq;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Modules;
@@ -16,18 +17,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Themes;
-using System;
+
 using NetCoreCMS.Framework.Setup;
 using System.Collections;
+using Microsoft.AspNetCore.Http;
+using NetCoreCMS.Framework.Core.Mvc.Extensions;
 
 namespace NetCoreCMS.Framework.Utility
 {
-    public class GlobalConfig
+    /// <summary>
+    /// NetCoreCMS Global Context. This class contains Running WebSite, Theme, Modules and Widgets.
+    /// </summary>
+    public class GlobalContext
     {
-        public GlobalConfig()
-        {
-            
-        }
+        /// <summary>
+        /// WebSite contains running website's basic information like Title, Slogan, Logo Image, Default Language etc.
+        /// </summary>
         public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<IModule> Modules { get; set; } = new List<IModule>();
@@ -65,6 +70,32 @@ namespace NetCoreCMS.Framework.Utility
             {
                 Widgets.AddRange(item.Widgets);
             }
+        }
+
+        public static long GetCurrentUserId()
+        {
+            HttpContextAccessor hca = new HttpContextAccessor();
+            long? userId = hca.HttpContext?.User?.GetUserId();
+            if (userId == null)
+                return 0;
+            return userId.Value;
+        }
+
+        public static Theme GetThemeByName(string themeName)
+        {
+            return Themes.Where(x => x.ThemeName == themeName).FirstOrDefault();
+        } 
+
+        public static string GetCurrentUserName()
+        {
+            HttpContextAccessor hca = new HttpContextAccessor();
+            string userName = hca.HttpContext?.User?.Identity.Name;
+            return userName;
+        }
+
+        public static IModule GetModuleByModuleId(string moduleId)
+        {
+            return Modules.Where(x => x.ModuleId == moduleId).FirstOrDefault();
         }
     }
 }

@@ -23,7 +23,7 @@
                     <form id="deleteForm" class="form-horizontal" asp-controller="@controllerName" asp-action="Delete" method="post">
 
                         <div class="col-sm-8 pull-left">
-                            <h3>Are you sure you want to delete <strong>@Model.Title</strong> ?</h3>
+                            <h3>Are you sure you want to delete <strong>@Model.Name</strong> ?</h3>
                             <div class="col-md-12">
                                 <input type="hidden" id="Id" name="Id" value="@Model.Id" />
                                 <a class="btn btn-default" asp-action="Manage">No</a>

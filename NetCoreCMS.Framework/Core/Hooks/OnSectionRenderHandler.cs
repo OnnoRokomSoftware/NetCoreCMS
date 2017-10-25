@@ -7,14 +7,17 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
+ 
+using MediatR;
+using NetCoreCMS.Framework.Core.Events.Themes;
 
-using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace NetCoreCMS.Themes.NccSeventeen.Lib
+namespace NetCoreCMS.Framework.Core.Hooks
 {
-    public class ThemeTranslation
-    {
+    public class OnSectionRenderHandler : IRequestHandler<OnThemeSectionRender, ThemeSection>
+    {    
+        public ThemeSection Handle(OnThemeSectionRender message)
+        { 
+            return message.Data;
+        }     
     }
 }

@@ -12,7 +12,7 @@
   "MaxNccVersion": "0.4.3",
   "Category": "Default",
   "PreviewImage": "screenshot.png",
-  "IsActive": false,
+  "IsActive": true,
   "MenuLocations": [
     "Top",
     "Navigation",
@@ -95,6 +95,8 @@
     }
   ],
   "Settings": {
+    "style": "blue-skin.css",
+    "version": 3.8000000000000025,
     "NccVersion": "0.4.1"
   }
 }

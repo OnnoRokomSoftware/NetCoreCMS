@@ -48,7 +48,7 @@ namespace NetCoreCMS.Framework.Setup
         public static SetupConfig SaveSetup()
         {
             var config = new SetupConfig();
-            var rootDir = GlobalConfig.ContentRootPath;
+            var rootDir = GlobalContext.ContentRootPath;
             using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create))
             {
                 using (StreamWriter sw = new StreamWriter(file))
@@ -78,7 +78,7 @@ namespace NetCoreCMS.Framework.Setup
         public static SetupConfig LoadSetup()
         {
             var config = new SetupConfig();
-            var rootDir = GlobalConfig.ContentRootPath;
+            var rootDir = GlobalContext.ContentRootPath;
             var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using (StreamReader sr = new StreamReader(file))
             {
@@ -102,7 +102,7 @@ namespace NetCoreCMS.Framework.Setup
 
         public static void UpdateSetup(SetupConfig setupConfig)
         {
-            var rootDir = GlobalConfig.ContentRootPath;
+            var rootDir = GlobalContext.ContentRootPath;
             using (var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite))
             {
                 using (StreamWriter sw = new StreamWriter(file))
@@ -238,20 +238,20 @@ namespace NetCoreCMS.Framework.Setup
             switch (dbe)
             {
                 case DatabaseEngine.MSSQL:
-                    GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
+                    GlobalContext.Services.AddDbContext<NccDbContext>(options =>
                         options.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
                     );                    
                     break;
                 case DatabaseEngine.MsSqlLocalStorage:
                     break;
                 case DatabaseEngine.MySql:
-                    GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
+                    GlobalContext.Services.AddDbContext<NccDbContext>(options =>
                         options.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
                     );
                     
                     break;
                 case DatabaseEngine.SqLite:
-                    GlobalConfig.Services.AddDbContext<NccDbContext>(options =>
+                    GlobalContext.Services.AddDbContext<NccDbContext>(options =>
                         options.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"))
                     );
                     
@@ -260,7 +260,7 @@ namespace NetCoreCMS.Framework.Setup
                     break;
             }
             
-            GlobalConfig.Services.AddCustomizedIdentity();
+            GlobalContext.Services.AddCustomizedIdentity();
             
         }
     }

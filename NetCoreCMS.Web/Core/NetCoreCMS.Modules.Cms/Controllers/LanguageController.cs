@@ -114,7 +114,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
         private List<TranslationFile> GetModuleResources()
         {
             var list = new List<TranslationFile>();
-            foreach (var item in GlobalConfig.Modules)
+            foreach (var item in GlobalContext.Modules)
             {
                 var resourceFolder = "\\Bin\\Debug\\netcoreapp2.0\\Resources";
                 if (RuntimeUtil.IsRelease(item.Assembly))
@@ -129,10 +129,10 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
 
         private List<TranslationFile> GetSiteResources()
         {
-            var resourceFolder = GlobalConfig.ContentRootPath + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
+            var resourceFolder = GlobalContext.ContentRootPath + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
             if (RuntimeUtil.IsRelease(GetType().Assembly))
             {
-                resourceFolder = GlobalConfig.ContentRootPath + "\\Bin\\Release\\netcoreapp2.0\\Resources";
+                resourceFolder = GlobalContext.ContentRootPath + "\\Bin\\Release\\netcoreapp2.0\\Resources";
             }
             var translationFileList = GetTranslationFiles("Website",resourceFolder);
             return translationFileList;

@@ -138,7 +138,7 @@ namespace NetCoreCMS.Modules.DemoData
             string postCategoryQuery = "";
             string postTagQuery = "";
             #endregion
-            if (GlobalConfig.WebSite.Language == "bn")
+            if (GlobalContext.WebSite.Language == "bn")
             {
                 pageName = "টেস্ট-পৃষ্ঠা-";
                 categoryName = "টেস্ট-ক্যাটাগরি-";

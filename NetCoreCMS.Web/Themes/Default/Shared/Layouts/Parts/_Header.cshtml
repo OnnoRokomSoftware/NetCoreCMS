@@ -16,7 +16,7 @@
 
         <!-- Zone TOP Start-->
         <div id="topMenu" class="topMenu pull-right">
-            @if (GlobalConfig.WebSite.IsMultiLangual == true)
+            @if (GlobalContext.WebSite.IsMultiLangual == true)
             {
                 @await Html.PartialAsync("_SelectLanguagePartial")
             }
@@ -44,7 +44,7 @@
         </div>
         <div class="topWidgetZone">
             @{
-                var zoneTopWidgets = ThemeHelper.GetLayoutZoneWebsiteWidgets(CurrentLayout, ThemeResources.Zones.TopBar);
+                var zoneTopWidgets = ThemeHelper.GetWebsiteWidgets(CurrentLayout, ThemeResources.Zones.TopBar);
                 if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
                 {
                     <div style="width:100%;">

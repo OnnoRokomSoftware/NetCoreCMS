@@ -15,7 +15,7 @@ using System.Text;
 
 namespace NetCoreCMS.HelloWorld.Models
 {
-    public class HelloModel : BaseModel
+    public class HelloModel : BaseModel<long>
     {
         public string Hello { get; set; }
     }

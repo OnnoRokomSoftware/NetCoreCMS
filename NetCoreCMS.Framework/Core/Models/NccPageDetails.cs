@@ -13,7 +13,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccPageDetails : BaseModel, IBaseModel<long>
+    public class NccPageDetails : BaseModel<long>
     { 
         public string Title { get; set; }      
         public string Slug { get; set; }

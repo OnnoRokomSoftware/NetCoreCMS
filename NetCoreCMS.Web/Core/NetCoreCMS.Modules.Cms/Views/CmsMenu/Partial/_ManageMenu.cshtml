@@ -12,7 +12,7 @@
             <th>Sl</th>
             <th>Name</th>
             <th>Position</th>
-            @if (GlobalConfig.WebSite.IsMultiLangual)
+            @if (GlobalContext.WebSite.IsMultiLangual)
             {
                 <th>Language</th>
             }
@@ -28,7 +28,7 @@
                 <td>@i</td>
                 <td>@item.Name</td>
                 <td>@item.Position</td>
-                @if (GlobalConfig.WebSite.IsMultiLangual)
+                @if (GlobalContext.WebSite.IsMultiLangual)
                 {
                     <td>
                         @if (string.IsNullOrEmpty(item.MenuLanguage))

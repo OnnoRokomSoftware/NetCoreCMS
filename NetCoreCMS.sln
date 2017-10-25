@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.15
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Modules", "Modules", "{BDDA4695-6AA7-4A2D-A82E-33C64576477D}"
 EndProject
@@ -49,6 +49,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CI", "CI", "{F7084817-F71D-
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
+		run-tests.ps1 = run-tests.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{CFA79569-C10B-4759-A030-E274D3134353}"
@@ -62,6 +63,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeDoc", "CodeDoc", "{BFCDA449-EA19-4008-BE17-62C5BA41C648}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Books", "Books", "{48B15CD7-9945-424A-8C56-1AC7FAE83405}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Framework.Test", "NetCoreCMS.UnitTests\NetCoreCMS.Framework.Test\NetCoreCMS.Framework.Test.csproj", "{F8319A42-491D-4552-AA46-155EBEA9D6A8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.Lib", "NetCoreCMS.UnitTests\UnitTests.Lib\UnitTests.Lib.csproj", "{BAECEC38-598A-48EF-AD04-8DA8E28F0806}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -121,6 +126,14 @@ Global
 		{EE759F4F-9E57-4DDC-AF93-6A14DD5A3E33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE759F4F-9E57-4DDC-AF93-6A14DD5A3E33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE759F4F-9E57-4DDC-AF93-6A14DD5A3E33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8319A42-491D-4552-AA46-155EBEA9D6A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8319A42-491D-4552-AA46-155EBEA9D6A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8319A42-491D-4552-AA46-155EBEA9D6A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8319A42-491D-4552-AA46-155EBEA9D6A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAECEC38-598A-48EF-AD04-8DA8E28F0806}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAECEC38-598A-48EF-AD04-8DA8E28F0806}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAECEC38-598A-48EF-AD04-8DA8E28F0806}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAECEC38-598A-48EF-AD04-8DA8E28F0806}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -144,6 +157,8 @@ Global
 		{E3B21E80-B9D0-4E47-8688-011242E3BD54} = {B8921F6F-C83E-4873-B322-3DF82E1D4B74}
 		{BFCDA449-EA19-4008-BE17-62C5BA41C648} = {B8921F6F-C83E-4873-B322-3DF82E1D4B74}
 		{48B15CD7-9945-424A-8C56-1AC7FAE83405} = {B8921F6F-C83E-4873-B322-3DF82E1D4B74}
+		{F8319A42-491D-4552-AA46-155EBEA9D6A8} = {CFA79569-C10B-4759-A030-E274D3134353}
+		{BAECEC38-598A-48EF-AD04-8DA8E28F0806} = {CFA79569-C10B-4759-A030-E274D3134353}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8DF1B167-7690-4003-AA5C-3EA5712DEC16}

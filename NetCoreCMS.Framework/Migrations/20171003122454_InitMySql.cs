@@ -819,7 +819,11 @@ namespace NetCoreCMS.Framework.Migrations
                     PostId = table.Column<long>(type: "bigint", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "longtext", nullable: true),
-                    VersionNumber = table.Column<int>(type: "int", nullable: false)
+                    AuthorName = table.Column<string>(type: "longtext", nullable: true),
+                    Email = table.Column<string>(type: "longtext", nullable: true),
+                    WebSite = table.Column<string>(type: "longtext", nullable: true),
+                    VersionNumber = table.Column<int>(type: "int", nullable: false),
+                    CommentStatus = table.Column<int>(type: "int", nullable: true),
                 },
                 constraints: table =>
                 {

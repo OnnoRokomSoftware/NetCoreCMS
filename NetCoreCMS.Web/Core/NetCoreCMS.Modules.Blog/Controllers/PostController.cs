@@ -70,7 +70,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             post.PostStatus = NccPost.NccPostStatus.Draft;
 
             NccPostDetails nccPostDetails = new NccPostDetails();
-            nccPostDetails.Language = GlobalConfig.WebSite.Language;
+            nccPostDetails.Language = GlobalContext.WebSite.Language;
             post.PostDetails.Add(nccPostDetails);
 
             if (Id > 0)
@@ -78,7 +78,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 post = _nccPostService.Get(Id);
             }
 
-            if (GlobalConfig.WebSite.IsMultiLangual)
+            if (GlobalContext.WebSite.IsMultiLangual)
             {
                 foreach (var item in SupportedCultures.Cultures)
                 {
@@ -107,7 +107,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 bool isSuccess = true;
 
                 #region For default language
-                var defaultPostDetails = model.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                var defaultPostDetails = model.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                 if (defaultPostDetails == null)
                 {
                     isSuccess = false;
@@ -146,7 +146,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
 
                 #region Check validation for other languages 
                 List<NccPostDetails> deletedList = new List<NccPostDetails>();
-                foreach (var item in model.PostDetails.Where(x => x.Language != GlobalConfig.WebSite.Language).ToList())
+                foreach (var item in model.PostDetails.Where(x => x.Language != GlobalContext.WebSite.Language).ToList())
                 {
                     if (item.Id == 0 && string.IsNullOrEmpty(item.Title) && string.IsNullOrEmpty(item.Slug) && string.IsNullOrEmpty(item.Content) && string.IsNullOrEmpty(item.MetaKeyword) && string.IsNullOrEmpty(item.MetaDescription))
                     {

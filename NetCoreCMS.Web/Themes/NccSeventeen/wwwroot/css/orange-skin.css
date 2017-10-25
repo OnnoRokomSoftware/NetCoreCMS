@@ -1,0 +1,166 @@
+﻿/*
+    Main color deep         : #d93d00
+    Main color light        : #ec4200
+    Main color very light   : #ff6b00
+
+    Head txt color          : #FFF
+    Head sub txt color      : #DDD
+    Head link color         : #FFF
+    
+    Body txt color          : #000
+    Body link color         : #d93d00
+    
+    Foot txt color          : #FFF
+    Foot link color         : #DDD
+*/
+
+body h1 {
+    color: #d93d00;
+}
+
+body h2 {
+    color: #d93d00;
+}
+
+body h3 {
+    color: #d93d00;
+}
+
+body h4 {
+    color: #d93d00;
+}
+
+body h5 {
+    color: #d93d00;
+}
+
+body h6 {
+    color: #d93d00;
+}
+
+body {
+    background-color: #FFF;
+    color: #000;
+}
+
+    body a {
+        color: #d93d00;
+    }
+
+.topHeader {
+    /*background: var(--top-header-bg);*/
+    background-color: #d93d00;
+    color: #FFF;
+}
+
+    .topHeader h1 {
+        color: #FFF;
+    }
+
+.topLogo h4 {
+    color: #DDD;
+}
+
+.topMenu a {
+    color: #FFF;
+}
+
+.navbar-default {
+    background-color: #ec4200 !important;
+    border-color: #ec4200;
+}
+
+    .navbar-default a {
+        color: #FFF !important;
+    }
+
+        .navbar-default a:hover {
+            background-color: #d93d00;
+        }
+
+    .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+        background-color: #d93d00;
+    }
+
+    .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus {
+        background-color: #d93d00;
+    }
+
+.navbar-brand {
+    color: #FFF !important;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #FFF;
+}
+
+    .navbar-default .navbar-toggle .icon-bar {
+        background-color: #FFF;
+    }
+
+.dropdown-menu {
+    background-color: #ec4200;
+}
+
+    .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus {
+        background-color: #ec4200;
+    }
+
+    .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
+        background-color: #d93d00;
+    }
+
+.selectLanguage select {
+    background-color: #d93d00;
+    border-color: #ec4200;
+    color: #FFF;
+}
+
+    .selectLanguage select:hover {
+        background-color: #d93d00;
+        border-color: #ec4200;
+        color: #FFF;
+    }
+
+    .selectLanguage select option {
+        background-color: #d93d00;
+        border-color: #ec4200;
+        color: #FFF;
+    }
+
+footer {
+    background-color: #ec4200;
+    color: #FFF;
+}
+    footer h4 {
+        color: #DDD;
+    }
+
+    footer h5 {
+        color: #DDD;
+    }
+.footer-bottom {
+    background-color: #d93d00;
+}
+
+footer a {
+    color: #DDD;
+}
+    footer a:hover {
+        color: #DDD;
+    }
+
+
+.label-primary{
+    background-color:#d93d00;
+}
+.label-info {
+    background-color: #ff6b00;
+}
+.panel-primary {
+    border-color: #d93d00;
+}
+
+    .panel-primary .panel-heading {
+        background-color: #d93d00;
+    }

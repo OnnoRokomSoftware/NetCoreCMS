@@ -12,7 +12,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccStartup : BaseModel, IBaseModel<long>
+    public class NccStartup : BaseModel<long>
     {  
         public long UserId { get; set; }
         //public NccUser User { get; set; }

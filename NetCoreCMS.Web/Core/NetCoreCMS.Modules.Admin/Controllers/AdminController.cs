@@ -105,11 +105,11 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             if (webSite.WebSiteInfos.Count <= 0)
             {
                 NccWebSiteInfo _item = new NccWebSiteInfo();
-                _item.Language = GlobalConfig.WebSite.Language;
+                _item.Language = GlobalContext.WebSite.Language;
                 webSite.WebSiteInfos.Add(_item);
             }
 
-            if (GlobalConfig.WebSite.IsMultiLangual)
+            if (GlobalContext.WebSite.IsMultiLangual)
             {
                 foreach (var item in SupportedCultures.Cultures)
                 {
@@ -132,7 +132,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             ViewBag.MessageType = "ErrorMessage";
             ViewBag.Message = "Error occoured. Please fill up all field correctly.";
 
-            bool isMultiLanguageChange = GlobalConfig.WebSite.IsMultiLangual == website.IsMultiLangual ? false : true;
+            bool isMultiLanguageChange = GlobalContext.WebSite.IsMultiLangual == website.IsMultiLangual ? false : true;
 
             if (ModelState.IsValid)
             {
@@ -140,7 +140,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                 bool isSuccess = true;
 
                 #region For default language
-                var defaultLangDetails = website.WebSiteInfos.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                var defaultLangDetails = website.WebSiteInfos.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                 if (defaultLangDetails == null)
                 {
                     isSuccess = false;
@@ -159,7 +159,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
 
                 #region Check validation for other languages 
                 List<NccWebSiteInfo> deletedList = new List<NccWebSiteInfo>();
-                foreach (var item in website.WebSiteInfos.Where(x => x.Language != GlobalConfig.WebSite.Language).ToList())
+                foreach (var item in website.WebSiteInfos.Where(x => x.Language != GlobalContext.WebSite.Language).ToList())
                 {
                     if (item.Id == 0 && string.IsNullOrEmpty(item.SiteTitle) && string.IsNullOrEmpty(item.Name) && string.IsNullOrEmpty(item.Tagline) && string.IsNullOrEmpty(item.Copyrights) && string.IsNullOrEmpty(item.PrivacyPolicyUrl))
                     {
@@ -189,7 +189,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                 if (isSuccess)
                 {
                     _webSiteService.Update(website);
-                    GlobalConfig.WebSite = website;
+                    GlobalContext.WebSite = website;
                     ThemeHelper.WebSite = website;
                     SetupHelper.LoadSetup();
                     SetupHelper.Language = website.Language;
@@ -218,7 +218,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             //var cultures = SupportedCultures.Cultures;
             //ViewBag.Languages = new SelectList(cultures.Select(x => new { Value = x.TwoLetterISOLanguageName.ToLower(), Text = x.NativeName.ToString() }).ToList(), "Value", "Text", SetupHelper.Language);
 
-            if (GlobalConfig.WebSite.IsMultiLangual)
+            if (GlobalContext.WebSite.IsMultiLangual)
             {
                 foreach (var item in SupportedCultures.Cultures)
                 {
@@ -305,7 +305,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                 {
                     try
                     {
-                        var logFilePath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder + "\\" + logFileName;
+                        var logFilePath = GlobalContext.ContentRootPath + "\\" + NccInfo.LogFolder + "\\" + logFileName;
                         var originalFileStream = System.IO.File.Open(logFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
                         MemoryStream zipStream = new MemoryStream();
                         using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
@@ -338,7 +338,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         private Dictionary<string, string> ListLogFiles()
         {
             var dict = new Dictionary<string, string>();
-            var logFolderPath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder;
+            var logFolderPath = GlobalContext.ContentRootPath + "\\" + NccInfo.LogFolder;
             var files = Directory.GetFiles(logFolderPath);
             foreach (var item in files)
             {
@@ -351,7 +351,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
         public FileResult DownloadAllLogs()
         {
             var dict = new Dictionary<string, string>();
-            var logFolderPath = GlobalConfig.ContentRootPath + "\\" + NccInfo.LogFolder;
+            var logFolderPath = GlobalContext.ContentRootPath + "\\" + NccInfo.LogFolder;
 
             MemoryStream zipStream = new MemoryStream();
             using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
@@ -403,7 +403,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                     {
                         TempData["ErrorMessage"] = "Page not found.";
                     }
-                    var pageDetails = page.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                    var pageDetails = page.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                     if (pageDetails == null)
                     {
                         TempData["ErrorMessage"] = "Page for default language not found.";
@@ -421,7 +421,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                     {
                         TempData["ErrorMessage"] = "Post not found.";
                     }
-                    var postDetails = post.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                    var postDetails = post.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                     if (postDetails == null)
                     {
                         TempData["ErrorMessage"] = "Post for default language not found.";
@@ -439,7 +439,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                     {
                         TempData["ErrorMessage"] = "Category not found.";
                     }
-                    var categoryDetails = category.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                    var categoryDetails = category.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                     if (categoryDetails == null)
                     {
                         TempData["ErrorMessage"] = "Category for default language not found.";
@@ -468,7 +468,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                 }
 
                 SetupHelper.UpdateSetup(setupConfig);
-                GlobalConfig.SetupConfig = setupConfig;
+                GlobalContext.SetupConfig = setupConfig;
 
             }
             catch (Exception ex)
@@ -600,7 +600,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                 {
                     TempData["ErrorMessage"] = "Page not found.";
                 }
-                var pageDetails = page.PageDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                var pageDetails = page.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                 if (pageDetails == null)
                 {
                     TempData["ErrorMessage"] = "Page for default language not found.";
@@ -617,7 +617,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                 {
                     TempData["ErrorMessage"] = "Post not found.";
                 }
-                var postDetails = post.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                var postDetails = post.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                 if (postDetails == null)
                 {
                     TempData["ErrorMessage"] = "Post for default language not found.";
@@ -634,7 +634,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                 {
                     TempData["ErrorMessage"] = "Category not found.";
                 }
-                var categoryDetails = category.CategoryDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault();
+                var categoryDetails = category.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
                 if (categoryDetails == null)
                 {
                     TempData["ErrorMessage"] = "Category for default language not found.";

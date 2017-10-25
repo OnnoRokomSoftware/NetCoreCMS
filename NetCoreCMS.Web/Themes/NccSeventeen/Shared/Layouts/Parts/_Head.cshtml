@@ -1,53 +1,43 @@
 ﻿@{
-    /*Special Calculation for left and right column show hide*/
-    int bodyClassWidth = 12;
-    bool hasLeftColumn = false;
-    bool hasRightColumn = false;
-
-    var menusLeft = GlobalConfig.Menus.Where(x => x.Position == "LeftColumn").ToList();
-    var zoneLeftWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "LeftSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-    if ((menusLeft != null && menusLeft.Count > 0) || (zoneLeftWidgets != null && zoneLeftWidgets.Count > 0))
-    {
-        hasLeftColumn = true;
-        bodyClassWidth = bodyClassWidth - 2;
-    }
-
-    var menusRight = GlobalConfig.Menus.Where(x => x.Position == "RightColumn").ToList();
-    var zoneRightWidgets = GlobalConfig.WebSiteWidgets.Where(x => x.Zone == "RightSidebar" && x.LayoutName == ViewBag.CurrentLayout).ToList();
-    if ((menusRight != null && menusRight.Count > 0) || (zoneRightWidgets != null && zoneRightWidgets.Count > 0))
-    {
-        hasRightColumn = true;
-        bodyClassWidth = bodyClassWidth - 2;
-    }
-    this.ViewContext.HttpContext.Items["bodyClassWidth"] = bodyClassWidth;
-    this.ViewContext.HttpContext.Items["hasLeftColumn"] = hasLeftColumn;
-    this.ViewContext.HttpContext.Items["hasRightColumn"] = hasRightColumn;
-    /*Special Calculation for left and right column show hide*/
-
-    /* Getting Current Language */
-
-    string currentLanguage = LanguageDetector.GetCurrentLanguage(); 
-    NccTranslator<ThemeTranslation> _TT = new NccTranslator<ThemeTranslation>(currentLanguage);
+    BodyWidth = 12;
+    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
 }
 <meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="keywords" content="@ViewData["MetaKeyword"]">
-<meta name="description" content="@ViewData["MetaDescription"]">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-@if (ViewData["Title"] != null)
-{
-    <title>@_TT[ViewData["Title"].ToString()] - @ThemeHelper.GetWebSiteTitle()</title>
-}
-else
+<meta name="description" content="@MetaDescription" />
+<meta name="keywords" content="@MetaKeyword" />
+<meta name="author" content="@MetaAuthor" />
+<meta name="application-name" content="@MetaApplicationName" />
+<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
+@if (string.IsNullOrEmpty(Title))
 {
     <title>@ThemeHelper.GetWebSiteTitle()</title>
 }
+else
+{
+    if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteTitle()))
+    {
+        <title>@Title</title>
 
-<link href="~/css/ncc-common.css" rel="stylesheet" />
-<script src="~/js/ncc-common.js" asp-append-version="true"></script>
-<link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
+    }
+    else
+    {
+        <title>@Title - @ThemeHelper.GetWebSiteTitle()</title>
+    }
+}
 
-@Html.Raw(ThemeHelper.GetJquery())
-@Html.Raw(ThemeHelper.GetBootstrap())
+@{
+    ThemeHelper.RegisterCss("/css/ncc-common.css", NccResource.IncludePosition.Header);
+    ThemeHelper.RegisterCss("/lib/css-loader/dist/css-loader.css", NccResource.IncludePosition.Header);
+    ThemeHelper.RegisterCss("/Themes/NccSeventeen/css/site.css", NccResource.IncludePosition.Header);
+    if (ThemeHelper.ActiveTheme.Settings["style"] != null && !string.IsNullOrEmpty(ThemeHelper.ActiveTheme.Settings["style"].ToString()))
+    {
+        ThemeHelper.RegisterCss(string.Concat("/Themes/NccSeventeen/css/", ThemeHelper.ActiveTheme.Settings["style"]), NccResource.IncludePosition.Header, ThemeHelper.ActiveTheme.Settings["version"].ToString());
+    }
+    ThemeHelper.RegisterResource(NccResource.JQuery);
+    ThemeHelper.RegisterResource(NccResource.Bootstrap);
 
-<link rel="stylesheet" href="~/Themes/NccSeventeen/css/site.css" />
+    ThemeHelper.RegisterJs("/js/ncc-common.min.js", NccResource.IncludePosition.Header);
+    ThemeHelper.RegisterJs("/lib/notifyjs/notify.min.js", NccResource.IncludePosition.Header);
+}

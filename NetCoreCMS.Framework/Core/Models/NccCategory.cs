@@ -13,7 +13,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class NccCategory : BaseModel, IBaseModel<long>
+    public class NccCategory : BaseModel<long>
     { 
         public NccCategory()
         {

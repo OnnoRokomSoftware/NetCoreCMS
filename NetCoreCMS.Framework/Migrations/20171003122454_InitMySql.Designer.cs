@@ -207,7 +207,15 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Title");
 
+                    b.Property<string>("AuthorName");
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("WebSite");
+
                     b.Property<int>("VersionNumber");
+
+                    b.Property<int>("CommentStatus");
 
                     b.HasKey("Id");
 

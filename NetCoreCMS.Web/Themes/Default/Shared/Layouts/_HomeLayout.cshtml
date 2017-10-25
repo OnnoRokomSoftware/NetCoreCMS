@@ -18,7 +18,10 @@
     @RenderSection("Styles", required: false)
 </head>
 <body id="body">
-
+    <!-- Container for showing global messages. -->
+    <div class="row">
+        @NccRenderGlobalMessages()
+    </div>
     <!-- Loading -->
     @NccRenderLoadingMaskContainer()
     <!-- Zone TOP Start-->
@@ -31,7 +34,7 @@
     <!-- Full Width Slider Start -->
     <div>
         @{
-            var fullWidthSlider = ThemeHelper.GetLayoutZoneWebsiteWidgets(ThemeResources.Layouts.FullWidthLayout, ThemeResources.Zones.FullWidthSlider);
+            var fullWidthSlider = ThemeHelper.GetWebsiteWidgets(ThemeResources.Layouts.FullWidthLayout, ThemeResources.Zones.FullWidthSlider);
             if (fullWidthSlider != null && fullWidthSlider.Count > 0)
             {
                 <div class="fullWidthSlider">
@@ -88,11 +91,7 @@
         <!-- Main content Start -->
         <div class="col-md-@BodyWidth">
             <!-- Featured -->
-            @NccRenderFeaturedSection()
-            <!-- Container for showing global messages. -->
-            <div class="row">
-                @NccRenderGlobalMessageContainer()
-            </div> 
+            @NccRenderFeaturedSection() 
             @NccRenderBody()
         </div>
         <!-- Main content End --> 

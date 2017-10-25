@@ -14,7 +14,7 @@ namespace NetCoreCMS.Framework.Core.Events.Modules
 {
     public class ModuleActivity
     {
-        public Module Module{ get; set; }
+        public IModule Module{ get; set; }
         public Type ActivityType { get; set; }
 
         public enum Type
@@ -23,7 +23,8 @@ namespace NetCoreCMS.Framework.Core.Events.Modules
             Installed,
             Activated,
             Deactivated,
-            Uninstalled            
+            Uninstalled,
+            Removed
         }
     }
 }

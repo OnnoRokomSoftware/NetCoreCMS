@@ -16,6 +16,7 @@ using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using System;
 using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -64,7 +65,7 @@ namespace NetCoreCMS.Framework.Core.Services
             if (oldEntity != null)
             {
                 oldEntity.ModificationDate = DateTime.Now;
-                oldEntity.ModifyBy = BaseModel.GetCurrentUserId();
+                oldEntity.ModifyBy = GlobalContext.GetCurrentUserId();
                 using (var txn = _entityRepository.BeginTransaction())
                 {
                     CopyNewData(entity, oldEntity);
@@ -102,7 +103,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public NccPostDetails CopyNewData(NccPostDetails copyFrom, NccPostDetails copyTo)
         {
             copyTo.ModificationDate = copyFrom.ModificationDate;
-            copyTo.ModifyBy = BaseModel.GetCurrentUserId();
+            copyTo.ModifyBy = GlobalContext.GetCurrentUserId();
             copyTo.Name = copyFrom.Name;
             copyTo.Status = copyFrom.Status;
             copyTo.ModificationDate = copyFrom.ModificationDate;
