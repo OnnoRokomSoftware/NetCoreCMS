@@ -47,8 +47,16 @@ namespace NetCoreCMS.Framework.Utility
                     var fUrl = urlPrefix + "/" + currentLanguage  + uri.AbsolutePath;
                     if(string.IsNullOrEmpty(uri.Query) == false)
                     {
-                        fUrl += "/"+ uri.Query;
+                        if (fUrl.EndsWith("/"))
+                        {
+                            fUrl += uri.Query;
+                        }
+                        else
+                        {
+                            fUrl += "/" + uri.Query;
+                        }   
                     }
+                    return fUrl;
                 }
 
                 if (!urlSuffix.StartsWith("/"))
@@ -82,13 +90,7 @@ namespace NetCoreCMS.Framework.Utility
         public static string EncodeUrl(string url)
         {
             var finalUrl = HttpUtility.UrlEncode(url);
-
-            //var urlParts = startupUrl.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-            //foreach (var item in urlParts)
-            //{
-            //    finalUrl += "/" + HttpUtility.UrlEncode(item);
-            //}
-
+            
             finalUrl = finalUrl.Replace("%26", "&");
             finalUrl = finalUrl.Replace("%3f", "?");
             finalUrl = finalUrl.Replace("%3F", "?");
@@ -97,9 +99,9 @@ namespace NetCoreCMS.Framework.Utility
             finalUrl = finalUrl.Replace("%2f", "/");
             finalUrl = finalUrl.Replace("%2F", "/");
             finalUrl = finalUrl.Replace("%2d", "-");
-            finalUrl = finalUrl.Replace("%2D", "-");
-            finalUrl = finalUrl.Replace("%20", " ");
+            finalUrl = finalUrl.Replace("%2D", "-");            
             finalUrl = finalUrl.Replace("%23", "#");
+            finalUrl = finalUrl.Replace("%3a", ":");            
 
             return finalUrl;
         }
