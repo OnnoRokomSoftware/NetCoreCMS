@@ -1,6 +1,9 @@
 image: Visual Studio 2017
 init:
   - git config --global core.autocrlf true
+branches:
+    only:
+    - master
 before_build:
   - appveyor-retry dotnet restore
 test: on
