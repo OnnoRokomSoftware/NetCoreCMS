@@ -13,7 +13,8 @@ init:
 shallow_clone: true 
 
 before_build:
-  - appveyor-retry dotnet restore
+  - nuget restore
+  - appveyor-retry dotnet restore  
 test: on
 test_script:
   - ps: .\run-tests.ps1
