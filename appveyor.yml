@@ -1,6 +1,10 @@
 version: 1.0.{build}
 image: Visual Studio 2017
 
+nuget:
+  account_feed: true
+  project_feed: true
+
 build:
   verbosity: minimal
 
