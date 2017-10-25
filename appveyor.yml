@@ -1,12 +1,8 @@
 version: 1.0.{build}
 image: Visual Studio 2017
-$msbuildPath = $(cmd /c "%programfiles(x86)%\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\amd64\MsBuild.exe")
 
 build:
   verbosity: minimal
-
-install:
-  - ps: Install-Package xunit -Force -Confirm:$true
 
 init:
   - git config --global core.autocrlf true
