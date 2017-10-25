@@ -7,6 +7,11 @@ Admin panel screenshots [Screenshot](https://github.com/OnnoRokomSoftware/NetCor
 ## Demo
 CMS Demo site [Demo](http://demo.dotnetcorecms.org)
 
+## Admin Panel
+CMS Admin Panel [Admin](http://demo.dotnetcorecms.org/admin)
+username: netcorecms@dotnetcorecms.com
+password: Admin12#
+
 ## Build Status
 | Build server| Platform       | Status      |
 |-------------|----------------|-------------|
