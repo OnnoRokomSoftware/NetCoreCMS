@@ -11,7 +11,7 @@ CMS Demo site [Demo](http://demo.dotnetcorecms.com)
 | Build server| Platform       | Status      |
 |-------------|----------------|-------------|
 |Travis       | Linux / MacOS  |[![Build Status](https://travis-ci.org/OnnoRokomSoftware/NetCoreCMS.svg?branch=master)](https://travis-ci.org/OnnoRokomSoftware/NetCoreCMS) |
-|Appveyor      | Windows/Vs2017 |[![Build status](https://ci.appveyor.com/api/projects/status/59vf48ehnbd3m7bf?svg=true)](https://ci.appveyor.com/project/OnnoRokomSoftware/netcorecms/branch/master)|
+|Appveyor      | Windows/Vs2017 |[![Build status](https://ci.appveyor.com/api/projects/status/7y6e00wk8t3yi0v7/branch/master?svg=true)](https://ci.appveyor.com/project/masums/netcorecms/branch/master)|
 
 ## Alpha
 

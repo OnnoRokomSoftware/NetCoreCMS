@@ -25,13 +25,14 @@ using NetCoreCMS.Framework.Core.Mvc.Extensions;
 
 namespace NetCoreCMS.Framework.Utility
 {
+    /// <summary>
+    /// NetCoreCMS Global Context. This class contains Running WebSite, Theme, Modules and Widgets.
+    /// </summary>
     public class GlobalContext
     {
-        public GlobalContext()
-        {
-            
-        }
-
+        /// <summary>
+        /// WebSite contains running website's basic information like Title, Slogan, Logo Image, Default Language etc.
+        /// </summary>
         public static NccWebSite WebSite { get; set; }
         public static bool IsRestartRequired { get; set; }
         public static List<IModule> Modules { get; set; } = new List<IModule>();

@@ -9,7 +9,6 @@ init:
 shallow_clone: true 
 
 before_build:
-  - nuget restore
   - appveyor-retry dotnet restore  
 test: on
 test_script:
