@@ -11,21 +11,32 @@
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.i18n;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Web;
 
 namespace NetCoreCMS.Framework.Utility
 {
+    /// <summary>
+    /// Utility for generating language enabled URL
+    /// </summary>
     public static class NccUrlHelper
     {
+        /// <summary>
+        /// Add language code into URL if that not present.
+        /// </summary>
+        /// <param name="controller">Takes controller instance for getting selected language</param>
+        /// <param name="url">Regular URL</param>
+        /// <returns>Language enabled URL</returns>
         public static string AddLanguageToUrl(this NccController controller, string url)
         {
             return CreateLanguageEnabledUrl(controller.CurrentLanguage, url);
         }
 
+        /// <summary>
+        /// Add given language into URL if language segment not present.
+        /// </summary>
+        /// <param name="currentLanguage">Current site language</param>
+        /// <param name="URL">Regular URL</param>
+        /// <returns>Language enabled URL</returns>
         public static string AddLanguageToUrl(string currentLanguage, string url)
         {
             return CreateLanguageEnabledUrl(currentLanguage, url);
@@ -87,6 +98,11 @@ namespace NetCoreCMS.Framework.Utility
             return false;
         }
 
+        /// <summary>
+        /// .Net encoder encode URL seperators also. This method replace seperator slash, equalto, colon and question mark again.
+        /// </summary>
+        /// <param name="url">Any URL</param>
+        /// <returns>Simplified encoded URL</returns>
         public static string EncodeUrl(string url)
         {
             var finalUrl = HttpUtility.UrlEncode(url);

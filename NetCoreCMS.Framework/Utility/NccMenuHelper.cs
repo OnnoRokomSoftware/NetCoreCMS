@@ -15,11 +15,19 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using System.Reflection;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Messages;
 
 namespace NetCoreCMS.Framework.Utility
 {
+    /// <summary>
+    /// A helper class for getting admin and website menus
+    /// </summary>
     public class NccMenuHelper
     {
+        /// <summary>
+        /// Provide admin menu and it's items
+        /// </summary>
+        /// <returns>A dictionary of menu and menu items. Key is the menu and valus is a list of menu items.</returns>
         public static Dictionary<AdminMenu, List<AdminMenuItem>> GetModulesAdminMenus()
         {
             Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic = new Dictionary<AdminMenu, List<AdminMenuItem>>();
@@ -56,7 +64,7 @@ namespace NetCoreCMS.Framework.Utility
                         }
                         catch (Exception ex)
                         {
-                            //TODO: Log error. Raise global error message.
+                            GlobalMessageRegistry.RegisterMessage(new GlobalMessage() {For = GlobalMessage.MessageFor.Admin, Registrater="MenuHelper", Text = ex.Message, Type = GlobalMessage.MessageType.Error }, new TimeSpan(0, 1, 0));
                         }
                     }
                 }
@@ -64,6 +72,10 @@ namespace NetCoreCMS.Framework.Utility
             return adminMenuDic;
         }
 
+        /// <summary>
+        /// Public Website menu and menu items exposed by modules.
+        /// </summary>
+        /// <returns>Site menu and it's menu items list as dictionaly. Where key is the site menu and value is site menu items.</returns>
         public static Dictionary<SiteMenu, List<SiteMenuItem>> GetModulesSiteMenus()
         {
             Dictionary<SiteMenu, List<SiteMenuItem>> siteMenuDic = new Dictionary<SiteMenu, List<SiteMenuItem>>();
@@ -100,7 +112,7 @@ namespace NetCoreCMS.Framework.Utility
                         }
                         catch (Exception ex)
                         {
-                            //TODO: Log error. Raise global error message.
+                            GlobalMessageRegistry.RegisterMessage(new GlobalMessage() { For = GlobalMessage.MessageFor.Admin, Registrater = "MenuHelper", Text = ex.Message, Type = GlobalMessage.MessageType.Error }, new TimeSpan(0, 1, 0));
                         }
                     }
                 }
@@ -109,6 +121,11 @@ namespace NetCoreCMS.Framework.Utility
             return siteMenuDic;
         }
 
+        /// <summary>
+        /// Provide generated menu HTML code using ul and li
+        /// </summary>
+        /// <param name="adminMenuDic"></param>
+        /// <returns>Menu HTML text</returns>
         public static string GetAdminMenuHtml(Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic)
         {
             var menuStr = "";

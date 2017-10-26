@@ -9,15 +9,20 @@
  *************************************************************/
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
-using System.Text;
 
 namespace NetCoreCMS.Framework.Utility
 {
+    /// <summary>
+    /// Provides environment related informations
+    /// </summary>
     public class RuntimeUtil
     {
+        /// <summary>
+        /// Provide .Net Core version.
+        /// </summary>
+        /// <returns>version as text. Ex. "2.0.0"</returns>
         public static string GetNetCoreVersion()
         {
             var assembly = typeof(System.Runtime.GCSettings).GetTypeInfo().Assembly;
@@ -28,6 +33,11 @@ namespace NetCoreCMS.Framework.Utility
             return null;
         }
 
+        /// <summary>
+        /// Detect is it release or not
+        /// </summary>
+        /// <param name="assembly">Executing assembly or referenced assembly</param>
+        /// <returns>true or false</returns>
         public static bool IsRelease(Assembly assembly)
         {
             object[] attributes = assembly.GetCustomAttributes(typeof(DebuggableAttribute), true);
@@ -41,6 +51,11 @@ namespace NetCoreCMS.Framework.Utility
             return false;
         }
 
+        /// <summary>
+        /// Detect is it debug or not
+        /// </summary>
+        /// <param name="assembly">Executing assembly or referenced assembly</param>
+        /// <returns>true or false</returns>
         public static bool IsDebug(Assembly assembly)
         {
             object[] attributes = assembly.GetCustomAttributes(typeof(DebuggableAttribute), true);

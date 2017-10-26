@@ -34,24 +34,57 @@ namespace NetCoreCMS.Framework.Utility
         /// WebSite contains running website's basic information like Title, Slogan, Logo Image, Default Language etc.
         /// </summary>
         public static NccWebSite WebSite { get; set; }
+        /// <summary>
+        /// If from any location of the project set it's value to true for restarting the application
+        /// </summary>
         public static bool IsRestartRequired { get; set; }
+        /// <summary>
+        /// List of all modules are containing at Modules folder inside web project.
+        /// </summary>
         public static List<IModule> Modules { get; set; } = new List<IModule>();
+        /// <summary>
+        /// Widget list of all active modules widget. It populates when modules are loaded.
+        /// </summary>
         public static List<Widget> Widgets{ get; set; } = new List<Widget>();
+        /// <summary>
+        /// List of already placed widgets on different layout zone of theme.
+        /// </summary>
         public static List<NccWebSiteWidget> WebSiteWidgets { get; set; } = new List<NccWebSiteWidget>();
+        /// <summary>
+        /// List of themes contains at Themes folder of web project.
+        /// </summary>
         public static List<Theme> Themes { get; set; } = new List<Theme>();
+        /// <summary>
+        /// List of website menus. Which is created from admin panel for website's different location and language.
+        /// </summary>
         public static List<NccMenu> Menus { get; set; } = new List<NccMenu>();
+        /// <summary>
+        /// Website setup configuration
+        /// </summary>
         public static SetupConfig SetupConfig { get; set; }
+        /// <summary>
+        /// Web root path of web project. ex. wwwroot
+        /// </summary>
         public static string WebRootPath { get; set; }
+        /// <summary>
+        /// Root location of web project.
+        /// </summary>
         public static string ContentRootPath { get; set; }
-        
+        /// <summary>
+        /// Builded web application instance.
+        /// </summary>
         public static IApplicationBuilder App { get; set; }
         //public static Theme ActiveTheme { get; set; }
         
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }
 
-        public static string CurrentLanguage { get; set; }
+        //public static string CurrentLanguage { get; set; }
 
+        /// <summary>
+        /// Return a list of active modules.
+        /// </summary>
+        /// <returns></returns>
         public static List<IModule> GetActiveModules()
         {
             var query = from m in Modules where m.ModuleStatus == (int) NccModule.NccModuleStatus.Active select m;
@@ -59,11 +92,21 @@ namespace NetCoreCMS.Framework.Utility
         }
 
         public string StartupAction { get; set; }
-
+        /// <summary>
+        /// All registered service and class instance container. Which are used for dependency injection.
+        /// </summary>
         public static IServiceCollection Services { get; set; }
+        /// <summary>
+        /// Short code list of all modules.
+        /// </summary>
         public static Hashtable ShortCodes { get; set; }
+        /// <summary>
+        /// Configured service provider.
+        /// </summary>
         public static IServiceProvider ServiceProvider { get; set; }
-
+        /// <summary>
+        /// List all widgets of modules.
+        /// </summary>
         public static void ListWidgets()
         {
             foreach (var item in Modules)
@@ -72,6 +115,10 @@ namespace NetCoreCMS.Framework.Utility
             }
         }
 
+        /// <summary>
+        /// This method provide logged user ID
+        /// </summary>
+        /// <returns>retuns long id</returns>
         public static long GetCurrentUserId()
         {
             HttpContextAccessor hca = new HttpContextAccessor();
@@ -81,11 +128,20 @@ namespace NetCoreCMS.Framework.Utility
             return userId.Value;
         }
 
+        /// <summary>
+        /// Method for getting theme by the name.
+        /// </summary>
+        /// <param name="themeName"> Theme name which is same as folder name.</param>
+        /// <returns>Return the theme object.</returns>
         public static Theme GetThemeByName(string themeName)
         {
             return Themes.Where(x => x.ThemeName == themeName).FirstOrDefault();
         } 
 
+        /// <summary>
+        /// Provides currently logged user's name.
+        /// </summary>
+        /// <returns></returns>
         public static string GetCurrentUserName()
         {
             HttpContextAccessor hca = new HttpContextAccessor();
@@ -93,6 +149,11 @@ namespace NetCoreCMS.Framework.Utility
             return userName;
         }
 
+        /// <summary>
+        /// Method for getting loaded module by Module ID
+        /// </summary>
+        /// <param name="moduleId">Id which contains at Module.json config file</param>
+        /// <returns>Module instance</returns>
         public static IModule GetModuleByModuleId(string moduleId)
         {
             return Modules.Where(x => x.ModuleId == moduleId).FirstOrDefault();
