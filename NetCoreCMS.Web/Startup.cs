@@ -15,6 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Collections.Generic;
 
+using MediatR;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
@@ -28,6 +30,7 @@ using Microsoft.AspNetCore.Localization.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Localization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Themes;
@@ -41,9 +44,8 @@ using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Extensions;
 using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Messages;
-using MediatR;
 using NetCoreCMS.Framework.Core.App;
-using System.Diagnostics;
+
 
 namespace NetCoreCMS.Web
 {
@@ -96,13 +98,19 @@ namespace NetCoreCMS.Web
             services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));            
 
             _services.AddLocalization();
+            
+            _mvcBuilder = services.AddMvc(config => {
+                /*  Enabled MVC with default authorization filter so that every controller action must be authorized. 
+                    For public access have to use [AllowAnonymous] attribute.   */
+                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                config.Filters.Add(new AuthorizeFilter(policy));
+            }); 
 
-            _mvcBuilder = services.AddMvc();            
             _mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
             _mvcBuilder.AddDataAnnotationsLocalization(options => {
                 options.DataAnnotationLocalizerProvider = (type, factory) => new NccStringLocalizer<SharedResource>(factory, new HttpContextAccessor());
             });
-
+            
             _services.AddResponseCaching();
             _services.AddSession(options =>
             {

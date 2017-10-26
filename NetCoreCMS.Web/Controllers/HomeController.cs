@@ -29,7 +29,6 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Web.Controllers
 {
-    [AllowAnonymous]
     public class HomeController : NccController
     {
         IHostingEnvironment _env;
@@ -42,6 +41,7 @@ namespace NetCoreCMS.Web.Controllers
             _sharedLocalizer = sharedLocalizer;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
@@ -70,19 +70,13 @@ namespace NetCoreCMS.Web.Controllers
             return Redirect("/SetupHome/Index");
         }
 
-       
-
-        public ActionResult About()
-        {
-            ViewBag.Message = _sharedLocalizer["About"];
-            return View();
-        }
-
+        [AllowAnonymous]
         public IActionResult Error()
         {
             return View();
         }
 
+        [AllowAnonymous]
         public ActionResult RedirectToDefaultLanguage()
         {
             var lang = CurrentLanguage;
@@ -95,6 +89,7 @@ namespace NetCoreCMS.Web.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
             culture = culture.ToLower();
@@ -157,22 +152,27 @@ namespace NetCoreCMS.Web.Controllers
             return false;
         }
 
+        [AllowAnonymous]
         public async System.Threading.Tasks.Task<ActionResult> SetupSuccess()
         {
-            Program.RestartAppAsync();
+            string referer = Request.Headers["Referer"].ToString();
+            if (referer.EndsWith("/SetupHome/CreateAdmin"))
+            {
+                Program.RestartAppAsync();
+            }
             return View();
         }
 
-        [Authorize(Roles = "SuperAdmin,Administrator")]
+        [Authorize(Roles = "SuperAdmin, Administrator")]
         public async System.Threading.Tasks.Task<IActionResult> RestartHost()
         {
-            //TODO: need to secure this restart.
             string referer = Request.Headers["Referer"].ToString();
             NetCoreCmsHost.IsRestartRequired = true;
             Program.RestartAppAsync();
             NetCoreCmsHost.IsRestartRequired = false;
             ViewBag.ReturnUrl = referer;
             ViewBag.ReturnUrlName = referer;
+
             if (referer.Trim() == "" || referer.Contains("RestartHost"))
             {
                 ViewBag.ReturnUrl = "/";
@@ -181,6 +181,7 @@ namespace NetCoreCMS.Web.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public IActionResult ResourceNotFound()
         {
             if (_env.IsDevelopment())

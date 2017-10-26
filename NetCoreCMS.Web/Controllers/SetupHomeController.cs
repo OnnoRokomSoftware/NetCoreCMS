@@ -90,107 +90,119 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
 
         public ActionResult CreateAdmin()
         {
-            ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value","Text");
-            return View();
+            if (SetupHelper.IsDbCreateComplete == true && SetupHelper.IsAdminCreateComplete == false)
+            {
+                ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value","Text");
+                return View();
+            }
+
+            TempData["ErrorMessage"] = "Setup already completed.";
+            return Redirect("/Home/Error");
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(AdminViewModel viewModel)
         {
-            if (!ModelState.IsValid)
-            {
-                ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value", "Text");
-                return View(viewModel);
-            }
-
             SetupHelper.InitilizeDatabase();
 
-            var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
-
-            DatabaseEngine dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
-
-            switch (dbe)
+            if (SetupHelper.IsDbCreateComplete == true && SetupHelper.IsAdminCreateComplete == false)
             {
-                case DatabaseEngine.MSSQL:
-                    optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));                    
-                    break;
-                case DatabaseEngine.MsSqlLocalStorage:
-                    break;
-                case DatabaseEngine.MySql:
-                    optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));                    
-                    break;                
-                case DatabaseEngine.SqLite:
-                    optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
-                    break;
-                case DatabaseEngine.PgSql:
-                    break;
-            }
-            
-            var nccDbConetxt = new NccDbContext(optionBuilder.Options);
+                if (!ModelState.IsValid)
+                {
+                    ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value", "Text");
+                    return View(viewModel);
+                }
+                
+                var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
 
-            var userStore = new NccUserStore(nccDbConetxt);
-            var identityOptions = Options.Create(new IdentityOptions());
-            var passwordHasher = new PasswordHasher<NccUser>();
-            var userValidatorList = new List<UserValidator<NccUser>>();
-            var passwordValidatorList = new List<PasswordValidator<NccUser>>();
-            var lookupNormalizer = new UpperInvariantLookupNormalizer();
-            var identityErrorDescriber = new IdentityErrorDescriber();
-            var logger = _loggerFactory.CreateLogger<UserManager<NccUser>>();
-            var authOption = new AuthenticationOptions();            
-            var options = Options.Create<AuthenticationOptions>(authOption);            
-            var scheme = new AuthenticationSchemeProvider(options);
-            
-            var userManager = new UserManager<NccUser>(
-                userStore,
-                identityOptions,
-                passwordHasher,
-                userValidatorList,
-                passwordValidatorList,
-                lookupNormalizer,
-                identityErrorDescriber,
-                GlobalContext.App.ApplicationServices,
-                logger
-            );
-            
-            var roleStore = new NccRoleStore(nccDbConetxt);
-            var roleValidatorList = new List<RoleValidator<NccRole>>();
-            var roleLogger = _loggerFactory.CreateLogger<RoleManager<NccRole>>();
+                DatabaseEngine dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
 
-            var roleManager = new RoleManager<NccRole>(
-                roleStore,
-                roleValidatorList,
-                new UpperInvariantLookupNormalizer(),
-                new IdentityErrorDescriber(),
-                roleLogger
+                switch (dbe)
+                {
+                    case DatabaseEngine.MSSQL:
+                        optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                        break;
+                    case DatabaseEngine.MsSqlLocalStorage:
+                        break;
+                    case DatabaseEngine.MySql:
+                        optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                        break;
+                    case DatabaseEngine.SqLite:
+                        optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                        break;
+                    case DatabaseEngine.PgSql:
+                        break;
+                }
+
+                var nccDbConetxt = new NccDbContext(optionBuilder.Options);
+
+                var userStore = new NccUserStore(nccDbConetxt);
+                var identityOptions = Options.Create(new IdentityOptions());
+                var passwordHasher = new PasswordHasher<NccUser>();
+                var userValidatorList = new List<UserValidator<NccUser>>();
+                var passwordValidatorList = new List<PasswordValidator<NccUser>>();
+                var lookupNormalizer = new UpperInvariantLookupNormalizer();
+                var identityErrorDescriber = new IdentityErrorDescriber();
+                var logger = _loggerFactory.CreateLogger<UserManager<NccUser>>();
+                var authOption = new AuthenticationOptions();
+                var options = Options.Create<AuthenticationOptions>(authOption);
+                var scheme = new AuthenticationSchemeProvider(options);
+
+                var userManager = new UserManager<NccUser>(
+                    userStore,
+                    identityOptions,
+                    passwordHasher,
+                    userValidatorList,
+                    passwordValidatorList,
+                    lookupNormalizer,
+                    identityErrorDescriber,
+                    GlobalContext.App.ApplicationServices,
+                    logger
                 );
 
-            var claimsFactory = new UserClaimsPrincipalFactory<NccUser,NccRole>(userManager, roleManager, identityOptions);
-            var signInLogger = _loggerFactory.CreateLogger<SignInManager<NccUser>>();
-            var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger, scheme);
-            
-            //nccDbConetxt.Database.Migrate();
+                var roleStore = new NccRoleStore(nccDbConetxt);
+                var roleValidatorList = new List<RoleValidator<NccRole>>();
+                var roleLogger = _loggerFactory.CreateLogger<RoleManager<NccRole>>();
 
-            var setupInfo = new WebSiteInfo()
-            {
-                SiteName = viewModel.SiteName,
-                Tagline = viewModel.Tagline,
-                AdminPassword = viewModel.AdminPassword,
-                AdminUserName = viewModel.AdminUserName,
-                ConnectionString = SetupHelper.ConnectionString,
-                Database = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase),
-                Email = viewModel.Email,
-                Language = viewModel.Language
-            };
+                var roleManager = new RoleManager<NccRole>(
+                    roleStore,
+                    roleValidatorList,
+                    new UpperInvariantLookupNormalizer(),
+                    new IdentityErrorDescriber(),
+                    roleLogger
+                    );
 
-            SetupHelper.RegisterAuthServices(dbe);
-            var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager,  setupInfo );            
-            SetupHelper.IsAdminCreateComplete = true;
-            SetupHelper.Language = viewModel.Language;
-            SetupHelper.SaveSetup();
-            SetupHelper.CrateNccWebSite(nccDbConetxt, setupInfo);
+                var claimsFactory = new UserClaimsPrincipalFactory<NccUser, NccRole>(userManager, roleManager, identityOptions);
+                var signInLogger = _loggerFactory.CreateLogger<SignInManager<NccUser>>();
+                var signInManager = new NccSignInManager<NccUser>(userManager, _httpContextAccessor, claimsFactory, identityOptions, signInLogger, scheme);
 
-            return Redirect("/Home/SetupSuccess");
-            
+                //nccDbConetxt.Database.Migrate();
+
+                var setupInfo = new WebSiteInfo()
+                {
+                    SiteName = viewModel.SiteName,
+                    Tagline = viewModel.Tagline,
+                    AdminPassword = viewModel.AdminPassword,
+                    AdminUserName = viewModel.AdminUserName,
+                    ConnectionString = SetupHelper.ConnectionString,
+                    Database = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase),
+                    Email = viewModel.Email,
+                    Language = viewModel.Language
+                };
+
+                SetupHelper.RegisterAuthServices(dbe);
+                var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager, setupInfo);
+                SetupHelper.IsAdminCreateComplete = true;
+                SetupHelper.Language = viewModel.Language;
+                SetupHelper.SaveSetup();
+                SetupHelper.CrateNccWebSite(nccDbConetxt, setupInfo);
+
+                return Redirect("/Home/SetupSuccess");
+
+            }
+
+            TempData["ErrorMessage"] = "Setup already completed.";
+            return Redirect("/Home/Error");
         }
   
         public ActionResult Success()
