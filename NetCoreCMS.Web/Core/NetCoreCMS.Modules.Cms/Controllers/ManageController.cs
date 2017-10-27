@@ -26,7 +26,7 @@ using NetCoreCMS.Core.Modules.Cms.Lib;
 
 namespace NetCoreCMS.Core.Web.Controllers
 {
-    [Authorize]    
+    [Authorize(Roles ="SuperAdmin,Administrator")]    
     public class ManageController : Controller
     {
         private readonly UserManager<NccUser> _userManager;
@@ -55,6 +55,7 @@ namespace NetCoreCMS.Core.Web.Controllers
         public string StatusMessage { get; set; }
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -76,6 +77,7 @@ namespace NetCoreCMS.Core.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(IndexViewModel model)
         {
@@ -115,6 +117,7 @@ namespace NetCoreCMS.Core.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendVerificationEmail(IndexViewModel model)
         {
@@ -139,6 +142,8 @@ namespace NetCoreCMS.Core.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize()]
+        [AllowAnonymous]
         public async Task<IActionResult> ChangePassword()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -158,6 +163,7 @@ namespace NetCoreCMS.Core.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
         {
@@ -187,6 +193,7 @@ namespace NetCoreCMS.Core.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> SetPassword()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -207,6 +214,7 @@ namespace NetCoreCMS.Core.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize()]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SetPassword(SetPasswordViewModel model)
         {
@@ -452,6 +460,7 @@ namespace NetCoreCMS.Core.Web.Controllers
         }
 
         [HttpGet]
+        [Authorize()]
         public async Task<IActionResult> GenerateRecoveryCodes()
         {
             var user = await _userManager.GetUserAsync(User);

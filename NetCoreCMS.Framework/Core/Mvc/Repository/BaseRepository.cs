@@ -52,12 +52,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             return entity;
         }
 
-        //public EntityT Get(IdT id)
-        //{
-        //    //return DbSet.AsNoTracking().FirstOrDefault(x => x.Id.Equals(id));
-        //    return DbSet.FirstOrDefault(x => x.Id.Equals(id));
-        //}
-
         public EntityT Get(IdT id, bool isAsNoTracking = false, List<string> includeChilds = null)
         {
             IQueryable<EntityT> tempDbSet = DbSet;

@@ -20,7 +20,6 @@ namespace NetCoreCMS.Framework.Core.Auth
         {
             if (!context.User.Identity.IsAuthenticated || !context.User.HasClaim(c => c.Type == ClaimTypes.Role ) )
             {
-                // .NET 4.x -> return Task.FromResult(0);
                 return Task.CompletedTask;
             }
 
