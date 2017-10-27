@@ -65,13 +65,15 @@ namespace NetCoreCMS.Web
         {
             Configuration = configuration;
             _hostingEnvironment = env;
-
-            GlobalContext.ContentRootPath    = env.ContentRootPath;
-            GlobalContext.WebRootPath        = env.WebRootPath;
-            
+             
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
-
             ConfigurationRoot = builder.Build();
+
+            GlobalContext.ContentRootPath = env.ContentRootPath;
+            GlobalContext.WebRootPath = env.WebRootPath;
+            GlobalContext.HostingEnvironment = env;
+            GlobalContext.Configuration = configuration;
+            GlobalContext.ConfigurationRoot = ConfigurationRoot;
 
             _moduleManager  = new ModuleManager();
             _setupConfig    = SetupHelper.LoadSetup();

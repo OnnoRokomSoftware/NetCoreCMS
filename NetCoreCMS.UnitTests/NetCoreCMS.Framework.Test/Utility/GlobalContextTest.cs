@@ -24,6 +24,9 @@ namespace NetCoreCMS.Framework.Test.Utility
             Assert.NotNull(GlobalContext.WebSite);
             Assert.NotNull(GlobalContext.WebSiteWidgets);
             Assert.NotNull(GlobalContext.Widgets);
+            Assert.Null(GlobalContext.Configuration);
+            Assert.Null(GlobalContext.ConfigurationRoot);
+            Assert.Null(GlobalContext.HostingEnvironment);
         }
     }
 }

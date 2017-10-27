@@ -8,7 +8,7 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
- using System; 
+using System;
 using System.Linq;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Modules;
@@ -22,6 +22,8 @@ using NetCoreCMS.Framework.Setup;
 using System.Collections;
 using Microsoft.AspNetCore.Http;
 using NetCoreCMS.Framework.Core.Mvc.Extensions;
+using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -38,10 +40,18 @@ namespace NetCoreCMS.Framework.Utility
         /// If from any location of the project set it's value to true for restarting the application
         /// </summary>
         public static bool IsRestartRequired { get; set; }
+        
         /// <summary>
         /// List of all modules are containing at Modules folder inside web project.
         /// </summary>
         public static List<IModule> Modules { get; set; } = new List<IModule>();
+
+        public static IConfiguration Configuration { get; set; }
+
+        public static IConfigurationRoot ConfigurationRoot { get; set; }
+
+        public static IHostingEnvironment HostingEnvironment { get; set; }
+
         /// <summary>
         /// Widget list of all active modules widget. It populates when modules are loaded.
         /// </summary>

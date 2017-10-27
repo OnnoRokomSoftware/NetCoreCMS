@@ -1,7 +1,32 @@
-﻿@if (TempData.Keys.Contains("ErrorMessage"))
-{
-    <div>
-        <h3>@TempData["ErrorMessage"]</h3>
-        <h5><a href="/CmsHome">Home</a></h5>
-    </div>
+﻿ 
+@{ 
+    ViewData["Title"] = "Error occoured";
+    Layout = "_ErrorLayout";
 }
+<style>
+    #container {
+        margin-top: 20vh;
+        height: 80vh;
+        text-align: center;
+        color: white;
+    }
+</style>
+
+<div id="container">
+    <h1>Error occoured</h1>
+
+    @if (TempData.Keys.Contains("Message"))
+    {
+        <div class="alert">
+            <h3>@TempData["Message"]</h3>
+        </div>
+    }
+    @if (TempData.Keys.Contains("ErrorMessage"))
+    {
+        <div class="alert">
+            <h3>@TempData["ErrorMessage"]</h3>
+        </div>
+    }
+
+    <h5><a href="/CmsHome">Go back to Home</a></h5>
+</div>

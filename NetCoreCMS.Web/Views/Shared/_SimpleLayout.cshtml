@@ -38,10 +38,9 @@
     @RenderSection("Styles", required: false)
 </head>
 
-<body>
-
+<body> 
     <!-- Begin page content -->
-    <div class="container">
+    <div class="container" style="height:90vh">
         @RenderBody()
     </div>
 
@@ -50,7 +49,7 @@
             <p class="text-muted text-center">Developed by <a href="@NccInfo.Website" title="@NccInfo.Author" target="_blank">@NccInfo.Author</a>.</p>
         </div>
     </footer>
-
+    
     @RenderSection("Scripts", required: false)
 </body>
 </html>
