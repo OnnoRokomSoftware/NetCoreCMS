@@ -79,20 +79,7 @@ namespace NetCoreCMS.Web
             var logFilePath = NccInfo.LogFolder + "\\NetCoreCMS_Logs_{Date}.log";
             Log.Logger      = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.RollingFile(logFilePath).CreateLogger();            
         }
-
-        private void ResetGlobalContext(IConfiguration configuration, IHostingEnvironment env)
-        {
-            GlobalContext.ContentRootPath = env.ContentRootPath;
-            GlobalContext.WebRootPath = env.WebRootPath;
-            GlobalContext.HostingEnvironment = env;
-            GlobalContext.Configuration = configuration;
-            GlobalContext.ConfigurationRoot = ConfigurationRoot;
-            GlobalContext.Widgets = new List<Widget>();
-            GlobalContext.Modules = new List<IModule>();
-            GlobalContext.Menus = new List<NccMenu>();
-            GlobalContext.Themes = new List<Theme>();
-        }
-
+        
         public IConfiguration Configuration { get; }
         public IConfigurationRoot ConfigurationRoot { get; }
 
@@ -257,6 +244,19 @@ namespace NetCoreCMS.Web
             app.UseNccRoutes(env, _serviceProvider, loggerFactory);
             NetCoreCmsHost.Logger = loggerFactory.CreateLogger<Startup>();
             NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;            
+        }
+
+        private void ResetGlobalContext(IConfiguration configuration, IHostingEnvironment env)
+        {
+            GlobalContext.ContentRootPath = env.ContentRootPath;
+            GlobalContext.WebRootPath = env.WebRootPath;
+            GlobalContext.HostingEnvironment = env;
+            GlobalContext.Configuration = configuration;
+            GlobalContext.ConfigurationRoot = ConfigurationRoot;
+            GlobalContext.Widgets = new List<Widget>();
+            GlobalContext.Modules = new List<IModule>();
+            GlobalContext.Menus = new List<NccMenu>();
+            GlobalContext.Themes = new List<Theme>();
         }
     }
 }
