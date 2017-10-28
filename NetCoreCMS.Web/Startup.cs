@@ -45,7 +45,9 @@ using NetCoreCMS.Framework.Core.Extensions;
 using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Messages;
 using NetCoreCMS.Framework.Core.App;
-
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using NetCoreCMS.Framework.Modules.Widgets;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Web
 {
@@ -53,8 +55,7 @@ namespace NetCoreCMS.Web
     {
         private IHostingEnvironment _hostingEnvironment;
         ModuleManager               _moduleManager;
-        ThemeManager                _themeManager;
-        NccShortCodeProvider        _nccShortCodeProvider;
+        ThemeManager                _themeManager;        
         NetCoreStartup              _startup;
         IMvcBuilder                 _mvcBuilder;
         SetupConfig                 _setupConfig;
@@ -68,20 +69,28 @@ namespace NetCoreCMS.Web
              
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
             ConfigurationRoot = builder.Build();
+            ResetGlobalContext(configuration, env);
 
+            _moduleManager  = new ModuleManager();
+            _themeManager   = new ThemeManager();
+            _setupConfig    = SetupHelper.LoadSetup();
+            _startup        = new NetCoreStartup();
+
+            var logFilePath = NccInfo.LogFolder + "\\NetCoreCMS_Logs_{Date}.log";
+            Log.Logger      = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.RollingFile(logFilePath).CreateLogger();            
+        }
+
+        private void ResetGlobalContext(IConfiguration configuration, IHostingEnvironment env)
+        {
             GlobalContext.ContentRootPath = env.ContentRootPath;
             GlobalContext.WebRootPath = env.WebRootPath;
             GlobalContext.HostingEnvironment = env;
             GlobalContext.Configuration = configuration;
             GlobalContext.ConfigurationRoot = ConfigurationRoot;
-
-            _moduleManager  = new ModuleManager();
-            _setupConfig    = SetupHelper.LoadSetup();
-            _startup        = new NetCoreStartup();
-
-            var logFilePath = NccInfo.LogFolder + "\\NccLogs-{Date}.log";
-            Log.Logger      = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.RollingFile(logFilePath).CreateLogger();
-            
+            GlobalContext.Widgets = new List<Widget>();
+            GlobalContext.Modules = new List<IModule>();
+            GlobalContext.Menus = new List<NccMenu>();
+            GlobalContext.Themes = new List<Theme>();
         }
 
         public IConfiguration Configuration { get; }
@@ -96,17 +105,14 @@ namespace NetCoreCMS.Web
             loggingBuilder.AddSerilog(dispose: true));
             
             _services.AddOptions();            
-            //services.AddSingleton(typeof(IStringLocalizerFactory), typeof(ClassLibraryStringLocalizerFactory));
-            services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));            
+            _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
+            _services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
 
             _services.AddLocalization();
-            
-            _mvcBuilder = services.AddMvc(config => {
-                /*  Enabled MVC with default authorization filter so that every controller action must be authorized. 
-                    For public access have to use [AllowAnonymous] attribute.   */
+            _mvcBuilder = services.AddMvc(config => {                
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-            }); 
+                config.Filters.Add(new AuthorizeFilter(policy));                
+            });
 
             _mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
             _mvcBuilder.AddDataAnnotationsLocalization(options => {
@@ -125,28 +131,29 @@ namespace NetCoreCMS.Web
             _services.AddResponseCompression();            
             _services.AddSingleton(Configuration);
 
-            _services.AddNccCoreModuleRepositoryAndServices();
+            _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
 
+            _services.AddNccCoreModuleServices();
             _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
             
-            _themeManager = new ThemeManager();
+           
             var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
-            GlobalContext.Themes = _themeManager.ScanThemeDirectory(themeFolder);
-
-            var themesDirectoryContents = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
-            _themeManager.RegisterThemes(_mvcBuilder, _services,_serviceProvider, themesDirectoryContents);
-            
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
+            var themesDirectoryContents = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
+
+            _themeManager.ScanThemeDirectory(themeFolder);            
+            _themeManager.RegisterThemes(_mvcBuilder, _services,_serviceProvider, themesDirectoryContents);                       
+            
             var coreModules = _moduleManager.LoadModules(coreModuleFolder);
             var userModules = _moduleManager.LoadModules(moduleFolder);
 
             GlobalContext.Modules.AddRange(userModules);
             
-            _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
-
             if (SetupHelper.IsDbCreateComplete)
             {
+                #region Database Selection
+
                 if (SetupHelper.SelectedDatabase == "SqLite")
                 {
                     _services.AddDbContext<NccDbContext>(options =>
@@ -165,39 +172,33 @@ namespace NetCoreCMS.Web
                         options.UseMySql(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
                     );
                 }
+                else
+                {
+                    _services.AddDbContext<NccDbContext>(options =>
+                        options.UseInMemoryDatabase("NetCoreCMS")
+                    );
+                }
 
+                #endregion
+                 
                 _services.AddCustomizedIdentity();                
                 _startup.RegisterDatabase(_services);
 
-                _services.AddAuthorization(options =>
-                {
-                    options.AddPolicy("SuperAdmin", policy => policy.Requirements.Add(new AuthRequire("SuperAdmin", "")));
-                    options.AddPolicy("Administrator", policy => policy.Requirements.Add(new AuthRequire("Administrator", "")));
-                    options.AddPolicy("Editor", policy => policy.Requirements.Add(new AuthRequire("Editor", "")));
-                    options.AddPolicy("Author", policy => policy.Requirements.Add(new AuthRequire("Author", "")));
-                    options.AddPolicy("Contributor", policy => policy.Requirements.Add(new AuthRequire("Contributor", "")));
-                    options.AddPolicy("Subscriber", policy => policy.Requirements.Add(new AuthRequire("Subscriber", "")));
-                });
-
-                _services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
-                GlobalContext.Modules = _moduleManager.RegisterModules(_mvcBuilder, _services, _serviceProvider);
-                _moduleManager.RegisterModuleRepositoryAndServices(_mvcBuilder, _services, _serviceProvider);
+                _moduleManager.AddModulesAsApplicationPart(_mvcBuilder, _services, _serviceProvider);
 
+                _moduleManager.AddModuleServices(_services);
+                _moduleManager.AddModuleFilters(_services);
+                _moduleManager.AddShortcodes(_services);                
+                _moduleManager.AddModuleWidgets(_services);
+                
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
-                GlobalContext.Widgets = _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);
-                var themeWidgets = _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
-
-                if(themeWidgets != null && themeWidgets.Count > 0)
-                {
-                    GlobalContext.Widgets.AddRange(themeWidgets);
-                }
-
-                _nccShortCodeProvider = _serviceProvider.GetService<NccShortCodeProvider>();
-                GlobalContext.ShortCodes = _nccShortCodeProvider.ScanAndRegisterShortCodes(GlobalContext.Modules);
-
+                _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
+                _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);                
+                _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider);
+                _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);                
             }
 
             var defaultCulture = new RequestCulture("en");
@@ -240,7 +241,7 @@ namespace NetCoreCMS.Web
 
             _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
             _serviceProvider = _services.BuildModules(ConfigurationRoot, _hostingEnvironment);
-
+            
             GlobalContext.ServiceProvider = _serviceProvider;
             GlobalContext.Services = _services;
             NetCoreCmsHost.Mediator = _serviceProvider.GetService<IMediator>();            

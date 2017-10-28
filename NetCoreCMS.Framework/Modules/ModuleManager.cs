@@ -27,13 +27,23 @@ using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Mvc.Repository;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.IoC;
+using Microsoft.AspNetCore.Mvc.Filters;
+using NetCoreCMS.Framework.Core.Mvc.FIlters;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Framework.Modules
 {
     public class ModuleManager
     {
-        List<IModule> modules = new List<IModule>();
-        List<IModule> instantiatedModuleList = new List<IModule>();
+        List<IModule> modules;
+        List<IModule> instantiatedModuleList;
+
+        public ModuleManager()
+        {
+            modules = new List<IModule>();
+            instantiatedModuleList = new List<IModule>();
+        }
+
         public List<IModule> LoadModules(IDirectoryContents moduleRootFolder)
         {   
             foreach (var moduleFolder in moduleRootFolder.Where(x => x.IsDirectory))
@@ -76,7 +86,7 @@ namespace NetCoreCMS.Framework.Modules
             return modules;
         }
         
-        public List<IModule> RegisterModules(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        public List<IModule> AddModulesAsApplicationPart(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
         {  
 
             foreach (var module in modules)
@@ -105,9 +115,9 @@ namespace NetCoreCMS.Framework.Modules
                         }                        
                         
                         // Register dependency in modules                            
-                        moduleInstance.Init(services);
-                        RegisterWidgets(moduleInstance, services, serviceProvider);
+                        moduleInstance.Init(services);                        
                         instantiatedModuleList.Add(moduleInstance);
+                        GlobalContext.Modules.Add(moduleInstance);
                     }
                 }
                 catch (Exception ex)
@@ -130,6 +140,11 @@ namespace NetCoreCMS.Framework.Modules
             });
 
             return instantiatedModuleList;
+        }
+
+        public List<IModule> GetModules()
+        {
+            return modules;
         }
 
         private bool IsCoreModule(IModule module)
@@ -179,7 +194,7 @@ namespace NetCoreCMS.Framework.Modules
             return widgetList;
         }
 
-        public void RegisterModuleRepositoryAndServices(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        public void AddModuleServices(IServiceCollection services)
         {
             foreach (var module in instantiatedModuleList)
             {
@@ -228,6 +243,38 @@ namespace NetCoreCMS.Framework.Modules
             }            
         }
 
+        public void RegisterModuleShortCodes(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
+        {
+            var _nccShortCodeProvider = serviceProvider.GetService<NccShortCodeProvider>();
+            GlobalContext.ShortCodes = _nccShortCodeProvider.RegisterShortCodes(GlobalContext.Modules);
+        }
+
+        public void AddShortcodes(IServiceCollection services)
+        {
+            var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
+            foreach (var module in activeModules)
+            {
+                var shortCodeTypeList = module.Assembly.GetTypes().Where(x => typeof(IShortCode).IsAssignableFrom(x)).ToList();
+                foreach (var item in shortCodeTypeList)
+                {
+                    services.AddTransient(item);
+                }
+            }
+        }
+
+        public void AddModuleFilters(IServiceCollection services)
+        {
+            var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
+            foreach (var module in activeModules)
+            {
+                var actionFilters = module.Assembly.GetTypes().Where(x => typeof(IActionFilter).IsAssignableFrom(x)).ToList();
+                foreach (var item in actionFilters)
+                {
+                    services.AddTransient(item);
+                }
+            }            
+        }
+
         private NccModule CreateNccModuleEntity(IModule module)
         {
             var nccModule = new NccModule();
@@ -260,21 +307,42 @@ namespace NetCoreCMS.Framework.Modules
             return nccModule;
         }
 
-        private void RegisterWidgets(IModule module, IServiceCollection services, IServiceProvider serviceProvider)
+        public void AddModuleWidgets( IServiceCollection services)
         {
-            module.Widgets = new List<Widget>();
-            var widgetTypeList = module.Assembly.GetTypes().Where( x => typeof(Widget).IsAssignableFrom(x)).ToList();
-             
-            foreach (var widgetType in widgetTypeList)
-            {                
-                services.AddTransient(widgetType);                
+            foreach (var module in instantiatedModuleList)
+            {
+                module.Widgets = new List<Widget>();
+                var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
+                foreach (var widgetType in widgetTypeList)
+                {
+                    services.AddTransient(widgetType);
+                }
+            }            
+        }
+
+        public void RegisterModuleFilters(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
+        {
+            var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
+            foreach (var item in activeModules)
+            {
+                var actionFilters = item.Assembly.GetTypes().Where(x => typeof(INccActionFilter).IsAssignableFrom(x)).ToList();
+                foreach (var filter in actionFilters)
+                {
+                    var filterInstance = (IActionFilter)serviceProvider.GetService(filter);
+                    mvcBuilder.AddMvcOptions(options => {
+                        if ( options.Filters.Contains(filterInstance) == false)
+                        {
+                            options.Filters.Add(filterInstance);
+                        }
+                    });
+                }
             }
 
-            var shortCodeTypeList = module.Assembly.GetTypes().Where(x => typeof(IShortCode).IsAssignableFrom(x)).ToList();
-            foreach (var item in shortCodeTypeList)
-            {
-                services.AddTransient(item);
-            }
+            mvcBuilder.AddMvcOptions(option => {
+                option.Filters.Add(serviceProvider.GetService <NccGlobalExceptionFilter>());
+                option.Filters.Add(serviceProvider.GetService <LanguageFilter>());                
+            });
+            
         }
 
         public void LoadModuleInfo(IModule module, IModule moduleInfo)

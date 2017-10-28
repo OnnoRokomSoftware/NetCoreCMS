@@ -1,7 +1,4 @@
-﻿@{
-    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
-}
-<!-- Header -->
+﻿<!-- Header -->
 <div class="container-fluid topHeader">
     <div class="container">
         <div class="topLogo">
@@ -33,14 +30,14 @@
                 }
                 if (SignInManager.IsSignedIn(User))
                 {
-                    <a asp-area="" asp-controller="Admin" asp-action="Index">@_TT["Admin"]</a><span> | </span>
-                    <a asp-area="" asp-controller="ManageAccount" asp-action="Index" title="Manage">@_TT["Hello"] @UserManager.GetUserName(User)!</a><span> | </span>
-                    <a asp-area="" asp-controller="Account" asp-action="Logout">@_TT["Log out"]</a>
+                    <a asp-area="" asp-controller="Admin" asp-action="Index">@_T["Admin"]</a><span> | </span>
+                    <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@_T["Hello"] @UserManager.GetUserName(User)!</a><span> | </span>
+                    <a asp-area="" asp-controller="Account" asp-action="Logout">@_T["Log out"]</a>
                 }
                 else
                 {
-                    <a asp-area="" asp-controller="Account" asp-action="Register">@_TT["Register"]</a><span> | </span>
-                    <a asp-area="" asp-controller="Account" asp-action="Login">@_TT["Log in"]</a>
+                    <a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a><span> | </span>
+                    <a asp-area="" asp-controller="Account" asp-action="Login">@_T["Log in"]</a>
                 }
             }
         </div>

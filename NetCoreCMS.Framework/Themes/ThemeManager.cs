@@ -30,10 +30,13 @@ namespace NetCoreCMS.Framework.Themes
     public class ThemeManager
     {
         public static readonly string ThemeInfoFileName = "Theme.json";        
-        static List<Assembly> _themeDlls;
-        
-        public ThemeManager(){}
+        private List<Assembly> _themeDlls;
 
+        public ThemeManager()
+        {
+            _themeDlls = new List<Assembly>();
+        }
+        
         public List<Theme> ScanThemeDirectory(string path)
         {
             var themes = new List<Theme>();
@@ -65,11 +68,11 @@ namespace NetCoreCMS.Framework.Themes
                         {                            
                             var themeAssembly = Assembly.LoadFile(theme.AssemblyPath);
                             themes.Add(theme);
-
                             if (theme.IsActive)
                             {
                                 ThemeHelper.ActiveTheme     = theme;                                
                             }
+                            GlobalContext.Themes.Add(theme);
                         }
                     }
                     else
@@ -273,6 +276,7 @@ namespace NetCoreCMS.Framework.Themes
                             var widgetInstance = (Widget)serviceProvider.GetService(widgetType);
                             widgets.Add(widgetInstance);
                             ThemeHelper.ActiveTheme.Widgets.Add(widgetInstance);
+                            GlobalContext.Widgets.Add(widgetInstance);
                         }
                     }
                 }

@@ -27,7 +27,8 @@
 
 <div class="error" style="padding-top:20vh;">
     <h1>404</h1>
-    <h2>@TempData["Message"]</h2>
+    @{ var message = (string)TempData["Message"];}
+    <h2>@_T[message]</h2>
     <div class="sub">
         <p><a class="btn btn-primary" href="/">Back to Home</a></p>
     </div>

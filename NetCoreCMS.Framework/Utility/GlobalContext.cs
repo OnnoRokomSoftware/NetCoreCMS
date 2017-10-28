@@ -24,6 +24,7 @@ using Microsoft.AspNetCore.Http;
 using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -44,7 +45,7 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// List of all modules are containing at Modules folder inside web project.
         /// </summary>
-        public static List<IModule> Modules { get; set; } = new List<IModule>();
+        public static List<IModule> Modules { get; set; }
 
         public static IConfiguration Configuration { get; set; }
 
@@ -63,11 +64,11 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// List of themes contains at Themes folder of web project.
         /// </summary>
-        public static List<Theme> Themes { get; set; } = new List<Theme>();
+        public static List<Theme> Themes { get; set; }
         /// <summary>
         /// List of website menus. Which is created from admin panel for website's different location and language.
         /// </summary>
-        public static List<NccMenu> Menus { get; set; } = new List<NccMenu>();
+        public static List<NccMenu> Menus { get; set; }
         /// <summary>
         /// Website setup configuration
         /// </summary>
@@ -105,7 +106,8 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// All registered service and class instance container. Which are used for dependency injection.
         /// </summary>
-        public static IServiceCollection Services { get; set; }
+        public static IServiceCollection Services { get; set; } 
+        
         /// <summary>
         /// Short code list of all modules.
         /// </summary>

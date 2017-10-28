@@ -1,8 +1,7 @@
 ﻿@{
     BodyWidth = 12; //Uses for bootstrap grid system
     CurrentLayout   = ThemeResources.Layouts.SiteLayout;
-    CurrentLanguage = ThemeHelper.GetCurrentLanguage();
-    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
+    CurrentLanguage = ThemeHelper.GetCurrentLanguage();    
     ThemeResources.RegisterResources(CurrentLayout);
 }
 

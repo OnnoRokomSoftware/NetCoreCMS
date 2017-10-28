@@ -32,12 +32,13 @@ using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Core.Mvc.FIlters;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
     public static class NccExtension
     {
-        public static IServiceCollection AddNccCoreModuleRepositoryAndServices(this IServiceCollection services)
+        public static IServiceCollection AddNccCoreModuleServices(this IServiceCollection services)
         {
 
             services.AddTransient<IEmailSender, AuthMessageSender>();
@@ -46,9 +47,12 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
-            services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
             services.AddTransient<NccLanguageDetector>();
 
+            services.AddScoped<LanguageFilter>();
+            services.AddScoped<NccGlobalExceptionFilter>();
+
+            services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
             services.AddScoped<NccShortCodeProvider, NccShortCodeProvider>();
             services.AddScoped<ThemeManager, ThemeManager>();
             services.AddScoped<NccRazorViewRenderService, NccRazorViewRenderService>();

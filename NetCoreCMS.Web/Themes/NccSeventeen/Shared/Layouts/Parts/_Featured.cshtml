@@ -1,8 +1,4 @@
-﻿@{
-    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
-}
-
-<div class="Featured">
+﻿<div class="Featured">
     @{
         var featured = ThemeHelper.GetWebsiteWidgets(CurrentLayout, "Featured");
         if (featured != null && featured.Count > 0)

@@ -20,18 +20,18 @@
             <div>
                 <a href="/Post/@postDetails.Slug"><h3 style="margin-top:0px;">@postDetails.Title</h3></a>
                 <p style="font-style:italic; font-size:12px;">
-                    Author:
+                    @_T["Author"]:
                     @if (Model.Author != null)
                     { <span>@Model.Author.FullName</span> }
                     else
-                    {<span>Anonymous</span> }
-                    <span> | Published Date: @Model.PublishDate.ToString("MMM dd, yyyy")</span>
+                    {<span>@_T["Anonymous"]</span> }
+                    <span> | @_T["Published Date"]: @Model.PublishDate.ToString("MMM dd, yyyy") </span>
 
-                    | <a href="#">@Model.Comments.Count() Comments</a>
+                    | <a href = "#"> @Model.Comments.Count() @_T["Comments"] </a>
                     @*| <i class="icon-share"></i> <a href="#">39 Shares</a>*@
                     @if (Model.Categories.Count > 0)
                     {
-                        <span>| Category :</span>
+                        <span>| @_T["Category"] :</span>
                                 @foreach (NccPostCategory cat in Model.Categories)
                                 {
                                     NccCategoryDetails cDetails = cat.Category.CategoryDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
@@ -44,7 +44,7 @@
                     }
                     @if (Model.Tags.Count > 0)
                     {
-                        <span>| Tags :</span>
+                        <span>| @_T["Tags"] :</span>
                                 @foreach (NccPostTag tag in Model.Tags)
                                 {
                                     <a href="/Tags/Index/?name=@tag.Tag.Name"><span class="label label-info">@tag.Tag.Name</span></a>
@@ -63,7 +63,7 @@
                         len = 200;
                         content = content.Substring(0, len);
                     }
-                    <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">More</a></p>
+                    <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">@_T["More"]</a></p>
                 }
             </div>
         </div>

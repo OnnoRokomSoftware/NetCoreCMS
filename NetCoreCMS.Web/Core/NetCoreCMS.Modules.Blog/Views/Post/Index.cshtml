@@ -5,14 +5,14 @@
 
 @{
     Layout = Constants.SiteLayoutName;
-    Title = "All Blog Posts";
+    Title = _T["All Blog Posts"];
     SubTitle = "";
 
     //ViewData["PageTitle"] = "All blog post";
     //ViewData["PageSubtitle"] = "";
     
-    MetaDescription = "All Blog Posts";
-    MetaKeyword = "blog post";
+    MetaDescription = _T["All Blog Posts"];
+    MetaKeyword = _T["blog post"];
 }
 
 
@@ -37,18 +37,18 @@
                     <div>
                         <a href="/Post/@postDetails.Slug"><h3 style="margin-top:0px;">@postDetails.Title</h3></a>
                         <p style="font-style:italic; font-size:12px;">
-                            Author:
+                            @_T["Author"]:
                             @if (item.Author != null)
                             { <span>@item.Author.FullName</span> }
                             else
-                            {<span>Anonymous</span> }
-                            <span> | Published Date: @item.PublishDate.ToString("MMM dd, yyyy")</span>
+                            {<span>@_T["Anonymous"]</span> }
+                            <span> | @_T["Published Date"]: @item.PublishDate.ToString("MMM dd, yyyy")</span>
 
-                            | <a href="#">@item.Comments.Count() Comments</a>
+                            | <a href="#">@item.Comments.Count() @_T["Comments"]</a>
                             @*| <i class="icon-share"></i> <a href="#">39 Shares</a>*@
                             @if (item.Categories.Count > 0)
                             {
-                                <span>| Category :</span>
+                                <span>| @_T["Category"] :</span>
                                 @foreach (NccPostCategory cat in item.Categories)
                                 {
                                     NccCategoryDetails cDetails = cat.Category.CategoryDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
@@ -61,7 +61,7 @@
                             }
                             @if (item.Tags.Count > 0)
                             {
-                                <span>| Tags :</span>
+                                <span>| @_T["Tags"] :</span>
                                 @foreach (NccPostTag tag in item.Tags)
                                 {
                                     <a href="/Tags/Index/?name=@tag.Tag.Name"><span class="label label-info">@tag.Tag.Name</span></a>
@@ -80,7 +80,7 @@
                                 len = 200;
                                 content = content.Substring(0, len);
                             }
-                            <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">More</a></p>
+                            <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">@_T["More"]</a></p>
                         }
                     </div>                    
                 </div>

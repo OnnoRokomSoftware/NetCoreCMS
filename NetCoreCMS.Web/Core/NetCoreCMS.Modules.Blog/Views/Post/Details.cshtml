@@ -28,11 +28,11 @@
     <div>
         <h3>@postDetails?.Title</h3>
         <h5 style="font-style:italic;">
-            Author: @if (Model.Author != null)
+            @_T["Author"]: @if (Model.Author != null)
             { <span>@Model.Author.FullName</span> }
             else
-            {<span>Anonymous</span> }
-            <span> | Published Date: @Model.PublishDate.ToString("MMM dd, yyyy")</span>
+            {<span>@_T["Anonymous"]</span> }
+            <span> | @_T["Published Date"]: @Model.PublishDate.ToString("MMM dd, yyyy")</span>
         </h5>
         <hr />
         @if (Model.ThumImage != null)

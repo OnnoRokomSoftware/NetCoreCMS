@@ -61,7 +61,7 @@
                                 <a href="/Post/@post.Slug"><h3>@post.Title</h3></a>
                                 <p >
                                     @Html.Raw(post.Content)
-                                     ...<a href="/Post/@post.Slug">More</a>
+                                     ...<a href="/Post/@post.Slug">@_T["More"]</a>
                                 </p>
                             </div>
                         </div>
@@ -74,11 +74,11 @@
             {
                 <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev" style="height:70%">
                     <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
-                    <span class="sr-only">Previous</span>
+                    <span class="sr-only">@_T["Previous"]</span>
                 </a>
                 <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next" style="height:70%">
                     <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
-                    <span class="sr-only">Next</span>
+                    <span class="sr-only">@_T["Next"]</span>
                 </a>
             }
         </div>

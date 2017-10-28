@@ -14,11 +14,12 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Collections.Generic;
 using System;
-
+using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
 
 namespace NetCoreCMS.Framework.i18n
 {
-    public sealed class NccTranslator<T> : INccTranslator<T>
+    public sealed class NccTranslator<T> : INccTranslator
     {
         private string _fileName;
         private string _resourceFilePath;
@@ -36,10 +37,33 @@ namespace NetCoreCMS.Framework.i18n
 
         public NccTranslator(string cultureCode)
         {
-            GetTranslator(typeof(T), cultureCode);
+
+            var module = typeof(T).Assembly.GetTypes().Where(x => typeof(IModule).IsAssignableFrom(x)).FirstOrDefault();
+            if(module != null)
+            {
+                GetTranslator(module, cultureCode);
+            }
+            else
+            {
+                GetTranslator(typeof(T), cultureCode);
+            }
         }
 
-        public NccTranslator<T> GetTranslator(Type resourceType, string cultureCode) {
+        public NccTranslator(Type resourceType, string cultureCode)
+        {
+            var module = resourceType.Assembly.GetTypes().Where(x => typeof(IModule).IsAssignableFrom(x)).FirstOrDefault();
+            if (module != null)
+            {
+                GetTranslator(module, cultureCode);
+            }
+            else
+            {
+                module = resourceType.Assembly.GetTypes().Where(x => typeof(NccController).IsAssignableFrom(x)).FirstOrDefault();
+                GetTranslator(module, cultureCode);
+            }
+        }
+
+        public INccTranslator GetTranslator(Type resourceType, string cultureCode) {
             
             _cultureCode = cultureCode;
 
@@ -50,7 +74,7 @@ namespace NetCoreCMS.Framework.i18n
             var fileInfo = new FileInfo(assembly.Location);            
             var path = Path.Combine(fileInfo.DirectoryName, "Resources");
 
-            _fileName = resourceType.Namespace+"."+resourceType.Name+ "."+cultureCode+".lang";
+            _fileName = assembly.GetName().Name + "."+cultureCode+".lang";
             _resourceFilePath = Path.Combine(path, _fileName);
 
             if (!File.Exists(_resourceFilePath))

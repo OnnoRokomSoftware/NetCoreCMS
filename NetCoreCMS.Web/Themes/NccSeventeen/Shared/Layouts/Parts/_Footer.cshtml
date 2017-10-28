@@ -1,8 +1,4 @@
-﻿@{
-    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
-
-}
-<!--  Footer Start -->
+﻿<!--  Footer Start -->
 <footer>
     <div class="footer-content">
         <div class="container">
@@ -98,8 +94,8 @@
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 copyright"> @_TT["Copyrights"] &copy; @Html.Raw(@ThemeHelper.GetWebSiteCopyright()) @_TT[DateTime.Now.Year.ToString()]</div>
-                <div class="col-md-6 poweredby"> @Html.Raw(string.Format(_TT["Developed using {0}"].ToString(), "<a href=\"" + NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
+                <div class="col-md-6 copyright"> @_T["Copyrights"] &copy; @Html.Raw(@ThemeHelper.GetWebSiteCopyright()) @_T[DateTime.Now.Year.ToString()]</div>
+                <div class="col-md-6 poweredby"> @Html.Raw(string.Format(_T["Developed using {0}"].ToString(), "<a href=\"" + NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
             </div>
         </div>
     </div>

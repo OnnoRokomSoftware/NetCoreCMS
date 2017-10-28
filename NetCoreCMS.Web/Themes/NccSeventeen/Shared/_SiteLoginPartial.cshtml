@@ -1,17 +1,13 @@
-﻿@{
-    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
-}
-
-@if (SignInManager.IsSignedIn(User))
+﻿@if (SignInManager.IsSignedIn(User))
 {
     <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
-            <li><a asp-area="" asp-controller="Admin" asp-action="Index">@_TT["Admin"]</a></li>
+            <li><a asp-area="" asp-controller="Admin" asp-action="Index">@_T["Admin"]</a></li>
             <li>
-                <a asp-area="" asp-controller="ManageAccount" asp-action="Index" title="Manage">@_TT["Hello"] @UserManager.GetUserName(User)!</a>
+                <a asp-area="" asp-controller="Manage" asp-action="Index" title="Manage">@_T["Hello"] @UserManager.GetUserName(User)!</a>
             </li>
             <li>
-                <button type="submit" class="btn btn-link navbar-btn navbar-link">@_TT["Log out"]</button>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">@_T["Log out"]</button>
             </li>
         </ul>
     </form>
@@ -19,7 +15,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="" asp-controller="Account" asp-action="Register">@_TT["Register"]</a></li>
-        <li><a asp-area="" asp-controller="Account" asp-action="Login">@_TT["Log in"]</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a></li>
+        <li><a asp-area="" asp-controller="Account" asp-action="Login">@_T["Log in"]</a></li>
     </ul>
 }

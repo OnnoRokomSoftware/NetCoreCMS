@@ -47,7 +47,7 @@ namespace NetCoreCMS.Framework.Core.ShotCodes
             return (true, "Registration successful.");
         }
 
-        public Hashtable ScanAndRegisterShortCodes(List<IModule> modules)
+        public Hashtable RegisterShortCodes(List<IModule> modules)
         {
             foreach (var module in modules.Where(x=>x.ModuleStatus == (int) NccModule.NccModuleStatus.Active).ToList())
             {

@@ -10,8 +10,10 @@
     {
         cDetails = Model.CategoryDetails.FirstOrDefault();
     }
-    ViewData["PageTitle"] = cDetails.Name;
-    ViewData["PageSubtitle"] = "All post in category " + cDetails.Name;
+    Title = cDetails.Name;
+    SubTitle = "All post in category " + cDetails.Name;
+    MetaDescription = cDetails.MetaDescription;
+    MetaKeyword = cDetails.MetaKeyword;
 }
 
 <h1>@cDetails.Name</h1>

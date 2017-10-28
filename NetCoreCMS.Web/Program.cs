@@ -15,6 +15,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using System.Threading;
 using NetCoreCMS.Framework.Core.App;
+using System.Diagnostics;
 
 namespace NetCoreCMS.Web
 {
@@ -22,9 +23,11 @@ namespace NetCoreCMS.Web
     {
         private static IWebHost nccWebHost;
         private static Thread starterThread = new Thread(StartApp);
+        private static Stopwatch _stopwatch;
         
         public static void Main(string[] args)
         {
+            _stopwatch = new Stopwatch();            
             NetCoreCmsHost.StartForerver(starterThread, new ParameterizedThreadStart(StartApp), Directory.GetCurrentDirectory(), args);
         }
 
@@ -35,6 +38,7 @@ namespace NetCoreCMS.Web
 
         public static IWebHost BuildWebHost(string[] args)
         {
+            _stopwatch.Start();
             nccWebHost = WebHost.CreateDefaultBuilder(args)
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
@@ -43,6 +47,9 @@ namespace NetCoreCMS.Web
                 .UseDefaultServiceProvider(options => options.ValidateScopes = false)
                 .UseApplicationInsights()
                 .Build();
+            _stopwatch.Stop();
+            Console.WriteLine("#\n\r#\n\r######### Elapsed Time: " + _stopwatch.Elapsed + " #############\n\r#\n\r#");
+            _stopwatch.Reset();
             return nccWebHost;
         }
 

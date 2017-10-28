@@ -26,6 +26,7 @@ using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Core.Messages;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.i18n;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -302,6 +303,19 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             set
             {
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_POWERED_BY"] = value;
+            }
+        }
+
+        public INccTranslator _T {
+            get
+            {
+                object val;
+                Context.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR", out val);
+                return (INccTranslator)val;
+            }
+            set
+            {
+                Context.Items["NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR"] = value;
             }
         }
 

@@ -10,11 +10,13 @@
  
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Mvc.FIlters;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Controllers
 {
+    [ServiceFilter(typeof(NccGlobalExceptionFilter))]
     public class NccController : Controller
     {
         protected ILogger _logger;        
@@ -32,8 +34,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Controllers
                 if(_nccLanguageDetector == null)
                 {
                     _nccLanguageDetector = (NccLanguageDetector)HttpContext.RequestServices.GetService(typeof(NccLanguageDetector));
-                }
-                
+                }                
                 return _nccLanguageDetector.GetCurrentLanguage();
             }
         }

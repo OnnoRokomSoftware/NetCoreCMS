@@ -4,9 +4,7 @@
 
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
-@{    
-    NccTranslator<ThemeResources> _TT = new NccTranslator<ThemeResources>(CurrentLanguage);
-
+@{  
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.TwoLetterISOLanguageName.ToUpper()})
@@ -15,7 +13,7 @@
 }
 <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline selectLanguage" role="form" style="display:inline;">
     <div class="form-group">
-        <label for="exampleInputName2">@_TT["Language"]</label>
+        <label for="exampleInputName2">@_T["Language"]</label>
         <select class="btn" name="culture" id="culture" onchange="this.form.submit();" asp-items="selectList"></select>
     </div>
 </form>

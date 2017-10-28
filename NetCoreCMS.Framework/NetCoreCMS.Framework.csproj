@@ -26,7 +26,7 @@
   
   <ItemGroup>
     <Content Include="Resources\NetCoreCMS.Framework.i18n.SharedResource.bn.lang">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
