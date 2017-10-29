@@ -66,17 +66,16 @@ namespace NetCoreCMS.Web
         {
             Configuration = configuration;
             _hostingEnvironment = env;
-
-            AddLogger();
-
+            
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
             ConfigurationRoot = builder.Build();
             ResetGlobalContext(configuration, env);
 
             _moduleManager  = new ModuleManager();
-            _themeManager   = new ThemeManager();
-            _setupConfig    = SetupHelper.LoadSetup();
-            _startup        = new NetCoreStartup();            
+            _themeManager   = new ThemeManager();            
+            _startup        = new NetCoreStartup();
+            _setupConfig = SetupHelper.LoadSetup();
+            AddLogger();
         }
         
         public IConfiguration Configuration { get; }
@@ -231,18 +230,45 @@ namespace NetCoreCMS.Web
         }
         private void AddLogger()
         {
-            var logFilePath = NccInfo.LogFolder + "\\{Date}_NetCoreCMS_Logs.log";
-            Log.Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .Enrich.WithEnvironmentUserName()
-                .Enrich.WithProperty("Version", NccInfo.Version)
-                .WriteTo.RollingFile(
-                    logFilePath,
-                    shared: true,
-                    fileSizeLimitBytes: 10485760,
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [Ncc v{Version}] [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}",
-                    flushToDiskInterval: new TimeSpan(0, 0, 30)
-                ).CreateLogger();
+            if(_setupConfig.LoggingLevel != (int)LogLevel.None)
+            {
+                var logFilePath = NccInfo.LogFolder + "\\{Date}_NetCoreCMS_Logs.log";
+                var logCfg = new LoggerConfiguration()
+                    .Enrich.FromLogContext()
+                    .Enrich.WithEnvironmentUserName()
+                    .Enrich.WithProperty("Version", NccInfo.Version)
+                    .WriteTo.RollingFile(
+                        logFilePath,
+                        shared: true,
+                        fileSizeLimitBytes: 10485760,
+                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [Ncc v{Version}] [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}",
+                        flushToDiskInterval: new TimeSpan(0, 0, 30)
+                    );
+                switch (_setupConfig.LoggingLevel)
+                {
+                    case 5:
+                        logCfg.MinimumLevel.Fatal();
+                        break;
+                    case 4:
+                        logCfg.MinimumLevel.Error();
+                        break;
+                    case 3:
+                        logCfg.MinimumLevel.Warning();
+                        break;
+                    case 2:
+                        logCfg.MinimumLevel.Information();
+                        break;
+                    case 1:
+                        logCfg.MinimumLevel.Debug();
+                        break;
+                    case 0:
+                        logCfg.MinimumLevel.Verbose();
+                        break;
+                    default:
+                        break;
+                }
+                Log.Logger = logCfg.CreateLogger();
+            }
         }
     }
 }
