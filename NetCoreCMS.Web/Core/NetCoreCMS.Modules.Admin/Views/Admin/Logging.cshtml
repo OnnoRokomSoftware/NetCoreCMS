@@ -16,7 +16,7 @@
                         <label>Log Level: </label>
                     </div>
                     <div class="col-sm-5">
-                        <select name="logLevelValue" asp-items="@( new SelectList(ViewBag.LogLevels, "Value","Key", ViewBag.LogLevel))" onchange="SubmitForm()" class="form-control"></select>
+                        <select name="logLevel" asp-items="@( new SelectList(ViewBag.LogLevels, "Value","Key", ViewBag.LogLevel))" onchange="SubmitForm()" class="form-control"></select>
                     </div>
                 </div>                                                
             </div>
