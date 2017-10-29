@@ -49,7 +49,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
             services.AddTransient<NccLanguageDetector>();
 
-            services.AddScoped<LanguageFilter>();
+            services.AddScoped<NccLanguageFilter>();
             services.AddScoped<NccGlobalExceptionFilter>();
 
             services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();

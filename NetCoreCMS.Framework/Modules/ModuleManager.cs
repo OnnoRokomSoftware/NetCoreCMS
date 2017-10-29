@@ -340,7 +340,7 @@ namespace NetCoreCMS.Framework.Modules
 
             mvcBuilder.AddMvcOptions(option => {
                 option.Filters.Add(serviceProvider.GetService <NccGlobalExceptionFilter>());
-                option.Filters.Add(serviceProvider.GetService <LanguageFilter>());                
+                option.Filters.Add(serviceProvider.GetService <NccLanguageFilter>());                
             });
             
         }

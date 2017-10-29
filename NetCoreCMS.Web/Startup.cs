@@ -76,8 +76,19 @@ namespace NetCoreCMS.Web
             _setupConfig    = SetupHelper.LoadSetup();
             _startup        = new NetCoreStartup();
 
-            var logFilePath = NccInfo.LogFolder + "\\NetCoreCMS_Logs_{Date}.log";
-            Log.Logger      = new LoggerConfiguration().Enrich.FromLogContext().WriteTo.RollingFile(logFilePath).CreateLogger();            
+            var logFilePath = NccInfo.LogFolder + "\\{Date}_NetCoreCMS_Logs.log";
+            Log.Logger      = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithEnvironmentUserName()
+                .Enrich.WithProperty("Ncc v", NccInfo.Version)                
+                .WriteTo.RollingFile(
+                    logFilePath,
+                    shared:true, 
+                    fileSizeLimitBytes: 10485760, 
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}",
+                    flushToDiskInterval: new TimeSpan(0,0,30)
+                )
+                .CreateLogger();
         }
         
         public IConfiguration Configuration { get; }
@@ -139,37 +150,9 @@ namespace NetCoreCMS.Web
             
             if (SetupHelper.IsDbCreateComplete)
             {
-                #region Database Selection
-
-                if (SetupHelper.SelectedDatabase == "SqLite")
-                {
-                    _services.AddDbContext<NccDbContext>(options =>
-                        options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
-                    );
-                }
-                else if (SetupHelper.SelectedDatabase == "MSSQL")
-                {
-                    _services.AddDbContext<NccDbContext>(options =>
-                        options.UseSqlServer(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
-                    );
-                }
-                else if (SetupHelper.SelectedDatabase == "MySql")
-                {
-                    _services.AddDbContext<NccDbContext>(options =>
-                        options.UseMySql(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
-                    );
-                }
-                else
-                {
-                    _services.AddDbContext<NccDbContext>(options =>
-                        options.UseInMemoryDatabase("NetCoreCMS")
-                    );
-                }
-
-                #endregion
                  
-                _services.AddCustomizedIdentity();                
-                _startup.RegisterDatabase(_services);
+                _services.AddCustomizedIdentity();               
+                _startup.SelectDatabase(_services);
 
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 

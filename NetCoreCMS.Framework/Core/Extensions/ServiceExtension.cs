@@ -96,37 +96,11 @@ namespace NetCoreCMS.Framework.Core.Extensions
 
         public static IServiceProvider Build(this IServiceCollection services, IConfigurationRoot configuration, IHostingEnvironment hostingEnvironment)
         {
-            var builder = new ContainerBuilder();
-            
-            //builder.RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
-            //builder.Register<SingleInstanceFactory>(ctx =>
-            //{
-            //    var c = ctx.Resolve<IComponentContext>();
-            //    return t => c.Resolve(t);
-            //});
-
-            //builder.Register<MultiInstanceFactory>(ctx =>
-            //{
-            //    var c = ctx.Resolve<IComponentContext>();
-            //    return t => (IEnumerable<object>)c.Resolve(typeof(IEnumerable<>).MakeGenericType(t));
-            //});
-
-            ////Added into MediatR because default handlers are decleard at NetCoreCMS.Framework library.
-            //var coreFrameworkAssembly = typeof(NccInfo).Assembly;
-            //builder.RegisterAssemblyTypes(coreFrameworkAssembly).AsImplementedInterfaces();
-            //services.AddMediatR(coreFrameworkAssembly);
-
-            //foreach (var module in GlobalContext.GetActiveModules())
-            //{
-            //    builder.RegisterAssemblyTypes(module.Assembly).AsImplementedInterfaces();
-            //    services.AddMediatR(module.Assembly);
-            //}
-            
+            var builder = new ContainerBuilder();            
             builder.RegisterInstance(configuration);
             builder.RegisterInstance(hostingEnvironment);
             builder.Populate(services);
-            var container = builder.Build();
-            
+            var container = builder.Build();            
             return container.Resolve<IServiceProvider>();
         }
 

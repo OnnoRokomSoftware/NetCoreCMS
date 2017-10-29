@@ -8,28 +8,46 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-/*************************************************************   
- *          Project: NetCoreCMS                              *
- *           Author: OnnoRokom Software Ltd.                 *
- *          Website: www.onnorokomsoftware.com               *
- *            Email: info@onnorokomsoftware.com              *
- *        Copyright: OnnoRokom Software Ltd.                 *
- *           Mobile: +88 017 08 166 003                      *
- *************************************************************/
-
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Framework.Core
 {
     public class NetCoreStartup
     {
-        public void RegisterDatabase(IServiceCollection services)
+        public void SelectDatabase(IServiceCollection services)
         {
-            if (SetupHelper.IsDbCreateComplete)
+
+            #region Database Selection
+
+            if (SetupHelper.SelectedDatabase == "SqLite")
             {
-                
-            }            
+                services.AddDbContext<NccDbContext>(options =>
+                    options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                );
+            }
+            else if (SetupHelper.SelectedDatabase == "MSSQL")
+            {
+                services.AddDbContext<NccDbContext>(options =>
+                    options.UseSqlServer(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                );
+            }
+            else if (SetupHelper.SelectedDatabase == "MySql")
+            {
+                services.AddDbContext<NccDbContext>(options =>
+                    options.UseMySql(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                );
+            }
+            else
+            {
+                services.AddDbContext<NccDbContext>(options =>
+                    options.UseInMemoryDatabase("NetCoreCMS")
+                );
+            }
+
+            #endregion
         }
     }
 }

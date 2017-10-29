@@ -289,50 +289,52 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
 
         }
 
-        [HttpPost]
-        public ActionResult Logging(int logLevelValue, string logFileName, string operation)
+        public ActionResult SetLogLevel(int logLevel)
         {
-            if (operation == "SetLog")
+            SetupHelper.LoadSetup();
+            SetupHelper.LoggingLevel = logLevel;
+            SetupHelper.SaveSetup();
+            TempData["SuccessMessage"] = "Log Levels save successful. <a href='/Home/RestartHost'> Restart Site</a> for change effect.";
+            return RedirectToAction("Logging");
+        }
+
+        
+        [ResponseCache(Duration = 30, VaryByQueryKeys = new string[] { "logFileName" })]
+        public FileResult DownloadLogFile(string logFileName)
+        {
+
+            var dict = new Dictionary<string, string>();
+            var logFolderPath = GlobalContext.ContentRootPath + "\\" + NccInfo.LogFolder;
+
+            MemoryStream zipStream = new MemoryStream();
+            using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
             {
-                SetupHelper.LoadSetup();
-                SetupHelper.LoggingLevel = logLevelValue;
-                SetupHelper.SaveSetup();
-                TempData["SuccessMessage"] = "Log Levels save successful. <a href='/Home/RestartHost'> Restart Site</a> for change effect.";
-            }
-            else
-            {
-                if (!string.IsNullOrEmpty(logFileName))
+                var files = Directory.GetFiles(logFolderPath);
+                foreach (var item in files)
                 {
                     try
                     {
-                        var logFilePath = GlobalContext.ContentRootPath + "\\" + NccInfo.LogFolder + "\\" + logFileName;
-                        var originalFileStream = System.IO.File.Open(logFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
-                        MemoryStream zipStream = new MemoryStream();
-                        using (ZipArchive zip = new ZipArchive(zipStream, ZipArchiveMode.Create, true))
+                        var fi = new FileInfo(item);
+                        if (fi.Name.Equals(logFileName))
                         {
-                            var zipEntry = zip.CreateEntry(logFileName);
+                            var originalFileStream = System.IO.File.Open(item, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                            var zipEntry = zip.CreateEntry(fi.Name);
                             using (var writer = new StreamWriter(zipEntry.Open()))
                             {
                                 originalFileStream.Seek(0, SeekOrigin.Begin);
                                 originalFileStream.CopyTo(writer.BaseStream);
                             }
                         }
-                        zipStream.Seek(0, SeekOrigin.Begin);
-                        return File(zipStream, "application/zip", logFileName + ".zip");
-
                     }
                     catch (Exception ex)
                     {
-                        TempData["ErrorMessage"] = ex.Message;
-                    }
-                    finally
-                    {
-
+                        _logger.LogError(ex, "Loag download error ");
                     }
                 }
             }
-            PrepareLogViewData();
-            return View();
+
+            zipStream.Seek(0, SeekOrigin.Begin);
+            return File(zipStream, "application/zip", logFileName + ".zip");
         }
 
         private Dictionary<string, string> ListLogFiles()
@@ -348,6 +350,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             return dict;
         }
 
+        [ResponseCache(Duration = 30)]
         public FileResult DownloadAllLogs()
         {
             var dict = new Dictionary<string, string>();
@@ -372,7 +375,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
                     }
                     catch (Exception ex)
                     {
-                        
+                        _logger.LogError(ex, "Loag download error ");
                     }
                 }
             }
