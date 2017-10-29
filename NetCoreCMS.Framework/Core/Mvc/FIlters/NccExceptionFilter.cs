@@ -14,7 +14,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 
         public void OnException(ExceptionContext context)
         {
-            _logger.LogError(context.Exception.ToString());
+            _logger.LogError(context.Exception, "Global Exception Filter");
         }
     }
 }

@@ -8,21 +8,25 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Microsoft.AspNetCore.Authorization;
+using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Mvc.Models;
 
-namespace NetCoreCMS.Framework.Core.Auth
+namespace NetCoreCMS.Framework.Core.Models
 {
-    public class AuthRequire : IAuthorizationRequirement
+    /// <summary>
+    /// From permission management admin will assign permission to the user. That 
+    /// </summary>
+    public class NccUserAuthPolicyRequirement : BaseModel<long>
     {
-        public string Role { get; private set; }
-        public string User { get; private set; }
-        public bool CheckUrlAccess{ get; private set; }
-        
-        public AuthRequire(string role = "", string user="", bool checkUrlAccess = false)
+        public NccUser User { get; set; }
+        public string ModuleId { get; set; }
+        public string PolicyName { get; set; }
+        public string Requirement { get; set; }
+        public string RequirementValue { get; set; }
+
+        public NccUserAuthPolicyRequirement()
         {
-            Role = role;
-            User = user;
-            CheckUrlAccess = checkUrlAccess;
+
         }
     }
 }

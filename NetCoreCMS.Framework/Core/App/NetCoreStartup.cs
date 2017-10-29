@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Setup;
 
-namespace NetCoreCMS.Framework.Core
+namespace NetCoreCMS.Framework.Core.App
 {
     public class NetCoreStartup
     {

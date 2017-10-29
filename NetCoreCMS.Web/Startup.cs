@@ -66,7 +66,9 @@ namespace NetCoreCMS.Web
         {
             Configuration = configuration;
             _hostingEnvironment = env;
-             
+
+            AddLogger();
+
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
             ConfigurationRoot = builder.Build();
             ResetGlobalContext(configuration, env);
@@ -74,21 +76,7 @@ namespace NetCoreCMS.Web
             _moduleManager  = new ModuleManager();
             _themeManager   = new ThemeManager();
             _setupConfig    = SetupHelper.LoadSetup();
-            _startup        = new NetCoreStartup();
-
-            var logFilePath = NccInfo.LogFolder + "\\{Date}_NetCoreCMS_Logs.log";
-            Log.Logger      = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .Enrich.WithEnvironmentUserName()
-                .Enrich.WithProperty("Ncc v", NccInfo.Version)                
-                .WriteTo.RollingFile(
-                    logFilePath,
-                    shared:true, 
-                    fileSizeLimitBytes: 10485760, 
-                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}",
-                    flushToDiskInterval: new TimeSpan(0,0,30)
-                )
-                .CreateLogger();
+            _startup        = new NetCoreStartup();            
         }
         
         public IConfiguration Configuration { get; }
@@ -104,7 +92,7 @@ namespace NetCoreCMS.Web
             
             _services.AddOptions();            
             _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
-            _services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
+            //_services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
 
             _services.AddLocalization();
             _mvcBuilder = services.AddMvc(config => {                
@@ -240,6 +228,21 @@ namespace NetCoreCMS.Web
             GlobalContext.Modules = new List<IModule>();
             GlobalContext.Menus = new List<NccMenu>();
             GlobalContext.Themes = new List<Theme>();
+        }
+        private void AddLogger()
+        {
+            var logFilePath = NccInfo.LogFolder + "\\{Date}_NetCoreCMS_Logs.log";
+            Log.Logger = new LoggerConfiguration()
+                .Enrich.FromLogContext()
+                .Enrich.WithEnvironmentUserName()
+                .Enrich.WithProperty("Version", NccInfo.Version)
+                .WriteTo.RollingFile(
+                    logFilePath,
+                    shared: true,
+                    fileSizeLimitBytes: 10485760,
+                    outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [Ncc v{Version}] [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}",
+                    flushToDiskInterval: new TimeSpan(0, 0, 30)
+                ).CreateLogger();
         }
     }
 }
