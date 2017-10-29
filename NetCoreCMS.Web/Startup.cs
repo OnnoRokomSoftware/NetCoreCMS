@@ -74,7 +74,7 @@ namespace NetCoreCMS.Web
             _moduleManager  = new ModuleManager();
             _themeManager   = new ThemeManager();            
             _startup        = new NetCoreStartup();
-            _setupConfig = SetupHelper.LoadSetup();
+            _setupConfig    = SetupHelper.LoadSetup();
             AddLogger();
         }
         
