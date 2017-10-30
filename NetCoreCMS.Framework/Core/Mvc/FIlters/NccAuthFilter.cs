@@ -10,6 +10,7 @@
 
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 {
@@ -29,7 +30,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            var controller = context.Controller;
+            var type = context.Controller.GetType();
+            var attribs = type.GetCustomAttributes(true);
+            foreach (var item in attribs)
+            {
+                if(item is NccAuthorize)
+                {
+
+                }
+            }
         }
     }
 }
