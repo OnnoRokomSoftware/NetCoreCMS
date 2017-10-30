@@ -1,4 +1,4 @@
-﻿/*************************************************************
+/*************************************************************
  *          Project: NetCoreCMS                              *
  *              Web: http://dotnetcorecms.org                *
  *           Author: OnnoRokom Software Ltd.                 *
@@ -8,19 +8,20 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Mvc.Repository;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
-namespace NetCoreCMS.Framework.Core.Auth
+namespace NetCoreCMS.Framework.Core.Repository
 {
-    public class NccAuthRequirement : IAuthorizationRequirement
+    public class NccUserAuthPolicyRepository : BaseRepository<NccUserAuthPolicy, long>
     {
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public string ModuleId { get; set; }
-        public NccAuthRequirement(string name, string value = "")
+        public NccUserAuthPolicyRepository(NccDbContext context) : base(context)
         {
-            Name = name;
-            Value = value;
-        }
+        } 
     }
 }

@@ -8,19 +8,10 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Microsoft.AspNetCore.Authorization;
-
 namespace NetCoreCMS.Framework.Core.Auth
 {
-    public class NccAuthRequirement : IAuthorizationRequirement
+    public class PolicyHandler
     {
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public string ModuleId { get; set; }
-        public NccAuthRequirement(string name, string value = "")
-        {
-            Name = name;
-            Value = value;
-        }
+        public const string NccAuthRequireHandler = "NccAuthRequireHandler"; 
     }
 }

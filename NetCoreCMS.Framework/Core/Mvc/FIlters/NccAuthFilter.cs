@@ -8,19 +8,28 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Extensions.Logging;
 
-namespace NetCoreCMS.Framework.Core.Auth
+namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 {
-    public class NccAuthRequirement : IAuthorizationRequirement
+    public class NccAuthFilter : IActionFilter
     {
-        public string Name { get; set; }
-        public string Value { get; set; }
-        public string ModuleId { get; set; }
-        public NccAuthRequirement(string name, string value = "")
+        private readonly ILogger _logger;
+
+        public NccAuthFilter(ILoggerFactory loggerFactory)
         {
-            Name = name;
-            Value = value;
+            _logger = loggerFactory.CreateLogger<NccGlobalExceptionFilter>();
+        }
+
+        public void OnActionExecuted(ActionExecutedContext context)
+        {
+             
+        }
+
+        public void OnActionExecuting(ActionExecutingContext context)
+        {
+            var controller = context.Controller;
         }
     }
 }

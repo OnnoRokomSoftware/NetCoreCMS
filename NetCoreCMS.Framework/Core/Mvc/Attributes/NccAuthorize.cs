@@ -10,37 +10,40 @@
 
 using NetCoreCMS.Framework.Core.Auth;
 using System;
-
+[assembly: CLSCompliant(true)]
 namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 {
     /// <summary>
     /// NetCoreCMS default authorization attribute for controller and action.
     /// </summary>
+    [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class NccAuthorize : Attribute
     {
-        string _policyId;
-        NccAuthRequirement[] _requirements;
-        NccAuthRequirementWithValue[] _requirementsWithValue;
+        private string _policyHandler;
+        private string _requirement;
+        private string _values;
         /// <summary>
         /// Constracture for AuthRequirement
-        /// </summary>
-        /// <param name="policyId">Unique policy id which want to apply on the controller/action</param>
-        /// <param name="requirements">Restriction requirements. Built in requirement operations are available at AuthPermission class </param>
-        public NccAuthorize(string policyId, params NccAuthRequirement[] requirements)
+        /// <param name="PolicyHandler">Which handler will handle this requirement. You can implement your own Authorization Handler</param>
+        /// <param name="Requirement">Requirement name. Use NccAuthRequirementName class constants.</param>
+        /// </summary>        
+        public NccAuthorize(string PolicyHandler, string Requirement)
         {
-            _policyId = policyId;
-            _requirements = requirements;
+            _policyHandler = PolicyHandler;
+            _requirement = Requirement;
         }
 
         /// <summary>
-        /// Constracture for AuthRequirement with value
+        /// Use requirement name with value. If requirement name is Roles then pass roles coma seperated role names.
         /// </summary>
-        /// <param name="policyId">Unique policy id which want to apply on the controller/action</param>
-        /// <param name="requirements">Restriction requirements. Use instance of NccAuthRequirementWithValue class. At name use AuthOperationName class constant property. And at value field pass your desired value. </param>
-        public NccAuthorize(string policyId, params NccAuthRequirementWithValue[] requirements)
+        /// <param name="PolicyHandler">Which handler will handle this requirement. You can implement your own Authorization Handler</param>
+        /// <param name="Requirement">Requirement name</param>
+        /// <param name="Values">If value is require use appropriate coma seperated values.</param>
+        public NccAuthorize(string PolicyHandler, string Requirement, string Values)
         {
-            _policyId = policyId;
-            _requirementsWithValue = requirements;
+            _policyHandler = PolicyHandler;
+            _requirement = Requirement;
+            _values = Values;
         }
     }
 }

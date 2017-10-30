@@ -26,6 +26,8 @@ using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Messages;
 using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
+using NetCoreCMS.Framework.Core.Auth;
 
 namespace NetCoreCMS.Web.Controllers
 {
@@ -46,7 +48,7 @@ namespace NetCoreCMS.Web.Controllers
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                if(GlobalContext.SetupConfig == null)
+                if (GlobalContext.SetupConfig == null)
                 {
                     GlobalContext.SetupConfig = SetupHelper.LoadSetup();
                 }
@@ -63,9 +65,9 @@ namespace NetCoreCMS.Web.Controllers
                     return View();
                 }
 
-                var langEnabledUrl = NccUrlHelper.AddLanguageToUrl( CurrentLanguage, NccUrlHelper.EncodeUrl(setupConfig.StartupUrl));
+                var langEnabledUrl = NccUrlHelper.AddLanguageToUrl(CurrentLanguage, NccUrlHelper.EncodeUrl(setupConfig.StartupUrl));
 
-                return Redirect( langEnabledUrl);
+                return Redirect(langEnabledUrl);
             }
             return Redirect("/SetupHome/Index");
         }
@@ -80,7 +82,7 @@ namespace NetCoreCMS.Web.Controllers
         public ActionResult RedirectToDefaultLanguage()
         {
             var lang = CurrentLanguage;
-            var redirectUrl = Request.Path.Value+""+Request.QueryString;
+            var redirectUrl = Request.Path.Value + "" + Request.QueryString;
             if (Request.Path.Value.StartsWith("/en") || Request.Path.Value.StartsWith("/bn"))
             {
                 return Redirect("~" + redirectUrl);
@@ -105,7 +107,7 @@ namespace NetCoreCMS.Web.Controllers
             {
                 if (!IsContainsLangPrefix(returnUrl))
                 {
-                    returnUrl =  culture + returnUrl;
+                    returnUrl = culture + returnUrl;
                 }
 
                 if (!IsStartedWithCurrentCulture(returnUrl, culture))
@@ -119,11 +121,11 @@ namespace NetCoreCMS.Web.Controllers
                         returnUrl = returnUrl.Substring(2);
                     }
 
-                    returnUrl =  culture + returnUrl;
+                    returnUrl = culture + returnUrl;
                 }
             }
 
-            if(returnUrl.StartsWith("/") == false)
+            if (returnUrl.StartsWith("/") == false)
             {
                 returnUrl = "/" + returnUrl;
             }
@@ -135,7 +137,7 @@ namespace NetCoreCMS.Web.Controllers
 
         private bool IsStartedWithCurrentCulture(string returnUrl, string culture)
         {
-            if (returnUrl.ToLower().StartsWith(culture) || returnUrl.ToLower().StartsWith("/"+culture))
+            if (returnUrl.ToLower().StartsWith(culture) || returnUrl.ToLower().StartsWith("/" + culture))
             {
                 return true;
             }
@@ -146,7 +148,7 @@ namespace NetCoreCMS.Web.Controllers
         {
             foreach (var item in SupportedCultures.Cultures)
             {
-                if (returnUrl.ToLower().StartsWith(item.TwoLetterISOLanguageName.ToLower()) || returnUrl.ToLower().StartsWith("/"+item.TwoLetterISOLanguageName.ToLower()) )
+                if (returnUrl.ToLower().StartsWith(item.TwoLetterISOLanguageName.ToLower()) || returnUrl.ToLower().StartsWith("/" + item.TwoLetterISOLanguageName.ToLower()))
                     return true;
             }
             return false;
@@ -191,6 +193,9 @@ namespace NetCoreCMS.Web.Controllers
             return View();
         }
 
+        [NccAuthorize(PolicyHandler.NccAuthRequireHandler, AuthRequirementName.Create)]
+        [NccAuthorize( PolicyHandler.NccAuthRequireHandler , AuthRequirementName.Delete)]
+        [NccAuthorize(PolicyHandler.NccAuthRequireHandler,  AuthRequirementName.HasRoles, "Administrator, Manager")]        
         public ActionResult Temp()
         {
             GlobalMessageRegistry.RegisterMessage(

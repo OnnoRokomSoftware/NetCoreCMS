@@ -14,6 +14,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Core.Services;
 using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Core.Auth.Handlers
@@ -26,11 +27,13 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
     {
         private readonly UserManager<NccUser> _userManager;
         private readonly RoleManager<NccUser> _roleManager;
+        private readonly NccUserAuthPolicyService _nccUserAuthPolicyService;
 
-        public NccAuthRequireHandler(UserManager<NccUser> userManager, RoleManager<NccUser> roleManager)
+        public NccAuthRequireHandler(UserManager<NccUser> userManager, RoleManager<NccUser> roleManager, NccUserAuthPolicyService nccUserAuthPolicyService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _nccUserAuthPolicyService = nccUserAuthPolicyService;
         }
 
         protected override Task  HandleRequirementAsync(AuthorizationHandlerContext context, NccAuthRequirement requirement, BaseModel<long> resource)
@@ -40,38 +43,31 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
                 return Task.FromResult(0);
             }
 
-            if (resource.CreateBy == context.User.GetUserId())
-            {
-                context.Succeed(requirement);
-            }
+            //var usersPolicyList = _nccUserAuthPolicyService.LoadByModulePolicy(PolicyHandler.NccAuthRequireHandler, requirement);
 
+            if(requirement.Name == AuthRequirementName.HasRoles)
+            {
+
+            }
+            else if(requirement.Name == AuthRequirementName.UserNames)
+            {
+
+            }
+            else if(requirement.Name == AuthRequirementName.IsDataOwner)
+            {
+                if (resource.CreateBy == context.User.GetUserId())
+                {
+                    context.Succeed(requirement);
+                }
+            }
+            else
+            {
+
+            }
+            
             return Task.FromResult(0);
         }
-    }
 
-    [NccAuthPolicy("NccAuthRequireWithValueHandler", "Default NetCoreCMS Authorization Requirement")]
-    public class NccAuthRequireWithValueHandler : AuthorizationHandler<NccAuthRequirementWithValue>, INccAuthorizationHandler
-    {
-        UserManager<NccUser> _userManager;
 
-        public NccAuthRequireWithValueHandler(UserManager<NccUser> userManager)
-        {
-            _userManager = userManager;
-        }
-
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, NccAuthRequirementWithValue requirement)
-        {
-            if (context.User == null)
-            {
-                return Task.FromResult(0);
-            }
-
-            if(requirement.Value == "Check with users permission value")
-            {
-                context.Succeed(requirement);
-            }
-
-            return Task.FromResult(0);
-        }
-    }
+    }    
 }
