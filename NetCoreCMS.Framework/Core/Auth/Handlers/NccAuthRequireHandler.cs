@@ -25,13 +25,11 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
     {
         private readonly UserManager<NccUser> _userManager;
         private readonly RoleManager<NccUser> _roleManager;
-        private readonly NccUserAuthPolicyService _nccUserAuthPolicyService;
-
-        public NccAuthRequireHandler(UserManager<NccUser> userManager, RoleManager<NccUser> roleManager, NccUserAuthPolicyService nccUserAuthPolicyService)
+        
+        public NccAuthRequireHandler(UserManager<NccUser> userManager, RoleManager<NccUser> roleManager)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
-            _nccUserAuthPolicyService = nccUserAuthPolicyService;
+            _roleManager = roleManager;            
         }
 
         protected override Task  HandleRequirementAsync(AuthorizationHandlerContext context, NccAuthRequirement requirement, BaseModel<long> resource)

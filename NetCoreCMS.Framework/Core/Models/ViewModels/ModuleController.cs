@@ -1,4 +1,4 @@
-/*************************************************************
+﻿/*************************************************************
  *          Project: NetCoreCMS                              *
  *              Web: http://dotnetcorecms.org                *
  *           Author: OnnoRokom Software Ltd.                 *
@@ -8,20 +8,15 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
 using System.Collections.Generic;
-using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Repository;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
 
-namespace NetCoreCMS.Framework.Core.Repository
+namespace NetCoreCMS.Framework.Core.Models.ViewModels
 {
-    public class NccUserAuthPolicyRepository : BaseRepository<NccUserAuthPolicy, long>
+    public class ModuleController
     {
-        public NccUserAuthPolicyRepository(NccDbContext context) : base(context)
-        {
-        } 
+        public string ModuleId { get; set; }
+        public string Name { get; set; }
+        public string DisplayName { get; set; }
+        public List<ControllerAction> Actions { get; set; }
     }
 }

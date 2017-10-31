@@ -15,39 +15,41 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.AdvancedPermission.Models;
+using NetCoreCMS.Framework.Core.IoC;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     /// <summary>
     /// Service for user authorization policy. 
     /// </summary>
-    public class NccUserAuthPolicyService : IBaseService<NccUserAuthPolicy>
+    public class NccUserPermissionService : IBaseService<NccUserPermission>, ITransient
     {
-        private readonly NccUserAuthPolicyRepository _entityRepository;
+        private readonly NccUserPermissionRepository _entityRepository;
 
-        public NccUserAuthPolicyService(NccUserAuthPolicyRepository entityRepository)
+        public NccUserPermissionService(NccUserPermissionRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
 
-        public NccUserAuthPolicy Get(long entityId, bool isAsNoTracking = false)
+        public NccUserPermission Get(long entityId, bool isAsNoTracking = false)
         {
             return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "User" });
         } 
 
-        public List<NccUserAuthPolicy> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        public List<NccUserPermission> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
             return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "User" });
         } 
 
-        public NccUserAuthPolicy Save(NccUserAuthPolicy entity)
+        public NccUserPermission Save(NccUserPermission entity)
         {
             _entityRepository.Add(entity);
             _entityRepository.SaveChange();
             return entity;
         }
 
-        public NccUserAuthPolicy Update(NccUserAuthPolicy entity)
+        public NccUserPermission Update(NccUserPermission entity)
         {
             var oldEntity = _entityRepository.Get(entity.Id);
             if (oldEntity != null)
@@ -85,7 +87,7 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        private void CopyNewData(NccUserAuthPolicy copyFrom, NccUserAuthPolicy copyTo)
+        private void CopyNewData(NccUserPermission copyFrom, NccUserPermission copyTo)
         {
             copyTo.ModificationDate = copyFrom.ModificationDate;
             copyTo.ModifyBy = copyFrom.ModifyBy;
@@ -93,9 +95,9 @@ namespace NetCoreCMS.Framework.Core.Services
             copyTo.Status = copyFrom.Status;
             copyTo.VersionNumber = copyFrom.VersionNumber;
             copyTo.Metadata = copyFrom.Metadata;
-            copyTo.PolicyId = copyFrom.PolicyId;
-            copyTo.RequirementName = copyFrom.RequirementName;
-            copyTo.RequirementValue = copyFrom.RequirementValue;
+            copyTo.Controller = copyFrom.Controller;
+            copyTo.Action= copyFrom.Action;
+            copyTo.ModuleId= copyFrom.ModuleId;
             copyTo.User = copyFrom.User;
             copyTo.ModuleId = copyFrom.ModuleId;            
         }

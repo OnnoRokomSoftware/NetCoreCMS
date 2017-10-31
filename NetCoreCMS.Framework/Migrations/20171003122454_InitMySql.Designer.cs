@@ -355,6 +355,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("ModuleId");
 
+                    b.Property<bool>("IsCore");
+
                     b.Property<int>("ModuleStatus");
 
                     b.Property<string>("ModuleTitle");

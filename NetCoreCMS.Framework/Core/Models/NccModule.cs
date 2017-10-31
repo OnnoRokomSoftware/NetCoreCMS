@@ -21,6 +21,7 @@ namespace NetCoreCMS.Framework.Core.Models
         }
 
         public string ModuleId { get; set; }
+        public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Description { get; set; }
         public string Category { get; set; } 

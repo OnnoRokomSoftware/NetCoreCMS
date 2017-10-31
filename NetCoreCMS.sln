@@ -64,9 +64,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeDoc", "CodeDoc", "{BFCD
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Books", "Books", "{48B15CD7-9945-424A-8C56-1AC7FAE83405}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.Framework.Test", "NetCoreCMS.UnitTests\NetCoreCMS.Framework.Test\NetCoreCMS.Framework.Test.csproj", "{F8319A42-491D-4552-AA46-155EBEA9D6A8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetCoreCMS.Framework.Test", "NetCoreCMS.UnitTests\NetCoreCMS.Framework.Test\NetCoreCMS.Framework.Test.csproj", "{F8319A42-491D-4552-AA46-155EBEA9D6A8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests.Lib", "NetCoreCMS.UnitTests\UnitTests.Lib\UnitTests.Lib.csproj", "{BAECEC38-598A-48EF-AD04-8DA8E28F0806}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests.Lib", "NetCoreCMS.UnitTests\UnitTests.Lib\UnitTests.Lib.csproj", "{BAECEC38-598A-48EF-AD04-8DA8E28F0806}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreCMS.AdvancedPermission", "NetCoreCMS.Web\Modules\NetCoreCMS.AdvancedPermission\NetCoreCMS.AdvancedPermission.csproj", "{7FE12784-5A8B-4584-91BD-25364BE5F300}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -134,6 +136,10 @@ Global
 		{BAECEC38-598A-48EF-AD04-8DA8E28F0806}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAECEC38-598A-48EF-AD04-8DA8E28F0806}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAECEC38-598A-48EF-AD04-8DA8E28F0806}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FE12784-5A8B-4584-91BD-25364BE5F300}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FE12784-5A8B-4584-91BD-25364BE5F300}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FE12784-5A8B-4584-91BD-25364BE5F300}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FE12784-5A8B-4584-91BD-25364BE5F300}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,6 +165,7 @@ Global
 		{48B15CD7-9945-424A-8C56-1AC7FAE83405} = {B8921F6F-C83E-4873-B322-3DF82E1D4B74}
 		{F8319A42-491D-4552-AA46-155EBEA9D6A8} = {CFA79569-C10B-4759-A030-E274D3134353}
 		{BAECEC38-598A-48EF-AD04-8DA8E28F0806} = {CFA79569-C10B-4759-A030-E274D3134353}
+		{7FE12784-5A8B-4584-91BD-25364BE5F300} = {BDDA4695-6AA7-4A2D-A82E-33C64576477D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8DF1B167-7690-4003-AA5C-3EA5712DEC16}

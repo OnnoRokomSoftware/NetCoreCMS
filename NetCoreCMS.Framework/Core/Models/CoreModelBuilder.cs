@@ -195,9 +195,7 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<IdentityUserToken<long>>(b =>
             {
                 b.ToTable("Ncc_User_Token");
-            });
-
-            modelBuilder.Entity<NccUserAuthPolicy>().ToTable("Ncc_User_Auth_Policy");
+            });            
         }
     }
 }

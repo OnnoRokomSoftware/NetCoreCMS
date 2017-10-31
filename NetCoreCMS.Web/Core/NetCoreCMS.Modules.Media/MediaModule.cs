@@ -18,6 +18,7 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using Microsoft.AspNetCore.Routing;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Models.ViewModels;
 
 namespace NetCoreCMS.Core.Modules.Media
 {
@@ -30,6 +31,7 @@ namespace NetCoreCMS.Core.Modules.Media
         }
 
         public string ModuleId { get; set; }
+        public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
         public string Email { get; set; }
@@ -49,6 +51,7 @@ namespace NetCoreCMS.Core.Modules.Media
         public string Folder { get; set; }
         public int ModuleStatus { get; set; }
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
+        public List<ModuleController> Controllers { get; set; }
         public bool Activate()
         {
             throw new NotImplementedException();

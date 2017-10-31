@@ -8,22 +8,22 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
-namespace NetCoreCMS.Framework.Core.Models
+namespace NetCoreCMS.AdvancedPermission.Models
 {
     /// <summary>
     /// From permission management admin will assign permission to the user. That 
     /// </summary>
-    public class NccUserAuthPolicy: BaseModel<long>
+    public class NccUserPermission: BaseModel<long>
     {
         public NccUser User { get; set; }
-        public string ModuleId { get; set; }
-        public string PolicyId { get; set; }
-        public string RequirementName { get; set; }
-        public string RequirementValue { get; set; }
+        public string ModuleId { get; set; }        
+        public string Controller { get; set; }
+        public string Action { get; set; }
 
-        public NccUserAuthPolicy()
+        public NccUserPermission()
         {
 
         }

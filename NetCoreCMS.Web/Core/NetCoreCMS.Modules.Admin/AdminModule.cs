@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Routing;
 using NetCoreCMS.Framework.Core.Data;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Models.ViewModels;
 
 namespace NetCoreCMS.Core.Modules.Admin
 {
@@ -31,6 +32,7 @@ namespace NetCoreCMS.Core.Modules.Admin
         }
         
         public string ModuleId { get; set; }
+        public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
         public string Email { get; set; }
@@ -51,7 +53,7 @@ namespace NetCoreCMS.Core.Modules.Admin
         public string Folder { get; set; }
         public int ModuleStatus { get; set; }
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
-
+        public List<ModuleController> Controllers { get; set; }
         public bool Activate()
         {
             return true;

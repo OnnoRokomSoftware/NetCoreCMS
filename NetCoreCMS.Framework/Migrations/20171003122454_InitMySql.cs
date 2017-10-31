@@ -90,6 +90,7 @@ namespace NetCoreCMS.Framework.Migrations
                     ModificationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ModifyBy = table.Column<long>(type: "bigint", nullable: false),
                     ModuleId = table.Column<string>(type: "longtext", nullable: true),
+                    IsCore = table.Column<bool>(type: "bit", nullable: false, defaultValue:false),
                     ModuleStatus = table.Column<int>(type: "int", nullable: false),
                     ModuleTitle = table.Column<string>(type: "longtext", nullable: true),
                     Name = table.Column<string>(type: "longtext", nullable: true),

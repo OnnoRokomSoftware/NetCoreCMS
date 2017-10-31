@@ -21,6 +21,7 @@ using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.ImageSlider.Services;
 using NetCoreCMS.ImageSlider.Repository;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Models.ViewModels;
 
 namespace NetCoreCMS.Modules.ImageSlider
 {
@@ -33,6 +34,7 @@ namespace NetCoreCMS.Modules.ImageSlider
         }
 
         public string ModuleId { get; set; }
+        public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
         public string Email { get; set; }
@@ -55,7 +57,7 @@ namespace NetCoreCMS.Modules.ImageSlider
         public string SortName { get ; set ; }
         [NotMapped]
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
-
+        public List<ModuleController> Controllers { get; set; }
         public bool Activate()
         {
             return true;

@@ -30,6 +30,9 @@ using NetCoreCMS.Framework.Core.IoC;
 using Microsoft.AspNetCore.Mvc.Filters;
 using NetCoreCMS.Framework.Core.Mvc.FIlters;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
+using NetCoreCMS.Framework.Core.Models.ViewModels;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -194,6 +197,43 @@ namespace NetCoreCMS.Framework.Modules
             return widgetList;
         }
 
+        public async Task LoadControllerActions()
+        {
+            foreach (var item in instantiatedModuleList)
+            {
+                item.Controllers = LoadControllers(item);
+            }
+        }
+
+        private List<ModuleController> LoadControllers(IModule module)
+        {
+            var moduleControllerList = new List<ModuleController>();
+            var controllers =  module.Assembly.GetTypes().Where(x => typeof(NccController).IsAssignableFrom(x)).ToList();
+            foreach (var item in controllers)
+            {
+                var mc = new ModuleController();
+                mc.Name = item.Name;
+                mc.ModuleId = module.ModuleId;
+                mc.DisplayName = item.FullName;
+                mc.Actions = GetActions(item);
+                moduleControllerList.Add(mc);
+            }
+            return moduleControllerList;
+        }
+
+        private List<ControllerAction> GetActions(Type controller)
+        {
+            var controllerActionsList = new List<ControllerAction>();
+            var actions = controller.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+            foreach (var item in actions)
+            {
+                var ca = new ControllerAction();
+                ca.Name = item.Name;
+                controllerActionsList.Add(ca);
+            }
+            return controllerActionsList;
+        }
+
         public void AddModuleServices(IServiceCollection services)
         {
             foreach (var module in instantiatedModuleList)
@@ -298,6 +338,8 @@ namespace NetCoreCMS.Framework.Modules
             if (coreModuleDir.Name.Equals("Core"))
             {
                 nccModule.ModuleStatus = NccModule.NccModuleStatus.Active;
+                module.IsCore = true;
+                nccModule.IsCore = true;
             }
             else
             {
@@ -376,7 +418,7 @@ namespace NetCoreCMS.Framework.Modules
                 module.Website = loadedModule.Website;
                 module.Assembly = moduleInfo.Assembly;
                 module.Path = moduleInfo.Path;
-                module.ModuleStatus = moduleInfo.ModuleStatus;
+                module.ModuleStatus = moduleInfo.ModuleStatus;                
             }
             else
             {
