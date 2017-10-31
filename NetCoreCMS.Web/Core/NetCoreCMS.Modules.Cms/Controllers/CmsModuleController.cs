@@ -17,6 +17,7 @@ using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Events.Modules;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;

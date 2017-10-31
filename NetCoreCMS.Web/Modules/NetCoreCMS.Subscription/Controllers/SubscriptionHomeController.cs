@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Network;
 using Microsoft.AspNetCore.Authorization;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Subscription.Controllers
 {

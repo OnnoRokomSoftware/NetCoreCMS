@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
 using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {

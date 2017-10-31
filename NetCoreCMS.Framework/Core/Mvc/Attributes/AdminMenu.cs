@@ -10,7 +10,7 @@
 
 using System;
 
-namespace NetCoreCMS.Framework.Themes
+namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 {
     public class AdminMenu : Attribute
     {
@@ -26,5 +26,6 @@ namespace NetCoreCMS.Framework.Themes
         public string QueryString { get; set; }
         public int Order { get; set; }
         public string IconCls { get; set; }
+        public string[] SubActions { get; set; }
     }
 }

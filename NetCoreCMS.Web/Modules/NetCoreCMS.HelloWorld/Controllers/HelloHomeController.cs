@@ -13,6 +13,7 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Themes;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.i18n;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.HelloWorld.Controllers
 {

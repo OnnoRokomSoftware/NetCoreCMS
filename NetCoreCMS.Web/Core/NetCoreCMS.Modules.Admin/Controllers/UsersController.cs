@@ -26,6 +26,7 @@ using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Modules.Admin.Controllers
 {

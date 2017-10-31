@@ -13,9 +13,9 @@ using System.Linq;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using System.Reflection;
-using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Messages;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Framework.Utility
 {
