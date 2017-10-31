@@ -20,7 +20,7 @@ namespace NetCoreCMS.Framework.i18n
         string CultureCode { get; }
 
         string Get(string key);
-        INccTranslator GetTranslator(Type resourceType, string cultureCode);
+        INccTranslator GetTranslator(string cultureCode);
         Dictionary<string, string> LoadAll();
         void Save();
         void Set(string key, string value);

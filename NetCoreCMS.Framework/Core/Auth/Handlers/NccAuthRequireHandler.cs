@@ -11,7 +11,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Services;
@@ -21,8 +20,7 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
 {   
     /// <summary>
     /// Default NetCoreCMS authorization handler. If any controller use NccAuthorize attribute then this handler will handle that requirement.
-    /// </summary>
-    [NccAuthPolicy("NccAuthRequireHandler", "Default NetCoreCMS Authorization Requirement")]
+    /// </summary>    
     public class NccAuthRequireHandler : AuthorizationHandler<NccAuthRequirement, BaseModel<long>>, INccAuthorizationHandler
     {
         private readonly UserManager<NccUser> _userManager;
@@ -66,8 +64,6 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
             }
             
             return Task.FromResult(0);
-        }
-
-
+        } 
     }    
 }

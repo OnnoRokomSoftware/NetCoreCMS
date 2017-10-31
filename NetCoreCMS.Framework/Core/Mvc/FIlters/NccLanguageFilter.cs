@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
@@ -41,8 +42,9 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
             }
 
             //NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR
-            var controller = context.Controller;
-            var translator = new NccTranslator<SharedResource>(context.Controller.GetType(), language);
+            //var controller = context.Controller;
+
+            var translator = new NccTranslator(language);
             if(translator != null)
             {
                 context.HttpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR", translator);

@@ -12,7 +12,7 @@
   "MaxNccVersion": "0.4.3",
   "Category": "Default",
   "PreviewImage": "screenshot.png",
-  "IsActive": false,
+  "IsActive": true,
   "MenuLocations": [
     "Top",
     "Navigation",
@@ -65,7 +65,7 @@
     }
   ],
   "Settings": {
-    "style": "light",
-    "NccVersion": "0.4.1"
+    "NccVersion": "0.4.1",
+    "style": "light"
   }
 }

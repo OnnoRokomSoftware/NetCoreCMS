@@ -1,0 +1,32 @@
+﻿ 
+@{ 
+    ViewData["Title"] = "Not authorized";
+    Layout = "_SiteLayout";
+}
+<style>
+    #container {
+        margin-top: 20vh;
+        height: 80vh;
+        text-align: center;
+        color: white;
+    }
+</style>
+
+<div id="container">
+    <h1>Permission denied</h1>
+
+    @if (TempData.Keys.Contains("Message"))
+    {
+        <div class="alert">
+            <h3>@TempData["Message"]</h3>
+        </div>
+    }
+    @if (TempData.Keys.Contains("ErrorMessage"))
+    {
+        <div class="alert">
+            <h3>@TempData["ErrorMessage"]</h3>
+        </div>
+    }
+
+    <h5><a href="/CmsHome">Go back to Home</a></h5>
+</div>

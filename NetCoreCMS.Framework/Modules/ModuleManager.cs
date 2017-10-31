@@ -267,10 +267,10 @@ namespace NetCoreCMS.Framework.Modules
             var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
             foreach (var module in activeModules)
             {
-                var actionFilters = module.Assembly.GetTypes().Where(x => typeof(IActionFilter).IsAssignableFrom(x)).ToList();
+                var actionFilters = module.Assembly.GetTypes().Where(x => typeof(INccActionFilter).IsAssignableFrom(x)).ToList();
                 foreach (var item in actionFilters)
                 {
-                    services.AddTransient(item);
+                    services.AddScoped(item);
                 }
             }            
         }
@@ -322,27 +322,35 @@ namespace NetCoreCMS.Framework.Modules
 
         public void RegisterModuleFilters(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
         {
+            mvcBuilder.AddMvcOptions(option => {                
+                option.Filters.Add(serviceProvider.GetService<NccLanguageFilter>());
+                option.Filters.Add(serviceProvider.GetService<NccGlobalExceptionFilter>());
+            });
+
+            var actionFilterList = new List<INccActionFilter>();
+
             var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
             foreach (var item in activeModules)
             {
                 var actionFilters = item.Assembly.GetTypes().Where(x => typeof(INccActionFilter).IsAssignableFrom(x)).ToList();
                 foreach (var filter in actionFilters)
                 {
-                    var filterInstance = (IActionFilter)serviceProvider.GetService(filter);
-                    mvcBuilder.AddMvcOptions(options => {
-                        if ( options.Filters.Contains(filterInstance) == false)
-                        {
-                            options.Filters.Add(filterInstance);
-                        }
-                    });
+                    var filterInstance = (INccActionFilter) serviceProvider.GetService(filter);
+                    actionFilterList.Add(filterInstance);
                 }
             }
 
-            mvcBuilder.AddMvcOptions(option => {
-                option.Filters.Add(serviceProvider.GetService <NccGlobalExceptionFilter>());
-                option.Filters.Add(serviceProvider.GetService <NccLanguageFilter>());                
-            });
-            
+            actionFilterList.OrderBy(x=>x.Order);
+
+            foreach (var item in actionFilterList)
+            {
+                mvcBuilder.AddMvcOptions(options => {
+                    if (options.Filters.Contains(item) == false)
+                    {
+                        options.Filters.Add(item);
+                    }
+                });
+            } 
         }
 
         public void LoadModuleInfo(IModule module, IModule moduleInfo)

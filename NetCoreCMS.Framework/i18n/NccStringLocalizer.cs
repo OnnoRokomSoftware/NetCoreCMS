@@ -15,7 +15,7 @@ namespace NetCoreCMS.Framework.i18n
 {
     public class NccStringLocalizer<ResourceT> : StringLocalizer<ResourceT>
     {
-        private NccTranslator<ResourceT> _nccTranslator;        
+        private NccTranslator _nccTranslator;        
         private NccLanguageDetector _nccLanguageDetector;
 
         public NccStringLocalizer(IStringLocalizerFactory factory, IHttpContextAccessor httpContextAccessor) : base(factory)
@@ -39,7 +39,7 @@ namespace NetCoreCMS.Framework.i18n
             
             if (!CurrentLanguage.Equals(changedLanguage) || _nccTranslator == null)
             {
-                _nccTranslator = new NccTranslator<ResourceT>(changedLanguage);
+                _nccTranslator = new NccTranslator(changedLanguage);
                 CurrentLanguage = changedLanguage;
             }
         }

@@ -62,7 +62,7 @@ namespace NetCoreCMS.Subscription.Controllers
         [AdminMenuItem(Name = "Index", Url = "/SubscriptionHome/Index", Order = 1)]
         public ActionResult Index()
         {
-            var nccTranslator = new NccTranslator<SubscriptionHomeController>(CurrentLanguage);
+            var nccTranslator = new NccTranslator(CurrentLanguage);
             var itemList = _subscriptionUserService.LoadAll().OrderByDescending(x => x.Id).ToList();
             return View(itemList);
         }

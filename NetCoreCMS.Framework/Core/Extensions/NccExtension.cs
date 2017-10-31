@@ -51,6 +51,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
 
             services.AddScoped<NccLanguageFilter>();
             services.AddScoped<NccGlobalExceptionFilter>();
+            services.AddScoped<NccAuthFilter>();
 
             services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
             services.AddScoped<NccShortCodeProvider, NccShortCodeProvider>();

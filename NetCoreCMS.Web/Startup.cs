@@ -48,6 +48,7 @@ using NetCoreCMS.Framework.Core.App;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Resources;
 
 namespace NetCoreCMS.Web
 {
@@ -241,7 +242,7 @@ namespace NetCoreCMS.Web
                         logFilePath,
                         shared: true,
                         fileSizeLimitBytes: 10485760,
-                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [Ncc v{Version}] [{Level}] [{SourceContext}] {Message}{NewLine}{Exception}",
+                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [Ncc v{Version}] [{Level}] [{SourceContext}] {NewLine}Message: {Message}{NewLine}{Exception}",
                         flushToDiskInterval: new TimeSpan(0, 0, 30)
                     );
                 switch (_setupConfig.LoggingLevel)

@@ -29,7 +29,7 @@ namespace NetCoreCMS.HelloWorld.Controllers
         [SiteMenuItem(Name = "Hello world Home", Url = "/HelloHome/Index", Order = 1)]
         public ActionResult Index()
         {
-            var nccTranslator = new NccTranslator<HelloHomeController>(CurrentLanguage);
+            var nccTranslator = new NccTranslator(CurrentLanguage);
             return View();
         }
 

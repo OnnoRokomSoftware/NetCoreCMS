@@ -28,9 +28,11 @@ using NetCoreCMS.Framework.Core.Messages;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Auth;
+using NetCoreCMS.Framework.Resources;
 
 namespace NetCoreCMS.Web.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : NccController
     {
         IHostingEnvironment _env;
@@ -77,6 +79,12 @@ namespace NetCoreCMS.Web.Controllers
         {
             return View();
         }
+
+        [AllowAnonymous]
+        public IActionResult NotAuthorized()
+        {
+            return View();
+        }       
 
         [AllowAnonymous]
         public ActionResult RedirectToDefaultLanguage()
@@ -192,10 +200,7 @@ namespace NetCoreCMS.Web.Controllers
             }
             return View();
         }
-
-        [NccAuthorize(PolicyHandler.NccAuthRequireHandler, AuthRequirementName.Create)]
-        [NccAuthorize( PolicyHandler.NccAuthRequireHandler , AuthRequirementName.Delete)]
-        [NccAuthorize(PolicyHandler.NccAuthRequireHandler,  AuthRequirementName.HasRoles, "Administrator, Manager")]        
+        
         public ActionResult Temp()
         {
             GlobalMessageRegistry.RegisterMessage(

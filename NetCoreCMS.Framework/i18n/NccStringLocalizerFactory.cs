@@ -10,6 +10,7 @@
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Localization;
+using NetCoreCMS.Framework.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
