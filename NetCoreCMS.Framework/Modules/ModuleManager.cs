@@ -33,6 +33,7 @@ using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -197,41 +198,77 @@ namespace NetCoreCMS.Framework.Modules
             return widgetList;
         }
 
-        public async Task LoadControllerActions()
+        public async Task LoadModuleMenus()
         {
             foreach (var item in instantiatedModuleList)
             {
-                item.Controllers = LoadControllers(item);
-            }
+                item.Menus = LoadMenus(item);
+            }            
         }
 
-        private List<ModuleController> LoadControllers(IModule module)
+        private List<Menu> LoadMenus(IModule module)
         {
-            var moduleControllerList = new List<ModuleController>();
+            var menuList = new List<Menu>();
             var controllers =  module.Assembly.GetTypes().Where(x => typeof(NccController).IsAssignableFrom(x)).ToList();
             foreach (var item in controllers)
             {
-                var mc = new ModuleController();
-                mc.Name = item.Name;
-                mc.ModuleId = module.ModuleId;
-                mc.DisplayName = item.FullName;
-                mc.Actions = GetActions(item);
-                moduleControllerList.Add(mc);
+                var adminMenus = item.GetCustomAttributes<AdminMenu>();
+                var adminMenulist = MakeMenuList(adminMenus, item, module.ModuleId, Menu.MenuType.Admin);
+                menuList.AddRange(adminMenulist);
+
+                var siteMenus = item.GetCustomAttributes<SiteMenu>();
+                var siteMenulist = MakeMenuList(adminMenus, item, module.ModuleId, Menu.MenuType.WebSite);
+                menuList.AddRange(siteMenulist);
             }
-            return moduleControllerList;
+            return menuList;
         }
 
-        private List<ControllerAction> GetActions(Type controller)
+        private List<Menu> MakeMenuList(IEnumerable<IMenu> adminMenus, Type controllerType, string moduleId, Menu.MenuType menuType)
         {
-            var controllerActionsList = new List<ControllerAction>();
+            var menuList = new List<Menu>();
+            foreach (IMenu am in adminMenus)
+            {
+                var mc = new Menu();
+                mc.Action = controllerType.Name;
+                mc.DisplayName = am.Name;
+                mc.ModuleId = moduleId;                
+                mc.Controller = controllerType.Name;
+                mc.Type = menuType;
+                mc.MenuItems = GetMenuItems(controllerType);
+                menuList.Add(mc);
+            }
+            return menuList;
+        }
+
+        private List<MenuItem> GetMenuItems(Type controller)
+        {
+            var menuItemList = new List<MenuItem>();
             var actions = controller.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             foreach (var item in actions)
             {
-                var ca = new ControllerAction();
-                ca.Name = item.Name;
-                controllerActionsList.Add(ca);
+                var adminMenuAttributes = item.GetCustomAttributes<AdminMenuItem>();
+                var amiList = MakeMenuItemList(adminMenuAttributes, item.Name);
+                var siteMenuAttributes = item.GetCustomAttributes<SiteMenuItem>();
+                var smiList = MakeMenuItemList(siteMenuAttributes, item.Name);   
             }
-            return controllerActionsList;
+            return menuItemList;
+        }
+
+        private List<MenuItem> MakeMenuItemList(IEnumerable<IMenuItem> attributes, string actionName)
+        {
+            var menuItemList = new List<MenuItem>();
+            foreach (IMenuItem smi in attributes)
+            {
+                var ca = new MenuItem();
+                ca.Name = actionName;
+                ca.DisplayName = smi.Name;
+                ca.Url = smi.Url;
+                ca.IconCls = smi.IconCls;
+                ca.Order = smi.Order;
+                ca.SubActions = string.Join(",", smi.SubActions);
+                menuItemList.Add(ca);
+            }
+            return menuItemList;
         }
 
         public void AddModuleServices(IServiceCollection services)

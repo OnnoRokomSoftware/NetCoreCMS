@@ -35,7 +35,7 @@ namespace NetCoreCMS.AdvancedPermission
         public string Folder { get; set; }
         public int ModuleStatus { get; set; }
         public List<Widget> Widgets { get; set; }
-        public List<ModuleController> Controllers { get; set; }
+        public List<Menu> Menus { get; set; }
 
         public bool Activate()
         {

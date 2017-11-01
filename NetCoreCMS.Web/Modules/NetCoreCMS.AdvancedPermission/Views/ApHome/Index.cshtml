@@ -2,6 +2,127 @@
 @{ 
     ViewData["Title"] = "Advanced Permission System";
     ViewData["PageTitle"] = "Manage permission by module controller action.";
+    var expand = true;
 }
 
-<h2></h2>
+<style>
+    .menu .accordion-heading {
+        position: relative;
+    }
+
+        .menu .accordion-heading .edit {
+            position: absolute;
+            top: 8px;
+            right: 30px;
+        }
+
+    .menu .area {
+        border-left: 4px solid #f38787;
+    }
+
+    .menu .equipamento {
+        border-left: 4px solid #65c465;
+    }
+
+    .menu .ponto {
+        border-left: 4px solid #98b3fa;
+    }
+
+    .menu .collapse.in {
+        overflow: visible;
+    }
+</style>
+
+<select asp-items="ViewBag.Roles">
+    <option>Select Role</option>
+</select>
+
+<select asp-items="ViewBag.Users">
+    <option>Select User</option>
+</select>
+
+@{ 
+    var modules = ((List<IModule>)ViewBag.Modules);
+}
+<div class="menu">
+
+    @for (var i = 0; i < modules.Count; i++)
+    {
+        var module = modules[i];
+        var moduleTitle = module.ModuleTitle;
+        var menus = module.Menus.OrderBy(x => x.Type).ToList();
+
+        <div class="accordion">	
+		    <!-- Áreas -->
+	        <div class="accordion-group">
+		        <!-- Área -->
+		        <div class="accordion-heading area">
+			        <a class="accordion-toggle" data-toggle="collapse" href="#area_@i">@moduleTitle</a>
+		        </div>
+                <!-- /Área -->
+
+                <div class="accordion-body in collapse" id="area_@i" style="height: auto;">			
+				    <div class="accordion-inner">
+
+                        @for (var j = 0; j < menus.Count; j++)
+                        {
+                            var menu = menus[j];
+                            var dn = menu.DisplayName + " " + menu.Type;
+                            var menuItems = menu.MenuItems;
+
+                            <div class="accordion" id="equipamento1_@j">
+						        <!-- Equipamentos -->
+                                <div class="accordion-group">
+                                    <div class="accordion-heading equipamento">
+                                        <a class="accordion-toggle" data-parent="#equipamento1_@j" data-toggle="collapse" href="#ponto1-1_@j">@dn</a>
+                                    </div>
+
+                                    <div class="accordion-body in collapse" id="ponto1-1_@j" style="height:auto;">
+                                        <div class="accordion-inner">
+
+                                            @for (var k = 0; k < menuItems.Count; k++)
+                                            {
+                                                var si = menuItems[k];
+                                                var action = si.DisplayName;
+                                             
+                                                <div class="accordion" id="servico1_@k">
+
+                                                    <div class="accordion-group">
+                                                        <div class="accordion-heading ponto">
+                                                            <a class="accordion-toggle" data-parent="#servico1_@i@j@k" data-toggle="collapse" href="#servico1-1-1_@i@j">Menu Item #1</a>
+                                                            <!-- Adicionar servico -->
+                                                        </div>
+                                                    </div>
+
+                                                    <!-- Serviços -->
+                                                    <div class="accordion-body in collapse" id="servico1-1-1_@i@j" style="height: auto;">
+                                                        <div class="accordion-inner">
+                                                            <ul class="nav nav-list">
+                                                                <li>
+                                                                    <a href="#">
+                                                                        <i class="icon-chevron-right">
+                                                                        </i> Serviço #1-1-1-1
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <!-- /Serviços -->
+
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+
+						        <!-- /Equipamentos --> 
+					        </div>
+                        }
+                    </div>
+			    </div>
+            </div>		
+	    </div>
+    }
+
+</div>
+

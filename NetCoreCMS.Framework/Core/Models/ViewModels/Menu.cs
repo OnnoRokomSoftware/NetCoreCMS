@@ -8,11 +8,25 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System.Collections.Generic;
+
 namespace NetCoreCMS.Framework.Core.Models.ViewModels
 {
-    public class ControllerAction
+    public class Menu
     {
-        public string Name { get; set; }
+        public string ModuleId { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
         public string DisplayName { get; set; }
+        public List<MenuItem> MenuItems { get; set; }
+        public string IconCls { get; set; }
+        public int Order { get; set; }
+        public MenuType Type { get; set; }
+
+        public enum MenuType
+        {
+            WebSite,
+            Admin
+        }
     }
 }

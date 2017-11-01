@@ -157,7 +157,7 @@ namespace NetCoreCMS.Web
                 _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);                
                 _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider);
                 _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);
-                _moduleManager.LoadControllerActions();
+                _moduleManager.LoadModuleMenus().Wait();
             }
 
             var defaultCulture = new RequestCulture("en");

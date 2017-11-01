@@ -54,7 +54,7 @@ namespace NetCoreCMS.Modules.News
         public string SortName { get ; set ; }
         [NotMapped]
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
-        public List<ModuleController> Controllers { get; set; }
+        public List<Menu> Menus { get; set; }
         public bool Activate()
         {
             return true;

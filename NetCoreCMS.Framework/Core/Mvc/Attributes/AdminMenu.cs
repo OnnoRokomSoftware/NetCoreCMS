@@ -12,15 +12,19 @@ using System;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 {
-    public class AdminMenu : Attribute
+    public class AdminMenu : Attribute, IMenu
     {
         public string Name { get; set; }
         public string IconCls { get; set; }
         public int Order { get; set; }
     }
 
-    public class AdminMenuItem : Attribute
+    public class AdminMenuItem : Attribute, IMenuItem
     {
+        public AdminMenuItem()
+        {
+            SubActions = new string[] { };
+        }
         public string Name { get; set; }
         public string Url { get; set; }
         public string QueryString { get; set; }

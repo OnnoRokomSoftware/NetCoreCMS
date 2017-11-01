@@ -52,7 +52,7 @@ namespace NetCoreCMS.Core.Modules.Media
         public string Folder { get; set; }
         public int ModuleStatus { get; set; }
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
-        public List<ModuleController> Controllers { get; set; }
+        public List<Menu> Menus { get; set; }
         public bool Activate()
         {
             return true;

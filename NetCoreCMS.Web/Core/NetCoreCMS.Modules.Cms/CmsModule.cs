@@ -53,7 +53,7 @@ namespace NetCoreCMS.Core.Modules.Cms
         public string Folder { get; set; }
         public int ModuleStatus { get; set; }
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
-        public List<ModuleController> Controllers { get; set; }
+        public List<Menu> Menus { get; set; }
         public bool Activate()
         {
             throw new NotImplementedException();

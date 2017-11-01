@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
@@ -46,8 +47,8 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
 
             var activeModules = GlobalContext.GetActiveModules();
 
-            ViewBag.Roles = roles;
-            ViewBag.Users = roleUsers;
+            ViewBag.Roles = new SelectList(roles,"Name","Name");
+            ViewBag.Users = new SelectList(roleUsers, "Id", "Name");
             ViewBag.Modules = activeModules;
 
             return View();

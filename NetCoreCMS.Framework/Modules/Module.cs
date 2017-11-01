@@ -51,10 +51,11 @@ namespace NetCoreCMS.Framework.Modules
  
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
 
-        public List<ModuleController> Controllers { get; set; }
+        public List<Menu> Menus { get; set; }
 
         public Module()
         {
+            Menus = new List<Menu>();
             _widgets = new List<Widget>();            
         }
 

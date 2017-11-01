@@ -54,7 +54,7 @@ namespace NetCoreCMS.Framework.Modules
         string Folder { get; set; }
         int ModuleStatus { get; set; }
         List<Widget> Widgets { get; set; }
-        List<ModuleController> Controllers { get; set; }
+        List<Menu> Menus { get; set; }
         void Init(IServiceCollection services);
         void RegisterRoute(IRouteBuilder routes);
         bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery);
