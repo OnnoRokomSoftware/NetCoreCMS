@@ -17,16 +17,16 @@ using NetCoreCMS.Framework.Core.Services;
 using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Core.Auth.Handlers
-{   
+{
     /// <summary>
     /// Default NetCoreCMS authorization handler. If any controller use NccAuthorize attribute then this handler will handle that requirement.
-    /// </summary>    
+    /// </summary>        
     public class NccAuthRequireHandler : AuthorizationHandler<NccAuthRequirement, BaseModel<long>>, INccAuthorizationHandler
     {
         private readonly UserManager<NccUser> _userManager;
         private readonly RoleManager<NccUser> _roleManager;
         
-        public NccAuthRequireHandler(UserManager<NccUser> userManager, RoleManager<NccUser> roleManager)
+        public NccAuthRequireHandler(UserManager<NccUser> userManager, RoleManager<NccUser> roleManager )
         {
             _userManager = userManager;
             _roleManager = roleManager;            

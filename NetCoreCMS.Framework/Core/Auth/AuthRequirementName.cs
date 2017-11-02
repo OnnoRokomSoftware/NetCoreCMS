@@ -15,6 +15,10 @@
 
         public const string HasRoles = "HasRoles";
         public const string UserNames = "UserNames";
+
+        public const string HasBranches = "HasBranches";
+        public const string HasPrograms = "HasPrograms";
+
         public const string IsDataOwner = "IsDataOwner";
     }
 }

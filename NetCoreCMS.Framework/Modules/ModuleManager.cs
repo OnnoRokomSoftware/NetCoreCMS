@@ -248,8 +248,10 @@ namespace NetCoreCMS.Framework.Modules
             {
                 var adminMenuAttributes = item.GetCustomAttributes<AdminMenuItem>();
                 var amiList = MakeMenuItemList(adminMenuAttributes, item.Name);
+                menuItemList.AddRange(amiList);
                 var siteMenuAttributes = item.GetCustomAttributes<SiteMenuItem>();
-                var smiList = MakeMenuItemList(siteMenuAttributes, item.Name);   
+                var smiList = MakeMenuItemList(siteMenuAttributes, item.Name);
+                menuItemList.AddRange(smiList);
             }
             return menuItemList;
         }

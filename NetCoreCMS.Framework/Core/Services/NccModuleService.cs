@@ -121,8 +121,22 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public string ExecuteQuery(NccDbQueryText query)
         {
-            var retVal = _entityRepository.ExecuteSqlCommand(query);
-            return retVal.ToString();
+            string retVal = "";
+            using(var txn = _entityRepository.BeginTransaction())
+            {
+                try
+                {
+                    var ret = _entityRepository.ExecuteSqlCommand(query);
+                    retVal = ret.ToString();
+                    txn.Commit();
+                }
+                catch (Exception ex)
+                {
+                    txn.Rollback();
+                }
+            }
+            
+            return retVal;
         }
     }
 }

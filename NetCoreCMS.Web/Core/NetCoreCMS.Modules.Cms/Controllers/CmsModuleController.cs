@@ -165,10 +165,18 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             if (entity != null)
             {
                 var module = GlobalContext.Modules.Where(x => x.ModuleId == entity.ModuleId).FirstOrDefault();
-                module.Install(_settingsService, ExecuteQuery);
-                module.ModuleStatus = (int)NccModule.NccModuleStatus.Installed;
-                FireEvent(ModuleActivity.Type.Installed, module);
-                TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
+                var retVal = module.Install(_settingsService, ExecuteQuery);
+                if(retVal)
+                {
+                    module.ModuleStatus = (int)NccModule.NccModuleStatus.Installed;
+                    FireEvent(ModuleActivity.Type.Installed, module);
+                    TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Error. Module install failed.";
+                }
+                
             }
             else
             {
