@@ -11,7 +11,7 @@
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
-namespace NetCoreCMS.AdvancedPermission.Models
+namespace NetCoreCMS.Framework.Core.Models
 {
     /// <summary>
     /// From permission management admin will assign permission to the user. That 

@@ -15,7 +15,6 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
-using NetCoreCMS.AdvancedPermission.Models;
 using NetCoreCMS.Framework.Core.IoC;
 
 namespace NetCoreCMS.Framework.Core.Services

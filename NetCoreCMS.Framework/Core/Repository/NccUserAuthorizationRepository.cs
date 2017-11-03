@@ -13,8 +13,9 @@ using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Repository;
 using System.Linq;
-using NetCoreCMS.AdvancedPermission.Models;
+
 using NetCoreCMS.Framework.Core.IoC;
+using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Core.Repository
 {

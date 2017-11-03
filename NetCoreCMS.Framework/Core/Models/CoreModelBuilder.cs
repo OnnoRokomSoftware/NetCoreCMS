@@ -168,7 +168,8 @@ namespace NetCoreCMS.Framework.Core.Models
             });
 
             modelBuilder.Entity<NccWebSiteInfo>().ToTable("Ncc_WebSite_Info");
-
+            modelBuilder.Entity<NccUserAuthorization>().ToTable("NccUserAuthorization");
+            
             modelBuilder.Entity<NccWebSiteWidget>(b => {
                 b.ToTable("Ncc_WebSite_Widget");
                 b.HasOne(w => w.WebSite);
