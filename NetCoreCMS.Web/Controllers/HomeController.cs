@@ -46,7 +46,6 @@ namespace NetCoreCMS.Web.Controllers
         }
 
         [AllowAnonymous]
-        [Authorize(Policy = "HrModulePolicy")]
         public IActionResult Index()
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
