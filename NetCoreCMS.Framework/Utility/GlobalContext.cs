@@ -41,11 +41,11 @@ namespace NetCoreCMS.Framework.Utility
         /// If from any location of the project set it's value to true for restarting the application
         /// </summary>
         public static bool IsRestartRequired { get; set; }
-        
+
         /// <summary>
         /// List of all modules are containing at Modules folder inside web project.
         /// </summary>
-        public static List<IModule> Modules { get; set; }
+        public static List<IModule> Modules { get; set; } = new List<IModule>();
 
         public static IConfiguration Configuration { get; set; }
 

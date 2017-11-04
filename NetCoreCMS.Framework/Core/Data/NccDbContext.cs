@@ -93,6 +93,7 @@ namespace NetCoreCMS.Framework.Core.Data
 
         public NccDbContext Create(DbContextFactoryOptions options)
         {
+            SetupHelper.LoadSetup();
             var opts = SetupHelper.GetDbContextOptions();
             var nccDbConetxt = new NccDbContext(opts);
             return nccDbConetxt;

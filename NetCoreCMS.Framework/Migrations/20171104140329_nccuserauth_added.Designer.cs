@@ -12,9 +12,10 @@ using System;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    partial class NccDbContextModelSnapshot : ModelSnapshot
+    [Migration("20171104140329_nccuserauth_added")]
+    partial class nccuserauth_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

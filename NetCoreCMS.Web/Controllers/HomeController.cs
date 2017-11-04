@@ -203,6 +203,7 @@ namespace NetCoreCMS.Web.Controllers
         
         public ActionResult Temp()
         {
+            var setup = SetupHelper.LoadSetup();
             GlobalMessageRegistry.RegisterMessage(
                 new GlobalMessage() {
                     For = GlobalMessage.MessageFor.Both,

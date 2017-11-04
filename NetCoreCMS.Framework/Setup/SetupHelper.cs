@@ -77,8 +77,14 @@ namespace NetCoreCMS.Framework.Setup
 
         public static SetupConfig LoadSetup()
         {
-            var config = new SetupConfig();
             var rootDir = GlobalContext.ContentRootPath;
+            if(rootDir == null)
+            {
+                rootDir = Directory.GetCurrentDirectory();
+            }
+            
+            var config = new SetupConfig();
+            
             var file = File.Open(Path.Combine(rootDir, _configFileName), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
             using (StreamReader sr = new StreamReader(file))
             {
