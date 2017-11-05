@@ -8,10 +8,16 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-namespace NetCoreCMS.Framework.Core.Auth
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace NetCoreCMS.Framework.Core.Exceptions
 {
-    public class PolicyHandler
+    public class InvalidRequestException : Exception
     {
-        public const string NccAuthRequireHandler = "NccAuthRequireHandler"; 
+        public InvalidRequestException(string message):base(message)
+        {            
+        }
     }
 }

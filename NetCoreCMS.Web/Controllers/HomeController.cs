@@ -201,7 +201,10 @@ namespace NetCoreCMS.Web.Controllers
             return View();
         }
         
-        public ActionResult Temp()
+        [NccAuthorize()]
+        [NccAuthorize(Requirement: AuthRequirementName.HasRoles, Values:"Administrator,SuperAdmin")]
+        [NccAuthorize(RequirementList = new string[] { "Brunches" })]        
+        public ActionResult Temp( List<string> Brunches)
         {
             var setup = SetupHelper.LoadSetup();
             GlobalMessageRegistry.RegisterMessage(
@@ -216,6 +219,5 @@ namespace NetCoreCMS.Web.Controllers
             );
             return View();
         }
-
     }
 }

@@ -16,7 +16,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
     {
         string Name { get; set; }
         int Order { get; set; }
-        string IconCls { get; set; }        
+        string IconCls { get; set; }
+        string Url { get; set; }
     }
 
     public interface IMenuItem
@@ -34,6 +35,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         public string Name { get; set; }
         public string IconCls { get; set; }
         public int Order { get; set; }
+        public string Url { get; set; }
     }
 
     public class SiteMenuItem : Attribute, IMenuItem

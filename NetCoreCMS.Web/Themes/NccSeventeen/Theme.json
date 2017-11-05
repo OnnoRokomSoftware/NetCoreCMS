@@ -95,8 +95,8 @@
     }
   ],
   "Settings": {
-    "style": "blue-skin.css",
     "NccVersion": "0.4.1",
-    "version": 4.3000000000000016
+    "version": 4.5000000000000009,
+    "style": "orange-skin.css"
   }
 }

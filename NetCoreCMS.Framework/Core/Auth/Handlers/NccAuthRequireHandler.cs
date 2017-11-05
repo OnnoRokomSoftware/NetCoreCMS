@@ -11,27 +11,28 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Auth.Handlers
 {
     /// <summary>
     /// Default NetCoreCMS authorization handler. If any controller use NccAuthorize attribute then this handler will handle that requirement.
     /// </summary>        
+    [PolicyHandler("NccAuthRequireHandler")]
     public class NccAuthRequireHandler : AuthorizationHandler<NccAuthRequirement, BaseModel<long>>, INccAuthorizationHandler
     {
-        private readonly UserManager<NccUser> _userManager;
-        private readonly RoleManager<NccUser> _roleManager;
+        private readonly UserManager<NccUser> _userManager;        
         
-        public NccAuthRequireHandler(UserManager<NccUser> userManager, RoleManager<NccUser> roleManager )
+        public NccAuthRequireHandler(UserManager<NccUser> userManager )
         {
-            _userManager = userManager;
-            _roleManager = roleManager;            
+            _userManager = userManager;                        
         }
-
+        
         protected override Task  HandleRequirementAsync(AuthorizationHandlerContext context, NccAuthRequirement requirement, BaseModel<long> resource)
         {
             if (context.User == null || resource == null)
@@ -41,15 +42,15 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
 
             //var usersPolicyList = _nccUserAuthPolicyService.LoadByModulePolicy(PolicyHandler.NccAuthRequireHandler, requirement);
 
-            if(requirement.Name == AuthRequirementName.HasRoles)
+            if(requirement.Requirement == AuthRequirementName.HasRoles)
             {
 
             }
-            else if(requirement.Name == AuthRequirementName.UserNames)
+            else if(requirement.Requirement == AuthRequirementName.UserNames)
             {
 
             }
-            else if(requirement.Name == AuthRequirementName.IsDataOwner)
+            else if(requirement.Requirement == AuthRequirementName.IsDataOwner)
             {
                 if (resource.CreateBy == context.User.GetUserId())
                 {
@@ -62,6 +63,18 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
             }
             
             return Task.FromResult(0);
-        } 
+        }
+
+        public Dictionary<string, string> GetRequirementValues(string requirementName)
+        {
+            var list = new Dictionary<string, string>();
+            if (requirementName.Equals("Brunches"))
+            {
+                list.Add(requirementName, "Firmget");
+                list.Add(requirementName, "Mirpur1");
+                list.Add(requirementName, "Mirpur2");
+            }            
+            return list;
+        }
     }    
 }

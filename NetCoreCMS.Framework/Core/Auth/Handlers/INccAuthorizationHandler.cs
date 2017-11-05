@@ -16,6 +16,6 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
 {
     public interface INccAuthorizationHandler
     {
-
+        Dictionary<string, string> GetRequirementValues(string requirementName);
     }
 }

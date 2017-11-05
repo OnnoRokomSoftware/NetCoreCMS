@@ -49,6 +49,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Resources;
+using NetCoreCMS.Framework.Core.Auth.Handlers;
 
 namespace NetCoreCMS.Web
 {
@@ -92,7 +93,7 @@ namespace NetCoreCMS.Web
             
             _services.AddOptions();            
             _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
-            //_services.AddSingleton<IAuthorizationHandler, AuthRequireHandler>();
+            _services.AddSingleton<IAuthorizationHandler, NccAuthRequireHandler>();
 
             _services.AddLocalization();
             _mvcBuilder = services.AddMvc(config => {                

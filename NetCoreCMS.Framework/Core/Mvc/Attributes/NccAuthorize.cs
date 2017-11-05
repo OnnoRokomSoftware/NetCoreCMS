@@ -22,12 +22,23 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         private string _policyHandler;
         private string _requirement;
         private string _values;
+        private string[] _requirementList;
+        private string[] _valueList;
+
+        public string[] RequirementList { get => _requirementList; set => _requirementList = value; }
+        public string[] ValueList { get => _valueList; set => _valueList = value; }
+
+        public NccAuthorize(string PolicyHandler = "NccAuthRequireHandler")
+        {
+            _policyHandler = PolicyHandler;
+        }
+
         /// <summary>
         /// Constracture for AuthRequirement
         /// <param name="PolicyHandler">Which handler will handle this requirement. You can implement your own Authorization Handler</param>
         /// <param name="Requirement">Requirement name. Use NccAuthRequirementName class constants.</param>
         /// </summary>        
-        public NccAuthorize(string PolicyHandler, string Requirement)
+        public NccAuthorize(string Requirement, string PolicyHandler = "NccAuthRequireHandler")
         {
             _policyHandler = PolicyHandler;
             _requirement = Requirement;
@@ -39,11 +50,26 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         /// <param name="PolicyHandler">Which handler will handle this requirement. You can implement your own Authorization Handler</param>
         /// <param name="Requirement">Requirement name</param>
         /// <param name="Values">If value is require use appropriate coma seperated values.</param>
-        public NccAuthorize(string PolicyHandler, string Requirement, string Values)
+        public NccAuthorize(string Requirement, string Values, string PolicyHandler = "NccAuthRequireHandler")
         {
             _policyHandler = PolicyHandler;
             _requirement = Requirement;
             _values = Values;
+        }  
+        
+        public string GetPolicyName()
+        {
+            return _policyHandler;
+        }
+
+        public string GetRequirement()
+        {
+            return _requirement;
+        }
+
+        public string GetValues()
+        {
+            return _values;
         }
     }
 }

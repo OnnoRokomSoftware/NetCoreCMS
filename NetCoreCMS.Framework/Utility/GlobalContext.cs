@@ -25,6 +25,7 @@ using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Reflection;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -65,6 +66,13 @@ namespace NetCoreCMS.Framework.Utility
         /// List of themes contains at Themes folder of web project.
         /// </summary>
         public static List<Theme> Themes { get; set; }
+
+        internal static IModule GetModuleByAssemblyName(AssemblyName assemblyName)
+        {
+            var module = Modules.Where(x => x.Assembly.GetName().Name == assemblyName.Name).FirstOrDefault();
+            return module;
+        }
+
         /// <summary>
         /// List of website menus. Which is created from admin panel for website's different location and language.
         /// </summary>

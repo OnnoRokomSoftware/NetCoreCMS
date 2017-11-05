@@ -17,6 +17,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         public string Name { get; set; }
         public string IconCls { get; set; }
         public int Order { get; set; }
+        public string Url { get; set; }
     }
 
     public class AdminMenuItem : Attribute, IMenuItem
