@@ -169,3 +169,17 @@ footer a {
     .panel-primary .panel-heading {
         background-color: #324191;
     }
+
+.panel-default {
+    border-color: #324191;
+}
+
+    .panel-default .panel-heading {
+        color:#FFF;
+        background-color: #324191;
+    }
+
+    .panel-default .panel-footer {
+        color: #FFF;
+        background-color: #3f51b5;
+    }
