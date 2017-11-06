@@ -27,6 +27,7 @@ using NetCoreCMS.Framework.Core.Messages;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.i18n;
+using NetCoreCMS.Framework.Core.Auth.Handlers;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -320,7 +321,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         }
 
         private IMediator _mediator;
-
+        public INccAuthorizationHandler AuthorizationHandler { get; set; }
         public Dictionary<string,object> PageProperty {
             get
             {
