@@ -52,13 +52,13 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             return entity;
         }
 
-        public EntityT Get(IdT id, bool isAsNoTracking = false, List<string> includeChilds = null)
+        public EntityT Get(IdT id, bool isAsNoTracking = false, List<string> includeRelationalProperties = null)
         {
             IQueryable<EntityT> tempDbSet = DbSet;
 
-            if (includeChilds != null)
+            if (includeRelationalProperties != null)
             {
-                foreach (var item in includeChilds)
+                foreach (var item in includeRelationalProperties)
                 {
                     tempDbSet = tempDbSet.Include(item);
                 }
@@ -73,13 +73,13 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             return tempDbSet.FirstOrDefault();
         }
 
-        public List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeChilds = null)
+        public List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeRelationalProperties = null)
         {
             IQueryable<EntityT> tempDbSet = DbSet.Where(x => x.Status != EntityStatus.Deleted);
 
-            if (includeChilds != null)
+            if (includeRelationalProperties != null)
             {
-                foreach (var item in includeChilds)
+                foreach (var item in includeRelationalProperties)
                 {
                     tempDbSet = tempDbSet.Include(item);
                 }

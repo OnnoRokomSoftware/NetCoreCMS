@@ -16,11 +16,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Services
     {
         EntityT Get(long entityId, bool isAsNoTracking = false);
         List<EntityT> LoadAll(bool isActive = true, int status = 0, string name = "", bool isLikeSearch = false);
-        //List<EntityT> LoadAll();
-        //List<EntityT> LoadAllActive();
-        //List<EntityT> LoadAllByStatus(int status);
-        //List<EntityT> LoadAllByName(string name);
-        //List<EntityT> LoadAllByNameContains(string name);
         EntityT Save(EntityT model);
         EntityT Update(EntityT model);
         void Remove(long entityId);
