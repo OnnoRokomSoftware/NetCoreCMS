@@ -38,6 +38,7 @@ namespace NetCoreCMS.Framework.Utility
         /// WebSite contains running website's basic information like Title, Slogan, Logo Image, Default Language etc.
         /// </summary>
         public static NccWebSite WebSite { get; set; }
+
         /// <summary>
         /// If from any location of the project set it's value to true for restarting the application
         /// </summary>
@@ -48,11 +49,36 @@ namespace NetCoreCMS.Framework.Utility
         /// </summary>
         public static List<IModule> Modules { get; set; } = new List<IModule>();
 
+        /// <summary>
+        /// Website configurations.
+        /// </summary>
         public static IConfiguration Configuration { get; set; }
 
         public static IConfigurationRoot ConfigurationRoot { get; set; }
 
+        /// <summary>
+        /// Environment of current hosting.
+        /// </summary>
         public static IHostingEnvironment HostingEnvironment { get; set; }
+
+        /// <summary>
+        /// Provide class type from string class name.
+        /// </summary>
+        /// <param name="className">Class contains in modules.</param>
+        /// <returns></returns>
+        internal static Type GetTypeContainsInModules(string className)
+        {
+            var activeModules = GetActiveModules();
+            foreach (var item in activeModules)
+            {
+                var type = item.GetType().Assembly.GetType(className);
+                if(type != null)
+                {
+                    return type;
+                }
+            }
+            return null;
+        }
 
         /// <summary>
         /// Widget list of all active modules widget. It populates when modules are loaded.

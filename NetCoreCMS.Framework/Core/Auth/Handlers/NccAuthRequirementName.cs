@@ -1,6 +1,6 @@
-﻿namespace NetCoreCMS.Framework.Core.Auth
+﻿namespace NetCoreCMS.Framework.Core.Auth.Handlers
 {
-    public class AuthRequirementName
+    public class NccAuthRequirementName
     {
         public const string Create = "Create";
 
@@ -15,9 +15,6 @@
 
         public const string HasRoles = "HasRoles";
         public const string UserNames = "UserNames";
-
-        public const string HasBranches = "HasBranches";
-        public const string HasPrograms = "HasPrograms";
 
         public const string IsDataOwner = "IsDataOwner";
     }

@@ -92,8 +92,7 @@ namespace NetCoreCMS.Web
             loggingBuilder.AddSerilog(dispose: true));
             
             _services.AddOptions();            
-            _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
-            _services.AddSingleton<IAuthorizationHandler, NccAuthRequireHandler>();
+            _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));            
 
             _services.AddLocalization();
             _mvcBuilder = services.AddMvc(config => {                
@@ -151,14 +150,16 @@ namespace NetCoreCMS.Web
                 _moduleManager.AddModuleFilters(_services);
                 _moduleManager.AddShortcodes(_services);                
                 _moduleManager.AddModuleWidgets(_services);
-                
+                _moduleManager.AddModuleAuthorizationHandlers(_services);
+
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
                 _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
                 _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);                
                 _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider);
                 _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);
-                _moduleManager.LoadModuleMenus().Wait();
+                
+                _moduleManager.LoadModuleMenus();
             }
 
             var defaultCulture = new RequestCulture("en");

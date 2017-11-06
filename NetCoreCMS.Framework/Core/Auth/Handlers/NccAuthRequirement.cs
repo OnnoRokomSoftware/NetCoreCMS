@@ -10,7 +10,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 
-namespace NetCoreCMS.Framework.Core.Auth
+namespace NetCoreCMS.Framework.Core.Auth.Handlers
 {
     public class NccAuthRequirement : IAuthorizationRequirement
     {

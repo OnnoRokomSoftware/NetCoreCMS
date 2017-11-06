@@ -29,11 +29,12 @@ using NetCoreCMS.Framework.Utility;
 using MediatR;
 using NetCoreCMS.Framework.Core.Events.App;
 using NetCoreCMS.Framework.Core.Network;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
 
 namespace NetCoreCMS.Core.Modules.Cms.Controllers
 { 
     [Authorize(Roles = "SuperAdmin,Administrator")]
-    public class AccountController : Controller
+    public class AccountController : NccController
     {
         private readonly UserManager<NccUser> _userManager;
         private readonly SignInManager<NccUser> _signInManager;

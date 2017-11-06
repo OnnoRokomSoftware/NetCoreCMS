@@ -34,6 +34,8 @@ using System.Threading.Tasks;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
+using NetCoreCMS.Framework.Core.Auth.Handlers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -173,30 +175,7 @@ namespace NetCoreCMS.Framework.Modules
             }
             
             return moduleEntity.ModuleStatus;
-        }
-
-        public List<Widget> RegisterModuleWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
-        {
-            var widgetList = new List<Widget>();
-            foreach (var module in instantiatedModuleList)
-            {
-                if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
-                {
-                    module.Widgets = new List<Widget>();
-                    var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
-
-                    foreach (var widgetType in widgetTypeList)
-                    {
-                        //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                    
-                        var widgetInstance = (Widget)serviceProvider.GetService(widgetType);                        
-                        module.Widgets.Add(widgetInstance);
-                        widgetList.Add(widgetInstance);
-                        GlobalContext.Widgets.Add(widgetInstance);
-                    }
-                }
-            }
-            return widgetList;
-        }
+        }  
 
         public async Task LoadModuleMenus()
         {
@@ -320,13 +299,7 @@ namespace NetCoreCMS.Framework.Modules
                     }
                 }
             }            
-        }
-
-        public void RegisterModuleShortCodes(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
-        {
-            var _nccShortCodeProvider = serviceProvider.GetService<NccShortCodeProvider>();
-            GlobalContext.ShortCodes = _nccShortCodeProvider.RegisterShortCodes(GlobalContext.Modules);
-        }
+        }       
 
         public void AddShortcodes(IServiceCollection services)
         {
@@ -352,6 +325,127 @@ namespace NetCoreCMS.Framework.Modules
                     services.AddScoped(item);
                 }
             }            
+        } 
+
+        public void AddModuleWidgets( IServiceCollection services)
+        {
+            foreach (var module in instantiatedModuleList)
+            {
+                module.Widgets = new List<Widget>();
+                var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
+                foreach (var widgetType in widgetTypeList)
+                {
+                    services.AddTransient(widgetType);
+                }
+            }            
+        }
+
+        public void AddModuleAuthorizationHandlers(IServiceCollection services)
+        {
+            services.AddScoped<NccAuthRequireHandler>();
+            var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
+            foreach (var module in activeModules)
+            {
+                var actionFilters = module.Assembly.GetTypes().Where(x => typeof(INccAuthorizationHandler).IsAssignableFrom(x)).ToList();
+                foreach (var item in actionFilters)
+                {
+                    services.AddScoped(item);
+                }
+            }
+        }
+
+        public List<Widget> RegisterModuleWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            var widgetList = new List<Widget>();
+            foreach (var module in instantiatedModuleList)
+            {
+                if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
+                {
+                    module.Widgets = new List<Widget>();
+                    var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
+
+                    foreach (var widgetType in widgetTypeList)
+                    {
+                        //var widgetInstance = (IWidget)Activator.CreateInstance(widgetType);                    
+                        var widgetInstance = (Widget)serviceProvider.GetService(widgetType);
+                        module.Widgets.Add(widgetInstance);
+                        widgetList.Add(widgetInstance);
+                        GlobalContext.Widgets.Add(widgetInstance);
+                    }
+                }
+            }
+            return widgetList;
+        }       
+
+        public void RegisterModuleFilters(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
+        {
+            mvcBuilder.AddMvcOptions(option => {                
+                option.Filters.Add(serviceProvider.GetService<NccLanguageFilter>());
+                option.Filters.Add(serviceProvider.GetService<NccGlobalExceptionFilter>());
+                option.Filters.Add(serviceProvider.GetService<NccAuthFilter>());
+            });
+
+            var actionFilterList = new List<INccActionFilter>();
+
+            var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
+            foreach (var item in activeModules)
+            {
+                var actionFilters = item.Assembly.GetTypes().Where(x => typeof(INccActionFilter).IsAssignableFrom(x)).ToList();
+                foreach (var filter in actionFilters)
+                {
+                    var filterInstance = (INccActionFilter) serviceProvider.GetService(filter);
+                    actionFilterList.Add(filterInstance);
+                }
+            }
+
+            actionFilterList.OrderBy(x=>x.Order);
+
+            foreach (var item in actionFilterList)
+            {
+                mvcBuilder.AddMvcOptions(options => {
+                    if (options.Filters.Contains(item) == false)
+                    {
+                        options.Filters.Add(item);
+                    }
+                });
+            } 
+        }
+
+        public void RegisterModuleShortCodes(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
+        {
+            var _nccShortCodeProvider = serviceProvider.GetService<NccShortCodeProvider>();
+            GlobalContext.ShortCodes = _nccShortCodeProvider.RegisterShortCodes(GlobalContext.Modules);
+        }
+        
+        public void LoadModuleInfo(IModule module, IModule moduleInfo)
+        {
+            var moduleConfigFile = Path.Combine(moduleInfo.Path, Constants.ModuleConfigFileName);
+            if (File.Exists(moduleConfigFile))
+            {                
+                var moduleInfoFileJson = File.ReadAllText(moduleConfigFile);
+                var loadedModule = JsonConvert.DeserializeObject<Module>(moduleInfoFileJson);
+                module.ModuleId = loadedModule.ModuleId;
+                module.AntiForgery = loadedModule.AntiForgery;
+                module.Author = loadedModule.Author;
+                module.Category = loadedModule.Category;
+                module.Dependencies = loadedModule.Dependencies;
+                module.Description = loadedModule.Description;
+                module.ModuleId = loadedModule.ModuleId;
+                
+                module.ModuleTitle = loadedModule.ModuleTitle;
+                module.MinNccVersion = loadedModule.MinNccVersion;
+                module.MaxNccVersion = loadedModule.MaxNccVersion;
+                module.SortName = loadedModule.SortName;
+                module.Version = loadedModule.Version;
+                module.Website = loadedModule.Website;
+                module.Assembly = moduleInfo.Assembly;
+                module.Path = moduleInfo.Path;
+                module.ModuleStatus = moduleInfo.ModuleStatus;                
+            }
+            else
+            {
+                //RAISE GLOBAL ERROR
+            }
         }
 
         private NccModule CreateNccModuleEntity(IModule module)
@@ -387,83 +481,5 @@ namespace NetCoreCMS.Framework.Modules
 
             return nccModule;
         }
-
-        public void AddModuleWidgets( IServiceCollection services)
-        {
-            foreach (var module in instantiatedModuleList)
-            {
-                module.Widgets = new List<Widget>();
-                var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
-                foreach (var widgetType in widgetTypeList)
-                {
-                    services.AddTransient(widgetType);
-                }
-            }            
-        }
-
-        public void RegisterModuleFilters(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
-        {
-            mvcBuilder.AddMvcOptions(option => {                
-                option.Filters.Add(serviceProvider.GetService<NccLanguageFilter>());
-                option.Filters.Add(serviceProvider.GetService<NccGlobalExceptionFilter>());
-            });
-
-            var actionFilterList = new List<INccActionFilter>();
-
-            var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
-            foreach (var item in activeModules)
-            {
-                var actionFilters = item.Assembly.GetTypes().Where(x => typeof(INccActionFilter).IsAssignableFrom(x)).ToList();
-                foreach (var filter in actionFilters)
-                {
-                    var filterInstance = (INccActionFilter) serviceProvider.GetService(filter);
-                    actionFilterList.Add(filterInstance);
-                }
-            }
-
-            actionFilterList.OrderBy(x=>x.Order);
-
-            foreach (var item in actionFilterList)
-            {
-                mvcBuilder.AddMvcOptions(options => {
-                    if (options.Filters.Contains(item) == false)
-                    {
-                        options.Filters.Add(item);
-                    }
-                });
-            } 
-        }
-
-        public void LoadModuleInfo(IModule module, IModule moduleInfo)
-        {
-            var moduleConfigFile = Path.Combine(moduleInfo.Path, Constants.ModuleConfigFileName);
-            if (File.Exists(moduleConfigFile))
-            {                
-                var moduleInfoFileJson = File.ReadAllText(moduleConfigFile);
-                var loadedModule = JsonConvert.DeserializeObject<Module>(moduleInfoFileJson);
-                module.ModuleId = loadedModule.ModuleId;
-                module.AntiForgery = loadedModule.AntiForgery;
-                module.Author = loadedModule.Author;
-                module.Category = loadedModule.Category;
-                module.Dependencies = loadedModule.Dependencies;
-                module.Description = loadedModule.Description;
-                module.ModuleId = loadedModule.ModuleId;
-                
-                module.ModuleTitle = loadedModule.ModuleTitle;
-                module.MinNccVersion = loadedModule.MinNccVersion;
-                module.MaxNccVersion = loadedModule.MaxNccVersion;
-                module.SortName = loadedModule.SortName;
-                module.Version = loadedModule.Version;
-                module.Website = loadedModule.Website;
-                module.Assembly = moduleInfo.Assembly;
-                module.Path = moduleInfo.Path;
-                module.ModuleStatus = moduleInfo.ModuleStatus;                
-            }
-            else
-            {
-                //RAISE GLOBAL ERROR
-            }
-        }
-
     }
 }

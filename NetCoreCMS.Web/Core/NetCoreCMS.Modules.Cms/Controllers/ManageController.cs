@@ -23,11 +23,12 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Core.Modules.Cms.Models.ManageViewModels;
 using NetCoreCMS.Core.Modules.Cms.Lib;
+using NetCoreCMS.Framework.Core.Mvc.Controllers;
 
 namespace NetCoreCMS.Core.Web.Controllers
 {
     [Authorize(Roles ="SuperAdmin,Administrator")]    
-    public class ManageController : Controller
+    public class ManageController : NccController
     {
         private readonly UserManager<NccUser> _userManager;
         private readonly SignInManager<NccUser> _signInManager;

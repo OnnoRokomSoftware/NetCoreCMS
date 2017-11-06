@@ -43,5 +43,7 @@ namespace NetCoreCMS.HelloWorld.Controllers
         {
             return View();
         }
+
+
     }
 }

@@ -26,8 +26,6 @@ using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Messages;
 using System.Collections.Generic;
-using NetCoreCMS.Framework.Core.Mvc.Attributes;
-using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Resources;
 
 namespace NetCoreCMS.Web.Controllers
@@ -200,11 +198,9 @@ namespace NetCoreCMS.Web.Controllers
             }
             return View();
         }
-        
-        [NccAuthorize()]
-        [NccAuthorize(Requirement: AuthRequirementName.HasRoles, Values:"Administrator,SuperAdmin")]
-        [NccAuthorize(RequirementList = new string[] { "Brunches" })]        
-        public ActionResult Temp( List<string> Brunches)
+       
+        [AllowAnonymous]
+        public ActionResult Temp()
         {
             var setup = SetupHelper.LoadSetup();
             GlobalMessageRegistry.RegisterMessage(
@@ -218,6 +214,6 @@ namespace NetCoreCMS.Web.Controllers
                 }, new TimeSpan(0, 10, 0)
             );
             return View();
-        }
+        } 
     }
 }

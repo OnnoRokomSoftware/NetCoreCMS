@@ -10,26 +10,25 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using NetCoreCMS.Framework.Core.Models;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Filters;
+using NetCoreCMS.Framework.Core.Auth.Handlers;
+using NetCoreCMS.Framework.Core.Models;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace NetCoreCMS.Framework.Core.Auth.Handlers
+namespace NetCoreCMS.HelloWorld.Handlers
 {
-    /// <summary>
-    /// Default NetCoreCMS authorization handler. If any controller use NccAuthorize attribute then this handler will handle that requirement.
-    /// </summary>    
-    public class NccAuthRequireHandler : INccAuthorizationHandler
+    public class HrAuthHandler : INccAuthorizationHandler
     {
-        private readonly UserManager<NccUser> _userManager;        
-        
-        public NccAuthRequireHandler(UserManager<NccUser> userManager )
+        private readonly UserManager<NccUser> _userManager;
+
+        public HrAuthHandler(UserManager<NccUser> userManager)
         {
-            _userManager = userManager;                        
+            _userManager = userManager;
         }
         
-
         public Dictionary<string, string> GetRequirementValues(string requirementName)
         {
             var list = new Dictionary<string, string>();
@@ -38,13 +37,20 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
                 list.Add(requirementName, "Firmget");
                 list.Add(requirementName, "Mirpur1");
                 list.Add(requirementName, "Mirpur2");
-            }            
+            }
+            else if (requirementName.Equals("Organizations"))
+            {
+                list.Add(requirementName, "OnnoRokomSoftware");
+                list.Add(requirementName, "OnnoRokomGroup");
+                list.Add(requirementName, "Orelco");
+                list.Add(requirementName, "Orelco");
+            }
             return list;
         }
 
         public async Task<AuthorizationResult> HandleRequirement(ActionExecutingContext context, NccAuthRequirement requirement, object model)
         {
-            
+
             if (context.HttpContext.User == null)
             {
                 return AuthorizationResult.Failed();
@@ -52,27 +58,7 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
 
             //var usersPolicyList = _nccUserAuthPolicyService.LoadByModulePolicy(PolicyHandler.NccAuthRequireHandler, requirement);
 
-            if (requirement.Requirement == NccAuthRequirementName.HasRoles)
-            {
-
-            }
-            else if (requirement.Requirement == NccAuthRequirementName.UserNames)
-            {
-
-            }
-            else if (requirement.Requirement == NccAuthRequirementName.IsDataOwner)
-            {
-                //if (resource.CreateBy == context.User.GetUserId())
-                //{
-                //    context.Succeed(requirement);
-                //}
-            }
-            else
-            {
-
-            }
-
             return AuthorizationResult.Failed();
         }
-    }    
+    }
 }

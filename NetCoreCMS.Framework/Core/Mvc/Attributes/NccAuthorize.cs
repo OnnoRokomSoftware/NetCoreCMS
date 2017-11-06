@@ -10,7 +10,7 @@
 
 using NetCoreCMS.Framework.Core.Auth;
 using System;
-[assembly: CLSCompliant(true)]
+//[assembly: CLSCompliant(true)]
 namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 {
     /// <summary>
@@ -19,7 +19,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
     [AttributeUsage(AttributeTargets.All, AllowMultiple = true, Inherited = true)]
     public class NccAuthorize : Attribute
     {
-        private string _policyHandler;
+        private string _handlerClassName;
         private string _requirement;
         private string _values;
         private string[] _requirementList;
@@ -28,9 +28,9 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         public string[] RequirementList { get => _requirementList; set => _requirementList = value; }
         public string[] ValueList { get => _valueList; set => _valueList = value; }
 
-        public NccAuthorize(string PolicyHandler = "NccAuthRequireHandler")
+        public NccAuthorize(string HandlerClassName = "NccAuthRequireHandler")
         {
-            _policyHandler = PolicyHandler;
+            _handlerClassName = HandlerClassName;
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         /// </summary>        
         public NccAuthorize(string Requirement, string PolicyHandler = "NccAuthRequireHandler")
         {
-            _policyHandler = PolicyHandler;
+            _handlerClassName = PolicyHandler;
             _requirement = Requirement;
         }
 
@@ -52,14 +52,14 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         /// <param name="Values">If value is require use appropriate coma seperated values.</param>
         public NccAuthorize(string Requirement, string Values, string PolicyHandler = "NccAuthRequireHandler")
         {
-            _policyHandler = PolicyHandler;
+            _handlerClassName = PolicyHandler;
             _requirement = Requirement;
             _values = Values;
         }  
         
-        public string GetPolicyName()
+        public string GetHandlerClassName()
         {
-            return _policyHandler;
+            return _handlerClassName;
         }
 
         public string GetRequirement()
