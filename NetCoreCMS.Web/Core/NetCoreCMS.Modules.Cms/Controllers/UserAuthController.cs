@@ -14,23 +14,23 @@ using System.Linq;
 
 namespace NetCoreCMS.AdvancedPermission.Controllers
 {
-    [AdminMenu(Name = "Advanced Security", IconCls = "fa fa-users", Order = 201)]
+    [AdminMenu(Name = "Advanced Security", IconCls = "fa fa-users", Order = 100)]
     [Authorize(Roles ="SuperAdmin,Administrator")]
-    public class ApHomeController : NccController
+    public class UserAuthController : NccController
     {
         private readonly UserManager<NccUser> _userManager;
         private readonly RoleManager<NccRole> _roleManager;        
-        private readonly NccUserPermissionService _nccUserPermissionService;
+        private readonly NccUserAuthorizationService _nccUserAuthorizationService;
         
-        public ApHomeController(UserManager<NccUser> userManager, RoleManager<NccRole> roleManager, NccUserPermissionService nccUserPermissionService, ILoggerFactory loggerFactory)
+        public UserAuthController(UserManager<NccUser> userManager, RoleManager<NccRole> roleManager, NccUserAuthorizationService nccUserAuthorizationService, ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
-            _roleManager = roleManager;            
-            _nccUserPermissionService = nccUserPermissionService;
-            _logger = loggerFactory.CreateLogger<ApHomeController>();
+            _roleManager = roleManager;
+            _nccUserAuthorizationService = nccUserAuthorizationService;
+            _logger = loggerFactory.CreateLogger<UserAuthController>();
         }
 
-        [AdminMenuItem(Name = "Permissions", Url = "/ApHome/Index", Order = 1 )]
+        [AdminMenuItem(Name = "Permissions", Url = "/UserAuth/Index", Order = 1 )]
         public ActionResult Index(long roleId = 0)
         {
             var roles = _roleManager.Roles.ToList();
@@ -54,7 +54,7 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             return View();
         }
 
-        [AdminMenuItem(Name = "Templates", Url = "/ApHome/Templates", Order = 1)]
+        [AdminMenuItem(Name = "Templates", Url = "/UserAuth/Templates", Order = 2)]
         public ActionResult Templates()
         {
             return View();

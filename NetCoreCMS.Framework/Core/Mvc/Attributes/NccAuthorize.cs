@@ -27,10 +27,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 
         public string[] RequirementList { get => _requirementList; set => _requirementList = value; }
         public string[] ValueList { get => _valueList; set => _valueList = value; }
+        public string HandlerClassName { get => _handlerClassName; set => _handlerClassName = value; }
 
-        public NccAuthorize(string HandlerClassName = "NccAuthRequireHandler")
+        public NccAuthorize()
         {
-            _handlerClassName = HandlerClassName;
+            HandlerClassName =  "NccAuthRequireHandler";
         }
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         /// </summary>        
         public NccAuthorize(string Requirement, string PolicyHandler = "NccAuthRequireHandler")
         {
-            _handlerClassName = PolicyHandler;
+            HandlerClassName = PolicyHandler;
             _requirement = Requirement;
         }
 
@@ -52,14 +53,14 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         /// <param name="Values">If value is require use appropriate coma seperated values.</param>
         public NccAuthorize(string Requirement, string Values, string PolicyHandler = "NccAuthRequireHandler")
         {
-            _handlerClassName = PolicyHandler;
+            HandlerClassName = PolicyHandler;
             _requirement = Requirement;
             _values = Values;
         }  
         
         public string GetHandlerClassName()
         {
-            return _handlerClassName;
+            return HandlerClassName;
         }
 
         public string GetRequirement()

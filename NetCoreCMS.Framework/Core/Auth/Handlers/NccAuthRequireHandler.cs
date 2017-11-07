@@ -67,9 +67,9 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
                 //    context.Succeed(requirement);
                 //}
             }
-            else
+            else if(context.HttpContext.User.Identity.IsAuthenticated)
             {
-
+                return AuthorizationResult.Success();
             }
 
             return AuthorizationResult.Failed();

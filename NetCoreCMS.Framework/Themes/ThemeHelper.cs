@@ -68,18 +68,7 @@ namespace NetCoreCMS.Framework.Themes
                 
             }
         }
-        
-
-        public static void RegisterResource(NccResource resource)
-        {
-            _nccResources.Add(resource);
-        }
-
-        public static void RegisterResource(List<NccResource> resources)
-        {
-            _nccResources.AddRange(resources);
-        } 
-
+       
         private static void RegisterNccResource(NccResource.ResourceType type, string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
         {
             var nccResource = new NccResource()

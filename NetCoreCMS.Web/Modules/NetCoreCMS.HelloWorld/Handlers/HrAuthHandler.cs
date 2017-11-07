@@ -58,7 +58,7 @@ namespace NetCoreCMS.HelloWorld.Handlers
 
             //var usersPolicyList = _nccUserAuthPolicyService.LoadByModulePolicy(PolicyHandler.NccAuthRequireHandler, requirement);
 
-            return AuthorizationResult.Failed();
+            return AuthorizationResult.Success();
         }
     }
 }
