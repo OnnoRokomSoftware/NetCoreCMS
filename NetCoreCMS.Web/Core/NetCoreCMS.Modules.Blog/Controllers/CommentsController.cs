@@ -10,6 +10,7 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
@@ -18,6 +19,9 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Services;
 using System;
 using System.Linq;
+using static NetCoreCMS.Framework.Core.Models.NccComment;
+using static NetCoreCMS.Framework.Core.Models.NccPage;
+using static NetCoreCMS.Framework.Core.Models.NccPost;
 
 namespace NetCoreCMS.Core.Modules.Blog.Controllers
 {
@@ -27,13 +31,15 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
     {
         #region Initialization
         NccCommentsService _nccCommentsService;
-        
+        NccPostService _postService;
+
         NccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
 
-        public CommentsController(NccCommentsService nccCommentsService,NccUserService nccUserService, ILoggerFactory loggerFactory)
+        public CommentsController(NccCommentsService nccCommentsService, NccPostService postService, NccUserService nccUserService, ILoggerFactory loggerFactory)
         {
             _nccCommentsService = nccCommentsService;
+            _postService = postService;
             _loggerFactory = loggerFactory;
             _nccUserService = nccUserService;
             _logger = _loggerFactory.CreateLogger<BlogController>();
@@ -44,13 +50,14 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         public ActionResult CreateEdit(long Id = 0)
         {
             NccComment item = new NccComment();            
-            item.CommentStatus = NccComment.StatusEnum.Pending;
+            item.CommentStatus = NccComment.NccCommentStatus.Pending;
 
             if (Id > 0)
             {
                 item = _nccCommentsService.Get(Id);
             }
 
+            SetPageViewData(item);
             return View(item);
         }
 
@@ -119,6 +126,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 return RedirectToAction("CreateEdit", new { Id = model.Id });
             }
 
+            SetPageViewData(model);
             return View(model);
         }
 
@@ -159,10 +167,22 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             var allItem = _nccCommentsService.LoadApproved(0, page);
             return View(allItem);
         }
-        
+
         #endregion
 
         #region Helper
+        private void SetPageViewData(NccComment item)
+        {
+            ViewBag.AllPosts = new SelectList(_postService.LoadAll().Where(p => p.PostStatus == NccPostStatus.Published), "Id", "Name", item.Post != null ? item.Post.Id : 0);
+
+            var CommentStatus = Enum.GetValues(typeof(NccCommentStatus)).Cast<NccCommentStatus>().Select(v => new SelectListItem
+            {
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+            ViewBag.CommentStatus = new SelectList(CommentStatus, "Value", "Text", (int)item.CommentStatus);
+
+        }
         #endregion
     }
 }

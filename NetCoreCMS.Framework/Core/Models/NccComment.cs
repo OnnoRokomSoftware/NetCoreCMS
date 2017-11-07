@@ -23,9 +23,9 @@ namespace NetCoreCMS.Framework.Core.Models
         public string AuthorName { get; set; }
         public string Email { get; set; }
         public string WebSite { get; set; }
-        public StatusEnum CommentStatus { get; set; }
+        public NccCommentStatus CommentStatus { get; set; }
 
-        public enum StatusEnum
+        public enum NccCommentStatus
         {
             Pending,
             Approved,

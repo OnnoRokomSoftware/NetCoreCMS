@@ -1,0 +1,220 @@
+﻿@using NetCoreCMS.Framework.Utility
+@model NccComment
+
+@{
+    Layout = Constants.AdminLayoutName;
+    var mainName = "Comments";
+    var controllerName = "Comments";
+    ViewData["PageTitle"] = mainName + " Create";
+    ViewData["PageSubtitle"] = "Create a new " + mainName.ToLower();
+    if (Model.Id > 0)
+    {
+        ViewData["PageTitle"] = mainName + " Edit";
+        ViewData["PageSubtitle"] = "Update information of a " + mainName.ToLower();
+    }
+}
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .bootstrap-tagsinput {
+        width: 100%;
+        min-height: 100px;
+    }
+
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New @mainName</a>
+                    }
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage @mainName</a>
+                </div> 
+            </div>
+            <div class="panel-body">
+                <div class="row">                    
+                    <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+                        <input type="hidden" asp-for="Status" value="@Model.Status" />
+                        <div class="col-sm-6 pull-left">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Post </label>
+                                <div class="col-md-9">
+                                    <select class="form-control" asp-for="Post" name="PostId" asp-items="@ViewBag.AllPosts">
+                                        <option value="0">Select Post</option>
+                                    </select>
+                                </div>
+                            </div>
+                            @*<div class="form-group">
+                                <label class="col-md-3 text-right">Name </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
+                                </div>
+                            </div>*@
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Comments </label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" asp-for="Content" placeholder="" required >@Model.Content</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Status </label>
+                                <div class="col-md-9">
+                                    <select class="form-control" asp-for="CommentStatus" asp-items="@ViewBag.CommentStatus"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">AuthorName </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="AuthorName" placeholder="" value="@Model.AuthorName" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Email </label>
+                                <div class="col-md-9">
+                                    <input type="email" class="form-control" asp-for="Email" placeholder="" value="@Model.Email" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">WebSite </label>
+                                <div class="col-md-9">
+                                    <input type="url" class="form-control" asp-for="WebSite" placeholder="" value="@Model.WebSite" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-9 text-center">
+                                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
+                                    <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                                    @*<input type="submit" class="btn btn-default" name="Save" value="Save And Edit" />*@
+                                </div>
+                                
+                            </div>
+
+                        </div>
+
+
+                    </form>
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+@section Scripts{
+    <link href="~/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js"></script>
+    <script>
+        $('#SelectedTags').tagsinput({
+
+        });
+    </script>
+
+    <script>
+        KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
+    </script>
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+            var elements = document.getElementsByClassName('postContent');
+            for (var i = 0; i < elements.length; ++i) {
+                CKEDITOR.replace(elements[i], {
+                    enterMode: CKEDITOR.ENTER_DIV,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    //filebrowserUploadUrl: '/media/files',
+                    //filebrowserImageUploadUrl: '/MediaHome/Upload',
+                    //filebrowserWindowWidth: 800,
+                    //filebrowserWindowHeight: 500,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
+                        { name: 'editing1', items: ['SpellChecker', 'Scayt'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
+                        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                        { name: 'insert', items: ['Image', /*'Flash',*/ 'Table'] },
+                        //'/',
+                        { name: 'colors', items: ['TextColor', 'BGColor'] },
+                        { name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                    ],
+                });
+            }
+
+            $(".postTitle").change(function () {
+                $(this).parent().parent().find(".postSlug").val(NccUtil.GetSafeSlug($(this).val()));
+            });
+
+            $("#publish").click(function () {
+                var element = document.getElementById('PostStatus');
+                element.value = "2";
+                //console.log($("#Slug").val());
+                //if ($("#Slug").val() == "") {
+                //    document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
+                //    console.log($("#Slug").val());
+                //}
+                document.getElementById("SubmitType").value = "publish";
+                //$("#SubmitType").value = "publish";
+
+                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
+                document.getElementById("createEditForm").submit();
+            });
+
+            $("#save").click(function () {
+                //if ($("#Slug").val() == "") {
+                //    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+                //}
+                $("#SubmitType").val("Save");
+
+                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
+                document.getElementById("createEditForm").submit();
+            });
+
+
+        });
+    </script>
+    <script>
+        var windowObjectReference = null; // global variable
+        function openFFPromotionPopup(siteUrl) {
+            if (windowObjectReference == null || windowObjectReference.closed) {
+                windowObjectReference = window.open(siteUrl, "PromoteFirefoxWindowName", "resizable,scrollbars,status");
+            }
+            else {
+                windowObjectReference.focus();
+            };
+        }
+        setInterval(function () {
+            $("#ThumImageView").attr("src", $("#ThumImage").val());
+            //console.log($("#SiteLogoUrl").val());
+        }, 500);
+    </script>
+}

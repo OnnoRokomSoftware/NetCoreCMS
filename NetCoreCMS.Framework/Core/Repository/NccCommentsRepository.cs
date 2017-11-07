@@ -29,7 +29,7 @@ namespace NetCoreCMS.Framework.Core.Repository
         public List<NccComment> LoadApproved(long postId, int page, int count)
         {
             var list = Query()
-                .Where(x => x.Post.Id == postId && x.CommentStatus == NccComment.StatusEnum.Approved)
+                .Where(x => x.Post.Id == postId && x.CommentStatus == NccComment.NccCommentStatus.Approved)
                 .OrderByDescending(x => x.CreationDate)
                 .Skip(page * count)
                 .Take(count)
@@ -40,7 +40,7 @@ namespace NetCoreCMS.Framework.Core.Repository
         public List<NccComment> LoadApproved(int page, int count)
         {
             var list = Query()
-                .Where(x => x.CommentStatus == NccComment.StatusEnum.Approved)
+                .Where(x => x.CommentStatus == NccComment.NccCommentStatus.Approved)
                 .OrderByDescending(x => x.CreationDate)
                 .Skip(page * count)
                 .Take(count)
