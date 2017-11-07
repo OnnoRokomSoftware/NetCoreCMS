@@ -17,6 +17,7 @@ using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Auth.Handlers;
 using System.Collections.Generic;
 using System;
+using NetCoreCMS.Framework.Core.Messages;
 
 namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 {
@@ -65,19 +66,37 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
                     if (handlerName != nameof(NccAuthRequireHandler))
                     {
                         var handlerType = GlobalContext.GetTypeContainsInModules(handlerName);
-                        authorizationService = (INccAuthorizationHandler)context.HttpContext.RequestServices.GetService(handlerType);
+                        if(handlerType == null)
+                        {
+                            GlobalMessageRegistry.RegisterMessage(new GlobalMessage() {
+                                For = GlobalMessage.MessageFor.Both,
+                                ForUsers = new List<string>() { context.HttpContext.User.Identity.Name },
+                                Registrater = "NccAuthFilter",
+                                Text = $"No implimentation of handler class name {handlerName} found. Please check handler class name at NccAuthorize attribute.",
+                                Type = GlobalMessage.MessageType.Error
+                            }, new TimeSpan(0, 0, 30));
+                        }
+                        else
+                        {
+                            authorizationService = (INccAuthorizationHandler)context.HttpContext.RequestServices.GetService(handlerType);
+                        }
                     }
                     
                     var result = authorizationService.HandleRequirement(context, nccAuthRequirement, model).Result;
                     isAuthorized = result.Succeeded;
+                    if (isAuthorized == false)
+                    {
+                        context.HttpContext.Items["Message"] = "You have not enough permission.";
+                        context.HttpContext.Response.Redirect("/Home/NotAuthorized");
+                    }
                 }
             }
 
-            if(isAuthorized == false)
-            {
-                context.HttpContext.Items["Message"] = "You have not enough permission.";
-                context.HttpContext.Response.Redirect("/Home/NotAuthorized");
-            }
+            //if(isAuthorized == false)
+            //{
+            //    context.HttpContext.Items["Message"] = "You have not enough permission.";
+            //    context.HttpContext.Response.Redirect("/Home/NotAuthorized");
+            //}
         }
 
         private bool IsNetCoreCMSWeb(ActionExecutingContext context)

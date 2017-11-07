@@ -1,0 +1,214 @@
+﻿
+@{
+    ViewData["Title"] = "Advanced Permission System";
+    ViewData["PageTitle"] = "Manage permission by module Menus.";
+    var expand = true;
+    Layout = Constants.AdminLayoutName;
+}
+
+<style>
+
+    .menu .accordion-heading {
+        position: relative;
+    }
+
+    .menu .accordion-heading .edit {
+        position: absolute;
+        top: 8px;
+        right: 30px;
+    }
+
+    .menu .area {
+        border-left: 4px solid #f38787;
+        height: 30px;
+        padding-top:5px;
+        padding-left: 10px;
+        margin-bottom: 5px;
+    }
+
+    .menu .equipamento {
+        border-left: 4px solid #65c465;
+        margin-left: 30px;
+        height: 30px;
+        padding-top: 5px;
+        padding-left: 10px;
+        margin-bottom: 5px;
+    }
+
+    .menu .ponto {
+        border-left: 4px solid #98b3fa;
+        height: 30px;
+        padding-top: 5px;
+        padding-left: 10px;
+        margin-bottom: 5px;
+        margin-left: 60px;
+    }
+
+    .menu .collapse.in {
+        overflow: visible;
+    }
+
+    .accordion-inner .nav-list{
+        margin-left: 80px;
+    }
+
+</style>
+
+<select asp-items="ViewBag.Roles" class="form-control">
+    <option>Select Role</option>
+</select>
+
+<select asp-items="ViewBag.Users" class="form-control">
+    <option>Select User</option>
+</select>
+
+@{
+    var modules = ((List<IModule>)ViewBag.Modules);
+}
+<div class="menu">
+
+    @for (var i = 0; i < modules.Count; i++)
+    {
+        var module = modules[i];
+        var moduleTitle = module.ModuleTitle;
+
+        var menus = module.Menus;
+        var adminMenus = menus
+            .Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.Admin)
+            .GroupBy( y => y.DisplayName,
+                (key,g) => new { Menu=key, Items = g.SelectMany( x=>x.MenuItems).ToList() }
+            ).ToList();
+
+        var siteMenus = menus.Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.WebSite)
+            .GroupBy(y => y.DisplayName,
+                (key, g) => new { Menu = key, Items = g.SelectMany(z => z.MenuItems).ToList() }
+            ).ToList();
+
+        <div class="accordion">
+            <!-- Module -->
+            <div class="accordion-group">
+                <!-- Module Heading -->
+                <div class="accordion-heading area">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" aria-expanded="false" href="#area-@i">@moduleTitle Module</a>
+                </div>
+                <!-- /Module Heading-->
+                
+                <div class="accordion-body collapse" id="area-@i" aria-expanded="false" style="height: auto;">
+                    <div class="accordion-inner">
+                        <div class="accordion" id="equipamento-admin-@i">
+                            <div class="accordion-group">
+                                <div class="accordion-heading equipamento">
+                                    <a class="accordion-toggle" data-parent="#equipamento-admin-@i" data-toggle="collapse" aria-expanded="false" href="#admin-@i">Admin Menus</a>
+                                </div>
+                                <div class="accordion-body collapse" id="admin-@i" aria-expanded="false" style="height:auto;">
+                                    <div class="accordion-inner">
+
+                                        @for (var j = 0; j < adminMenus.Count; j++)
+                                        {
+                                            var menu = adminMenus[j];
+                                            var dn = menu.Menu;
+                                            var menuItems = menu.Items;
+
+                                            <!-- Equipamentos -->
+                                            <div class="accordion" id="menu-admin-@i-@j">
+
+                                                <div class="accordion-group">
+                                                    <div class="accordion-heading ponto">
+                                                        <a class="accordion-toggle" data-parent="#menu-admin-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-admin-@i-@j">@menu.Menu</a>
+                                                        <!-- Adicionar servico -->
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-body in collapse" id="menuItem-admin-@i-@j" aria-expanded="false" style="height: auto;">
+                                                    <div class="accordion-inner">
+                                                        @for (var k = 0; k < menuItems.Count; k++)
+                                                        {
+                                                            var si = menuItems[k];
+                                                            var action = si.DisplayName;
+
+                                                        <!-- Serviços -->
+
+                                                            <ul class="nav nav-list">
+                                                                <li>
+                                                                    <a href="#">
+                                                                        <i class="icon-chevron-right">
+                                                                        </i> @action
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        <!-- /Serviços -->
+
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+						                    <!-- /Equipamentos -->                 
+                                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion" id="equipamento-website-@i">
+                            <div class="accordion-group">
+                                <div class="accordion-heading equipamento">
+                                    <a class="accordion-toggle" data-parent="#equipamento-website-@i" data-toggle="collapse" aria-expanded="false" href="#website-@i">Site Menus</a>
+                                </div>
+                                <div class="accordion-body collapse" id="website-@i" aria-expanded="false" style="height:auto;">
+                                    <div class="accordion-inner">
+
+                                        @for (var j = 0; j < siteMenus.Count; j++)
+                                        {
+                                            var menu = siteMenus[j];
+                                            var dn = menu.Menu;
+                                            var menuItems = menu.Items;
+
+                                            <!-- Equipamentos -->
+                                            <div class="accordion" id="menu-website-@i-@j">
+
+                                                <div class="accordion-group">
+                                                    <div class="accordion-heading ponto">
+                                                        <a class="accordion-toggle" data-parent="#menu-website-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-website-@i-@j">@menu.Menu</a>
+                                                        <!-- Adicionar servico -->
+                                                    </div>
+                                                </div>
+                                                <div class="accordion-body in collapse" id="menuItem-website-@i-@j" aria-expanded="false" style="height: auto;">
+                                                    <div class="accordion-inner">
+                                                        @for (var k = 0; k < menuItems.Count; k++)
+                                                        {
+                                                            var si = menuItems[k];
+                                                            var action = si.DisplayName;
+
+                                                        <!-- Serviços -->
+
+                                                            <ul class="nav nav-list">
+                                                                <li>
+                                                                    <a href="#">
+                                                                        <i class="icon-chevron-right">
+                                                                        </i> @action
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        <!-- /Serviços -->
+
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+						                    <!-- /Equipamentos -->                        }
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+

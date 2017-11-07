@@ -26,6 +26,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
+using NetCoreCMS.Framework.Core.Auth.Handlers;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -71,10 +72,13 @@ namespace NetCoreCMS.Framework.Utility
             var activeModules = GetActiveModules();
             foreach (var item in activeModules)
             {
-                var type = item.GetType().Assembly.GetType(className);
-                if(type != null)
+                var types = item.GetType().Assembly.GetTypes().Where(x=> typeof(INccAuthorizationHandler).IsAssignableFrom(x)).ToList();
+                foreach (var type in types)
                 {
-                    return type;
+                    if (type != null && type.Name.Equals(className))
+                    {
+                        return type;
+                    }
                 }
             }
             return null;

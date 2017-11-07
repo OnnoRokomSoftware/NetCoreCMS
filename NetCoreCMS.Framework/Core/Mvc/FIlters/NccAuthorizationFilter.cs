@@ -9,7 +9,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            
+            var ad = context.ActionDescriptor;
         }
     }
 }

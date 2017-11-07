@@ -196,41 +196,53 @@ namespace NetCoreCMS.Framework.Modules
                 menuList.AddRange(adminMenulist);
 
                 var siteMenus = item.GetCustomAttributes<SiteMenu>();
-                var siteMenulist = MakeMenuList(adminMenus, item, module.ModuleId, Menu.MenuType.WebSite);
+                var siteMenulist = MakeMenuList(siteMenus, item, module.ModuleId, Menu.MenuType.WebSite);
                 menuList.AddRange(siteMenulist);
             }
+            
             return menuList;
         }
 
-        private List<Menu> MakeMenuList(IEnumerable<IMenu> adminMenus, Type controllerType, string moduleId, Menu.MenuType menuType)
+        private List<Menu> MakeMenuList(IEnumerable<IMenu> moduleMenus, Type controllerType, string moduleId, Menu.MenuType menuType)
         {
             var menuList = new List<Menu>();
-            foreach (IMenu am in adminMenus)
+            foreach (IMenu menu in moduleMenus)
             {
-                var mc = new Menu();
-                mc.Action = controllerType.Name;
-                mc.DisplayName = am.Name;
-                mc.ModuleId = moduleId;                
-                mc.Controller = controllerType.Name;
-                mc.Type = menuType;
-                mc.MenuItems = GetMenuItems(controllerType);
-                menuList.Add(mc);
+                var existingMenu = menuList.Where(x => x.DisplayName == menu.Name).FirstOrDefault();
+                if(existingMenu == null)
+                {
+                    existingMenu = new Menu();
+                    menuList.Add(existingMenu);
+                }
+
+                existingMenu.Action = controllerType.Name;
+                existingMenu.DisplayName = menu.Name;
+                existingMenu.ModuleId = moduleId;
+                existingMenu.Controller = controllerType.Name;
+                existingMenu.Type = menuType;
+                existingMenu.MenuItems = GetMenuItems(controllerType, menuType); 
             }
             return menuList;
         }
 
-        private List<MenuItem> GetMenuItems(Type controller)
+        private List<MenuItem> GetMenuItems(Type controller, Menu.MenuType menuType)
         {
             var menuItemList = new List<MenuItem>();
             var actions = controller.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
             foreach (var item in actions)
             {
-                var adminMenuAttributes = item.GetCustomAttributes<AdminMenuItem>();
-                var amiList = MakeMenuItemList(adminMenuAttributes, item.Name);
-                menuItemList.AddRange(amiList);
-                var siteMenuAttributes = item.GetCustomAttributes<SiteMenuItem>();
-                var smiList = MakeMenuItemList(siteMenuAttributes, item.Name);
-                menuItemList.AddRange(smiList);
+                if(menuType == Menu.MenuType.Admin)
+                {
+                    var adminMenuAttributes = item.GetCustomAttributes<AdminMenuItem>();
+                    var amiList = MakeMenuItemList(adminMenuAttributes, item.Name);
+                    menuItemList.AddRange(amiList);
+                }
+                else if(menuType == Menu.MenuType.WebSite)
+                {
+                    var siteMenuAttributes = item.GetCustomAttributes<SiteMenuItem>();
+                    var smiList = MakeMenuItemList(siteMenuAttributes, item.Name);
+                    menuItemList.AddRange(smiList);
+                }
             }
             return menuItemList;
         }
@@ -316,6 +328,7 @@ namespace NetCoreCMS.Framework.Modules
 
         public void AddModuleFilters(IServiceCollection services)
         {
+            services.AddScoped<NccAuthorizationFilter>();
             var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
             foreach (var module in activeModules)
             {
@@ -379,7 +392,8 @@ namespace NetCoreCMS.Framework.Modules
 
         public void RegisterModuleFilters(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
         {
-            mvcBuilder.AddMvcOptions(option => {                
+            mvcBuilder.AddMvcOptions(option => {
+                option.Filters.Add(serviceProvider.GetService<NccAuthorizationFilter>());
                 option.Filters.Add(serviceProvider.GetService<NccLanguageFilter>());
                 option.Filters.Add(serviceProvider.GetService<NccGlobalExceptionFilter>());
                 option.Filters.Add(serviceProvider.GetService<NccAuthFilter>());
