@@ -11,12 +11,12 @@
         <div class='panel panel-default'>
             @if (Model.HeaderTitle != "")
             {
-                <div class='panel-heading' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
+                <div class='panel-heading' style="color:@Model.HeaderColor; background-color:@Model.HeaderBgColor;">
                     @Html.Raw(Model.HeaderTitle)
                 </div>
             }
-            <div class='panel-body'>
-                <marquee behavior="scroll" direction="up" scrollamount="5" height="100">
+            <div class='panel-body' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
+                <marquee behavior="scroll" direction="up" scrollamount="@Model.Scrollamount" height="@Model.Height">
                     @foreach (var item in Model.NeNewsList)
                     {
                         if (i == 0)
@@ -27,13 +27,13 @@
                         {
                             <hr />
                         }
-                        <span><a href="/NeNews/Details?newsId=@item.Id">@Html.Raw(item.Name)</a></span>
+                        <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(item.Name)</font></a></span>
                     }
                 </marquee>
             </div>
             @if (Model.FooterTitle != "")
             {
-                <div class='panel-footer' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
+                <div class='panel-footer' style="color:@Model.FooterColor; background-color:@Model.FooterBgColor;">
                     @Html.Raw(Model.FooterTitle)
                 </div>
             }
@@ -41,20 +41,22 @@
     }
     else
     {
-        <marquee behavior="scroll" direction="up" scrollamount="5" height="100">
-            @foreach (var item in Model.NeNewsList)
-            {
-                if (i == 0)
+        <div style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
+            <marquee behavior="scroll" direction="up" scrollamount="@Model.Scrollamount" height="@Model.Height">
+                @foreach (var item in Model.NeNewsList)
                 {
-                    i = 1;
+                    if (i == 0)
+                    {
+                        i = 1;
+                    }
+                    else
+                    {
+                        <hr />
+                    }
+                    <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(item.Name)</font></a></span>
                 }
-                else
-                {
-                    <hr />
-                }
-                <span><a href="/NeNews/Details?newsId=@item.Id">@Html.Raw(item.Name)</a></span>
-            }
-        </marquee>
+            </marquee>
+        </div>
     }
 </div>
 

@@ -6,38 +6,40 @@
 @model NeNewsViewModel
 
 
-    <div class="@Model.ColumnClass">        
-        <table style="border:none;width:100%;">
-            <tr>
-                @if (Model.HeaderTitle != "")
-                {
-                    <td style="background-color:@Model.ColumnBgColor;color:@Model.ColumnColor;padding:5px;height:30px;text-align:center;">
-                        @Html.Raw(Model.HeaderTitle)
-                    </td>
-                }
-                <td style="height:30px;">
-                    <marquee behavior="scroll" direction="left">
-                        @foreach (var item in Model.NeNewsList)
-                        {
-                            if (i == 0)
-                            {
-                                i = 1;
-                            }
-                            else
-                            {
-                                <span>&nbsp;&nbsp;||</span>
-                            }
-                            <span><a href="/NeNews/Details?newsId=@item.Id">@Html.Raw(item.Name)</a></span>
-                        }
-                    </marquee>
+<div class="@Model.ColumnClass">
+    <table style="border:none;width:100%;">
+        <tr>
+            @if (Model.HeaderTitle != "")
+            {
+                <td style="background-color:@Model.HeaderBgColor;color:@Model.HeaderColor;padding:5px;height:@string.Concat(Model.Height,"px");text-align:center;">
+                    @Html.Raw(Model.HeaderTitle)
                 </td>
-                @if (Model.FooterTitle != "")
-                {
-                    <td style="background-color:@Model.ColumnBgColor;color:@Model.ColumnColor;height:30px;text-align:center;">
-                        @Html.Raw(Model.FooterTitle)
-                    </td>
-                }
-            </tr>
-        </table>
-    </div>
+            }
+            <td style="height:@string.Concat(Model.Height,"px");background-color:@Model.ColumnBgColor;color:@Model.ColumnColor;">
+                <marquee behavior="scroll" direction="left" scrollamount="@Model.Scrollamount">
+                    @foreach (var item in Model.NeNewsList)
+                    {
+                        if (i == 0)
+                        {
+                            i = 1;
+                        }
+                        else
+                        {
+                            <span>&nbsp;&nbsp;||</span>
+                        }
+                        <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(item.Name)</font></a></span>
+                    }
+                </marquee>
+            </td>
+            @if (Model.FooterTitle != "")
+            {
+                <td style="background-color:@Model.FooterBgColor;color:@Model.FooterColor;height:@string.Concat(Model.Height,"px");text-align:center;">
+                    @Html.Raw(Model.FooterTitle)
+                </td>
+            }
+        </tr>
+    </table>
+</div>
+
+
 
