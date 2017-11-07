@@ -11,11 +11,11 @@
         <tr>
             @if (Model.HeaderTitle != "")
             {
-                <td style="background-color:@Model.HeaderBgColor;color:@Model.HeaderColor;padding:5px;height:@string.Concat(Model.Height,"px");text-align:center;">
+                <td style="background-color:@Model.HeaderBgColor; color:@Model.HeaderColor; padding:0px; height:@string.Concat(Model.Height,"px"); text-align:center;">
                     @Html.Raw(Model.HeaderTitle)
                 </td>
             }
-            <td style="height:@string.Concat(Model.Height,"px");background-color:@Model.ColumnBgColor;color:@Model.ColumnColor;">
+            <td style="height:@string.Concat(Model.Height,"px"); background-color:@Model.ColumnBgColor; color:@Model.ColumnColor;">
                 <marquee behavior="scroll" direction="left" scrollamount="@Model.Scrollamount">
                     @foreach (var item in Model.NeNewsList)
                     {
@@ -33,7 +33,7 @@
             </td>
             @if (Model.FooterTitle != "")
             {
-                <td style="background-color:@Model.FooterBgColor;color:@Model.FooterColor;height:@string.Concat(Model.Height,"px");text-align:center;">
+                <td style="background-color:@Model.FooterBgColor; color:@Model.FooterColor; height:@string.Concat(Model.Height,"px"); text-align:center;">
                     @Html.Raw(Model.FooterTitle)
                 </td>
             }
