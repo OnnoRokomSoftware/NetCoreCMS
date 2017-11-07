@@ -66,6 +66,8 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddTransient<NccPostDetailsService>();
             services.AddTransient<NccTagRepository>();
             services.AddTransient<NccTagService>();
+            services.AddTransient<NccCommentsRepository>();
+            services.AddTransient<NccCommentsService>();
 
             services.AddTransient<NccSettingsRepository>();
             services.AddTransient<NccSettingsService>();
