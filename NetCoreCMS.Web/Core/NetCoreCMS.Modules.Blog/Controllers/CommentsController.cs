@@ -41,7 +41,6 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "New Comments", Url = "/Comments/CreateEdit", IconCls = "fa-pencil-square-o", Order = 3)]
         public ActionResult CreateEdit(long Id = 0)
         {
             NccComment item = new NccComment();            
@@ -123,7 +122,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             return View(model);
         }
 
-        [AdminMenuItem(Name = "Manage Comments", Url = "/Comments/Manage", IconCls = "fa-th-list", Order = 1)]
+        [AdminMenuItem(Name = "Manage Comments", Url = "/Comments/Manage", IconCls = "fa-th-list", Order = 9)]
         public ActionResult Manage()
         {
             var allPages = _nccCommentsService.LoadAll(false).OrderByDescending(p => p.CreationDate).ToList();

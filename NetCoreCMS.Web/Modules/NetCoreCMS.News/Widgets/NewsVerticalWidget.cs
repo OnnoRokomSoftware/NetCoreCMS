@@ -28,12 +28,22 @@ namespace NetCoreCMS.Modules.News.Widgets
         NeNewsService _neNewsService;
         IViewRenderService _viewRenderService;
         NccWebSiteWidgetService _websiteWidgetService;
+        int newsCount = 10;
+
         string headerTitle = "";
+        string headerColor = "";
+        string headerBgColor = "";
+
         string category = "";
         string columnClass = "";
         string columnColor = "";
         string columnBgColor = "";
+        string scrollamount = "5";
+        string height = "100";
+
         string footerTitle = "";
+        string footerColor = "";
+        string footerBgColor = "";
 
         public NewsVerticalWidget(
             IViewRenderService viewRenderService,
@@ -64,12 +74,27 @@ namespace NetCoreCMS.Modules.News.Widgets
                 DisplayTitle = "";
                 Footer = "";
                 Language = config.language;
-                headerTitle = config.headerTitle;
+
                 category = config.category;
+                try
+                {
+                    newsCount = Convert.ToInt32(config.newsCount);
+                }
+                catch (Exception) { newsCount = 10; }
+
+                headerTitle = config.headerTitle;
+                headerColor = config.headerColor;
+                headerBgColor = config.headerBgColor;
+                
                 columnClass = config.columnClass;
                 columnColor = config.columnColor;
                 columnBgColor = config.columnBgColor;
+                scrollamount = config.scrollamount;
+                height = config.height;
+
                 footerTitle = config.footerTitle;
+                footerColor = config.footerColor;
+                footerBgColor = config.footerBgColor;
             }
 
             ConfigViewFileName = "Widgets/NewsConfig";
@@ -84,17 +109,25 @@ namespace NetCoreCMS.Modules.News.Widgets
                 itemList = _neNewsService.LoadAll()
                     .Where(x => x.Status >= EntityStatus.Active && (x.HasDateRange == false || (x.PublishDate >= DateTime.Now && x.ExpireDate <= DateTime.Now)))
                     .OrderByDescending(x => x.Id)
-                    .Take(10)
+                    .Take(newsCount)
                     .OrderBy(x => x.Order)
                     .ToList();
             }
             var item = new NeNewsViewModel()
             {
                 HeaderTitle = headerTitle,
+                HeaderColor = headerColor,
+                HeaderBgColor = headerBgColor,
+
                 ColumnClass = columnClass.Trim() == "" ? "" : columnClass,
                 ColumnColor = columnColor,
                 ColumnBgColor = columnBgColor,
+                Scrollamount = scrollamount,
+                Height = height.Trim() == "" ? "100" : height,
+
                 FooterTitle = footerTitle,
+                FooterColor = footerColor,
+                FooterBgColor = footerBgColor,
                 NeNewsList = itemList
             };
             var body = _viewRenderService.RenderToStringAsync<NewsWidgetController>(ViewFileName, item).Result;

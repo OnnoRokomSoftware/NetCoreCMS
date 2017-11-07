@@ -9,11 +9,11 @@
     <div class='panel panel-default'>
         @if (Model.HeaderTitle != "")
         {
-            <div class='panel-heading' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
+            <div class='panel-heading' style="color:@Model.HeaderColor; background-color:@Model.HeaderBgColor;">
                 @Html.Raw(Model.HeaderTitle)
             </div>
         }
-        <div class='panel-body'>
+        <div class='panel-body' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
             @foreach (var item in Model.NeNewsList)
             {
                 if (i == 0)
@@ -24,12 +24,12 @@
                 {
                     <hr />
                 }
-                <p><a href="/NeNews/Details?newsId=@item.Id">@item.Name</a></p>
+                <p><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(item.Name)</font></a></p>
             }
         </div>
         @if (Model.FooterTitle != "")
         {
-            <div class='panel-footer' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
+            <div class='panel-footer' style="color:@Model.HeaderColor; background-color:@Model.HeaderBgColor;">
                 @Html.Raw(Model.FooterTitle)
             </div>
         }
