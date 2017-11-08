@@ -56,6 +56,10 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             {
                 item = _nccCommentsService.Get(Id);
             }
+            else
+            {
+                return RedirectToAction("Manage");
+            }
 
             SetPageViewData(item);
             return View(item);
@@ -88,26 +92,26 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                         {
                             _nccCommentsService.Update(model);
                             ViewBag.MessageType = "SuccessMessage";
-                            ViewBag.Message = "Page updated successful";
+                            ViewBag.Message = "Information updated successful";
                         }
                         catch (Exception ex)
                         {
-                            _logger.LogError("Page create error.", ex.ToString());
+                            _logger.LogError("Create error.", ex.ToString());
                         }
                     }
-                    else
-                    {
-                        try
-                        {
-                            _nccCommentsService.Save(model);
-                            ViewBag.MessageType = "SuccessMessage";
-                            ViewBag.Message = "Page save successful";
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError("Page create error.", ex.ToString());
-                        }
-                    }
+                    //else
+                    //{
+                    //    try
+                    //    {
+                    //        _nccCommentsService.Save(model);
+                    //        ViewBag.MessageType = "SuccessMessage";
+                    //        ViewBag.Message = "Page save successful";
+                    //    }
+                    //    catch (Exception ex)
+                    //    {
+                    //        _logger.LogError("Page create error.", ex.ToString());
+                    //    }
+                    //}
                 }
                 #endregion
             }
@@ -116,14 +120,9 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 ViewBag.Message = string.Join("; ", ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage));
             }
 
-            if (ViewBag.MessageType == "SuccessMessage" && SubmitType.ToLower() == "publish")
-            {
-                return RedirectToAction("Manage");
-            }
-
             if (ViewBag.MessageType == "SuccessMessage")
             {
-                return RedirectToAction("CreateEdit", new { Id = model.Id });
+                return RedirectToAction("Manage");
             }
 
             SetPageViewData(model);

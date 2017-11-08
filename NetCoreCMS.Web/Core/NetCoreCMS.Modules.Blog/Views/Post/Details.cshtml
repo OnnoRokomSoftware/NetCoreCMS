@@ -44,7 +44,69 @@
     <br />
     <p><a href="/Post/">@_T["All Post"]</a></p>
 </div>
-
+@if (Model.AllowComment == true)
+{
+    <!--CommentsSection-->
+    <div class="row" id="CommentsSection">
+        <h4>@_T["All Comments"]</h4>
+        @foreach (var item in Model.Comments)
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @item.Content
+                    <hr />
+                    <p style="font-style:italic; font-size:12px; margin-top: -18px;">
+                        @_T["Author"]:
+                        @if (item.AuthorName.Trim() != "")
+                        { <span>@item.AuthorName</span> }
+                        else
+                        {<span>@_T["Anonymous"]</span> }
+                        <span> | @_T["Date"]: @item.CreationDate.ToString("MMM dd, yyyy")</span>
+                    </p>
+                </div>
+            </div>
+        } 
+        <div class="panel panel-primary">
+            <div class="panel-body">
+                <h4 style="text-align:center;">@_T["New Comment"]</h4>
+                <hr />
+                <form id="createComments" class="form-horizontal" asp-controller="" asp-action="CreateEdit" method="post">
+                    <input type="hidden" name="PostId" id="PostId" value="@Model.Id" />
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Name"] </label>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" name="AuthorName" id="AuthorName" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Email"] </label>
+                        <div class="col-md-5">
+                            <input type="email" class="form-control" name="Email" id="Email" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Web"] </label>
+                        <div class="col-md-5">
+                            <input type="url" class="form-control" name="Website" id="Website" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Comments"] </label>
+                        <div class="col-md-9">
+                            <textarea class="form-control" name="Comments" id="Comments" required></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-11 text-center">
+                            <button class="btn btn-primary">@_T["Submit"]</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--CommentsSection-->
+}
 @section Scripts{
 
 }
