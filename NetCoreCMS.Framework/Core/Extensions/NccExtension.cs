@@ -85,8 +85,13 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddTransient<NccWebSiteService>();
             services.AddTransient<NccStartupRepository>();
             services.AddTransient<NccStartupService>();
-            services.AddTransient<NccUserAuthorizationRepository>();
-            services.AddTransient<NccUserAuthorizationService>();
+
+            services.AddTransient<NccPermissionRepository>();
+            services.AddTransient<NccPermissionService>();
+            services.AddTransient<NccPermissionDetailsRepository>();
+            services.AddTransient<NccPermissionDetailsService>();
+            services.AddTransient<NccUserPermissionRepository>();
+            services.AddTransient<NccUserPermissionService>();
 
             return services;
         }

@@ -19,9 +19,9 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Core.Repository
 {
-    public class NccUserAuthorizationRepository : BaseRepository<NccUserAuthorization, long>, ITransient
+    public class NccPermissionRepository : BaseRepository<NccPermission, long>, ITransient
     {
-        public NccUserAuthorizationRepository(NccDbContext context) : base(context)
+        public NccPermissionRepository(NccDbContext context) : base(context)
         {
         } 
     }

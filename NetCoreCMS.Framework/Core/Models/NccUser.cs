@@ -55,5 +55,10 @@ namespace NetCoreCMS.Framework.Core.Models
         /// Navigation property for this users login accounts.
         /// </summary>
         public virtual ICollection<IdentityUserLogin<long>> Logins { get; } = new List<IdentityUserLogin<long>>();
+
+        public virtual List<NccUserPermission> Permissions { get; set; }
+        public virtual List<NccPermissionDetails> ExtraPermissions { get; set; }
+        public virtual List<NccPermissionDetails> ExtraDenies { get; set; }
+
     }
 }

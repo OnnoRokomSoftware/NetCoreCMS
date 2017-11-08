@@ -7,27 +7,20 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
-
-using NetCoreCMS.Framework.Core.Models;
+ 
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
     /// <summary>
-    /// From permission management admin will assign permission to the user. That 
+    /// Permission Template for permission management. This one ore more permission will assign to the user.
     /// </summary>
-    public class NccUserAuthorization : BaseModel<long>
+    public class NccPermission : BaseModel<long>
     {
-        public NccUser User { get; set; }
-        public string ModuleId { get; set; }        
-        public string Controller { get; set; }
-        public string Action { get; set; }
-        public string RequirementName { get; set; }
-        public string RequirementValue { get; set; }
-
-        public NccUserAuthorization()
-        {
-
-        }
+        public string Group { get; set; }
+        public string Description { get; set; }
+        public virtual List<NccUserPermission> Users { get; set; }
+        public virtual List<NccPermissionDetails> PermissionDetails { get; set; }
     }
 }
