@@ -12,7 +12,7 @@ using System;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20171108092539_advanced_authorization_models")]
+    [Migration("20171109035608_advanced_authorization_models")]
     partial class advanced_authorization_models
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -978,34 +978,13 @@ namespace NetCoreCMS.Framework.Migrations
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserPermission", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<long>("CreateBy");
-
-                    b.Property<DateTime>("CreationDate");
-
-                    b.Property<string>("Metadata");
-
-                    b.Property<DateTime>("ModificationDate");
-
-                    b.Property<long>("ModifyBy");
-
-                    b.Property<string>("Name");
+                    b.Property<long>("UserId");
 
                     b.Property<long>("PermissionId");
 
-                    b.Property<int>("Status");
-
-                    b.Property<long>("UserId");
-
-                    b.Property<int>("VersionNumber");
-
-                    b.HasKey("Id");
+                    b.HasKey("UserId", "PermissionId");
 
                     b.HasIndex("PermissionId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Ncc_User_Permission");
                 });

@@ -22,22 +22,19 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
         private readonly UserManager<NccUser> _userManager;
         private readonly RoleManager<NccRole> _roleManager;
         private readonly NccPermissionService _nccPermissionService;
-        private readonly NccPermissionDetailsService _nccPermissionDetailsService;
-        private readonly NccUserPermissionService _nccUserPermissionService;
+        private readonly NccPermissionDetailsService _nccPermissionDetailsService;        
         
         public UserAuthController(
             UserManager<NccUser> userManager, 
             RoleManager<NccRole> roleManager, 
             NccPermissionService nccPermissionService,
-            NccPermissionDetailsService nccPermissionDetailsService,
-            NccUserPermissionService nccUserPermissionService, 
+            NccPermissionDetailsService nccPermissionDetailsService,            
             ILoggerFactory loggerFactory)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _nccPermissionService = nccPermissionService;
-            _nccPermissionDetailsService = nccPermissionDetailsService;
-            _nccUserPermissionService = nccUserPermissionService;
+            _nccPermissionDetailsService = nccPermissionDetailsService;            
             _logger = loggerFactory.CreateLogger<UserAuthController>();
         }
 

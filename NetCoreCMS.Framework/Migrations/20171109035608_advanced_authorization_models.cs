@@ -83,22 +83,12 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_User_Permission",
                 columns: table => new
                 {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreateBy = table.Column<long>(type: "bigint", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Metadata = table.Column<string>(type: "longtext", nullable: true),
-                    ModificationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ModifyBy = table.Column<long>(type: "bigint", nullable: false),
-                    Name = table.Column<string>(type: "longtext", nullable: true),
-                    PermissionId = table.Column<long>(type: "bigint", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
-                    VersionNumber = table.Column<int>(type: "int", nullable: false)
+                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Ncc_User_Permission", x => x.Id);
+                    table.PrimaryKey("PK_Ncc_User_Permission", x => new { x.UserId, x.PermissionId });
                     table.ForeignKey(
                         name: "FK_Ncc_User_Permission_Ncc_User_PermissionId",
                         column: x => x.PermissionId,
@@ -132,11 +122,6 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "IX_Ncc_User_Permission_PermissionId",
                 table: "Ncc_User_Permission",
                 column: "PermissionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_User_Permission_UserId",
-                table: "Ncc_User_Permission",
-                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

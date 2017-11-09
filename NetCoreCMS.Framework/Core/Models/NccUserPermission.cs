@@ -17,7 +17,7 @@ namespace NetCoreCMS.Framework.Core.Models
     /// <summary>
     /// Assigned user's permissions
     /// </summary>
-    public class NccUserPermission : BaseModel<long>
+    public class NccUserPermission
     {
         public long UserId { get; set; }
         public long PermissionId { get; set; }

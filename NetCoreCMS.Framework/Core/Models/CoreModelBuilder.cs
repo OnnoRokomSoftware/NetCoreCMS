@@ -186,6 +186,7 @@ namespace NetCoreCMS.Framework.Core.Models
             });
 
             modelBuilder.Entity<NccUserPermission>(b => {
+                b.HasKey(up => new { up.UserId, up.PermissionId });
                 b.ToTable("Ncc_User_Permission");
                 b.HasOne(w => w.User).WithMany( u => u.Permissions ).HasForeignKey(x=>x.PermissionId);
                 b.HasOne(w => w.Permission).WithMany( u => u.Users ).HasForeignKey(x=>x.UserId);

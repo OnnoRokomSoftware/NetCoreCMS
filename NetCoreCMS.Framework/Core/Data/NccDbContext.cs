@@ -37,7 +37,7 @@ namespace NetCoreCMS.Framework.Core.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             List<Type> typeToRegisters = new List<Type>();
-            foreach (var module in GlobalContext.Modules)
+            foreach (var module in GlobalContext.Modules.Where(x=>x.ModuleStatus == (int) NccModule.NccModuleStatus.Active).ToList())
             {
                 typeToRegisters.AddRange(module.Assembly.DefinedTypes.Select(t => t.AsType()));
             }
