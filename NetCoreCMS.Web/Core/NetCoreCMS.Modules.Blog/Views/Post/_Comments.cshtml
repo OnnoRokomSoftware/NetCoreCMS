@@ -1,0 +1,70 @@
+﻿<!--CommentsSection-->
+@inject UserManager<NccUser> UserManager
+@UserManager.GetUserId(User)
+@model NccPost
+<div class="" id="CommentsSection">
+    <h4>@_T["Comments"] (@Model.Comments.Count())</h4>
+    @foreach (var item in Model.Comments)
+    {
+        <div class="panel panel-default">
+            <div class="panel-body">
+                @item.Content
+                <hr />
+                <p style="font-style:italic; font-size:12px; margin-top: -18px;">
+                    @_T["author"]:
+                    @if (item.AuthorName.Trim() != "")
+                    { <span>@item.AuthorName</span> }
+                    else
+                    {<span>@_T["anonymous"]</span> }
+                    <span> | @_T["date"]: @item.CreationDate.ToString("mmm dd, yyyy")</span>
+                </p>
+            </div>
+        </div>
+    }
+    <div class="panel panel-primary" id="NewComments" style="display:none;">
+        <div class="panel-body">
+            <h4 style="text-align:center;">@_T["New Comment"]</h4>
+            <hr />
+            <form id="createComments" class="form-horizontal" asp-controller="" asp-action="CreateEdit" method="post">
+                <input type="hidden" name="PostId" id="PostId" value="@Model.Id" />
+                <div class="form-group">
+                    <label class="col-md-2 text-right">@_T["Name"] </label>
+                    <div class="col-md-5">
+                        <input type="text" class="form-control" name="AuthorName" id="AuthorName" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 text-right">@_T["Email"] </label>
+                    <div class="col-md-5">
+                        <input type="email" class="form-control" name="Email" id="Email" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 text-right">@_T["Web"] </label>
+                    <div class="col-md-5">
+                        <input type="url" class="form-control" name="Website" id="Website" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 text-right">@_T["Comments"] </label>
+                    <div class="col-md-9">
+                        <textarea class="form-control" name="Comments" id="Comments" required></textarea>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-11 text-center">
+                        <button class="btn btn-primary">@_T["Submit"]</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#NewComments").show();
+    });
+</script>
+
+<!--CommentsSection-->

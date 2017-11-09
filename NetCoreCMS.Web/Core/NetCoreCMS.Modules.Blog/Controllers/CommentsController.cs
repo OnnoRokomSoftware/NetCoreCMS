@@ -167,6 +167,17 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             return View(allItem);
         }
 
+        [AllowAnonymous]
+        public JsonResult GetComments(long PostId)
+        {
+            return null;
+        }
+
+        [AllowAnonymous]
+        public JsonResult PostComments(long PostId)
+        {
+            return null;
+        }
         #endregion
 
         #region Helper
