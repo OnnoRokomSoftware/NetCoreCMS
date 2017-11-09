@@ -82,7 +82,7 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             return View(model);
         }
 
-        [AdminMenuItem(Name = "User Permissions", Url = "/UserAuth/Index", Order = 1 )]
+        [AdminMenuItem(Name = "User Permissions", Url = "/UserAuth/UserPermission", Order = 1 )]
         public ActionResult UserPermission(long roleId = 0)
         {
             var roles = _roleManager.Roles.ToList();

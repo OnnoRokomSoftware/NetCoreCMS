@@ -33,12 +33,12 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccPermission Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "User" });
+            return _entityRepository.Get(entityId, isAsNoTracking);
         } 
 
         public List<NccPermission> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "User" });
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
         } 
 
         public NccPermission Save(NccPermission entity)

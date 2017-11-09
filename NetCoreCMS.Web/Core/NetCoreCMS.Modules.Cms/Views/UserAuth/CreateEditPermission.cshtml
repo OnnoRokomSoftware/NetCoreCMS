@@ -98,22 +98,22 @@
             <div class="accordion">
                 <!-- Module -->
                 <div class="accordion-group">
-                    <!-- Module Heading -->
+                    
                     <div class="accordion-heading area">
-                        <input type="checkbox" asp-for="Modules[i].IsChecked" />
+                        <input class="module-check" id="module-check-@i" data-container-id="area-@i" type="checkbox" asp-for="Modules[i].IsChecked" />
+                        <input type="hidden" asp-for="Modules[i].Id" value="@module.ModuleId" />
+                        <input type="hidden" asp-for="Modules[i].Name" value="@module.ModuleTitle" />
                         <a class="accordion-toggle collapsed" data-toggle="collapse" aria-expanded="false" href="#area-@i">@moduleTitle Module</a>
                     </div>
-                    <!-- /Module Heading-->
-
+                    
                     <div class="accordion-body collapse" id="area-@i" aria-expanded="false" style="height: auto;">
                         <div class="accordion-inner">
                             @if (adminMenus.Count > 0)
                             {
-
                                 <div class="accordion" id="equipamento-admin-@i">
                                     <div class="accordion-group">
                                         <div class="accordion-heading equipamento">
-                                            <input type="checkbox" />
+                                            <input class="admin-check" type="checkbox" data-container-id="admin-@i"/>
                                             <a class="accordion-toggle" data-parent="#equipamento-admin-@i" data-toggle="collapse" aria-expanded="false" href="#admin-@i">Admin Menus</a>
                                         </div>
                                         <div class="accordion-body collapse" id="admin-@i" aria-expanded="false" style="height:auto;">
@@ -124,15 +124,12 @@
                                                     var menu = adminMenus[j];
                                                     var dn = menu.MenuName;
                                                     var menuItems = menu.Items;
-
-                                                <!-- Equipamentos -->
+                                                    
                                                     <div class="accordion" id="menu-admin-@i-@j">
-
                                                         <div class="accordion-group">
                                                             <div class="accordion-heading ponto">
-                                                                <input type="checkbox" asp-for="Modules[i].AdminMenus[j].IsChecked" />
-                                                                <a class="accordion-toggle" data-parent="#menu-admin-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-admin-@i-@j">@menu.MenuName</a>
-                                                                <!-- Adicionar servico -->
+                                                                <input class="menu-check" type="checkbox" data-container-id="menuItem-admin-@i-@j" asp-for="Modules[i].AdminMenus[j].IsChecked" />
+                                                                <a class="accordion-toggle" data-parent="#menu-admin-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-admin-@i-@j">@menu.MenuName</a>                                                                
                                                             </div>
                                                         </div>
                                                         <div class="accordion-body in collapse" id="menuItem-admin-@i-@j" aria-expanded="false" style="height: auto;">
@@ -141,9 +138,7 @@
                                                                 {
                                                                     var si = menuItems[k];
                                                                     var action = si.DisplayName;
-
-                                                            <!-- Serviços -->
-
+                                                                    
                                                                     <ul class="nav nav-list" style="padding-left:15px;">
                                                                         <li style="margin-bottom:10px;">
                                                                             <input type="checkbox" asp-for="Modules[i].AdminMenus[j].MenuItems[k].IsChecked" />
@@ -151,21 +146,17 @@
                                                                                 @action
                                                                             </a>
                                                                         </li>
-                                                                    </ul>
-                                                            <!-- /Serviços -->
-
+                                                                    </ul>                                                            
                                                                 }
-
                                                             </div>
                                                         </div>
-                                                    </div>
-						                        <!-- /Equipamentos -->                            }
+                                                    </div>						                                                 
+                                                }
                                             </div>
 
                                         </div>
                                     </div>
                                 </div>
-
                             }
 
                             @if (siteMenus.Count > 0)
@@ -173,7 +164,7 @@
                                 <div class="accordion" id="equipamento-website-@i">
                                     <div class="accordion-group">
                                         <div class="accordion-heading equipamento">
-                                            <input type="checkbox" />
+                                            <input class="website-check" type="checkbox" data-container-id="website-@i" />
                                             <a class="accordion-toggle" data-parent="#equipamento-website-@i" data-toggle="collapse" aria-expanded="false" href="#website-@i">Site Menus</a>
                                         </div>
                                         <div class="accordion-body collapse" id="website-@i" aria-expanded="false" style="height:auto;">
@@ -184,15 +175,13 @@
                                                     var menu = siteMenus[j];
                                                     var dn = menu.MenuName;
                                                     var menuItems = menu.Items;
-
-                                                <!-- Equipamentos -->
+                                                    
                                                     <div class="accordion" id="menu-website-@i-@j">
 
                                                         <div class="accordion-group">
                                                             <div class="accordion-heading ponto">
-                                                                <input type="checkbox" asp-for="Modules[i].SiteMenus[j].IsChecked"/>
-                                                                <a class="accordion-toggle" data-parent="#menu-website-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-website-@i-@j">@menu.MenuName</a>
-                                                                <!-- Adicionar servico -->
+                                                                <input type="checkbox" data-container-id="menuItem-website-@i-@j" asp-for="Modules[i].SiteMenus[j].IsChecked"/>
+                                                                <a class="accordion-toggle" data-parent="#menu-website-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-website-@i-@j">@menu.MenuName</a>                                                                
                                                             </div>
                                                         </div>
                                                         <div class="accordion-body in collapse" id="menuItem-website-@i-@j" aria-expanded="false" style="height: auto;">
@@ -201,23 +190,18 @@
                                                                 {
                                                                     var si = menuItems[k];
                                                                     var action = si.DisplayName;
-
-                                                            <!-- Serviços -->
-
+                                                                    
                                                                     <ul class="nav nav-list" style="padding-left:15px;">
                                                                         <li style="margin-bottom:10px;">
                                                                             <input type="checkbox" asp-for="Modules[i].SiteMenus[j].MenuItems[k].IsChecked"/>
                                                                             <a href="#" style="display:inline;">@action</a>
                                                                         </li>
-                                                                    </ul>
-                                                            <!-- /Serviços -->
-
+                                                                    </ul>                                                            
                                                                 }
 
                                                             </div>
                                                         </div>
-                                                    </div>
-						                        <!-- /Equipamentos -->                          
+                                                    </div>						                                                  
                                                 }
                                             </div>
 
@@ -236,3 +220,44 @@
         <input type="submit" class="btn btn-primary" id="submit" value="Save Template" />
     </div>
 </form> 
+
+<script> 
+    $(document).ready(function () {
+
+        $(".module-check").on("change", function () { 
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");
+            console.log(containerId);                        
+            $("#"+containerId).find(':checkbox').each(function () { 
+                $(this).prop("checked", checkBox.prop("checked"));
+            });            
+        });
+
+        $(".website-check").on("change", function () {
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");  
+            console.log(containerId);
+            $("#" + containerId).find(':checkbox').each(function () {
+                $(this).prop("checked", checkBox.prop("checked"));
+            });                         
+        });
+
+        $(".admin-check").on("change", function () {
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");  
+            console.log(containerId);
+            $("#" + containerId).find(':checkbox').each(function () {
+                $(this).prop("checked", checkBox.prop("checked"));
+            });                         
+        });
+
+        $(".menu-check").on("change", function () {
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");  
+            console.log(containerId);
+            $("#" + containerId).find(':checkbox').each(function () {
+                $(this).prop("checked", checkBox.prop("checked"));
+            });                         
+        });
+    });
+</script>
