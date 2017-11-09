@@ -1,0 +1,44 @@
+﻿.menu .accordion-heading {
+    position: relative;
+}
+
+.menu .accordion-heading .edit {
+    position: absolute;
+    top: 8px;
+    right: 30px;
+}
+
+.menu .area {
+    border-left: 4px solid #f38787;
+    height: 30px;
+    padding-top: 5px;
+    padding-left: 10px;
+    margin-bottom: 5px;
+}
+
+.menu .equipamento {
+    border-left: 4px solid #65c465;
+    margin-left: 30px;
+    height: 30px;
+    padding-top: 5px;
+    padding-left: 10px;
+    margin-bottom: 5px;
+}
+
+.menu .ponto {
+    border-left: 4px solid #98b3fa;
+    height: 30px;
+    padding-top: 5px;
+    padding-left: 10px;
+    margin-bottom: 5px;
+    margin-left: 60px;
+}
+
+.menu .collapse.in {
+    overflow: visible;
+}
+
+.accordion-inner .nav-list {
+    margin-left: 80px;
+}
+ 

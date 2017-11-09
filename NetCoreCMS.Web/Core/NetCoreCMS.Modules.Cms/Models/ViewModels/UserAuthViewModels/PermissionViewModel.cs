@@ -19,7 +19,7 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
     public class ModuleViewModel
     {
         public string Name { get; set; }
-        public string Id { get; set; }
+        public long Id { get; set; }
         public bool IsChecked { get; set; }
         public List<MenuViewModel> AdminMenus { get; set; }
         public List<MenuViewModel> SiteMenus { get; set; }
@@ -27,6 +27,7 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
 
     public class MenuViewModel
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Url { get; set; }
         public string Type { get; set; }
@@ -37,6 +38,7 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
 
     public class MenuItemViewModel
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }

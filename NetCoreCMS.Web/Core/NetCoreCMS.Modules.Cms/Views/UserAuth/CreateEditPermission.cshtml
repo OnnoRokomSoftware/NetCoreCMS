@@ -9,54 +9,8 @@
     Layout = Constants.AdminLayoutName;
 }
 
-<style>
-
-    .menu .accordion-heading {
-        position: relative;
-    }
-
-    .menu .accordion-heading .edit {
-        position: absolute;
-        top: 8px;
-        right: 30px;
-    }
-
-    .menu .area {
-        border-left: 4px solid #f38787;
-        height: 30px;
-        padding-top:5px;
-        padding-left: 10px;
-        margin-bottom: 5px;
-    }
-
-    .menu .equipamento {
-        border-left: 4px solid #65c465;
-        margin-left: 30px;
-        height: 30px;
-        padding-top: 5px;
-        padding-left: 10px;
-        margin-bottom: 5px;
-    }
-
-    .menu .ponto {
-        border-left: 4px solid #98b3fa;
-        height: 30px;
-        padding-top: 5px;
-        padding-left: 10px;
-        margin-bottom: 5px;
-        margin-left: 60px;
-    }
-
-    .menu .collapse.in {
-        overflow: visible;
-    }
-
-    .accordion-inner .nav-list{
-        margin-left: 80px;
-    }
-
-</style>
-
+ 
+<link href="/NetCoreCMS.Modules.Cms/css/userAuth.css" rel="stylesheet" />
 
 @{
     var modules = ((List<IModule>)ViewBag.Modules);
@@ -87,7 +41,7 @@
             var adminMenus = menus
                 .Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.Admin)
                 .GroupBy(y => y.DisplayName,
-                    (key, g) => new { MenuName = key, Items = g.SelectMany(x => x.MenuItems).ToList() }
+                    (key, g) => new { MenuName = key, Menu = g.FirstOrDefault(), Items = g.SelectMany(x => x.MenuItems).ToList() }
                 ).ToList();
 
             var siteMenus = menus.Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.WebSite)
@@ -113,7 +67,7 @@
                                 <div class="accordion" id="equipamento-admin-@i">
                                     <div class="accordion-group">
                                         <div class="accordion-heading equipamento">
-                                            <input class="admin-check" type="checkbox" data-container-id="admin-@i"/>
+                                            <input class="admin-check" type="checkbox" data-container-id="admin-@i" />
                                             <a class="accordion-toggle" data-parent="#equipamento-admin-@i" data-toggle="collapse" aria-expanded="false" href="#admin-@i">Admin Menus</a>
                                         </div>
                                         <div class="accordion-body collapse" id="admin-@i" aria-expanded="false" style="height:auto;">
@@ -129,6 +83,9 @@
                                                         <div class="accordion-group">
                                                             <div class="accordion-heading ponto">
                                                                 <input class="menu-check" type="checkbox" data-container-id="menuItem-admin-@i-@j" asp-for="Modules[i].AdminMenus[j].IsChecked" />
+                                                                <input type="hidden" asp-for="Modules[i].AdminMenus[j].Id" value="" />
+                                                                <input type="hidden" asp-for="Modules[i].AdminMenus[j].Name" value="@menu.MenuName" />
+                                                                <input type="hidden" asp-for="Modules[i].AdminMenus[j].Type" value="Admin" />
                                                                 <a class="accordion-toggle" data-parent="#menu-admin-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-admin-@i-@j">@menu.MenuName</a>                                                                
                                                             </div>
                                                         </div>
