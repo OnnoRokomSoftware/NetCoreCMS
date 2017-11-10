@@ -31,7 +31,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccComment Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId, isAsNoTracking, new List<string> { "Post", "Author"});
+            return _entityRepository.Get(entityId, isAsNoTracking, new List<string> { "Post", "Author" });
         }
 
         public List<NccComment> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
@@ -120,8 +120,8 @@ namespace NetCoreCMS.Framework.Core.Services
             copyTo.Metadata = copyFrom.Metadata;
 
             copyTo.Title = copyFrom.Title;
-            copyTo.Content= copyFrom.Content;
-            copyTo.Email= copyFrom.Email;
+            copyTo.Content = copyFrom.Content;
+            copyTo.Email = copyFrom.Email;
             copyTo.WebSite = copyFrom.WebSite;
             copyTo.CommentStatus = copyFrom.CommentStatus;
             copyTo.Post = copyFrom.Post;
@@ -129,6 +129,11 @@ namespace NetCoreCMS.Framework.Core.Services
             copyTo.AuthorName = copyFrom.AuthorName;
 
             return copyTo;
+        }
+
+        public List<NccComment> Load(long postId, int count = 5)
+        {
+            return _entityRepository.Load(postId, count);
         }
     }
 }

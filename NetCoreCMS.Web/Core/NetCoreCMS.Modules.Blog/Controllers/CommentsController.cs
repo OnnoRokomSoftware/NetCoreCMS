@@ -16,8 +16,10 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using static NetCoreCMS.Framework.Core.Models.NccComment;
 using static NetCoreCMS.Framework.Core.Models.NccPage;
@@ -168,15 +170,42 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         }
 
         [AllowAnonymous]
-        public JsonResult GetComments(long PostId)
+        public JsonResult GetComments(long postId, bool isAll = false)
         {
-            return null;
+            ApiResponse ret = new ApiResponse();
+            ret.IsSuccess = true;
+            ret.Message = "Load Successful.";
+            Test test = new Test();
+            if (isAll)
+                test.list = _nccCommentsService.Load(postId, -1);
+            else
+                test.list = _nccCommentsService.Load(postId).ToList();
+
+            ret.Data = test;
+            return Json(ret);
         }
 
-        [AllowAnonymous]
-        public JsonResult PostComments(long PostId)
+        class Test
         {
-            return null;
+            public List<NccComment> list = new List<NccComment>();
+        }
+
+        [AllowAnonymous]        
+        [HttpPost]
+        public JsonResult PostComments(long postId, string comments, long authorId = 0, string authorName = "", string email = "", string website = "")
+        {
+            ApiResponse ret = new ApiResponse();
+            ret.IsSuccess= true;
+            ret.Message = "Save Successful.";
+            var model = new NccComment();
+            model.Post = _postService.Get(postId);
+            model.Content = comments;
+            model.AuthorName = authorName;
+            model.Email = email;
+            model.WebSite = website;
+            
+            _nccCommentsService.Save(model);
+            return Json(ret);
         }
         #endregion
 

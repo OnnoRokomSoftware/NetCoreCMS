@@ -47,5 +47,23 @@ namespace NetCoreCMS.Framework.Core.Repository
                 .ToList();
             return list;
         }
+
+        public List<NccComment> Load(long postId, int count)
+        {
+            var list = Query().Include("Post").Include("Author")
+                .Where(x => x.Post.Id == postId && x.CommentStatus == NccComment.NccCommentStatus.Approved)
+                .OrderByDescending(x => x.CreationDate)
+                .Take(count)
+                .ToList();
+
+            if (count < 0)
+            {
+                list = Query().Include("Post").Include("Author")
+                .Where(x => x.Post.Id == postId && x.CommentStatus == NccComment.NccCommentStatus.Approved)
+                .OrderByDescending(x => x.CreationDate)
+                .ToList();
+            }
+            return list;
+        }
     }
 }
