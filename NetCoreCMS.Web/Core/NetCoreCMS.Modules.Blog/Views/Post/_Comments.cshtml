@@ -1,50 +1,81 @@
 ﻿<!--CommentsSection-->
 @inject UserManager<NccUser> UserManager
-@UserManager.GetUserId(User)
-@model NccPost
+@{ 
+    long UserId = 0;
+    string UserName = "";
+    try
+    {
+        UserId = Convert.ToInt64(UserManager.GetUserId(User));
+        UserName = UserManager.GetUserName(User);
+    }
+    catch (Exception)
+    {
+        UserId = 0;
+    }
+
+}
+    @model NccPost
 <div class="" id="CommentsSection">
     <h4>@_T["Comments"] (@Model.Comments.Count())</h4>
-    @foreach (var item in Model.Comments)
-    {
-        <div class="panel panel-default">
-            <div class="panel-body">
-                @item.Content
-                <hr />
-                <p style="font-style:italic; font-size:12px; margin-top: -18px;">
-                    @_T["author"]:
-                    @if (item.AuthorName.Trim() != "")
-                    { <span>@item.AuthorName</span> }
-                    else
-                    {<span>@_T["anonymous"]</span> }
-                    <span> | @_T["date"]: @item.CreationDate.ToString("mmm dd, yyyy")</span>
-                </p>
+    <div id="PreviousComments">
+        @foreach (var item in Model.Comments)
+        {
+            <div class="panel panel-default">
+                <div class="panel-body">
+                    @item.Content
+                    <hr />
+                    <p style="font-style:italic; font-size:12px; margin-top: -18px;">
+                        <strong>@_T["Author"]:</strong>
+                        @if (item.AuthorName == null || item.AuthorName.Trim() == "")
+                        { <span>@_T["Anonymous"]</span>}
+                        else
+                        { <span>@item.AuthorName</span>}
+                        <span> | <strong>@_T["Date"]:</strong> @item.CreationDate.ToString("mmm dd, yyyy hh:mm tt")</span>
+                    </p>
+                </div>
             </div>
-        </div>
-    }
+        }
+    </div>
     <div class="panel panel-primary" id="NewComments" style="display:none;">
         <div class="panel-body">
             <h4 style="text-align:center;">@_T["New Comment"]</h4>
             <hr />
-            <form id="createComments" class="form-horizontal" asp-controller="" asp-action="CreateEdit" method="post">
+            <form id="createComments" class="form-horizontal" asp-controller="" asp-action="" method="">
                 <input type="hidden" name="PostId" id="PostId" value="@Model.Id" />
-                <div class="form-group">
-                    <label class="col-md-2 text-right">@_T["Name"] </label>
-                    <div class="col-md-5">
-                        <input type="text" class="form-control" name="AuthorName" id="AuthorName" required />
+                @if (UserId > 0)
+                {
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Name"] </label>
+                        <div class="col-md-5">
+                            @UserName
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-2 text-right">@_T["Email"] </label>
-                    <div class="col-md-5">
-                        <input type="email" class="form-control" name="Email" id="Email" required />
+
+                    <input type="hidden" class="form-control" name="AuthorName" id="AuthorName" value="@UserName" />
+                    <input type="hidden" class="form-control" name="Email" id="Email" value="" />
+                    <input type="hidden" class="form-control" name="Website" id="Website" value="" />
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Name"] </label>
+                        <div class="col-md-5">
+                            <input type="text" class="form-control" name="AuthorName" id="AuthorName" required />
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-2 text-right">@_T["Web"] </label>
-                    <div class="col-md-5">
-                        <input type="url" class="form-control" name="Website" id="Website" />
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Email"] </label>
+                        <div class="col-md-5">
+                            <input type="email" class="form-control" name="Email" id="Email" required />
+                        </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="col-md-2 text-right">@_T["Web"] </label>
+                        <div class="col-md-5">
+                            <input type="url" class="form-control" name="Website" id="Website" />
+                        </div>
+                    </div>
+                }
                 <div class="form-group">
                     <label class="col-md-2 text-right">@_T["Comments"] </label>
                     <div class="col-md-9">
@@ -53,7 +84,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-md-11 text-center">
-                        <button class="btn btn-primary">@_T["Submit"]</button>
+                        <button type="submit" id="Submit" class="btn btn-primary" onclick="postComment()">@_T["Submit"]</button>
                     </div>
                 </div>
             </form>
@@ -63,8 +94,103 @@
 
 <script>
     $(document).ready(function () {
+        loadComments();
         $("#NewComments").show();
+        $('#createComments').on('submit', function (e) {
+            // validation code here
+            e.preventDefault();
+            var postId = $("#PostId").val();
+            var comments = $("#Comments").val();
+            var authorName = $("#AuthorName").val();
+            var email = $("#Email").val();
+            var website = $("#Website").val();
+            console.log(Comments);
+
+            NccPageMask.ShowLoadingMask();
+            $.ajax({
+                method: 'POST',
+                url: '/Comments/PostComments',
+                data: { postId: postId, comments: comments, authorId: @UserId, authorName: authorName, email: email, website: website },
+                success: function (rsp) {
+                    NccPageMask.HideLoadingMask();
+                    console.log(rsp);
+                    NccGlobalAlert.ShowSuccess(rsp.message);
+                    $("#Comments").val("");
+                    $("#AuthorName").val("");
+                    $("#Email").val("");
+                    $("#Website").val("");
+                    //$(clonedDiv).attr("data-website-widget-id", rsp.data.id);
+                    //setTimeout(function () {
+                    //    //window.location.reload(1);
+                    //    window.location.href = window.location.pathname + "?sLayout=" + layout;
+                    //}, 500);
+                },
+                error: function (rsp) {
+                    NccPageMask.HideLoadingMask();
+                    NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+                }
+            });
+        });
     });
+    function loadComments() {
+
+        $.ajax({
+                method: 'POST',
+                url: '/Comments/GetComments',
+                data: { postId: @Model.Id },
+                success: function (rsp) {
+                    console.log(rsp);
+                },
+                error: function (rsp) {
+                    console.log(rsp);               
+                    NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+                }
+            });
+    }
+    function postComment() {
+        //ev.preventDefault();
+        //var targetDiv = ev.target;
+
+        //var divId = ev.dataTransfer.getData("widgetId");
+        //var div = document.getElementById(divId);
+        //targetDiv.appendChild(div);
+        //var clonedDiv = $(div).clone();
+        //var uid = GUID.NewGUID();
+        //$(clonedDiv).attr("id", uid);
+        ////clonedDiv.appendTo(targetDiv);
+        ////$(div).clone().appendTo("#ncc-module-widget-box-container");
+
+        //var moduleId = $(div).attr("data-module-id");
+        //var zone = $(targetDiv).attr("data-layout-zone");
+        //var layout = $(targetDiv).attr("data-layout-name");
+        //var theme = $(targetDiv).attr("data-theme-id");
+        //var widgetId = $(div).attr("data-widget-id");
+
+        //$(clonedDiv).attr("data-theme-id", theme);
+        //$(clonedDiv).attr("data-layout-name", layout);
+        //$(clonedDiv).attr("data-layout-zone", zone);
+
+        //NccPageMask.ShowLoadingMask();
+        //$.ajax({
+        //    method: 'POST',
+        //    url: '/CmsWidget/SaveZoneWidget',
+        //    data: { module: moduleId, theme: theme, layout: layout, zone: zone, widget: widgetId },
+        //    success: function (rsp) {
+        //        NccPageMask.HideLoadingMask();
+        //        console.log(rsp);
+        //        NccGlobalAlert.ShowSuccess(rsp.message);
+        //        $(clonedDiv).attr("data-website-widget-id", rsp.data.id);
+        //        setTimeout(function () {
+        //            //window.location.reload(1);
+        //            window.location.href = window.location.pathname + "?sLayout=" + layout;
+        //        }, 500);
+        //    },
+        //    error: function (rsp) {
+        //        NccPageMask.HideLoadingMask();
+        //        NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+        //    }
+        //});
+    }
 </script>
 
 <!--CommentsSection-->
