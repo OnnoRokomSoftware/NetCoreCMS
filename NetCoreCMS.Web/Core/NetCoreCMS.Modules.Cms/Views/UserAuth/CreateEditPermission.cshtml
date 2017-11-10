@@ -55,7 +55,7 @@
                     
                     <div class="accordion-heading area">
                         <input class="module-check" id="module-check-@i" data-container-id="area-@i" type="checkbox" asp-for="Modules[i].IsChecked" />
-                        <input type="hidden" asp-for="Modules[i].Id" value="@module.ModuleId" />
+                        <input type="hidden" asp-for="Modules[i].ModuleId" value="@module.ModuleId" />
                         <input type="hidden" asp-for="Modules[i].Name" value="@module.ModuleTitle" />
                         <a class="accordion-toggle collapsed" data-toggle="collapse" aria-expanded="false" href="#area-@i">@moduleTitle Module</a>
                     </div>
@@ -83,7 +83,7 @@
                                                         <div class="accordion-group">
                                                             <div class="accordion-heading ponto">
                                                                 <input class="menu-check" type="checkbox" data-container-id="menuItem-admin-@i-@j" asp-for="Modules[i].AdminMenus[j].IsChecked" />
-                                                                <input type="hidden" asp-for="Modules[i].AdminMenus[j].Id" value="" />
+                                                                <input type="hidden" asp-for="Modules[i].AdminMenus[j].Id" value="@Model.Modules[i].AdminMenus[j].Id" />
                                                                 <input type="hidden" asp-for="Modules[i].AdminMenus[j].Name" value="@menu.MenuName" />
                                                                 <input type="hidden" asp-for="Modules[i].AdminMenus[j].Type" value="Admin" />
                                                                 <a class="accordion-toggle" data-parent="#menu-admin-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-admin-@i-@j">@menu.MenuName</a>                                                                
@@ -99,6 +99,10 @@
                                                                     <ul class="nav nav-list" style="padding-left:15px;">
                                                                         <li style="margin-bottom:10px;">
                                                                             <input type="checkbox" asp-for="Modules[i].AdminMenus[j].MenuItems[k].IsChecked" />
+                                                                            <input type="hidden" asp-for="Modules[i].AdminMenus[j].MenuItems[k].Name" value="@Model.Modules[i].AdminMenus[j].MenuItems[k].Name" />
+                                                                            <input type="hidden" asp-for="Modules[i].AdminMenus[j].MenuItems[k].Id" value="@Model.Modules[i].AdminMenus[j].MenuItems[k].Id" />
+                                                                            <input type="hidden" asp-for="Modules[i].AdminMenus[j].MenuItems[k].Controller" value="@Model.Modules[i].AdminMenus[j].MenuItems[k].Controller" />
+                                                                            <input type="hidden" asp-for="Modules[i].AdminMenus[j].MenuItems[k].Action" value="@Model.Modules[i].AdminMenus[j].MenuItems[k].Action" />
                                                                             <a href="#" style="display:inline;">
                                                                                 @action
                                                                             </a>
@@ -138,6 +142,9 @@
                                                         <div class="accordion-group">
                                                             <div class="accordion-heading ponto">
                                                                 <input type="checkbox" data-container-id="menuItem-website-@i-@j" asp-for="Modules[i].SiteMenus[j].IsChecked"/>
+                                                                <input type="hidden" asp-for="Modules[i].SiteMenus[j].Id" value="@Model.Modules[i].SiteMenus[j].Id" />
+                                                                <input type="hidden" asp-for="Modules[i].SiteMenus[j].Name" value="@menu.MenuName" />
+                                                                <input type="hidden" asp-for="Modules[i].SiteMenus[j].Type" value="WebSite" />
                                                                 <a class="accordion-toggle" data-parent="#menu-website-@i-@j" data-toggle="collapse" aria-expanded="false" href="#menuItem-website-@i-@j">@menu.MenuName</a>                                                                
                                                             </div>
                                                         </div>
@@ -152,6 +159,10 @@
                                                                         <li style="margin-bottom:10px;">
                                                                             <input type="checkbox" asp-for="Modules[i].SiteMenus[j].MenuItems[k].IsChecked"/>
                                                                             <a href="#" style="display:inline;">@action</a>
+                                                                            <input type="hidden" asp-for="Modules[i].SiteMenus[j].MenuItems[k].Name" value="@Model.Modules[i].SiteMenus[j].MenuItems[k].Name" />
+                                                                            <input type="hidden" asp-for="Modules[i].SiteMenus[j].MenuItems[k].Id" value="@Model.Modules[i].SiteMenus[j].MenuItems[k].Id" />
+                                                                            <input type="hidden" asp-for="Modules[i].SiteMenus[j].MenuItems[k].Controller" value="@Model.Modules[i].SiteMenus[j].MenuItems[k].Controller" />
+                                                                            <input type="hidden" asp-for="Modules[i].SiteMenus[j].MenuItems[k].Action" value="@Model.Modules[i].SiteMenus[j].MenuItems[k].Action" />
                                                                         </li>
                                                                     </ul>                                                            
                                                                 }
