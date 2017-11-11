@@ -645,7 +645,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<DateTime>("PublishDate");
 
-                    b.Property<long?>("CommentCount");
+                    b.Property<long>("CommentCount");
 
                     b.Property<string>("RelatedPosts");
 

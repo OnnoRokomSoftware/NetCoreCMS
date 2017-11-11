@@ -29,7 +29,7 @@
             <input type="text" class="form-control" asp-for="Group">
         </div>
         <div class="form-group">
-            <label for="Group">Group:</label>
+            <label for="Group">Description:</label>
             <input type="text" class="form-control" asp-for="Description">
         </div>
     </div>
@@ -75,8 +75,11 @@
                                             @{
                                                 var checkedTxt = "";
                                                 if (adminMenus.Count > 0) {
-                                                    var checkedMenu = Model.Modules[i].AdminMenus.Where(x => x.IsChecked == true && x.MenuItems.Where(y => y.IsChecked == true).ToList().Count > 0);
-                                                    checkedTxt = "checked";
+                                                    var checkedMenu = Model.Modules[i].AdminMenus.Where(x => x.IsChecked && x.MenuItems.Where(y => y.IsChecked).ToList().Count > 0).Count();
+                                                    if (checkedMenu > 0)
+                                                    {
+                                                        checkedTxt = "checked";
+                                                    }
                                                 }
                                             }
                                             <input class="admin-check" type="checkbox" @checkedTxt data-container-id="admin-@i" />
@@ -141,8 +144,11 @@
                                                 var checkedTxt = "";
                                                 if (adminMenus.Count > 0)
                                                 {
-                                                    var checkedMenu = Model.Modules[i].SiteMenus.Where(x => x.IsChecked && x.MenuItems.Where(y => y.IsChecked).ToList().Count > 0);
-                                                    checkedTxt = "checked";
+                                                    var checkedMenu = Model.Modules[i].SiteMenus.Where(x => x.IsChecked && x.MenuItems.Where(y => y.IsChecked).ToList().Count > 0).Count();
+                                                    if (checkedMenu > 0)
+                                                    {
+                                                        checkedTxt = "checked";
+                                                    }
                                                 }
                                             }
                                             <input class="website-check" type="checkbox" @checkedTxt data-container-id="website-@i" />

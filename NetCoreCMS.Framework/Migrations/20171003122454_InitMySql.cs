@@ -588,7 +588,7 @@ namespace NetCoreCMS.Framework.Migrations
                     PostStatus = table.Column<int>(type: "int", nullable: false),
                     PostType = table.Column<int>(type: "int", nullable: false),
                     PublishDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    CommentCount = table.Column<long>(type: "bigint", nullable: true),
+                    CommentCount = table.Column<long>(type: "bigint", nullable: false),
                     RelatedPosts = table.Column<string>(type: "longtext", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     ThumImage = table.Column<string>(type: "longtext", nullable: true),
