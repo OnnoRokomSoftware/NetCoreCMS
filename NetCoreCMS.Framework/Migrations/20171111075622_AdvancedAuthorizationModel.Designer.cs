@@ -12,8 +12,8 @@ using System;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20171104140329_nccuserauth_added")]
-    partial class nccuserauth_added
+    [Migration("20171111075622_AdvancedAuthorizationModel")]
+    partial class AdvancedAuthorizationModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -487,6 +487,86 @@ namespace NetCoreCMS.Framework.Migrations
                     b.ToTable("Ncc_Page_Details");
                 });
 
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPermission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Group");
+
+                    b.Property<string>("Metadata");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("Name");
+
+                    b.Property<int>("Status");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Ncc_Permission");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPermissionDetails", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Action");
+
+                    b.Property<string>("Controller");
+
+                    b.Property<long>("CreateBy");
+
+                    b.Property<DateTime>("CreationDate");
+
+                    b.Property<long>("ExtraDeniedUserId");
+
+                    b.Property<long>("ExtraPermissionUserId");
+
+                    b.Property<string>("Metadata");
+
+                    b.Property<DateTime>("ModificationDate");
+
+                    b.Property<long>("ModifyBy");
+
+                    b.Property<string>("ModuleId");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long?>("NccUserId");
+
+                    b.Property<long?>("NccUserId1");
+
+                    b.Property<long>("PermissionId");
+
+                    b.Property<string>("Requirements");
+
+                    b.Property<int>("Status");
+
+                    b.Property<int>("VersionNumber");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NccUserId");
+
+                    b.HasIndex("NccUserId1");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("Ncc_Permission_Details");
+                });
+
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPlugins", b =>
                 {
                     b.Property<long>("Id")
@@ -543,6 +623,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<bool>("AllowComment");
 
                     b.Property<long?>("AuthorId");
+
+                    b.Property<long>("CommentCount");
 
                     b.Property<long>("CreateBy");
 
@@ -900,44 +982,17 @@ namespace NetCoreCMS.Framework.Migrations
                     b.ToTable("Ncc_User");
                 });
 
-            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserAuthorization", b =>
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserPermission", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+                    b.Property<long>("UserId");
 
-                    b.Property<string>("Action");
+                    b.Property<long>("PermissionId");
 
-                    b.Property<string>("Controller");
+                    b.HasKey("UserId", "PermissionId");
 
-                    b.Property<long>("CreateBy");
+                    b.HasIndex("PermissionId");
 
-                    b.Property<DateTime>("CreationDate");
-
-                    b.Property<string>("Metadata");
-
-                    b.Property<DateTime>("ModificationDate");
-
-                    b.Property<long>("ModifyBy");
-
-                    b.Property<string>("ModuleId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("RequirementName");
-
-                    b.Property<string>("RequirementValue");
-
-                    b.Property<int>("Status");
-
-                    b.Property<long?>("UserId");
-
-                    b.Property<int>("VersionNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Ncc_User_Authorization");
+                    b.ToTable("Ncc_User_Permission");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserRole", b =>
@@ -1278,6 +1333,22 @@ namespace NetCoreCMS.Framework.Migrations
                         .HasForeignKey("PageId");
                 });
 
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPermissionDetails", b =>
+                {
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser")
+                        .WithMany("ExtraDenies")
+                        .HasForeignKey("NccUserId");
+
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser")
+                        .WithMany("ExtraPermissions")
+                        .HasForeignKey("NccUserId1");
+
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPermission", "Permission")
+                        .WithMany("PermissionDetails")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPost", b =>
                 {
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "Author")
@@ -1330,11 +1401,17 @@ namespace NetCoreCMS.Framework.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserAuthorization", b =>
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserPermission", b =>
                 {
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
+                        .WithMany("Permissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPermission", "Permission")
+                        .WithMany("Users")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserRole", b =>

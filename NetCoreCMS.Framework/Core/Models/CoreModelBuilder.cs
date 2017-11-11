@@ -181,8 +181,8 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<NccPermissionDetails>(b => {
                 b.ToTable("Ncc_Permission_Details");
                 b.HasOne(w => w.Permission).WithMany(u=>u.PermissionDetails).HasForeignKey(y=>y.PermissionId);
-                b.HasOne(w => w.ExtraDeniedUser).WithMany(x=>x.ExtraDenies).HasForeignKey(y=>y.ExtraDeniedUserId);
-                b.HasOne(w => w.ExtraPermissionUser).WithMany(x => x.ExtraPermissions).HasForeignKey(y => y.ExtraPermissionUserId);
+                //b.HasOne(w => w.ExtraDeniedUser).WithMany(x=>x.ExtraDenies).HasForeignKey(y=>y.ExtraDeniedUserId);
+                //b.HasOne(w => w.ExtraPermissionUser).WithMany(x => x.ExtraPermissions).HasForeignKey(y => y.ExtraPermissionUserId);
             });
 
             modelBuilder.Entity<NccUserPermission>(b => {

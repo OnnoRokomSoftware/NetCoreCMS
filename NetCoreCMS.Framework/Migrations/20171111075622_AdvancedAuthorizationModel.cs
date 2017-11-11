@@ -5,13 +5,10 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Migrations
 {
-    public partial class advanced_authorization_models : Migration
+    public partial class AdvancedAuthorizationModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Ncc_User_Authorization");
-
             migrationBuilder.CreateTable(
                 name: "Ncc_Permission",
                 columns: table => new
@@ -35,6 +32,31 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Ncc_Schedule_Task_History",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreateBy = table.Column<long>(type: "bigint", nullable: false),
+                    CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    Data = table.Column<string>(type: "longtext", nullable: true),
+                    Metadata = table.Column<string>(type: "longtext", nullable: true),
+                    ModificationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    ModifyBy = table.Column<long>(type: "bigint", nullable: false),
+                    Name = table.Column<string>(type: "longtext", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    TaskCreator = table.Column<string>(type: "longtext", nullable: true),
+                    TaskId = table.Column<string>(type: "longtext", nullable: true),
+                    TaskOf = table.Column<string>(type: "longtext", nullable: true),
+                    TaskType = table.Column<string>(type: "longtext", nullable: true),
+                    VersionNumber = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Ncc_Schedule_Task_History", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ncc_Permission_Details",
                 columns: table => new
                 {
@@ -51,6 +73,8 @@ namespace NetCoreCMS.Framework.Migrations
                     ModifyBy = table.Column<long>(type: "bigint", nullable: false),
                     ModuleId = table.Column<string>(type: "longtext", nullable: true),
                     Name = table.Column<string>(type: "longtext", nullable: true),
+                    NccUserId = table.Column<long>(type: "bigint", nullable: true),
+                    NccUserId1 = table.Column<long>(type: "bigint", nullable: true),
                     PermissionId = table.Column<long>(type: "bigint", nullable: false),
                     Requirements = table.Column<string>(type: "longtext", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
@@ -60,17 +84,17 @@ namespace NetCoreCMS.Framework.Migrations
                 {
                     table.PrimaryKey("PK_Ncc_Permission_Details", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ncc_Permission_Details_Ncc_User_ExtraDeniedUserId",
-                        column: x => x.ExtraDeniedUserId,
+                        name: "FK_Ncc_Permission_Details_Ncc_User_NccUserId",
+                        column: x => x.NccUserId,
                         principalTable: "Ncc_User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Ncc_Permission_Details_Ncc_User_ExtraPermissionUserId",
-                        column: x => x.ExtraPermissionUserId,
+                        name: "FK_Ncc_Permission_Details_Ncc_User_NccUserId1",
+                        column: x => x.NccUserId1,
                         principalTable: "Ncc_User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Ncc_Permission_Details_Ncc_Permission_PermissionId",
                         column: x => x.PermissionId,
@@ -104,14 +128,14 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_Permission_Details_ExtraDeniedUserId",
+                name: "IX_Ncc_Permission_Details_NccUserId",
                 table: "Ncc_Permission_Details",
-                column: "ExtraDeniedUserId");
+                column: "NccUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_Permission_Details_ExtraPermissionUserId",
+                name: "IX_Ncc_Permission_Details_NccUserId1",
                 table: "Ncc_Permission_Details",
-                column: "ExtraPermissionUserId");
+                column: "NccUserId1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ncc_Permission_Details_PermissionId",
@@ -130,47 +154,13 @@ namespace NetCoreCMS.Framework.Migrations
                 name: "Ncc_Permission_Details");
 
             migrationBuilder.DropTable(
+                name: "Ncc_Schedule_Task_History");
+
+            migrationBuilder.DropTable(
                 name: "Ncc_User_Permission");
 
             migrationBuilder.DropTable(
                 name: "Ncc_Permission");
-
-            migrationBuilder.CreateTable(
-                name: "Ncc_User_Authorization",
-                columns: table => new
-                {
-                    Id = table.Column<long>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Action = table.Column<string>(nullable: true),
-                    Controller = table.Column<string>(nullable: true),
-                    CreateBy = table.Column<long>(nullable: false),
-                    CreationDate = table.Column<DateTime>(nullable: false),
-                    Metadata = table.Column<string>(nullable: true),
-                    ModificationDate = table.Column<DateTime>(nullable: false),
-                    ModifyBy = table.Column<long>(nullable: false),
-                    ModuleId = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    RequirementName = table.Column<string>(nullable: true),
-                    RequirementValue = table.Column<string>(nullable: true),
-                    Status = table.Column<int>(nullable: false),
-                    UserId = table.Column<long>(nullable: true),
-                    VersionNumber = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Ncc_User_Authorization", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Ncc_User_Authorization_Ncc_User_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Ncc_User",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Ncc_User_Authorization_UserId",
-                table: "Ncc_User_Authorization",
-                column: "UserId");
         }
     }
 }

@@ -18,8 +18,8 @@ namespace NetCoreCMS.Framework.Core.Models
     public class NccPermissionDetails : BaseModel<long>
     {
         public NccPermission Permission { get; set; }
-        public NccUser ExtraPermissionUser { get; set; }
-        public NccUser ExtraDeniedUser { get; set; }
+        //public virtual NccUser ExtraPermissionUser { get; set; }
+        //public virtual NccUser ExtraDeniedUser { get; set; }
 
         public string ModuleId { get; set; }
         public string Controller { get; set; }

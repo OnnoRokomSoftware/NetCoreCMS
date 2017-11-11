@@ -22,5 +22,11 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Description { get; set; }
         public virtual List<NccUserPermission> Users { get; set; }
         public virtual List<NccPermissionDetails> PermissionDetails { get; set; }
+
+        public NccPermission()
+        {
+            Users = new List<NccUserPermission>();
+            PermissionDetails = new List<NccPermissionDetails>();
+        }
     }
 }
