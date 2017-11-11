@@ -73,6 +73,42 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             return tempDbSet.FirstOrDefault();
         }
 
+        public EntityT Get(string name, bool isAsNoTracking = false, List<string> includeRelationalProperties = null)
+        {
+            IQueryable<EntityT> tempDbSet = DbSet;
+
+            if (includeRelationalProperties != null)
+            {
+                foreach (var item in includeRelationalProperties)
+                {
+                    tempDbSet = tempDbSet.Include(item);
+                }
+            }
+
+            if (isAsNoTracking)
+                tempDbSet = tempDbSet.AsNoTracking().Where(x => x.Name.Equals(name));
+            else
+                tempDbSet = tempDbSet.Where(x => x.Name.Equals(name));
+
+            return tempDbSet.FirstOrDefault();
+        }
+
+        public List<EntityT> Load(string name, List<string> includeRelationalProperties = null)
+        {
+            IQueryable<EntityT> tempDbSet = DbSet;
+
+            if (includeRelationalProperties != null)
+            {
+                foreach (var item in includeRelationalProperties)
+                {
+                    tempDbSet = tempDbSet.Include(item);
+                }
+            }
+            
+            tempDbSet = tempDbSet.Where(x => x.Name.Contains(name));
+            return tempDbSet.ToList();
+        }
+
         public List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeRelationalProperties = null)
         {
             IQueryable<EntityT> tempDbSet = DbSet.Where(x => x.Status != EntityStatus.Deleted);

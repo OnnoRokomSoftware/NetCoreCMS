@@ -76,6 +76,7 @@ namespace NetCoreCMS.Framework.Migrations
                     NccUserId = table.Column<long>(type: "bigint", nullable: true),
                     NccUserId1 = table.Column<long>(type: "bigint", nullable: true),
                     PermissionId = table.Column<long>(type: "bigint", nullable: false),
+                    Order = table.Column<int>(type:"int", nullable: false, defaultValue:0),
                     Requirements = table.Column<string>(type: "longtext", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     VersionNumber = table.Column<int>(type: "int", nullable: false)

@@ -550,6 +550,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<long>("PermissionId");
 
+                    b.Property<int>("Order");
+
                     b.Property<string>("Requirements");
 
                     b.Property<int>("Status");

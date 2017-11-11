@@ -16,6 +16,7 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.IoC;
+using NetCoreCMS.Framework.Core.Exceptions;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -33,12 +34,12 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccPermission Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId, isAsNoTracking);
+            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "Users", "PermissionDetails" });
         } 
 
         public List<NccPermission> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "Users", "PermissionDetails" });
         } 
 
         public NccPermission Save(NccPermission entity)
@@ -99,25 +100,52 @@ namespace NetCoreCMS.Framework.Core.Services
             copyTo.Description = copyFrom.Description;
         }
 
-        public void SaveOrUpdate(NccPermission permission)
+        public (bool,string) SaveOrUpdate(NccPermission permission, List<long> removePermissionDetailsIdList)
         {
-            using (var txn = _entityRepository.BeginTransaction()) {
-
-                if (permission.Id > 0)
+            try
+            {
+                DoBeforeSave(permission);
+                using (var txn = _entityRepository.BeginTransaction())
                 {
-                    var oldPermission = _entityRepository.Get(permission.Id);
-                    if (oldPermission != null)
+                    if (permission.Id > 0)
                     {
-                        
+                        _entityRepository.Edit(permission);
                     }
-                }
-                else
-                {
-                    _entityRepository.Add(permission);
-                }
+                    else
+                    {
+                        _entityRepository.Add(permission);
+                    }
 
-                txn.Commit();
-                _entityRepository.SaveChange();
+                    if (removePermissionDetailsIdList.Count > 0)
+                    {
+                        var count = _entityRepository.RemoveById(removePermissionDetailsIdList);
+                        if (count != removePermissionDetailsIdList.Count) {
+                            txn.Rollback();
+                            return (false, "Could not remove all disselected menus.");
+                        }
+                    }
+
+                    txn.Commit();
+                    _entityRepository.SaveChange();
+                    return (true, "Save successful");
+                }
+            }
+            catch (Exception ex)
+            {
+
+                return (false, ex.Message);
+            }
+        }
+
+        private void DoBeforeSave(NccPermission permission)
+        {
+            if (permission.Id == 0)
+            {
+                var existingPermission = _entityRepository.Get(permission.Name);
+                if (existingPermission != null)
+                {
+                    throw new DuplicateRecordException("Name already exist. Please use different name.");
+                }
             }
         }
     }

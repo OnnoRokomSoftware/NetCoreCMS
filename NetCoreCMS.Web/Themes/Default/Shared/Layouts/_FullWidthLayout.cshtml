@@ -18,33 +18,66 @@
         @RenderSection("Styles", required: false)
     </head>
     <body id="body">
-        <!-- Container for showing global messages. -->
+        <!--MessageContainer-->
+        <div class="row">
+            <div id="messageContainer">
+                @if (TempData.ContainsKey("SuccessMessage") || ViewBag.SuccessMessage != null)
+                {
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["SuccessMessage"])@Html.Raw(ViewBag.SuccessMessage)
+                    </div>
+                }
+                @if (TempData.ContainsKey("InfoMessage") || ViewBag.InfoMessage != null)
+                {
+                    <div class="alert alert-info alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["InfoMessage"])@Html.Raw(ViewBag.InfoMessage)
+                    </div>
+                }
+                @if (TempData.ContainsKey("WarningMessage") || ViewBag.WarningMessage != null)
+                {
+                    <div class="alert alert-warning alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["WarningMessage"]) @Html.Raw(ViewBag.WarningMessage)
+                    </div>
+                }
+                @if (TempData.ContainsKey("ErrorMessage") || ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                        @Html.Raw(TempData["ErrorMessage"])@Html.Raw(ViewBag.ErrorMessage)
+                    </div>
+                }
+            </div>
+        </div>
+        <!--GlobalMessages-->
         <div class="row">
             @NccRenderGlobalMessages()
         </div>
-        <!-- Loading -->
+        <!--Loading-->
         @NccRenderLoadingMaskContainer()
-        <!-- Zone TOP Start-->
-        <!-- Header -->
+        <!--ZoneTOPStart-->
+        <!--Header-->
         @NccRenderHeader()
 
-        <!-- Navbar -->
+        <!--Navbar-->
         @NccRenderNavigation()
-        <!-- Zone TOP End-->
-        <!--  Main Body Start -->
+        <!--ZoneTOPEnd-->
+        <!--MainBodyStart-->
         <div class="container mainBody">
-            <!-- Main content Start -->
+            <!--MaincontentStart-->
             <div class="col-md-@BodyWidth">
-                <!-- Featured -->
+                <!--Featured-->
                 @NccRenderFeaturedSection()
                 @NccRenderBody()
             </div>
-            <!-- Main content End --> 
+            <!--MainContentEnd--> 
         </div>
-        <!--  Main Body End -->
-        <!--  Footer Start -->
+        <!--MainBodyEnd-->
+        <!--FooterStart-->
         @NccRenderFooter()
-        <!--  Footer End -->
+        <!--FooterEnd-->
 
         @NccRenderFooterCss()
         @NccRenderFooterScripts()

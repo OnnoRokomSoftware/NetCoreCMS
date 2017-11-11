@@ -24,6 +24,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string ModuleId { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
+        public int Order { get; set; }
         public string Requirements { get; set; }
 
         public long ExtraDeniedUserId { get; set; }

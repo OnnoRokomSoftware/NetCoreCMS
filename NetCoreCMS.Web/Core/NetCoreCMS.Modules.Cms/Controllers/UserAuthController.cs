@@ -13,6 +13,7 @@ using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System;
 
 namespace NetCoreCMS.AdvancedPermission.Controllers
 {
@@ -53,11 +54,13 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
 
                 var pvm = new PermissionViewModel()
                 {
+                    Id = item.Id,
                     Group = item.Group,
                     Name = item.Name,
-                    ModuleCount = $"Modules ({moduleCount})",
-                    MenuCount = $"Menus ({menuCount})",
-                    UserCount = $"Users ({userCount})"
+                    Description = item.Description,
+                    ModuleCount = moduleCount,
+                    MenuCount = menuCount,
+                    UserCount = userCount
                 };
 
                 permissionViewModels.Add(pvm);
@@ -67,12 +70,25 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
         }
 
         public ActionResult CreateEditPermission(long permissionId = 0)
-        {           
+        {
+            var model = new PermissionViewModel();
             var activeModules = GlobalContext.GetActiveModules();
-            ViewBag.Modules = activeModules;            
-            return View(new PermissionViewModel());
-        }
+            ViewBag.Modules = activeModules;
 
+            if (permissionId > 0) {
+                var permission = _nccPermissionService.Get(permissionId);
+                if (permission != null)
+                {
+                    model = GetPermissionViewModel(permission);
+                }
+                else
+                {
+                    ViewBag.InfoMessage = "Permission not found.";
+                }
+            }
+            return View(model);
+        }
+        
         [HttpPost]
         public ActionResult CreateEditPermission(PermissionViewModel model)
         {
@@ -82,6 +98,9 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             permission.Description = model.Description;
             permission.Group = model.Group;
             permission.Name = model.Name;
+            permission.Id = model.Id;
+
+            var removePermissionDetailsIdList = new List<long>();
 
             foreach (var item in model.Modules)
             {
@@ -89,21 +108,96 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
                 {
                     foreach (var mi in am.MenuItems)
                     {
-                        var permissionDetails = new NccPermissionDetails()
+                        if (mi.IsChecked)
                         {
-                            ModuleId = item.ModuleId,
-                            Name = am.Name,
-                            Action = mi.Action,
-                            Controller = mi.Controller
-                        };
-                        permission.PermissionDetails.Add(permissionDetails);
+                            var permissionDetails = new NccPermissionDetails()
+                            {
+                                Id = mi.Id,
+                                ModuleId = item.ModuleId,
+                                Name = am.Name,
+                                Action = mi.Action,
+                                Controller = mi.Controller
+                            };
+                            permission.PermissionDetails.Add(permissionDetails);
+                        }
+                        else
+                        {
+                            if (mi.Id > 0)
+                            {
+                                removePermissionDetailsIdList.Add(mi.Id);
+                            }
+                        }
+                    }
+                }
+
+                foreach (var sm in item.SiteMenus)
+                {
+                    foreach (var mi in sm.MenuItems)
+                    {
+                        if (mi.IsChecked)
+                        {
+                            var permissionDetails = new NccPermissionDetails()
+                            {
+                                Id = mi.Id,
+                                ModuleId = item.ModuleId,
+                                Name = sm.Name,
+                                Action = mi.Action,
+                                Controller = mi.Controller
+                            };
+                            permission.PermissionDetails.Add(permissionDetails);
+                        }
+                        else
+                        {
+                            if (mi.Id > 0)
+                            {
+                                removePermissionDetailsIdList.Add(mi.Id);
+                            }
+                        }
                     }
                 }
             }
 
-            _nccPermissionService.SaveOrUpdate(permission);
+            var (res,message) = _nccPermissionService.SaveOrUpdate(permission, removePermissionDetailsIdList);
 
+            if (res)
+            {
+                ViewBag.SuccessMessage = message;
+                UpdateModelData(model, permission);
+            }
+            else
+            {
+                ViewBag.ErrorMessage = message;
+            }
+            
             return View(model);
+        }
+
+        private void UpdateModelData(PermissionViewModel model, NccPermission permission)
+        {
+            model.Id = permission.Id;
+            model.MenuCount = permission.PermissionDetails.GroupBy(x => x.Controller).Count();
+            model.ModuleCount = permission.PermissionDetails.GroupBy(x => x.ModuleId).Count();
+            model.UserCount = permission.Users.Count;
+
+            foreach (var module in model.Modules)
+            {
+                foreach (var menu in module.AdminMenus)
+                {
+                    foreach (var item in menu.MenuItems.Where(x=>x.IsChecked).ToList())
+                    {
+                        var menuItem = permission.PermissionDetails.Where(
+                            x => x.ModuleId == module.ModuleId 
+                            && x.Action == item.Action 
+                            && x.Controller == item.Controller
+                        ).FirstOrDefault();
+
+                        if (menuItem != null)
+                        {
+                            item.Id = menuItem.Id;
+                        }
+                    }
+                }
+            }            
         }
 
         [AdminMenuItem(Name = "User Permissions", Url = "/UserAuth/UserPermission", Order = 1 )]
@@ -151,6 +245,12 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             ViewBag.Modules = activeModules;
 
             return View();
+        }
+
+        private PermissionViewModel GetPermissionViewModel(NccPermission permission)
+        {
+            var pvm = new PermissionViewModel(permission);
+            return pvm;
         }
     }
 }

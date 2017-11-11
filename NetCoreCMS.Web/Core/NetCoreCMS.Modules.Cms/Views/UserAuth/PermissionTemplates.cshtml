@@ -5,5 +5,25 @@
     ViewData["Title"] = "Permission Templates";
     ViewData["PageTitle"] = "Permission Template.";
     Layout = Constants.AdminLayoutName;
+    var index = 1;
 }
 <a href="/UserAuth/CreateEditPermission" class="btn btn-primary">Create New</a>
+<table class="table table-striped">
+    <tr>
+        <th>SN:</th><th>Name</th><th>Group</th><th>Description</th><th>Contains</th><th>Users</th><th>Action</th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@index</td>
+            <td>@item.Name</td>
+            <td>@item.Group</td>
+            <td>@item.Description</td>
+            <td>Module(@item.ModuleCount), Menu(@item.MenuCount)</td>
+            <td>User(@item.UserCount)</td>
+            <td><a href="/UserAuth/CreateEditPermission/?permissionId=@item.Id">Edit </a> | <a href="/UserAuth/DeletePermission/?permissionId=@item.Id">Delete</a></td>
+        </tr>
+
+        index++;
+    }
+</table>

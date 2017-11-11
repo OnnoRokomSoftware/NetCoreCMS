@@ -23,6 +23,15 @@ namespace NetCoreCMS.Framework.Core.Repository
     {
         public NccPermissionRepository(NccDbContext context) : base(context)
         {
-        } 
+        }
+
+        public int RemoveById(List<long> removePermissionDetailsIdList)
+        {
+            var idList = string.Join(",", removePermissionDetailsIdList);
+            var count = ExecuteSqlCommand(new NccDbQueryText() {
+                MySql_QueryText = $"delete from Ncc_Permission_Details where Id in ({idList})"
+            });
+            return count;
+        }
     }
 }
