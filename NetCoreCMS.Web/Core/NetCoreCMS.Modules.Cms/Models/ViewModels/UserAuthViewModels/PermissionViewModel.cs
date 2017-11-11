@@ -11,6 +11,8 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
     {
         public string Name { get; set; }
         public string Group { get; set; }
+        public string Description { get; set; }
+
         public string ModuleCount { get; set; }
         public string MenuCount { get; set; }
         public string UserCount { get; set; }
@@ -23,24 +25,38 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
             foreach (var item in GlobalContext.GetActiveModules())
             {
                 var module = new ModuleViewModel();
-                foreach (var adminMenu in item.Menus.Where(x=>x.Type == Framework.Core.Models.ViewModels.Menu.MenuType.Admin).ToList())
+
+                var menus = item.Menus;
+                var adminMenus = menus
+                    .Where(x => x.Type == Menu.MenuType.Admin)
+                    .GroupBy(y => y.DisplayName,
+                        (key, g) => new { MenuName = key, Menu = g.FirstOrDefault(), Items = g.SelectMany(x => x.MenuItems).ToList() }
+                    ).ToList();
+
+                var siteMenus = menus.Where(x => x.Type == Menu.MenuType.WebSite)
+                    .GroupBy(y => y.DisplayName,
+                        (key, g) => new { MenuName = key, Menu = g.FirstOrDefault(), Items = g.SelectMany(z => z.MenuItems).ToList() }
+                    ).ToList();
+
+                foreach (var adminMenu in adminMenus)
                 {
                     var menu = new MenuViewModel() {
                         Type = "Admin",
-                        MenuItems = GetMenuItems(adminMenu.MenuItems),
+                        Name = adminMenu.MenuName,
+                        Order = adminMenu.Menu.Order,                        
+                        MenuItems = GetMenuItems(adminMenu.Items),
                     };
                     module.AdminMenus.Add(menu);
                 }
 
-                foreach (var webSiteMenu in item.Menus.Where(x => x.Type == Framework.Core.Models.ViewModels.Menu.MenuType.WebSite).ToList())
+                foreach (var webSiteMenu in siteMenus)
                 {
                     var menu = new MenuViewModel()
                     {
                         Type = "WebSite",
-                        Name = webSiteMenu.DisplayName,
-                        Order = webSiteMenu.Order,
-                        
-                        MenuItems = GetMenuItems(webSiteMenu.MenuItems),
+                        Name = webSiteMenu.MenuName,
+                        Order = webSiteMenu.Menu.Order,                        
+                        MenuItems = GetMenuItems(webSiteMenu.Items),
                     };
                     module.SiteMenus.Add(menu);
                 }
@@ -86,8 +102,12 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
 
         public ModuleViewModel()
         {
+            Name = "";
+            ModuleId = "";
+            IsChecked = false;
+
             AdminMenus = new List<MenuViewModel>();
-            SiteMenus = new List<MenuViewModel>();
+            SiteMenus = new List<MenuViewModel>();            
         }
     }
 
@@ -105,6 +125,11 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
         public MenuViewModel()
         {
             MenuItems = new List<MenuItemViewModel>();
+            Name = "";
+            Url = "";
+            Type = "";
+            IsChecked = false;
+            Order = 0;
         }
     }
 
@@ -116,5 +141,14 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
         public string Action { get; set; }
         public bool IsChecked { get; set; }
         public int Order { get; set; }
+
+        public MenuItemViewModel()
+        {
+            Name = "";
+            Controller = "";
+            Action = "";
+            IsChecked = false;
+            Order = 0;
+        }
     }
 }

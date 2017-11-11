@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels;
@@ -61,15 +62,14 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
 
                 permissionViewModels.Add(pvm);
             }
-
+            
             return View(permissionViewModels);
         }
 
         public ActionResult CreateEditPermission(long permissionId = 0)
         {           
             var activeModules = GlobalContext.GetActiveModules();
-            ViewBag.Modules = activeModules;
-
+            ViewBag.Modules = activeModules;            
             return View(new PermissionViewModel());
         }
 
@@ -78,6 +78,30 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
         {
             var activeModules = GlobalContext.GetActiveModules();
             ViewBag.Modules = activeModules;
+            var permission = new NccPermission();
+            permission.Description = model.Description;
+            permission.Group = model.Group;
+            permission.Name = model.Name;
+
+            foreach (var item in model.Modules)
+            {
+                foreach (var am in item.AdminMenus)
+                {
+                    foreach (var mi in am.MenuItems)
+                    {
+                        var permissionDetails = new NccPermissionDetails()
+                        {
+                            ModuleId = item.ModuleId,
+                            Name = am.Name,
+                            Action = mi.Action,
+                            Controller = mi.Controller
+                        };
+                        permission.PermissionDetails.Add(permissionDetails);
+                    }
+                }
+            }
+
+            _nccPermissionService.SaveOrUpdate(permission);
 
             return View(model);
         }

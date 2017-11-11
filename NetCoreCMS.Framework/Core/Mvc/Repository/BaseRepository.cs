@@ -107,7 +107,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
         
         public IDbContextTransaction BeginTransaction()
         {
-            return Context.Database.BeginTransaction();
+            return Context.Database.BeginTransaction();            
         }
 
         public void SaveChange()

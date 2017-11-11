@@ -98,6 +98,27 @@ namespace NetCoreCMS.Framework.Core.Services
             copyTo.Group = copyFrom.Group;
             copyTo.Description = copyFrom.Description;
         }
-        
+
+        public void SaveOrUpdate(NccPermission permission)
+        {
+            using (var txn = _entityRepository.BeginTransaction()) {
+
+                if (permission.Id > 0)
+                {
+                    var oldPermission = _entityRepository.Get(permission.Id);
+                    if (oldPermission != null)
+                    {
+                        
+                    }
+                }
+                else
+                {
+                    _entityRepository.Add(permission);
+                }
+
+                txn.Commit();
+                _entityRepository.SaveChange();
+            }
+        }
     }
 }
