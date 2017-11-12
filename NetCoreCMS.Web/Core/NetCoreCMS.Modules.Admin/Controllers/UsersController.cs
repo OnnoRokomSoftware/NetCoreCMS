@@ -63,7 +63,61 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             _startupService = startupService;
         }
 
-        [AdminMenuItem(Name = "Manage Users", Url ="/Users/Index", Order = 1, IconCls = "fa-user")]
+        [AdminMenuItem(Name = "New User", Url = "/Users/CreateEdit", Order = 1, IconCls = "fa-user-plus")]
+        public ActionResult CreateEdit(string userName = "")
+        {
+            var user = new UserViewModel();
+            if (!string.IsNullOrEmpty(userName))
+            {
+                NccUser nccUser = _userManager.FindByNameAsync(user.UserName).Result;
+            }
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult CreateEditPost(UserViewModel user, string SendEmail)
+        {
+            if (user.Id > 0 && !string.IsNullOrEmpty(user.Email) && !string.IsNullOrEmpty(user.FullName) && !string.IsNullOrEmpty(user.Mobile))
+            {
+                var oldUser = _userManager.FindByIdAsync(user.Id.ToString()).Result;
+                oldUser.FullName = user.FullName;
+                oldUser.Email = user.Email;
+                oldUser.Mobile = user.Mobile;
+                var res = _userManager.UpdateAsync(oldUser).Result;
+                if (res.Succeeded)
+                    TempData["SuccessMessage"] = "User update successful.";
+                else
+                    TempData["ErrorMessage"] = "User update failed.";
+                return RedirectToAction("Index");
+            }
+            else if (ModelState.IsValid)
+            {
+
+                if (user.Password == user.ConfirmPassword)
+                {
+                    var nccUser = new NccUser() { Email = user.Email, FullName = user.FullName, UserName = user.UserName, Mobile = user.Mobile, Status = EntityStatus.Active };
+                    var result = _userManager.CreateAsync(nccUser, user.Password).Result;
+                    var roleResult = _userManager.AddToRoleAsync(nccUser, user.Role).Result;
+
+                    if (result.Succeeded && roleResult.Succeeded)
+                    {
+                        TempData["SuccessMessage"] = "User crate successful.";
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "User create failed.";
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Password does not match.";
+                }
+            }
+            return View("CreateEdit", user);
+        }
+
+        [AdminMenuItem(Name = "Manage Users", Url ="/Users/Index", Order = 2, IconCls = "fa-user")]
         public ActionResult Index()
         {
             var users = GetUsersViewModelList("");            
@@ -110,60 +164,6 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             uvm.Role = string.Join(",", user.Roles.Select(x => x.Role.Name).ToList());
             uvm.UserName = user.UserName;
             return uvm;
-        }
-
-        [AdminMenuItem(Name = "New User", Url = "/Users/CreateEdit", Order = 3, IconCls = "fa-user-plus")]
-        public ActionResult CreateEdit(string userName = "")
-        {
-            var user = new UserViewModel();
-            if (!string.IsNullOrEmpty(userName))
-            {
-                NccUser nccUser = _userManager.FindByNameAsync(user.UserName).Result;
-            }   
-            return View(user);
-        }
-
-        [HttpPost]
-        public ActionResult CreateEditPost(UserViewModel user, string SendEmail)
-        {
-            if (user.Id > 0 && !string.IsNullOrEmpty(user.Email) && !string.IsNullOrEmpty(user.FullName) && !string.IsNullOrEmpty(user.Mobile))
-            {
-                var oldUser = _userManager.FindByIdAsync(user.Id.ToString()).Result;
-                oldUser.FullName = user.FullName;
-                oldUser.Email = user.Email;
-                oldUser.Mobile = user.Mobile;
-                var res = _userManager.UpdateAsync(oldUser).Result;
-                if(res.Succeeded)
-                    TempData["SuccessMessage"] = "User update successful.";
-                else
-                    TempData["ErrorMessage"] = "User update failed.";
-                return RedirectToAction("Index");
-            }
-            else if (ModelState.IsValid)
-            {
-                
-                if(user.Password == user.ConfirmPassword)
-                {
-                    var nccUser = new NccUser() { Email = user.Email, FullName = user.FullName, UserName = user.UserName, Mobile = user.Mobile, Status = EntityStatus.Active };
-                    var result =  _userManager.CreateAsync(nccUser,user.Password).Result;
-                    var roleResult = _userManager.AddToRoleAsync(nccUser, user.Role).Result;
-                    
-                    if (result.Succeeded && roleResult.Succeeded)
-                    {
-                        TempData["SuccessMessage"] = "User crate successful.";
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "User create failed.";
-                    }
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Password does not match.";
-                }
-            }
-            return View("CreateEdit",user);
         }
         
         [HttpPost]

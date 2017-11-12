@@ -7,7 +7,14 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Core.Mvc.Views;
+using System.Security.Claims;
+
 namespace NetCoreCMS.Framework.Core.Events.Themes
 {
     public class ThemeSection
@@ -17,7 +24,13 @@ namespace NetCoreCMS.Framework.Core.Events.Themes
         public object Model { get; set; }
         public object ExtraData { get; set; }
         public string ViewFileName { get; set; }
-        public string Language { get; set; }
+        public string Language { get; set; }        
+        public dynamic ViewBag { get; set; }
+        public string Path { get; set; }
+        public HttpContext HttpContext { get; set; }
+        public ViewContext ViewContext { get; set; }
+        public ClaimsPrincipal User { get; set; }
+        public ITempDataDictionary TempData { get; set; }
 
         public static class Sections
         {

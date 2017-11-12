@@ -375,7 +375,13 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Content = content,
                 Model = Model,
                 ViewFileName = viewFile,
-                Language = CurrentLanguage
+                Language = CurrentLanguage,
+                ViewBag  = ViewBag,
+                ViewContext = ViewContext,
+                HttpContext = Context,
+                TempData = TempData,
+                User = User,
+                Path = Path
             };
 
             try

@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -7,18 +6,16 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Core.Mvc.Extensions;
+
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels;
+using NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
-namespace NetCoreCMS.AdvancedPermission.Controllers
+namespace NetCoreCMS.Modules.Admin.Controllers
 {
-    [AdminMenu(Name = "Advanced Security", IconCls = "fa fa-users", Order = 100)]
-    [Authorize(Roles ="SuperAdmin,Administrator")]
+    [AdminMenu(Name = "Users", IconCls = "fa fa-users", Order = 100)]    
     public class UserAuthController : NccController
     {
         private readonly UserManager<NccUser> _userManager;
@@ -40,8 +37,8 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             _logger = loggerFactory.CreateLogger<UserAuthController>();
         }
 
-        [AdminMenuItem(Name = "Permission Templates", Url = "/UserAuth/PermissionTemplates", Order = 1)]
-        public ActionResult PermissionTemplates()
+        [AdminMenuItem(Name = "Manage User Roles", Url = "/UserAuth/ManageUserRoles", Order = 4, SubActions = new string[] { "/UserAuth/CreateEditRoles", "/UserAuth/ExtraPermissions" })]
+        public ActionResult ManageUserRoles()
         {
             var permissions = _nccPermissionService.LoadAll();
             var permissionViewModels = new List<PermissionViewModel>();
@@ -69,7 +66,7 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             return View(permissionViewModels);
         }
 
-        public ActionResult CreateEditPermission(long permissionId = 0)
+        public ActionResult CreateEditRoles(long permissionId = 0)
         {
             var model = new PermissionViewModel();
             var activeModules = GlobalContext.GetActiveModules();
@@ -83,14 +80,14 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
                 }
                 else
                 {
-                    ViewBag.InfoMessage = "Permission not found.";
+                    ViewBag.InfoMessage = "Role not found.";
                 }
             }
             return View(model);
         }
         
         [HttpPost]
-        public ActionResult CreateEditPermission(PermissionViewModel model)
+        public ActionResult CreateEditRoles(PermissionViewModel model)
         {
             var activeModules = GlobalContext.GetActiveModules();
             ViewBag.Modules = activeModules;
@@ -171,37 +168,9 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             
             return View(model);
         }
-
-        private void UpdateModelData(PermissionViewModel model, NccPermission permission)
-        {
-            model.Id = permission.Id;
-            model.MenuCount = permission.PermissionDetails.GroupBy(x => x.Controller).Count();
-            model.ModuleCount = permission.PermissionDetails.GroupBy(x => x.ModuleId).Count();
-            model.UserCount = permission.Users.Count;
-
-            foreach (var module in model.Modules)
-            {
-                foreach (var menu in module.AdminMenus)
-                {
-                    foreach (var item in menu.MenuItems.Where(x=>x.IsChecked).ToList())
-                    {
-                        var menuItem = permission.PermissionDetails.Where(
-                            x => x.ModuleId == module.ModuleId 
-                            && x.Action == item.Action 
-                            && x.Controller == item.Controller
-                        ).FirstOrDefault();
-
-                        if (menuItem != null)
-                        {
-                            item.Id = menuItem.Id;
-                        }
-                    }
-                }
-            }            
-        }
-
-        [AdminMenuItem(Name = "User Permissions", Url = "/UserAuth/UserPermission", Order = 1 )]
-        public ActionResult UserPermission(long roleId = 0)
+        
+        //[AdminMenuItem(Name = "Extra Permissions", Url = "/UserAuth/ExtraPermissions", Order = 5 )]
+        public ActionResult ExtraPermissions(long roleId = 0)
         {
             var roles = _roleManager.Roles.ToList();
             var roleUsers = new List<NccUser>();
@@ -224,7 +193,7 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
             return View();
         }
 
-        public ActionResult ChangeUserPermission(long roleId = 0)
+        public ActionResult UserPermissions(long roleId = 0)
         {
             var roles = _roleManager.Roles.ToList();
             var roleUsers = new List<NccUser>();
@@ -251,6 +220,34 @@ namespace NetCoreCMS.AdvancedPermission.Controllers
         {
             var pvm = new PermissionViewModel(permission);
             return pvm;
+        }
+
+        private void UpdateModelData(PermissionViewModel model, NccPermission permission)
+        {
+            model.Id = permission.Id;
+            model.MenuCount = permission.PermissionDetails.GroupBy(x => x.Controller).Count();
+            model.ModuleCount = permission.PermissionDetails.GroupBy(x => x.ModuleId).Count();
+            model.UserCount = permission.Users.Count;
+
+            foreach (var module in model.Modules)
+            {
+                foreach (var menu in module.AdminMenus)
+                {
+                    foreach (var item in menu.MenuItems.Where(x => x.IsChecked).ToList())
+                    {
+                        var menuItem = permission.PermissionDetails.Where(
+                            x => x.ModuleId == module.ModuleId
+                            && x.Action == item.Action
+                            && x.Controller == item.Controller
+                        ).FirstOrDefault();
+
+                        if (menuItem != null)
+                        {
+                            item.Id = menuItem.Id;
+                        }
+                    }
+                }
+            }
         }
     }
 }

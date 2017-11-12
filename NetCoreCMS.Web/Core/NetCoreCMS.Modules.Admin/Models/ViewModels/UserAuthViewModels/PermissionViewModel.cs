@@ -6,7 +6,7 @@ using System.Text;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
 using NetCoreCMS.Framework.Core.Models;
 
-namespace NetCoreCMS.Modules.Cms.Models.ViewModels.UserAuthViewModels
+namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
 {
     public class PermissionViewModel
     {
