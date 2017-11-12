@@ -66,14 +66,14 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             return View(permissionViewModels);
         }
 
-        public ActionResult CreateEditRoles(long permissionId = 0)
+        public ActionResult CreateEditRoles(long roleId = 0)
         {
             var model = new PermissionViewModel();
             var activeModules = GlobalContext.GetActiveModules();
             ViewBag.Modules = activeModules;
 
-            if (permissionId > 0) {
-                var permission = _nccPermissionService.Get(permissionId);
+            if (roleId > 0) {
+                var permission = _nccPermissionService.Get(roleId);
                 if (permission != null)
                 {
                     model = GetPermissionViewModel(permission);

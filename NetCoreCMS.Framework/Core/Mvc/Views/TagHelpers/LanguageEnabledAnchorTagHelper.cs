@@ -50,13 +50,14 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
         {
             base.Process(context, output);
             TagHelperAttribute href;
+            var req = _httpContextAccessor.HttpContext.Request;
 
             if (GlobalContext.WebSite != null && GlobalContext.WebSite.IsMultiLangual)
             {
                 var lang = _nccLanguageDetector.GetCurrentLanguage();
                 if (context.AllAttributes["asp-action"] != null && context.AllAttributes["asp-controller"] != null)
                 {
-                    output.TagName = "a";                    
+                    output.TagName = "a";
                     output.Attributes.TryGetAttribute("href", out href);
 
                     if (href != null)
@@ -65,13 +66,17 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
                     }
 
                     var finalUrl = "/" + lang + "/" + Controller + "/" + Action;
-                    var req = _httpContextAccessor.HttpContext.Request;
-
                     var queryString = GetQueryString(context);
 
                     if (!string.IsNullOrEmpty(queryString))
                     {
                         finalUrl += "/?" + queryString;
+                    }
+
+                    if (href.Value.ToString().StartsWith("~/"))
+                    {
+                        finalUrl = href.Value.ToString().Substring(2);
+                        finalUrl = req.PathBase.Value.ToString() + finalUrl;
                     }
 
                     output.Attributes.Add(new TagHelperAttribute("href", finalUrl));
@@ -83,26 +88,54 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers
                         bool langFound = false;
                         foreach (var item in SupportedCultures.Cultures)
                         {
-                            if(Href.StartsWith("/"+item.TwoLetterISOLanguageName) || Href.StartsWith(item.TwoLetterISOLanguageName))
+                            if (Href.StartsWith("/" + item.TwoLetterISOLanguageName) || Href.StartsWith(item.TwoLetterISOLanguageName))
                             {
                                 langFound = true;
                                 break;
                             }
                         }
 
-                        if(langFound == false)
+                        if (langFound == false)
                         {
-                            if (!Href.StartsWith("/"))
+                            var finalUrl = Href;
+
+                            if (Href.StartsWith("~/"))
+                            {
+                                finalUrl = Href.Substring(1);
+                                finalUrl = req.PathBase.Value.ToString() + "/" + lang + finalUrl;
+                            }
+                            else if (Href.StartsWith("/") == false)
                             {
                                 Href = "/" + Href;
-                            }   
-                            output.Attributes.SetAttribute("href", "/" + lang + Href);
+                                finalUrl = req.PathBase.Value.ToString() + "/" + lang + Href;
+                                
+                            }
+                            else
+                            {
+                                finalUrl = "/" + lang + Href;
+                            }
+
+                            output.Attributes.SetAttribute("href", finalUrl);
                         }
                     }
                 }
             }
+            else
+            {
+                var finalUrl = Href;
+                if (string.IsNullOrEmpty(Href) == false)
+                {
+                    if (Href.StartsWith("~/"))
+                    {
+                        finalUrl = Href.Substring(2);
+                        finalUrl = req.PathBase.Value.ToString() + "/" + finalUrl;
+                        output.Attributes.SetAttribute("href", finalUrl);
+                    }                    
+                }
+            }
 
             output.Attributes.TryGetAttribute("href", out href);
+
             if (href == null)
             {
                 output.Attributes.Add(new TagHelperAttribute("href", Href??""));
