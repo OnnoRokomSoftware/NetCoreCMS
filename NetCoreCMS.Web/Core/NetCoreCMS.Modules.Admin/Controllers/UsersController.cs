@@ -7,8 +7,7 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
-
-
+ 
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Modules.Admin.Models.ViewModels;
@@ -27,6 +26,8 @@ using NetCoreCMS.Framework.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels;
 
 namespace NetCoreCMS.Modules.Admin.Controllers
 {
@@ -37,6 +38,10 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         UserManager<NccUser> _userManager;
         RoleManager<NccRole> _roleManager;
         SignInManager<NccUser> _signInManager;
+        NccPermissionService _nccPermissionService;
+        NccPermissionDetailsService _nccPermissionDetailsService;
+
+
         //IOptions<IdentityCookieOptions> _identityCookieOptions;
         IEmailSender _emailSender;
         ISmsSender _smsSender;
@@ -47,7 +52,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             UserManager<NccUser> userManager,
             RoleManager<NccRole> roleManager,
             SignInManager<NccUser> signInManager,
-            //IOptions<IdentityCookieOptions> identityCookieOptions,
+            NccPermissionService nccUserPermissionService,
+            NccPermissionDetailsService  nccPermissionDetailsService,
             IEmailSender emailSender,
             ISmsSender smsSender,
             NccStartupService startupService
@@ -57,7 +63,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
-            //_identityCookieOptions = identityCookieOptions;
+            _nccPermissionService = nccUserPermissionService;
+            _nccPermissionDetailsService = nccPermissionDetailsService;
             _emailSender = emailSender;
             _smsSender = smsSender;
             _startupService = startupService;
@@ -68,6 +75,9 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         {
             var activeModules = GlobalContext.GetActiveModules();
             ViewBag.Modules = activeModules;
+            var permissions = _nccPermissionService.LoadAll();
+            ViewBag.Roles = new SelectList(permissions, "Id", "Name");
+
             var user = new UserViewModel();
             if (!string.IsNullOrEmpty(userName))
             {
@@ -99,6 +109,27 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                 {
                     var nccUser = new NccUser() { Email = user.Email, FullName = user.FullName, UserName = user.UserName, Mobile = user.Mobile, Status = EntityStatus.Active };
                     var result = _userManager.CreateAsync(nccUser, user.Password).Result;
+
+                    var createdUser = _userManager.FindByNameAsync(user.UserName).Result;
+                    if(createdUser != null)
+                    {
+                        foreach (var item in user.Roles)
+                        {
+                            var permission = _nccPermissionService.Get(item);
+                            createdUser.Permissions.Add(new NccUserPermission() { Permission = permission, User = createdUser });                        
+                        }
+
+                        createdUser.ExtraPermissions = GetSelectedPermissionDetails(user.AllowModules,createdUser);                        
+                        createdUser.ExtraDenies = GetSelectedPermissionDetails(user.DenyModules, createdUser);
+
+                        var upResult = _userManager.UpdateAsync(createdUser).Result;
+                        if (upResult.Succeeded == false)
+                        {
+                            TempData["ErrorMessage"] = "User role assign failed.";
+                        }
+                    }
+                    
+                    /*
                     var roleResult = _userManager.AddToRoleAsync(nccUser, user.Role).Result;
 
                     if (result.Succeeded && roleResult.Succeeded)
@@ -110,6 +141,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                     {
                         TempData["ErrorMessage"] = "User create failed.";
                     }
+                    */
                 }
                 else
                 {
@@ -117,6 +149,57 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                 }
             }
             return View("CreateEdit", user);
+        }
+
+        private List<NccPermissionDetails> GetSelectedPermissionDetails(List<ModuleViewModel> modules, NccUser user)
+        { 
+            var permissionDetailsList = new List<NccPermissionDetails>();
+
+            foreach (var module in modules)
+            {
+                foreach (var adminMenu in module.AdminMenus)
+                {
+                    foreach (var item in adminMenu.MenuItems)
+                    {
+                        if (item.IsChecked)
+                        {
+                            var pd = new NccPermissionDetails()
+                            {
+                                Action = item.Action,
+                                Controller = item.Controller,
+                                ModuleId = module.ModuleId,
+                                Name = adminMenu.Name,                                
+                                Order = item.Order,
+                                User = user
+                            };
+                            permissionDetailsList.Add(pd);
+                        }
+                    }
+                }
+
+                foreach (var webSiteMenu in module.SiteMenus)
+                {
+                    foreach (var item in webSiteMenu.MenuItems)
+                    {
+                        if (item.IsChecked)
+                        {
+
+                            var pd = new NccPermissionDetails()
+                            {
+                                Action = item.Action,
+                                Controller = item.Controller,
+                                ModuleId = module.ModuleId,
+                                Name = webSiteMenu.Name,
+                                Order = item.Order,
+                                User = user
+                            };
+                            permissionDetailsList.Add(pd);
+                        }
+                    }
+                }
+            }
+            
+            return permissionDetailsList;
         }
 
         [AdminMenuItem(Name = "Manage Users", Url ="/Users/Index", Order = 2, IconCls = "fa-user")]
@@ -163,7 +246,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             uvm.FullName = user.FullName;
             uvm.Id = user.Id;
             uvm.Mobile = user.Mobile;
-            uvm.Role = string.Join(",", user.Roles.Select(x => x.Role.Name).ToList());
+            //uvm.Role = string.Join(",", user.Roles.Select(x => x.Role.Name).ToList());
             uvm.UserName = user.UserName;
             return uvm;
         }

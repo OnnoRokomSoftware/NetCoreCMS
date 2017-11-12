@@ -49,21 +49,8 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels
         public bool SendEmailNotification { get; set; }
 
         [Required]
-        public string Role { get; set; }
-
-        public static SelectList GetRolesDropdown()
-        {
-            var list = new Dictionary<string, string>();
-            list.Add(NccCmsRoles.Administrator, NccCmsRoles.Administrator);
-            list.Add(NccCmsRoles.Author, NccCmsRoles.Author);
-            list.Add(NccCmsRoles.Contributor, NccCmsRoles.Contributor);
-            list.Add(NccCmsRoles.Editor, NccCmsRoles.Editor);
-            list.Add(NccCmsRoles.Subscriber, NccCmsRoles.Subscriber);
-            list.Add(NccCmsRoles.SuperAdmin, NccCmsRoles.SuperAdmin);
-
-            return  new SelectList(list, "Value","Key");
-        }
-
+        public long[] Roles { get; set; }
+        
         public List<ModuleViewModel> DenyModules { get; set; }
         public List<ModuleViewModel> AllowModules { get; set; }
         private NccPermission _permission;

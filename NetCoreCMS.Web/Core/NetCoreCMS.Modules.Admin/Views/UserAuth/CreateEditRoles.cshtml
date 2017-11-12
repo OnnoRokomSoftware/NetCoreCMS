@@ -11,13 +11,13 @@
 }
 
  
-<link href="/NetCoreCMS.Modules.Cms/css/userAuth.css" rel="stylesheet" />
+<link href="/NetCoreCMS.Modules.Admin/css/userAuth.css" rel="stylesheet" />
 
 @{
     var modules = ((List<IModule>)ViewBag.Modules);
 }
 
-<form id="permissionTemplateCreateEditForm" class="form-horizontal" asp-controller="UserAuth" asp-action="CreateEditPermission" method="post">
+<form id="permissionTemplateCreateEditForm" class="form-horizontal" asp-controller="UserAuth" asp-action="CreateEditRoles" method="post">
 
     <div class="row">
         <div class="form-group">
