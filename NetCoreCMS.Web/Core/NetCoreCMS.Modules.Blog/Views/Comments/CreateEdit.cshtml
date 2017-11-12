@@ -47,6 +47,8 @@
                     <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
                         <input type="hidden" asp-for="Id" value="@Model.Id" />
                         <input type="hidden" asp-for="Status" value="@Model.Status" />
+                        <input type="hidden" name="PostId" value="@Model.Post?.Id" />
+                        <input type="hidden" name="AuthorId" value="@Model.Author?.Id" />
                         <div class="col-sm-6 pull-left">
                             <div class="form-group">
                                 <label class="col-md-3 text-right">Post </label>
@@ -117,105 +119,5 @@
 </div>
 
 @section Scripts{
-    <link href="~/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css" rel="stylesheet" />
-    <script src="~/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js"></script>
-    <script>
-        $('#SelectedTags').tagsinput({
 
-        });
-    </script>
-
-    <script>
-        KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
-    </script>
-    <script src="~/lib/ckeditor/ckeditor.js"></script>
-    <script>
-        $(document).ready(function () {
-            var elements = document.getElementsByClassName('postContent');
-            for (var i = 0; i < elements.length; ++i) {
-                CKEDITOR.replace(elements[i], {
-                    enterMode: CKEDITOR.ENTER_DIV,
-                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
-                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
-                    //filebrowserUploadUrl: '/media/files',
-                    //filebrowserImageUploadUrl: '/MediaHome/Upload',
-                    //filebrowserWindowWidth: 800,
-                    //filebrowserWindowHeight: 500,
-                    toolbar: [
-                        { name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
-                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
-                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
-                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
-                        { name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
-                        { name: 'editing1', items: ['SpellChecker', 'Scayt'] },
-                        { name: 'styles', items: ['Styles'] },
-                        { name: 'styles1', items: ['Format'] },
-                        { name: 'styles2', items: ['Font'] },
-                        { name: 'styles3', items: ['FontSize'] },
-                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
-                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
-                        //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
-                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
-                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
-                        { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
-                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                        //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
-                        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                        { name: 'insert', items: ['Image', /*'Flash',*/ 'Table'] },
-                        //'/',
-                        { name: 'colors', items: ['TextColor', 'BGColor'] },
-                        { name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
-                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
-                        { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
-                    ],
-                });
-            }
-
-            $(".postTitle").change(function () {
-                $(this).parent().parent().find(".postSlug").val(NccUtil.GetSafeSlug($(this).val()));
-            });
-
-            $("#publish").click(function () {
-                var element = document.getElementById('PostStatus');
-                element.value = "2";
-                //console.log($("#Slug").val());
-                //if ($("#Slug").val() == "") {
-                //    document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
-                //    console.log($("#Slug").val());
-                //}
-                document.getElementById("SubmitType").value = "publish";
-                //$("#SubmitType").value = "publish";
-
-                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
-                document.getElementById("createEditForm").submit();
-            });
-
-            $("#save").click(function () {
-                //if ($("#Slug").val() == "") {
-                //    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
-                //}
-                $("#SubmitType").val("Save");
-
-                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
-                document.getElementById("createEditForm").submit();
-            });
-
-
-        });
-    </script>
-    <script>
-        var windowObjectReference = null; // global variable
-        function openFFPromotionPopup(siteUrl) {
-            if (windowObjectReference == null || windowObjectReference.closed) {
-                windowObjectReference = window.open(siteUrl, "PromoteFirefoxWindowName", "resizable,scrollbars,status");
-            }
-            else {
-                windowObjectReference.focus();
-            };
-        }
-        setInterval(function () {
-            $("#ThumImageView").attr("src", $("#ThumImage").val());
-            //console.log($("#SiteLogoUrl").val());
-        }, 500);
-    </script>
 }
