@@ -66,6 +66,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         [AdminMenuItem(Name = "New User", Url = "/Users/CreateEdit", Order = 1, IconCls = "fa-user-plus")]
         public ActionResult CreateEdit(string userName = "")
         {
+            var activeModules = GlobalContext.GetActiveModules();
+            ViewBag.Modules = activeModules;
             var user = new UserViewModel();
             if (!string.IsNullOrEmpty(userName))
             {
