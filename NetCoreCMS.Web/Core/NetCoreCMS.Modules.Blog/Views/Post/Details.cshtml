@@ -46,9 +46,9 @@
 </div>
 @if (Model.AllowComment == true)
 {
-    <!--CommentsSection-->
+    <!--CommentsSectionStart-->
     @await Html.PartialAsync("_Comments", Model)
-    <!--CommentsSection-->
+    <!--CommentsSectionEnd-->
 }
 @section Scripts{
 

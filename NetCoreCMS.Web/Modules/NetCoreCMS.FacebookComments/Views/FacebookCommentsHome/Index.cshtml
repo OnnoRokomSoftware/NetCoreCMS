@@ -1,0 +1,86 @@
+﻿@using NetCoreCMS.Modules.FacebookComments.Models
+@using System.Collections
+
+@model FacebookCommentsSettings
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["PageTitle"] = "Facebook Comments Settings";
+    ViewData["PageSubtitle"] = "Facebook Comments Settings";
+    var controllerName = "FacebookCommentsHome";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @ViewData["PageSubtitle"]
+            </div>
+            <div class="panel-body">
+                <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="Index" method="post">           
+                    <div class="col-sm-6 pull-left">
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Is Active </label>
+                            <div class="col-md-9">
+                                <input type="checkbox" asp-for="IsActive" @Model.IsActive />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Facebook AppId </label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" asp-for="FacebookAppId" value="@Model.FacebookAppId" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Remove Language from URL </label>
+                            <div class="col-md-9">
+                                <input type="checkbox" asp-for="RemoveLanguageParamenter" @Model.RemoveLanguageParamenter />
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                            <label class="col-md-3 text-right">Color Scheme </label>
+                            <div class="col-md-9">
+                                <select asp-for="ColorScheme">
+                                    @if (Model.ColorScheme == "light")
+                                    {
+                                        <option value="light" selected>Light</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="light">Light</option>
+                                    }
+
+                                    @if (Model.ColorScheme == "dark")
+                                    {
+                                        <option value="dark" selected>Dark</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="dark">Dark</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>*@
+                        <div class="form-group">
+                            <label class="col-md-3 text-right">Number Of Comments </label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" asp-for="NumberOfPost" value="@Model.NumberOfPost" />
+                            </div>
+                        </div>
+                        <div>
+                            <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+
+
+@section Scripts{
+
+}
