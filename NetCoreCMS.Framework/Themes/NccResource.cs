@@ -17,6 +17,8 @@ namespace NetCoreCMS.Framework.Themes
         public static string BootstrapDateTimePicker { get { return "BootstrapDateTimePicker"; } }
         public static string CkEditor { get { return "CkEditor"; } }
         public static string DataTable { get { return "DataTable"; } }
+        public static string DataTableResponsive { get { return "DataTableResponsive"; } }
+        public static string DataTableFixedColumn { get { return "DataTableFixedColumn"; } }
 
         public NccResource()
         {

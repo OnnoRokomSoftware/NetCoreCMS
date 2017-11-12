@@ -65,7 +65,19 @@ namespace NetCoreCMS.Framework.Themes
             }
             else if (resourceLibName == NccResource.DataTable)
             {
-                
+                RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/DataTables/media/css/dataTables.bootstrap.css", NccResource.IncludePosition.Header, "2.3.3", 2, false);
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/DataTables/media/js/jquery.dataTables.min.js", NccResource.IncludePosition.Footer, "2.3.3", 3, false);
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/DataTables/media/js/dataTables.bootstrap.min.js", NccResource.IncludePosition.Footer, "2.3.3", 4, false);
+            }
+            else if (resourceLibName == NccResource.DataTableResponsive)
+            {
+                RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/DataTables/media/css/dataTables.responsive.css", NccResource.IncludePosition.Header, "2.3.3", 5, false);
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/DataTables/media/js/dataTables.responsive.js", NccResource.IncludePosition.Footer, "2.3.3", 6, false);
+            }
+            else if (resourceLibName == NccResource.DataTableFixedColumn)
+            {
+                RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/DataTables/FixedColumns/css/fixedColumns.bootstrap.css", NccResource.IncludePosition.Header, "3.2.3", 5, false);
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js", NccResource.IncludePosition.Footer, "3.2.3", 6, false);
             }
         }
        
