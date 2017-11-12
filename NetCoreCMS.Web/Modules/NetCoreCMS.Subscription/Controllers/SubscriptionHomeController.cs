@@ -60,7 +60,7 @@ namespace NetCoreCMS.Subscription.Controllers
         }
         #endregion
 
-        [AdminMenuItem(Name = "Index", Url = "/SubscriptionHome/Index", Order = 1)]
+        [AdminMenuItem(Name = "Index", Url = "/SubscriptionHome/Index", Order = 3)]
         public ActionResult Index()
         {
             var nccTranslator = new NccTranslator(CurrentLanguage);
@@ -68,6 +68,11 @@ namespace NetCoreCMS.Subscription.Controllers
             return View(itemList);
         }
 
+        [AdminMenuItem(Name = "Settings", Url = "/SubscriptionHome/Settings", Order = 1)]
+        public ActionResult Settings()
+        {
+            return View();
+        }
         [HttpPost]
         public JsonResult CreateSubscription(string email, string name, string mobile, string remarks)
         {
@@ -105,5 +110,6 @@ namespace NetCoreCMS.Subscription.Controllers
 
             return Json(apiResponse);
         }
+
     }
 }
