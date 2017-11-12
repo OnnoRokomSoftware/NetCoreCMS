@@ -61,7 +61,14 @@
                                     @item.ModificationDate.ToString("MMM dd, yyyy hh:mm tt")
                                 </td>
                                 <td style="text-align:center;">
-                                    <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="@item.Id" class="btn btn-outline btn-success btn-xs">Edit</a>
+                                    @foreach (var commentsItem in ViewBag.CommentStatus)
+                                    {
+                                        if (item.CommentStatus.ToString() != commentsItem.Text)
+                                        {
+                                            <a asp-controller="@controllerName" asp-action="StatusUpdate" asp-route-id="@item.Id" asp-route-commentStatus="@commentsItem.Value" class="btn btn-xs btn-info btn-outline">@commentsItem.Text</a>
+                                        }
+                                    }
+                                    @*<a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="@item.Id" class="btn btn-outline btn-success btn-xs">Edit</a>*@
                                     <a asp-controller="@controllerName" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline btn-danger btn-xs">Delete</a>                                    
                                 </td>
                             </tr>

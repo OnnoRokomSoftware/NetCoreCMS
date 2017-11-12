@@ -12,13 +12,14 @@
     {
         UserId = 0;
     }
-
+    var authorText = _T["Author"];
+    var dateText = _T["Date"];
 }
     @model NccPost
 <div class="" id="CommentsSection">
-    <h4>@_T["Comments"] (@Model.Comments.Count())</h4>
+    <h4>@_T["Comments"] (@Model.Comments.Where(x=>x.CommentStatus==NccComment.NccCommentStatus.Approved).Count())</h4>
     <div id="PreviousComments">
-        @foreach (var item in Model.Comments)
+        @*@foreach (var item in Model.Comments)
         {
             <div class="panel panel-default">
                 <div class="panel-body">
@@ -34,7 +35,7 @@
                     </p>
                 </div>
             </div>
-        }
+        }*@
     </div>
     <div class="panel panel-primary" id="NewComments" style="display:none;">
         <div class="panel-body">
@@ -119,6 +120,7 @@
                     $("#AuthorName").val("");
                     $("#Email").val("");
                     $("#Website").val("");
+                    loadComments();
                     //$(clonedDiv).attr("data-website-widget-id", rsp.data.id);
                     //setTimeout(function () {
                     //    //window.location.reload(1);
@@ -135,61 +137,28 @@
     function loadComments() {
 
         $.ajax({
-                method: 'POST',
-                url: '/Comments/GetComments',
-                data: { postId: @Model.Id },
-                success: function (rsp) {
-                    console.log(rsp);
-                },
-                error: function (rsp) {
-                    console.log(rsp);               
-                    NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
-                }
-            });
-    }
-    function postComment() {
-        //ev.preventDefault();
-        //var targetDiv = ev.target;
+            method: 'POST',
+            url: '/Comments/GetComments',
+            data: { postId: @Model.Id },
+            success: function (rsp) {
+                console.log(rsp);
+                $('#PreviousComments').html('');
+                $.each(rsp.Data, function (i, item) {
+                    var d = new Date(item["CreationDate"]);
+                    var month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-        //var divId = ev.dataTransfer.getData("widgetId");
-        //var div = document.getElementById(divId);
-        //targetDiv.appendChild(div);
-        //var clonedDiv = $(div).clone();
-        //var uid = GUID.NewGUID();
-        //$(clonedDiv).attr("id", uid);
-        ////clonedDiv.appendTo(targetDiv);
-        ////$(div).clone().appendTo("#ncc-module-widget-box-container");
+                    var date = d.getDate() + " " + month[d.getMonth()] + ", " + d.getFullYear();
+                    var time = d.toLocaleTimeString().toLowerCase().replace(/([\d]+:[\d]+):[\d]+(\s\w+)/g, "$1$2");
 
-        //var moduleId = $(div).attr("data-module-id");
-        //var zone = $(targetDiv).attr("data-layout-zone");
-        //var layout = $(targetDiv).attr("data-layout-name");
-        //var theme = $(targetDiv).attr("data-theme-id");
-        //var widgetId = $(div).attr("data-widget-id");
-
-        //$(clonedDiv).attr("data-theme-id", theme);
-        //$(clonedDiv).attr("data-layout-name", layout);
-        //$(clonedDiv).attr("data-layout-zone", zone);
-
-        //NccPageMask.ShowLoadingMask();
-        //$.ajax({
-        //    method: 'POST',
-        //    url: '/CmsWidget/SaveZoneWidget',
-        //    data: { module: moduleId, theme: theme, layout: layout, zone: zone, widget: widgetId },
-        //    success: function (rsp) {
-        //        NccPageMask.HideLoadingMask();
-        //        console.log(rsp);
-        //        NccGlobalAlert.ShowSuccess(rsp.message);
-        //        $(clonedDiv).attr("data-website-widget-id", rsp.data.id);
-        //        setTimeout(function () {
-        //            //window.location.reload(1);
-        //            window.location.href = window.location.pathname + "?sLayout=" + layout;
-        //        }, 500);
-        //    },
-        //    error: function (rsp) {
-        //        NccPageMask.HideLoadingMask();
-        //        NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
-        //    }
-        //});
+                    console.log(date + " at " + time);
+                    $("#PreviousComments").append("<div class='panel panel-default'><div class='panel-body'>" + item["Content"] + "<hr /><p style='font-style:italic; font-size:12px; margin-top: -18px;'><strong>" + '@authorText' + ":</strong> " + item["AuthorName"] + "<span> | <strong>" + '@dateText' + ":</strong> " + date + " at " + time + "</span></p></div></div>");
+                });
+            },
+            error: function (rsp) {
+                console.log(rsp);
+                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+            }
+        });
     }
 </script>
 
