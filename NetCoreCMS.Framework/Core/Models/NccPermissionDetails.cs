@@ -9,6 +9,7 @@
  *************************************************************/
 
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
@@ -17,16 +18,18 @@ namespace NetCoreCMS.Framework.Core.Models
     /// </summary>
     public class NccPermissionDetails : BaseModel<long>
     {
-        public NccPermission Permission { get; set; }
-        public virtual NccUser User { get; set; }
-        
+        public NccPermission Permission { get; set; }        
+        public virtual NccUser DenyUser { get; set; }
+        public virtual NccUser AllowUser { get; set; }
+
         public string ModuleId { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
         public int Order { get; set; }
         public string Requirements { get; set; }
 
-        public long UserId { get; set; }
+        public long ExtraAllowUserId { get; set; }
+        public long ExtraDenyUserId { get; set; }
         public long PermissionId { get; set; }
     }
 }

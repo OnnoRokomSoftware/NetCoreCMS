@@ -119,8 +119,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                             createdUser.Permissions.Add(new NccUserPermission() { Permission = permission, User = createdUser });                        
                         }
 
-                        createdUser.ExtraPermissions = GetSelectedPermissionDetails(user.AllowModules,createdUser);                        
-                        createdUser.ExtraDenies = GetSelectedPermissionDetails(user.DenyModules, createdUser);
+                        createdUser.ExtraPermissions = GetSelectedPermissionDetails(user.AllowModules,createdUser, true);                        
+                        createdUser.ExtraDenies = GetSelectedPermissionDetails(user.DenyModules, createdUser, false);
 
                         var upResult = _userManager.UpdateAsync(createdUser).Result;
                         if (upResult.Succeeded == false)
@@ -151,7 +151,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             return View("CreateEdit", user);
         }
 
-        private List<NccPermissionDetails> GetSelectedPermissionDetails(List<ModuleViewModel> modules, NccUser user)
+        private List<NccPermissionDetails> GetSelectedPermissionDetails(List<ModuleViewModel> modules, NccUser user, bool isExtraAllowPermission)
         { 
             var permissionDetailsList = new List<NccPermissionDetails>();
 
@@ -169,9 +169,16 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                                 Controller = item.Controller,
                                 ModuleId = module.ModuleId,
                                 Name = adminMenu.Name,                                
-                                Order = item.Order,
-                                User = user
+                                Order = item.Order,                                
                             };
+                            if (isExtraAllowPermission)
+                            {
+                                pd.AllowUser = user;
+                            }
+                            else
+                            {
+                                pd.DenyUser = user;
+                            }
                             permissionDetailsList.Add(pd);
                         }
                     }
@@ -190,9 +197,16 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                                 Controller = item.Controller,
                                 ModuleId = module.ModuleId,
                                 Name = webSiteMenu.Name,
-                                Order = item.Order,
-                                User = user
+                                Order = item.Order 
                             };
+                            if (isExtraAllowPermission)
+                            {
+                                pd.AllowUser = user;
+                            }
+                            else
+                            {
+                                pd.DenyUser = user;
+                            }
                             permissionDetailsList.Add(pd);
                         }
                     }

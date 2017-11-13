@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Migrations
 {
-    public partial class AdvancedAuthorizationModel : Migration
+    public partial class Advanced_Permission_Models : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,17 +66,15 @@ namespace NetCoreCMS.Framework.Migrations
                     Controller = table.Column<string>(type: "longtext", nullable: true),
                     CreateBy = table.Column<long>(type: "bigint", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ExtraDeniedUserId = table.Column<long>(type: "bigint", nullable: false),
-                    ExtraPermissionUserId = table.Column<long>(type: "bigint", nullable: false),
+                    ExtraAllowUserId = table.Column<long>(type: "bigint", nullable: false),
+                    ExtraDenyUserId = table.Column<long>(type: "bigint", nullable: false),
                     Metadata = table.Column<string>(type: "longtext", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ModifyBy = table.Column<long>(type: "bigint", nullable: false),
                     ModuleId = table.Column<string>(type: "longtext", nullable: true),
                     Name = table.Column<string>(type: "longtext", nullable: true),
-                    NccUserId = table.Column<long>(type: "bigint", nullable: true),
-                    NccUserId1 = table.Column<long>(type: "bigint", nullable: true),
+                    Order = table.Column<int>(type: "int", nullable: false),
                     PermissionId = table.Column<long>(type: "bigint", nullable: false),
-                    Order = table.Column<int>(type:"int", nullable: false, defaultValue:0),
                     Requirements = table.Column<string>(type: "longtext", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     VersionNumber = table.Column<int>(type: "int", nullable: false)
@@ -85,17 +83,17 @@ namespace NetCoreCMS.Framework.Migrations
                 {
                     table.PrimaryKey("PK_Ncc_Permission_Details", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Ncc_Permission_Details_Ncc_User_NccUserId",
-                        column: x => x.NccUserId,
+                        name: "FK_Ncc_Permission_Details_Ncc_User_ExtraAllowUserId",
+                        column: x => x.ExtraAllowUserId,
                         principalTable: "Ncc_User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Ncc_Permission_Details_Ncc_User_NccUserId1",
-                        column: x => x.NccUserId1,
+                        name: "FK_Ncc_Permission_Details_Ncc_User_ExtraDenyUserId",
+                        column: x => x.ExtraDenyUserId,
                         principalTable: "Ncc_User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Ncc_Permission_Details_Ncc_Permission_PermissionId",
                         column: x => x.PermissionId,
@@ -129,14 +127,14 @@ namespace NetCoreCMS.Framework.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_Permission_Details_NccUserId",
+                name: "IX_Ncc_Permission_Details_ExtraAllowUserId",
                 table: "Ncc_Permission_Details",
-                column: "NccUserId");
+                column: "ExtraAllowUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Ncc_Permission_Details_NccUserId1",
+                name: "IX_Ncc_Permission_Details_ExtraDenyUserId",
                 table: "Ncc_Permission_Details",
-                column: "NccUserId1");
+                column: "ExtraDenyUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Ncc_Permission_Details_PermissionId",
