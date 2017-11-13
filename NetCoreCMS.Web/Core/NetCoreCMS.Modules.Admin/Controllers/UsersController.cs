@@ -102,7 +102,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                     TempData["SuccessMessage"] = "User update successful.";
                 else
                     TempData["ErrorMessage"] = "User update failed.";
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateEdit");
             }
             else if (ModelState.IsValid)
             {
@@ -129,27 +129,25 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                         {
                             TempData["ErrorMessage"] = "User role assign failed.";
                         }
+                        else
+                        {
+                            TempData["SuccessMessage"] = "User created successfully.";
+                            return RedirectToAction("CreateEdit");
+                        }
                     }
-                    
-                    /*
-                    var roleResult = _userManager.AddToRoleAsync(nccUser, user.Role).Result;
-
-                    if (result.Succeeded && roleResult.Succeeded)
-                    {
-                        TempData["SuccessMessage"] = "User crate successful.";
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        TempData["ErrorMessage"] = "User create failed.";
-                    }
-                    */
+                     
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Password does not match.";
                 }
             }
+
+            var activeModules = GlobalContext.GetActiveModules();
+            ViewBag.Modules = activeModules;
+            var permissions = _nccPermissionService.LoadAll();
+            ViewBag.Roles = new SelectList(permissions, "Id", "Name");
+
             return View("CreateEdit", user);
         }
 

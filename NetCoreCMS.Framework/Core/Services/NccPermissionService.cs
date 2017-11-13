@@ -125,8 +125,8 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                     }
 
-                    txn.Commit();
                     _entityRepository.SaveChange();
+                    txn.Commit();
                     return (true, "Save successful");
                 }
             }

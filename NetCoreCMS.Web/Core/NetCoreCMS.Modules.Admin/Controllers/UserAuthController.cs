@@ -158,8 +158,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
 
             if (res)
             {
-                ViewBag.SuccessMessage = message;
-                UpdateModelData(model, permission);
+                TempData["SuccessMessage"] = message;
+                return RedirectToAction("CreateEditRoles");
             }
             else
             {
