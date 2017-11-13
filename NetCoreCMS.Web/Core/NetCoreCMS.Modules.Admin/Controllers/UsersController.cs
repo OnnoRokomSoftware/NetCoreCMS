@@ -32,7 +32,7 @@ using NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels;
 namespace NetCoreCMS.Modules.Admin.Controllers
 {
     [Authorize(Roles = "SuperAdmin,Administrator")]
-    [AdminMenu(Name = "Users", Order = 20, IconCls = "fa-users")]
+    [AdminMenu(Name = "Users", Order = 16, IconCls = "fa-users")]
     public class UsersController : NccController
     {
         UserManager<NccUser> _userManager;
@@ -40,7 +40,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         SignInManager<NccUser> _signInManager;
         NccPermissionService _nccPermissionService;
         NccPermissionDetailsService _nccPermissionDetailsService;
-
+        NccUserService _nccUserService;
 
         //IOptions<IdentityCookieOptions> _identityCookieOptions;
         IEmailSender _emailSender;
@@ -56,7 +56,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             NccPermissionDetailsService  nccPermissionDetailsService,
             IEmailSender emailSender,
             ISmsSender smsSender,
-            NccStartupService startupService
+            NccStartupService startupService,
+            NccUserService nccUserService
             )
         {
             _logger = loggerFactory.CreateLogger<UsersController>();
@@ -68,6 +69,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             _emailSender = emailSender;
             _smsSender = smsSender;
             _startupService = startupService;
+            _nccUserService = nccUserService;
         }
 
         [AdminMenuItem(Name = "New User", Url = "/Users/CreateEdit", Order = 1, IconCls = "fa-user-plus")]
@@ -219,7 +221,9 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         [AdminMenuItem(Name = "Manage Users", Url ="/Users/Index", Order = 2, IconCls = "fa-user")]
         public ActionResult Index()
         {
-            var users = GetUsersViewModelList("");            
+            var users = GetUsersViewModelList("");
+            var permissions = _nccPermissionService.LoadAll();
+            ViewBag.RoleList = new SelectList(permissions, "Id", "Name");
             return View(users);
         }
 
@@ -236,15 +240,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
 
         private List<UserViewModel> GetUsersViewModelList(string searchKey)
         {
-            var query = from e in _userManager.Users
-                        where 
-                            e.FullName.Contains(searchKey) 
-                            || e.Email.Contains(searchKey)
-                            || e.Mobile.Contains(searchKey)
-                            || e.PhoneNumber.Contains(searchKey)
-                            || e.UserName.Contains(searchKey)
-                        select e;
-            var users = query.ToList();
+            var users = _nccUserService.Search(searchKey);
             var list = new List<UserViewModel>();
             foreach (var user in users)
             {
@@ -260,7 +256,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             uvm.FullName = user.FullName;
             uvm.Id = user.Id;
             uvm.Mobile = user.Mobile;
-            //uvm.Role = string.Join(",", user.Roles.Select(x => x.Role.Name).ToList());
+            uvm.RoleNames = string.Join(",", user.Permissions.Select(x => x.Permission.Name).ToList());
             uvm.UserName = user.UserName;
             return uvm;
         }
@@ -368,45 +364,23 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult ChangeRole(List<long> userIds, string role)
+        public ActionResult ChangeRole(List<long> userIds, long[] roles)
         {
-            var apiResponses = new List<ApiResponse>();
-
-            foreach (var userId in userIds)
+            var apiResponses = new List<ApiResponse>();            
+            try
             {
-                try
+                var messages = _nccUserService.UpdateUsersPermission(userIds, roles);
+                foreach (var item in messages)
                 {
-                    var user = _userManager.FindByIdAsync(userId.ToString()).Result;
-                    var existingRoles = _userManager.GetRolesAsync(user).Result;
-                    var rRemoveResult = _userManager.RemoveFromRolesAsync(user, existingRoles).Result;
-
-                    if (rRemoveResult.Succeeded)
-                    {
-                        var result = _userManager.AddToRoleAsync(user, role).Result;
-                        if (result.Succeeded == false)
-                        {
-                            foreach (var err in result.Errors)
-                            {
-                                apiResponses.Add(new ApiResponse() { Message = err.Description, IsSuccess = false });
-                            }
-                        }
-                        else
-                        {
-                            apiResponses.Add(new ApiResponse() { Message = "Role '" + role + "' has been successfully assigned into user "+user.UserName+".", IsSuccess = true });
-                        }
-                    }
-                    else
-                    {
-                        apiResponses.Add(new ApiResponse() { Message = "Removing previous role failed for user " + user.UserName, IsSuccess = false });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex.Message);
-                    apiResponses.Add(new ApiResponse() { Message = "Unknown Error Occoured for userId " + userId, IsSuccess = false });
+                    apiResponses.Add(new ApiResponse() { Message = item.Message, IsSuccess = item.IsSuccess});
                 }
             }
-            
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                apiResponses.Add(new ApiResponse() { Message = "Error Occoured", IsSuccess = false });
+            }
+
             return Json(apiResponses);
         }
         

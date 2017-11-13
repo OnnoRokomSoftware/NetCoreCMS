@@ -15,21 +15,25 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using Microsoft.EntityFrameworkCore;
+using System;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     public class NccUserService : IBaseService<NccUser>
     {
         private readonly NccUserRepository _entityRepository;
-         
-        public NccUserService(NccUserRepository entityRepository)
+        private readonly NccPermissionRepository _nccPermissionRepository;
+        
+        public NccUserService(NccUserRepository entityRepository, NccPermissionRepository nccPermissionRepository)
         {
             _entityRepository = entityRepository;
+            _nccPermissionRepository = nccPermissionRepository;
         }
          
         public NccUser Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId);
+            return _entityRepository.Get(entityId,isAsNoTracking, new List<string>() { "Permissions","ExtraDenies","ExtraPermissions"});
         }
 
         public List<NccUser> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
@@ -119,6 +123,56 @@ namespace NetCoreCMS.Framework.Core.Services
             oldEntity.TwoFactorEnabled = entity.TwoFactorEnabled;
             oldEntity.UserName = entity.UserName;
             oldEntity.Metadata = entity.Metadata;
-        } 
+        }
+
+        public List<NccUser> Search(string searchKey)
+        {
+            return _entityRepository.Search(searchKey);
+        }
+
+        public List<(bool IsSuccess,string Message)> UpdateUsersPermission(List<long> userIds, long[] roles)
+        {
+            var response = new List<(bool,string)>();
+            using (var txn = _entityRepository.BeginTransaction())
+            {
+                foreach (var userId in userIds)
+                {
+                    var user = Get(userId);
+                    if(user != null)
+                    {                        
+                        //_entityRepository.RemoveUserPermission(user.Permissions);
+                        user.Permissions.RemoveAll(x=>x.UserId == user.Id);
+                        _entityRepository.Edit(user);
+                        _entityRepository.SaveChange();
+
+                        user = Get(userId);
+
+                        foreach (var item in roles)
+                        {
+                            var permission = _nccPermissionRepository.Get(item);
+                            if(permission != null)
+                            {
+                                user.Permissions.Add(new NccUserPermission() { Permission = permission, User = user });
+                            }
+                            else
+                            {
+                                response.Add((false, "Roles not found."));
+                            }
+                        }
+
+                        var result = _entityRepository.Edit(user);                        
+                        response.Add((true,"Roles have been successfully assigned into user " + user.UserName + ". Please refresh page to see update."));
+                    }
+                    else
+                    {
+                        response.Add((false,"User not found."));
+                    }                    
+                }
+
+                _entityRepository.SaveChange();
+                txn.Commit();                
+            }
+            return response;
+        }
     }
 }

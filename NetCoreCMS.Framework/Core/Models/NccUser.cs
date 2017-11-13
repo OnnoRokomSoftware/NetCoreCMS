@@ -56,9 +56,9 @@ namespace NetCoreCMS.Framework.Core.Models
         /// </summary>
         public virtual ICollection<IdentityUserLogin<long>> Logins { get; } = new List<IdentityUserLogin<long>>();
 
-        public virtual List<NccUserPermission> Permissions { get; set; }
-        public virtual List<NccPermissionDetails> ExtraPermissions { get; set; }
-        public virtual List<NccPermissionDetails> ExtraDenies { get; set; }
+        public virtual List<NccUserPermission> Permissions { get; set; } = new List<NccUserPermission>();
+        public virtual List<NccPermissionDetails> ExtraPermissions { get; set; } = new List<NccPermissionDetails>();
+        public virtual List<NccPermissionDetails> ExtraDenies { get; set; } = new List<NccPermissionDetails>();
 
     }
 }

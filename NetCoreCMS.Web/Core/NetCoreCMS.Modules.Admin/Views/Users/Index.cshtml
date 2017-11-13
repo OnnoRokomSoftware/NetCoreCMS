@@ -48,20 +48,13 @@
             <table class="table table-striped">
                 <tr><th>Id</th><th>User Name</th><th>Full Name</th><th>Email</th><th>Mobile</th><th>Roles</th><th>Action</th></tr>
                 @foreach(var user in Model){
-                    <tr> <td class="cls_user_chk"> <input type="checkbox" id="chk_@user.Id"  data-user-id="@user.Id" /> @user.Id</td><td>@user.UserName</td><td>@user.FullName</td><td>@user.Email</td><td>@user.Mobile</td><td>@user.Role</td><td><a href="~/Users/Update/?userId=@user.Id">Update</a></td></tr>
+                    <tr> <td class="cls_user_chk"> <input type="checkbox" id="chk_@user.Id"  data-user-id="@user.Id" /> @user.Id</td><td>@user.UserName</td><td>@user.FullName</td><td>@user.Email</td><td>@user.Mobile</td><td>@user.RoleNames</td><td><a href="~/Users/Update/?userId=@user.Id">Update</a></td></tr>
                 }
             </table>
             
             <div class="row">
                 <div class="col-sm-3">
-                    <select id="dd_user_roles" class="form-control">
-                        <option value="">Select Role</option>
-                        <option value="SuperAdmin">Super Admin</option>
-                        <option value="Administrator">Administrator</option>
-                        <option value="Editor">Editor</option>
-                        <option value="Author">Author</option>
-                        <option value="Contributor">Contributor</option>
-                        <option value="Subscriber">Subscriber</option>
+                    <select id="dd_user_roles" asp-items="@ViewBag.RoleList" multiple="multiple" class="form-control"> 
                     </select>
                 </div>
                 <div class="col-sm-9">

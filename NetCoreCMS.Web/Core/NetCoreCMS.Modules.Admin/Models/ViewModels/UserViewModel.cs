@@ -53,6 +53,8 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels
         
         public List<ModuleViewModel> DenyModules { get; set; }
         public List<ModuleViewModel> AllowModules { get; set; }
+        public string RoleNames { get; set; }
+
         private NccPermission _permission;
 
         public UserViewModel()

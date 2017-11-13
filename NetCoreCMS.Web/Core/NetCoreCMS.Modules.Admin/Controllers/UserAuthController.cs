@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace NetCoreCMS.Modules.Admin.Controllers
 {
-    [AdminMenu(Name = "Users", IconCls = "fa fa-users", Order = 100)]    
+    [AdminMenu(Name = "Users", IconCls = "fa fa-users", Order = 16)]    
     public class UserAuthController : NccController
     {
         private readonly UserManager<NccUser> _userManager;

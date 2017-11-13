@@ -12,8 +12,8 @@ using System;
 namespace NetCoreCMS.Framework.Migrations
 {
     [DbContext(typeof(NccDbContext))]
-    [Migration("20171113041954_Advanced_Permission_Models")]
-    partial class Advanced_Permission_Models
+    [Migration("20171113083944_AdvancedPermissionModel")]
+    partial class AdvancedPermissionModel
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -530,9 +530,9 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<DateTime>("CreationDate");
 
-                    b.Property<long>("ExtraAllowUserId");
+                    b.Property<long?>("ExtraAllowUserId");
 
-                    b.Property<long>("ExtraDenyUserId");
+                    b.Property<long?>("ExtraDenyUserId");
 
                     b.Property<string>("Metadata");
 
@@ -546,7 +546,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("Order");
 
-                    b.Property<long>("PermissionId");
+                    b.Property<long?>("PermissionId");
 
                     b.Property<string>("Requirements");
 
@@ -1335,18 +1335,15 @@ namespace NetCoreCMS.Framework.Migrations
                 {
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "AllowUser")
                         .WithMany("ExtraPermissions")
-                        .HasForeignKey("ExtraAllowUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ExtraAllowUserId");
 
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "DenyUser")
                         .WithMany("ExtraDenies")
-                        .HasForeignKey("ExtraDenyUserId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ExtraDenyUserId");
 
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccPermission", "Permission")
                         .WithMany("PermissionDetails")
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PermissionId");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPost", b =>
@@ -1403,13 +1400,13 @@ namespace NetCoreCMS.Framework.Migrations
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserPermission", b =>
                 {
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "User")
-                        .WithMany("Permissions")
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPermission", "Permission")
+                        .WithMany("Users")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPermission", "Permission")
-                        .WithMany("Users")
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccUser", "User")
+                        .WithMany("Permissions")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

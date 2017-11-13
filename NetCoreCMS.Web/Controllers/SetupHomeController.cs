@@ -103,6 +103,12 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateAdmin(AdminViewModel viewModel)
         {
+            if (viewModel.AdminPassword != viewModel.ConfirmPassword) {
+                ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value", "Text");
+                ModelState.AddModelError("ConfirmPassword", "Password does not match");
+                return View(viewModel);
+            }
+
             SetupHelper.InitilizeDatabase();
 
             if (SetupHelper.IsDbCreateComplete == true && SetupHelper.IsAdminCreateComplete == false)

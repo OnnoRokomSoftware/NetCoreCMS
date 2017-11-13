@@ -28,8 +28,8 @@ namespace NetCoreCMS.Framework.Core.Models
         public int Order { get; set; }
         public string Requirements { get; set; }
 
-        public long ExtraAllowUserId { get; set; }
-        public long ExtraDenyUserId { get; set; }
-        public long PermissionId { get; set; }
+        public long? ExtraAllowUserId { get; set; }
+        public long? ExtraDenyUserId { get; set; }
+        public long? PermissionId { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Migrations
 {
-    public partial class Advanced_Permission_Models : Migration
+    public partial class AdvancedPermissionModel : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,15 +66,15 @@ namespace NetCoreCMS.Framework.Migrations
                     Controller = table.Column<string>(type: "longtext", nullable: true),
                     CreateBy = table.Column<long>(type: "bigint", nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    ExtraAllowUserId = table.Column<long>(type: "bigint", nullable: false),
-                    ExtraDenyUserId = table.Column<long>(type: "bigint", nullable: false),
+                    ExtraAllowUserId = table.Column<long>(type: "bigint", nullable: true),
+                    ExtraDenyUserId = table.Column<long>(type: "bigint", nullable: true),
                     Metadata = table.Column<string>(type: "longtext", nullable: true),
                     ModificationDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     ModifyBy = table.Column<long>(type: "bigint", nullable: false),
                     ModuleId = table.Column<string>(type: "longtext", nullable: true),
                     Name = table.Column<string>(type: "longtext", nullable: true),
                     Order = table.Column<int>(type: "int", nullable: false),
-                    PermissionId = table.Column<long>(type: "bigint", nullable: false),
+                    PermissionId = table.Column<long>(type: "bigint", nullable: true),
                     Requirements = table.Column<string>(type: "longtext", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false),
                     VersionNumber = table.Column<int>(type: "int", nullable: false)
@@ -87,19 +87,19 @@ namespace NetCoreCMS.Framework.Migrations
                         column: x => x.ExtraAllowUserId,
                         principalTable: "Ncc_User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Ncc_Permission_Details_Ncc_User_ExtraDenyUserId",
                         column: x => x.ExtraDenyUserId,
                         principalTable: "Ncc_User",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Ncc_Permission_Details_Ncc_Permission_PermissionId",
                         column: x => x.PermissionId,
                         principalTable: "Ncc_Permission",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -113,15 +113,15 @@ namespace NetCoreCMS.Framework.Migrations
                 {
                     table.PrimaryKey("PK_Ncc_User_Permission", x => new { x.UserId, x.PermissionId });
                     table.ForeignKey(
-                        name: "FK_Ncc_User_Permission_Ncc_User_PermissionId",
+                        name: "FK_Ncc_User_Permission_Ncc_Permission_PermissionId",
                         column: x => x.PermissionId,
-                        principalTable: "Ncc_User",
+                        principalTable: "Ncc_Permission",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Ncc_User_Permission_Ncc_Permission_UserId",
+                        name: "FK_Ncc_User_Permission_Ncc_User_UserId",
                         column: x => x.UserId,
-                        principalTable: "Ncc_Permission",
+                        principalTable: "Ncc_User",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
