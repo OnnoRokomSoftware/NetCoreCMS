@@ -357,11 +357,17 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 }
                 TempData["Message"] = "Post not found";
             }
-            var allPost = _nccPostService.LoadPublished(page);
-            for(int i = 0; i < allPost.Count; i++)
+
+            var postPerPage = GlobalContext.WebSite.PerPagePostSize;
+            var totalPost = _nccPostService.GetPublishedPostCount();
+            var allPost = _nccPostService.LoadPublished(page, postPerPage);
+            for (int i = 0; i < allPost.Count; i++)
             {
                 allPost[i] = _mediator.Send(new OnPostShow(allPost[i])).Result;
             }
+            ViewBag.CurrentPage = page;
+            ViewBag.PostPerPage = postPerPage;
+            ViewBag.TotalPost = totalPost;
             return View(allPost);
         }
 

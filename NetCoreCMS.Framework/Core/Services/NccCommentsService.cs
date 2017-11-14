@@ -135,5 +135,10 @@ namespace NetCoreCMS.Framework.Core.Services
         {
             return _entityRepository.Load(postId, count);
         }
+
+        public List<NccComment> LoadRecentComments(int count)
+        {
+            return _entityRepository.LoadRecentComments(count);
+        }
     }
 }

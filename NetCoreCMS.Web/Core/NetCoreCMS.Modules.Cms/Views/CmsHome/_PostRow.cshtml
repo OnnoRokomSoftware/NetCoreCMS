@@ -27,7 +27,7 @@
                     {<span>@_T["Anonymous"]</span> }
                     <span> | @_T["Published Date"]: @Model.PublishDate.ToString("MMM dd, yyyy") </span>
 
-                    | <a href = "#"> @Model.Comments.Count() @_T["Comments"] </a>
+                    @*| <a href = "#"> @Model.Comments.Count() @_T["Comments"] </a>*@
                     @*| <i class="icon-share"></i> <a href="#">39 Shares</a>*@
                     @if (Model.Categories.Count > 0)
                     {

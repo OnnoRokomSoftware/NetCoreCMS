@@ -1,11 +1,11 @@
 ﻿@using NetCoreCMS.Framework.Core.Mvc.Models
-@using NetCoreCMS.Modules.News.Widgets
+@using NetCoreCMS.Modules.Blog.Models
 @{
     var i = 0;
     _T = (INccTranslator) ViewData["_T"];
     CurrentLanguage = (string) ViewData["CurrentLanguage"];
 }
-@model RecentPostView
+@model RecentPostViewModel
 
 @foreach (var item in Model.PostList)
 {

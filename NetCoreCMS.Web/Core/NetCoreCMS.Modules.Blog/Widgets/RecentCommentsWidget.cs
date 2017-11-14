@@ -23,34 +23,33 @@ using System.Text;
 
 namespace NetCoreCMS.Modules.News.Widgets
 {
-    public class RecentPostWidget : Widget
+    public class RecentCommentsWidget : Widget
     {
-        NccPostService _nccPostService;
+        NccCommentsService _nccCommentsService;
         IViewRenderService _viewRenderService;
         NccWebSiteWidgetService _websiteWidgetService;
-        int PostCount = 5;
-        bool IsDateShow = false;
+        int CommentsCount = 5;
 
-        public RecentPostWidget(
+        public RecentCommentsWidget(
             IViewRenderService viewRenderService,
             NccWebSiteWidgetService websiteWidgetService,
-            NccPostService nccPostService) : base(
-                "NetCoreCMS.Core.Modules.Blog.Widgets.RecentPost",
-                "Recent Post Widget",
-                "This is a widget to display recent blog posts.",
+            NccCommentsService nccCommentsService) : base(
+                "NetCoreCMS.Core.Modules.Blog.Widgets.RecentComments",
+                "Recent Comments Widget",
+                "This is a widget to display recent blog Comments.",
                 "",
                 true
             )
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
-            _nccPostService = nccPostService;
+            _nccCommentsService = nccCommentsService;
         }
 
         public override void Init(long websiteWidgetId)
         {
             WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/RecentPost";
+            ViewFileName = "Widgets/RecentComments";
 
             var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
@@ -63,29 +62,21 @@ namespace NetCoreCMS.Modules.News.Widgets
 
                 try
                 {
-                    string pc = config.postCount;
-                    PostCount = Convert.ToInt32(pc);
-                    string ds = config.isDateShow;
-                    if (ds == "on")
-                        IsDateShow = true;
-                    else
-                        IsDateShow = false;
+                    string cc = config.commentsCount;
+                    CommentsCount = Convert.ToInt32(cc);
                 }
-                catch (Exception) { PostCount = 5; }
+                catch (Exception) { CommentsCount = 5; }
 
             }
 
-            ConfigViewFileName = "Widgets/RecentPostConfig";
+            ConfigViewFileName = "Widgets/RecentCommentsConfig";
             ConfigHtml = _viewRenderService.RenderToStringAsync<BlogController>(ConfigViewFileName, webSiteWidget).Result;
         }
 
         public override string RenderBody()
         {
-            var postList = _nccPostService.LoadRecentPages(PostCount);
-            RecentPostViewModel item = new RecentPostViewModel();
-            item.IsDateShow = IsDateShow;
-            item.PostList = postList;
-            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, item).Result;
+            List<NccComment> commentsList = _nccCommentsService.LoadRecentComments(CommentsCount);
+            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, commentsList).Result;
             return body;
         }
     }

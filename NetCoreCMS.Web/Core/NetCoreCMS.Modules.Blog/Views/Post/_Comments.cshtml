@@ -116,7 +116,9 @@
                     console.log(rsp);
                     NccGlobalAlert.ShowSuccess(rsp.message);
                     $("#Comments").val("");
-                    $("#AuthorName").val("");
+                    if (@UserId==0) {
+                        $("#AuthorName").val("");
+                    }
                     $("#Email").val("");
                     $("#Website").val("");
                     loadComments();

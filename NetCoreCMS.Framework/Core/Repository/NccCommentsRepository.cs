@@ -65,5 +65,15 @@ namespace NetCoreCMS.Framework.Core.Repository
             }
             return list;
         }
+
+        public List<NccComment> LoadRecentComments(int count)
+        {
+            var list = Query().Include("Post").Include("Post.PostDetails").Include("Author")
+                .Where(x => x.CommentStatus == NccComment.NccCommentStatus.Approved)
+                .OrderByDescending(x => x.CreationDate)
+                .Take(count)
+                .ToList();
+            return list;
+        }
     }
 }
