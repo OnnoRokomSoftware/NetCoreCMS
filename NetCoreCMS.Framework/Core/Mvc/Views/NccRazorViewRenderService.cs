@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using NetCoreCMS.Framework.i18n;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -35,13 +36,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         private readonly ITempDataProvider _tempDataProvider;
         private readonly IServiceProvider _serviceProvider;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        
+        private INccTranslator _nccTranslator;
+        private NccLanguageDetector _nccLanguageDetector;
+
         public NccRazorViewRenderService(IRazorViewEngine razorViewEngine, ITempDataProvider tempDataProvider, IServiceProvider serviceProvider, IHttpContextAccessor httpContextAccessor)
         {
             _razorViewEngine = razorViewEngine;
             _tempDataProvider = tempDataProvider;
             _serviceProvider = serviceProvider;
-            _httpContextAccessor = httpContextAccessor;
+            _httpContextAccessor = httpContextAccessor;            
         }
         
         public async Task<string> RenderToStringAsync<T>(string viewName, object model)
@@ -69,8 +72,13 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
                 var viewDictionary = new ViewDataDictionary(new EmptyModelMetadataProvider(), new ModelStateDictionary())
                 {
-                    Model = model
+                    Model = model                    
                 };
+
+                _nccLanguageDetector = new NccLanguageDetector(_httpContextAccessor);
+                _nccTranslator = new NccTranslator(_nccLanguageDetector.GetCurrentLanguage());
+                viewDictionary["_T"] = _nccTranslator;
+                viewDictionary["CurrentLanguage"] = _nccLanguageDetector.GetCurrentLanguage();
 
                 var viewContext = new ViewContext(
                     actionContext,

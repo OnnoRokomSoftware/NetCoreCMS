@@ -32,6 +32,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
         {
             _httpContext = context.HttpContext;
             var language = GetCurrentLanguage();
+            var languageCode = language;
+
             if (context.HttpContext.Items.ContainsKey("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE"))
             {
                 context.HttpContext.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE"] = language;
@@ -40,6 +42,23 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
             {
                 context.HttpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE", language);
             }
+
+            var culture = SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == language).FirstOrDefault();
+            if(culture != null)
+            {
+                languageCode = culture.Name;
+            }
+
+            if (context.HttpContext.Items.ContainsKey("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_CODE"))
+            {
+                context.HttpContext.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_CODE"] = languageCode;
+            }
+            else
+            {
+                context.HttpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_CODE", languageCode);
+            }
+
+            
 
             //NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR
             //var controller = context.Controller;

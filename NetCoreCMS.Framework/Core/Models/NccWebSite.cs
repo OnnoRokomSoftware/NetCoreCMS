@@ -21,7 +21,6 @@ namespace NetCoreCMS.Framework.Core.Models
             PerPagePostSize = 10;
         }
         
-
         public string DomainName { get; set; }
         public string EmailAddress { get; set; }
         public bool AllowRegistration { get; set; }

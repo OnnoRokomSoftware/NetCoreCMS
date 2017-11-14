@@ -133,6 +133,21 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE"] = value;
             }
         }
+
+        public string CurrentLanguageCode
+        {
+            get
+            {
+                object val;
+                Context.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_CODE", out val);
+                return (string)val ?? "";
+            }
+            set
+            {
+                Context.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_CODE"] = value;
+            }
+        }
+
         public bool HasLeftColumn {
             get
             {

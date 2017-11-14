@@ -45,9 +45,13 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddTransient<ISmsSender, AuthMessageSender>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            services.AddScoped<INccTranslator, NccTranslator>();
+
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
             services.AddTransient<NccLanguageDetector>();
+            
 
             services.AddScoped<NccLanguageFilter>();
             services.AddScoped<NccGlobalExceptionFilter>();

@@ -2,6 +2,8 @@
 @using NetCoreCMS.Modules.News.Widgets
 @{
     var i = 0;
+    _T = (INccTranslator) ViewData["_T"];
+    CurrentLanguage = (string) ViewData["CurrentLanguage"];
 }
 @model RecentPostView
 
@@ -27,7 +29,7 @@
             @if (Model.IsDateShow)
             {
                 <br />
-                <span style="font-size:11px; color:#615d5d;">Publish Date: @item.PublishDate.ToString("dd MMM, yyyy")</span>
+                <span style="font-size:11px; color:#615d5d;">@_T["Published Date"]: @item.PublishDate.ToString("dd MMM, yyyy")</span>
             }
         </p>
     }
