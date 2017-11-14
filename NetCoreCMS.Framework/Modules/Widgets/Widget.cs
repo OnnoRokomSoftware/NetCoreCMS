@@ -140,9 +140,19 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                                                         var dataArr = NccUtil.JsonToArray(data);
                                                         
                                                         for (var key in dataArr) {
+                                                            //console.log('key - ' + key);
                                                             var elem = $('#configForm_" + WebSiteWidgetId + @" [name='+ key + ']'); 
-                                                            //console.log(elem[0].tagName+'-'+elem[0].type);
-                                                            $(elem).val(dataArr[key]);
+                                                            if(elem.length){
+                                                                //console.log(elem[0].tagName+'-'+elem[0].type);
+                                                                //console.log(elem.tagName+'-'+elem.type);
+                                                                if(elem[0].type === 'checkbox'){
+                                                                    //console.log(elem[0].tagName+'-'+elem[0].type);
+                                                                    $(elem).attr('checked','checked');
+                                                                }
+                                                                else{
+                                                                    $(elem).val(dataArr[key]);
+                                                                }
+                                                            } 
                                                         }                                                        
                                                     }
                                                 }

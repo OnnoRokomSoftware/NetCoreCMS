@@ -28,6 +28,7 @@ namespace NetCoreCMS.Framework.Core.Repository
         public List<NccPost> LoadRecentPosts(int count)
         {
             var list = Query()
+                .Include("PostDetails")
                 .Where(x=>x.PostStatus == NccPost.NccPostStatus.Published)
                 .OrderByDescending(x => x.PublishDate)
                 .Take(count)
