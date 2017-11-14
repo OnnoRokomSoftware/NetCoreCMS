@@ -38,6 +38,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "CategoryDetails", "Parent" });
         }
 
+        public List<NccCategory> LoadAllWithPost(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        {
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "CategoryDetails", "Parent", "Posts" });
+        }
+
         public NccCategory Save(NccCategory entity)
         {
             _entityRepository.Add(entity);
@@ -88,7 +93,7 @@ namespace NetCoreCMS.Framework.Core.Services
             copyTo.ModificationDate = copyFrom.ModificationDate;
             copyTo.ModifyBy = copyFrom.ModifyBy;
             copyTo.Name = copyFrom.Name;
-            copyTo.Status = copyFrom.Status;            
+            copyTo.Status = copyFrom.Status;
             copyTo.CategoryImage = copyFrom.CategoryImage;
             copyTo.Parent = copyFrom.Parent;
             copyTo.VersionNumber = copyFrom.VersionNumber;
@@ -100,12 +105,12 @@ namespace NetCoreCMS.Framework.Core.Services
             foreach (var item in copyFrom.CategoryDetails)
             {
                 var tmpCategoryDetails = copyTo.CategoryDetails.Where(x => x.Language == item.Language).FirstOrDefault();
-                if(tmpCategoryDetails == null)
+                if (tmpCategoryDetails == null)
                 {
                     tmpCategoryDetails = new NccCategoryDetails();
                     copyTo.CategoryDetails.Add(tmpCategoryDetails);
                 }
-                
+
                 tmpCategoryDetails.Language = item.Language;
                 tmpCategoryDetails.MetaDescription = item.MetaDescription;
                 tmpCategoryDetails.MetaKeyword = item.MetaKeyword;
@@ -119,7 +124,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 tmpCategoryDetails.Metadata = item.Metadata;
             }
         }
-        
+
         public List<NccCategory> LoadByParrentId(long parrentId, bool isActive = true)
         {
             return _entityRepository.LoadByParrentId(parrentId, isActive);
@@ -129,5 +134,6 @@ namespace NetCoreCMS.Framework.Core.Services
         {
             return _entityRepository.GetWithPost(slug);
         }
+
     }
 }
