@@ -271,9 +271,23 @@ namespace NetCoreCMS.Modules.Admin.Controllers
 
             foreach (var module in modules)
             {
-
+                var mvm = new ModuleViewModel();
+                mvm.ModuleId = module.ModuleId;
+                mvm.Name = module.Name;
+                mvm.AdminMenus = GetAdminMenus(module, user);
             }
             return modules;
+        }
+
+        private List<MenuViewModel> GetAdminMenus(ModuleViewModel module, NccUser user)
+        {
+            var menuList = new List<MenuViewModel>();
+            foreach (var adminMenu in module.AdminMenus)
+            {
+                var amvm = new MenuViewModel();
+                
+            }
+            return menuList;
         }
 
         private List<ModuleViewModel> GetAllowModules(NccUser user)
