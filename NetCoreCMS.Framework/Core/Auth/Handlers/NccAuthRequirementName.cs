@@ -12,10 +12,7 @@
 
         public const string Approve = "Approve";
         public const string Reject = "Reject";
-
-        public const string HasRoles = "HasRoles";
-        public const string UserNames = "UserNames";
-
+        
         public const string IsDataOwner = "IsDataOwner";
     }
 }

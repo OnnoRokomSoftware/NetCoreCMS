@@ -83,7 +83,9 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             var user = new UserViewModel();
             if (!string.IsNullOrEmpty(userName))
             {
-                NccUser nccUser = _userManager.FindByNameAsync(user.UserName).Result;
+                NccUser nccUser = _nccUserService.GetByUserName(userName);
+                user = GetUserViewModel(nccUser);
+                ViewBag.Roles = new SelectList(permissions, "Id", "Name",nccUser.Permissions.Select(x=>x.PermissionId).ToArray());
             }
             return View(user);
         }
@@ -242,12 +244,12 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             var list = new List<UserViewModel>();
             foreach (var user in users)
             {
-                list.Add(ToUserViewModel(user));
+                list.Add(GetUserViewModel(user));
             }
             return list;
         }
 
-        private UserViewModel ToUserViewModel(NccUser user)
+        private UserViewModel GetUserViewModel(NccUser user)
         {
             var uvm = new UserViewModel();
             uvm.Email = user.Email;
@@ -256,9 +258,36 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             uvm.Mobile = user.Mobile;
             uvm.RoleNames = string.Join(",", user.Permissions.Select(x => x.Permission.Name).ToList());
             uvm.UserName = user.UserName;
+            uvm.AllowModules = GetAllowModules(user);
+            uvm.DenyModules = GetDenyModules(user);
+            uvm.Roles = user.Permissions.Select(x => x.PermissionId).ToArray();
             return uvm;
         }
-        
+
+        private List<ModuleViewModel> GetDenyModules(NccUser user)
+        {
+            var activeModules = GlobalContext.GetActiveModules();            
+            var modules = new List<ModuleViewModel>();
+
+            foreach (var module in modules)
+            {
+
+            }
+            return modules;
+        }
+
+        private List<ModuleViewModel> GetAllowModules(NccUser user)
+        {
+            var activeModules = GlobalContext.GetActiveModules();
+            var modules = new List<ModuleViewModel>();
+
+            foreach (var module in modules)
+            {
+
+            }
+            return modules;
+        }
+
         [HttpPost]
         public ActionResult BulkOperation(List<long> userIds, string operation)
         {
@@ -384,8 +413,12 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         
         public ActionResult Update(long userId)
         {
-            var user = _userManager.FindByIdAsync(userId.ToString()).Result;            
-            return View("CreateEdit", ToUserViewModel(user));
+            var user = _userManager.FindByIdAsync(userId.ToString()).Result; 
+            if(user == null)
+            {
+                TempData["ErrorMessage"] = "User not found.";
+            }
+            return View("CreateEdit", GetUserViewModel(user));
         }
  
     }

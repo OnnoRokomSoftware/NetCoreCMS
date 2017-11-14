@@ -18,18 +18,26 @@ using NetCoreCMS.Framework.Core.Auth.Handlers;
 using System.Collections.Generic;
 using System;
 using NetCoreCMS.Framework.Core.Messages;
+using System.Linq;
+using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Core.Mvc.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
+using NetCoreCMS.Framework.Core.Auth;
 
 namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 {
     public class NccAuthFilter : INccActionFilter
     {
         private readonly ILogger _logger;
-        
+        private readonly NccUserService _nccUserService;
+
         public int Order { get { return 100; } }
 
-        public NccAuthFilter(ILoggerFactory loggerFactory)
+        public NccAuthFilter(NccUserService nccUserService, ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<NccGlobalExceptionFilter>();            
+            _logger = loggerFactory.CreateLogger<NccGlobalExceptionFilter>();
+            _nccUserService = nccUserService;
         }
         
         public void OnActionExecuted(ActionExecutedContext context)
@@ -39,7 +47,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            if (IsNetCoreCMSWeb(context))
+            var user = context.HttpContext.User;
+            if (user.IsInRole(NccCmsRoles.SuperAdmin))
             {
                 return;
             }
@@ -53,7 +62,80 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 
             var actionAttributes = ctrl.ControllerContext.ActionDescriptor.MethodInfo.GetCustomAttributes(true);
             var controllerAttributes = type.GetCustomAttributes(true);
+
+            // Allow actions or controller whoich have AllowAnonymous attribute.
             
+            if (actionAttributes.Where(x => x is AllowAnonymousAttribute).Count() > 0)
+            {
+                return;
+            }
+
+            if (controllerAttributes.Where(x=> x is AllowAnonymousAttribute).Count() > 0)
+            {
+                if(actionAttributes.Where(x => x is NccAuthorize).Count() == 0)
+                {
+                    return;
+                }                
+            }
+
+            // Check menu permission.
+            
+            var nccUser = _nccUserService.Get(user.GetUserId());
+
+            if (nccUser == null)
+            {
+                context.Result = new ChallengeResult();
+                isAuthorized = false;
+            }
+            else
+            {
+                if (nccUser.ExtraDenies.Where(
+                    x => x.Permission.PermissionDetails.Where(
+                        y => y.Action == action.DisplayName
+                        && y.Controller == ctrl.ControllerContext.ActionDescriptor.ControllerName
+                        ).Count() > 0
+                    ).Count() > 0
+                )
+                {
+                    isAuthorized = false;
+                }
+                else
+                {
+                    isAuthorized = true;
+                }
+
+                if (nccUser.Permissions.Where(
+                    x=>x.Permission.PermissionDetails.Where(
+                        y=>y.Action == action.DisplayName 
+                        && y.Controller == ctrl.ControllerContext.ActionDescriptor.ControllerName
+                        ).Count() > 0
+                    ).Count() > 0
+                )
+                {
+                    isAuthorized = true;
+                }
+                else
+                {
+                    isAuthorized = false;
+                }
+
+                if (nccUser.ExtraPermissions.Where(
+                    x => x.Permission.PermissionDetails.Where(
+                        y => y.Action == action.DisplayName
+                        && y.Controller == ctrl.ControllerContext.ActionDescriptor.ControllerName
+                        ).Count() > 0
+                    ).Count() > 0
+                )
+                {
+                    isAuthorized = true;
+                }
+                else
+                {
+                    isAuthorized = false;
+                }
+            }
+
+            // Check Authorization attributes.
             foreach (var item in actionAttributes)
             {
                 if (item is NccAuthorize)
@@ -92,11 +174,12 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
                 }
             }
 
-            //if(isAuthorized == false)
-            //{
-            //    context.HttpContext.Items["Message"] = "You have not enough permission.";
-            //    context.HttpContext.Response.Redirect("/Home/NotAuthorized");
-            //}
+            if (isAuthorized == false)
+            {
+                context.Result = new ChallengeResult(new AuthenticationProperties());
+                context.HttpContext.Items["Message"] = "You have not enough permission.";
+                context.HttpContext.Response.Redirect("/Home/NotAuthorized");
+            }
         }
 
         private bool IsNetCoreCMSWeb(ActionExecutingContext context)

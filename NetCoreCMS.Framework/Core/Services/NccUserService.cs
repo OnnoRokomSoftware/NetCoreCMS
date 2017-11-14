@@ -33,7 +33,7 @@ namespace NetCoreCMS.Framework.Core.Services
          
         public NccUser Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId,isAsNoTracking, new List<string>() { "Permissions","ExtraDenies","ExtraPermissions"});
+            return _entityRepository.Get(entityId,isAsNoTracking, new List<string>() { "Permissions","ExtraDenies","ExtraPermissions", "Permissions.Permission", "Permissions.User" });
         }
 
         public List<NccUser> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
@@ -43,7 +43,14 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccUser GetByUserName(string userName)
         {
-            return _entityRepository.Query().Include("Roles").FirstOrDefault(x => x.UserName == userName);
+            return _entityRepository.Query()
+                .Include("Roles")
+                .Include("Permissions")
+                .Include("ExtraDenies")
+                .Include("ExtraPermissions")
+                .Include("Permissions.Permission")
+                .Include("Permissions.User")
+                .FirstOrDefault(x => x.UserName == userName);
         }
 
         public NccUser Save(NccUser entity)

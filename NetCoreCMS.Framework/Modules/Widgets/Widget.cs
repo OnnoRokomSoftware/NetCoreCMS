@@ -11,11 +11,23 @@
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Utility;
 using System.Linq;
+using Microsoft.AspNetCore.Http;
 
 namespace NetCoreCMS.Framework.Modules.Widgets
 {
+    /// <summary>
+    /// For creating module widget you have to implement Widget class.
+    /// </summary>
     public abstract class Widget
     {
+        /// <summary>
+        /// Pass required information for writing your own module widget class.
+        /// </summary>
+        /// <param name="widgetId">Unique ID for your widget. Use GUID sothat it does not conflict with other modules widgets.</param>
+        /// <param name="title">This text will show on widget title.</param>
+        /// <param name="description">Description will show on admin panel widget section.</param>
+        /// <param name="footer">Pass text for footer.</param>
+        /// <param name="isDefault">Use true for showing Name, Footer and Language field.</param>
         public Widget(string widgetId, string title, string description, string footer, bool isDefault = true)
         {
             WidgetId = widgetId;
@@ -24,6 +36,10 @@ namespace NetCoreCMS.Framework.Modules.Widgets
             Footer = footer;
             DisplayTitle = "";
             IsDefault = isDefault;
+
+            var languageDetector = new NccLanguageDetector(new HttpContextAccessor());
+            CurrentLanguage = languageDetector.GetCurrentLanguage();
+            _T = new NccTranslator(CurrentLanguage);
         }
 
         public bool IsDefault { get; }
@@ -40,6 +56,8 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         public long WebSiteWidgetId { get; set; }
         public string ViewFileName { get; set; }
         public string ConfigViewFileName { get; set; }
+        public INccTranslator _T { get; set; }
+        public string CurrentLanguage { get; set; }
 
         public abstract void Init(long websiteWidgetId);
         public abstract string RenderBody();

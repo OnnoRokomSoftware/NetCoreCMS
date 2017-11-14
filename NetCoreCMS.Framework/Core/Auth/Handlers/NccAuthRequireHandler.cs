@@ -52,15 +52,7 @@ namespace NetCoreCMS.Framework.Core.Auth.Handlers
 
             //var usersPolicyList = _nccUserAuthPolicyService.LoadByModulePolicy(PolicyHandler.NccAuthRequireHandler, requirement);
 
-            if (requirement.Requirement == NccAuthRequirementName.HasRoles)
-            {
-
-            }
-            else if (requirement.Requirement == NccAuthRequirementName.UserNames)
-            {
-
-            }
-            else if (requirement.Requirement == NccAuthRequirementName.IsDataOwner)
+            if (requirement.Requirement == NccAuthRequirementName.IsDataOwner)
             {
                 //if (resource.CreateBy == context.User.GetUserId())
                 //{

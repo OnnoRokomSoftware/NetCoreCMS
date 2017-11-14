@@ -18,8 +18,7 @@ namespace NetCoreCMS.HelloWorld.Controllers
         [AdminMenuItem(Name = "Index", Url = "/HelloAuth/Index", Order = 1)]
         [SiteMenuItem(Name = "Hello world Home", Url = "/HelloAuth/Index", Order = 1)]
         [NccAuthorize()]
-        [NccAuthorize(NccAuthRequirementName.Create)]
-        [NccAuthorize(Requirement: NccAuthRequirementName.HasRoles, Values: "Administrator,SuperAdmin")]
+        [NccAuthorize(NccAuthRequirementName.Create)]        
         [NccAuthorize(HandlerClassName = "HrAuthHandler", RequirementList = new string[] { "Brunches" }, ValueList = new string[] { "Firmget,Malibag,Mirpur1,Mirpur2" })]
         [NccAuthorize(HandlerClassName = "HrAuthHandler", RequirementList = new string[] { "Organizations" }, ValueList = new string[] { "OnnorokomGroup,OnnorokomSoftware,Rokomari,Electronics,OnnoRokomRobots" })]
         public ActionResult Index()
