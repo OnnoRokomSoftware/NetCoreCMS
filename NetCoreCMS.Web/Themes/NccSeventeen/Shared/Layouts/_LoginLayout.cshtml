@@ -1,10 +1,9 @@
 ﻿@{
-    CurrentLayout = "LoginLayout";
-    CurrentLanguage = ThemeHelper.GetCurrentLanguage();    
+    CurrentLayout = "LoginLayout";    
 }
 
 <!DOCTYPE html>
-<html lang="@CurrentLanguage">
+<html lang="@CurrentLanguageCode">
 <head>
     @NccRenderHead()
     @Html.Raw(JavaScriptSnippet.FullScript)

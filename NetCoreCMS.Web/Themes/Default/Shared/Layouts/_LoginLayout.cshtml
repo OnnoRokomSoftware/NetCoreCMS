@@ -1,12 +1,11 @@
 ﻿@{
     BodyWidth = 12;
-    CurrentLayout = ThemeResources.Layouts.LoginLayout;
-    CurrentLanguage = ThemeHelper.GetCurrentLanguage();    
+    CurrentLayout = ThemeResources.Layouts.LoginLayout;    
     ThemeResources.RegisterResources(CurrentLayout);
 }
  
 <!DOCTYPE html>
-<html lang="@CurrentLanguage">
+<html lang="@CurrentLanguageCode">
     <head>
         @NccRenderHead()
         @Html.Raw(JavaScriptSnippet.FullScript)

@@ -1,10 +1,9 @@
 ﻿@{
-    CurrentLayout = "FullWidthLayout";
-    CurrentLanguage = ThemeHelper.GetCurrentLanguage();    
+    CurrentLayout = "FullWidthLayout";    
 }
 
 <!DOCTYPE html>
-<html lang="@CurrentLanguage">
+<html lang="@CurrentLanguageCode">
 <head>
     @NccRenderHead()
     @Html.Raw(JavaScriptSnippet.FullScript)

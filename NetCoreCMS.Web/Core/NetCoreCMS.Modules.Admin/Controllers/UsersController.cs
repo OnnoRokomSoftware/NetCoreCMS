@@ -258,13 +258,13 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             uvm.Mobile = user.Mobile;
             uvm.RoleNames = string.Join(",", user.Permissions.Select(x => x.Permission.Name).ToList());
             uvm.UserName = user.UserName;
-            uvm.AllowModules = GetAllowModules(user);
-            uvm.DenyModules = GetDenyModules(user);
+            uvm.AllowModules = GetModules(user, true);
+            uvm.DenyModules = GetModules(user, false);
             uvm.Roles = user.Permissions.Select(x => x.PermissionId).ToArray();
             return uvm;
         }
 
-        private List<ModuleViewModel> GetDenyModules(NccUser user)
+        private List<ModuleViewModel> GetModules(NccUser user, bool isAllowModule)
         {
             var activeModules = GlobalContext.GetActiveModules();            
             var modules = new List<ModuleViewModel>();
@@ -274,20 +274,87 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                 var mvm = new ModuleViewModel();
                 mvm.ModuleId = module.ModuleId;
                 mvm.Name = module.Name;
-                mvm.AdminMenus = GetAdminMenus(module, user);
+                mvm.AdminMenus = GetAdminMenus(module, user, false);
+                mvm.SiteMenus = GetWebSiteMenus(module, user, false);
             }
             return modules;
         }
 
-        private List<MenuViewModel> GetAdminMenus(ModuleViewModel module, NccUser user)
+        private List<MenuViewModel> GetAdminMenus(ModuleViewModel module, NccUser user, bool isExtraAllow)
         {
             var menuList = new List<MenuViewModel>();
             foreach (var adminMenu in module.AdminMenus)
             {
                 var amvm = new MenuViewModel();
-                
+                amvm.Name = adminMenu.Name;
+                amvm.Order = adminMenu.Order;
+                amvm.Type = "Admin";
+                amvm.Url = adminMenu.Url;
+                foreach (var menuItem in adminMenu.MenuItems)
+                {
+                    amvm.MenuItems.Add(new MenuItemViewModel() {
+                        Action = menuItem.Action,
+                        Controller = menuItem.Controller,
+                        Name = menuItem.Name,
+                        Order = menuItem.Order,
+                        IsChecked = IsUserMenuChecked(menuItem, user, module.ModuleId, isExtraAllow)
+                    });
+                }
+                menuList.Add(amvm);
+            }            
+            return menuList;
+        }
+
+        private List<MenuViewModel> GetWebSiteMenus(ModuleViewModel module, NccUser user, bool isExtraAllow)
+        {
+            var menuList = new List<MenuViewModel>();
+            foreach (var siteMenu in module.SiteMenus)
+            {
+                var amvm = new MenuViewModel();
+                amvm.Name = siteMenu.Name;
+                amvm.Order = siteMenu.Order;
+                amvm.Type = "WebSite";
+                amvm.Url = siteMenu.Url;
+                foreach (var menuItem in siteMenu.MenuItems)
+                {
+                    amvm.MenuItems.Add(new MenuItemViewModel()
+                    {
+                        Action = menuItem.Action,
+                        Controller = menuItem.Controller,
+                        Name = menuItem.Name,
+                        Order = menuItem.Order,
+                        IsChecked = IsUserMenuChecked(menuItem, user, module.ModuleId, isExtraAllow)
+                    });
+                }
+                menuList.Add(amvm);
             }
             return menuList;
+        }
+         
+        private bool IsUserMenuChecked(MenuItemViewModel menuItem, NccUser user, string moduleId, bool isExtraAllow)
+        {
+            if (isExtraAllow)
+            {
+                return user.ExtraPermissions.Where(
+                    x => x.Permission.PermissionDetails.Where(
+                        y => y.Action == menuItem.Action
+                        && y.Controller == menuItem.Controller
+                        && y.ModuleId == moduleId
+                        && (y.ExtraAllowUserId == user.Id)
+                    ).Count() > 0
+                ).Count() > 0;
+            }
+            else
+            {
+                return user.ExtraDenies.Where(
+                    x => x.Permission.PermissionDetails.Where(
+                        y => y.Action == menuItem.Action
+                        && y.Controller == menuItem.Controller
+                        && y.ModuleId == moduleId
+                        && (y.ExtraDenyUserId == user.Id)
+                    ).Count() > 0
+                ).Count() > 0;
+            }
         }
 
         private List<ModuleViewModel> GetAllowModules(NccUser user)
