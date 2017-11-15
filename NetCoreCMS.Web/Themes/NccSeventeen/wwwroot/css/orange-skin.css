@@ -110,7 +110,9 @@ body {
         background-color: #d93d00;
     }
 
-.selectLanguage select {
+
+/*Language dropdown start*/
+/*.selectLanguage select {
     background-color: #d93d00;
     border-color: #ec4200;
     color: #FFF;
@@ -126,7 +128,20 @@ body {
         background-color: #d93d00;
         border-color: #ec4200;
         color: #FFF;
-    }
+    }*/
+.dropbtn {
+    background-color: transparent;
+    color: white;
+}
+
+.dropdown-content a:hover {
+    background-color: #ec4200;
+}
+
+.dropdown:hover .dropbtn {
+    background-color: #ec4200;
+}
+/*Language dropdown end*/
 
 footer {
     background-color: #ec4200;

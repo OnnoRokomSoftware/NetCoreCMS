@@ -98,7 +98,7 @@ namespace NetCoreCMS.Web.Controllers
             return Redirect("~/" + lang + redirectUrl);
         }
 
-        [HttpPost]
+        //[HttpPost]
         [AllowAnonymous]
         public IActionResult SetLanguage(string culture, string returnUrl)
         {
