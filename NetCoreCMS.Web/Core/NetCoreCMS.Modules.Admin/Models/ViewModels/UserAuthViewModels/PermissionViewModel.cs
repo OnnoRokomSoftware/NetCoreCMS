@@ -8,6 +8,7 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
 {
+    [Serializable]
     public class PermissionViewModel
     {
         public long Id { get; set; }
@@ -174,6 +175,7 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
         }
     }
 
+    [Serializable]
     public class ModuleViewModel
     {
         public string Name { get; set; }
@@ -193,6 +195,7 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
         }
     }
 
+    [Serializable]
     public class MenuViewModel
     {
         public long Id { get; set; }
@@ -215,6 +218,7 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
         }
     }
 
+    [Serializable]
     public class MenuItemViewModel
     {
         public long Id { get; set; }

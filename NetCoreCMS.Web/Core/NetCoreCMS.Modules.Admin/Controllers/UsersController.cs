@@ -84,7 +84,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             if (!string.IsNullOrEmpty(userName))
             {
                 NccUser nccUser = _nccUserService.GetByUserName(userName);
-                user = GetUserViewModel(nccUser);
+                user = new UserViewModel(nccUser);
                 ViewBag.Roles = new SelectList(permissions, "Id", "Name",nccUser.Permissions.Select(x=>x.PermissionId).ToArray());
             }
             return View(user);
@@ -95,16 +95,86 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         {
             if (user.Id > 0 && !string.IsNullOrEmpty(user.Email) && !string.IsNullOrEmpty(user.FullName) && !string.IsNullOrEmpty(user.Mobile))
             {
-                var oldUser = _userManager.FindByIdAsync(user.Id.ToString()).Result;
+                var oldUser = _nccUserService.Get(user.Id);
+
                 oldUser.FullName = user.FullName;
                 oldUser.Email = user.Email;
                 oldUser.Mobile = user.Mobile;
-                var res = _userManager.UpdateAsync(oldUser).Result;
-                if (res.Succeeded)
-                    TempData["SuccessMessage"] = "User update successful.";
-                else
-                    TempData["ErrorMessage"] = "User update failed.";
-                return RedirectToAction("CreateEdit");
+
+                oldUser.ExtraDenies.RemoveAll(x => x.ExtraDenyUserId == user.Id);
+                oldUser.ExtraPermissions.RemoveAll(x => x.ExtraAllowUserId == user.Id);
+
+                var allowedAdminMenuItems = user.AllowModules.Select( x => new { ModuleId = x.ModuleId, Items = x.AdminMenus.SelectMany(y => y.MenuItems.Where(z => z.IsChecked == true)) });
+
+                var allowedWebSiteMenuItems = user.AllowModules.Select(x => new { ModuleId = x.ModuleId, Items = x.SiteMenus.SelectMany(y => y.MenuItems.Where(z => z.IsChecked == true)) }).ToList();
+
+                foreach (var moduleMenu in allowedAdminMenuItems)
+                {
+                    foreach (var menuItem in moduleMenu.Items)
+                    {
+                        oldUser.ExtraPermissions.Add(new NccPermissionDetails()
+                        {
+                            Action = menuItem.Action,
+                            AllowUser = oldUser,
+                            Controller = menuItem.Controller,
+                            ExtraAllowUserId = oldUser.Id,
+                            ModuleId = moduleMenu.ModuleId
+                        });
+                    } 
+                }
+
+                foreach (var moduleMenu in allowedWebSiteMenuItems)
+                {
+                    foreach (var menuItem in moduleMenu.Items)
+                    {
+                        oldUser.ExtraPermissions.Add(new NccPermissionDetails()
+                        {
+                            Action = menuItem.Action,
+                            AllowUser = oldUser,
+                            Controller = menuItem.Controller,
+                            ExtraAllowUserId = oldUser.Id,
+                            ModuleId = moduleMenu.ModuleId
+                        });
+                    }
+                }
+
+                var deniedAdminMenuItems = user.DenyModules.Select(x => new { ModuleId = x.ModuleId, Items = x.AdminMenus.SelectMany(y => y.MenuItems.Where(z => z.IsChecked == true)) });
+
+                var deniedWebSiteMenuItems = user.DenyModules.Select(x => new { ModuleId = x.ModuleId, Items = x.SiteMenus.SelectMany(y => y.MenuItems.Where(z => z.IsChecked == true)) }).ToList();
+
+                foreach (var moduleMenu in deniedAdminMenuItems)
+                {
+                    foreach (var menuItem in moduleMenu.Items)
+                    {
+                        oldUser.ExtraDenies.Add(new NccPermissionDetails()
+                        {
+                            Action = menuItem.Action,
+                            DenyUser = oldUser,
+                            Controller = menuItem.Controller,
+                            ExtraDenyUserId= oldUser.Id,
+                            ModuleId = moduleMenu.ModuleId
+                        });
+                    }
+                }
+
+                foreach (var moduleMenu in deniedWebSiteMenuItems)
+                {
+                    foreach (var menuItem in moduleMenu.Items)
+                    {
+                        oldUser.ExtraDenies.Add(new NccPermissionDetails()
+                        {
+                            Action = menuItem.Action,
+                            DenyUser = oldUser,
+                            Controller = menuItem.Controller,
+                            ExtraDenyUserId = oldUser.Id,
+                            ModuleId = moduleMenu.ModuleId
+                        });
+                    }
+                }
+
+                _nccUserService.Update(oldUser); 
+                TempData["SuccessMessage"] = "User update successful."; 
+                return RedirectToAction("Index");
             }
             else if (ModelState.IsValid)
             {
@@ -274,46 +344,46 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                 var mvm = new ModuleViewModel();
                 mvm.ModuleId = module.ModuleId;
                 mvm.Name = module.Name;
-                mvm.AdminMenus = GetAdminMenus(module, user, false);
-                mvm.SiteMenus = GetWebSiteMenus(module, user, false);
+                mvm.AdminMenus = GetMenus(module.ModuleId, module.AdminMenus, user, isAllowModule, "Admin");
+                mvm.SiteMenus = GetMenus(module.ModuleId, module.SiteMenus, user, isAllowModule, "WebSite");
             }
             return modules;
         }
 
-        private List<MenuViewModel> GetAdminMenus(ModuleViewModel module, NccUser user, bool isExtraAllow)
-        {
-            var menuList = new List<MenuViewModel>();
-            foreach (var adminMenu in module.AdminMenus)
-            {
-                var amvm = new MenuViewModel();
-                amvm.Name = adminMenu.Name;
-                amvm.Order = adminMenu.Order;
-                amvm.Type = "Admin";
-                amvm.Url = adminMenu.Url;
-                foreach (var menuItem in adminMenu.MenuItems)
-                {
-                    amvm.MenuItems.Add(new MenuItemViewModel() {
-                        Action = menuItem.Action,
-                        Controller = menuItem.Controller,
-                        Name = menuItem.Name,
-                        Order = menuItem.Order,
-                        IsChecked = IsUserMenuChecked(menuItem, user, module.ModuleId, isExtraAllow)
-                    });
-                }
-                menuList.Add(amvm);
-            }            
-            return menuList;
-        }
+        //private List<MenuViewModel> GetAdminMenus(ModuleViewModel module, NccUser user, bool isExtraAllow)
+        //{
+        //    var menuList = new List<MenuViewModel>();
+        //    foreach (var adminMenu in module.AdminMenus)
+        //    {
+        //        var amvm = new MenuViewModel();
+        //        amvm.Name = adminMenu.Name;
+        //        amvm.Order = adminMenu.Order;
+        //        amvm.Type = "Admin";
+        //        amvm.Url = adminMenu.Url;
+        //        foreach (var menuItem in adminMenu.MenuItems)
+        //        {
+        //            amvm.MenuItems.Add(new MenuItemViewModel() {
+        //                Action = menuItem.Action,
+        //                Controller = menuItem.Controller,
+        //                Name = menuItem.Name,
+        //                Order = menuItem.Order,
+        //                IsChecked = IsUserMenuChecked(menuItem, user, module.ModuleId, isExtraAllow)
+        //            });
+        //        }
+        //        menuList.Add(amvm);
+        //    }            
+        //    return menuList;
+        //}
 
-        private List<MenuViewModel> GetWebSiteMenus(ModuleViewModel module, NccUser user, bool isExtraAllow)
+        private List<MenuViewModel> GetMenus(string moduleId, List<MenuViewModel> menus, NccUser user, bool isExtraAllow, string type)
         {
             var menuList = new List<MenuViewModel>();
-            foreach (var siteMenu in module.SiteMenus)
+            foreach (var siteMenu in menus)
             {
                 var amvm = new MenuViewModel();
                 amvm.Name = siteMenu.Name;
                 amvm.Order = siteMenu.Order;
-                amvm.Type = "WebSite";
+                amvm.Type = type;
                 amvm.Url = siteMenu.Url;
                 foreach (var menuItem in siteMenu.MenuItems)
                 {
@@ -323,7 +393,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                         Controller = menuItem.Controller,
                         Name = menuItem.Name,
                         Order = menuItem.Order,
-                        IsChecked = IsUserMenuChecked(menuItem, user, module.ModuleId, isExtraAllow)
+                        IsChecked = IsUserMenuChecked(menuItem, user, moduleId, isExtraAllow)
                     });
                 }
                 menuList.Add(amvm);

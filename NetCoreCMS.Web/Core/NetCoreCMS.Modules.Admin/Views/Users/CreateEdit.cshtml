@@ -79,16 +79,21 @@
                 <div class="panel-group" id="accordion">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-                                    Deny menu permission
-                                </a>
-                            </h4>
+                            <div>
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                        Deny menu permission
+                                    </a>
+                                </h4>
+                            </div>
+                            @*<div class="pull-right">
+                                <input class="btn btn-primary" value="Expand All" onclick="ExpandAll('DenyMenu')" />
+                            </div>*@
                         </div>
                         <div id="collapse1" class="panel-collapse collapse in">
                             <div class="panel-body">
                                 <h5>Select Module Menus</h5>
-                                <div class="menu">
+                                <div class="menu" id="DenyMenu">
 
                                     @for (var i = 0; i < modules.Count; i++)
                                     {
@@ -270,16 +275,21 @@
                     </div>
                     <div class="panel panel-primary">
                         <div class="panel-heading">
-                            <h4 class="panel-title">
-                                <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
-                                    Allow extra menu permission
-                                </a>
-                            </h4>
+                            <div>
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                        Allow extra menu permission
+                                    </a>
+                                </h4>
+                            </div>                            
+                            @*<div class="pull-right">
+                                <input class="btn btn-primary" value="Expand All" onclick="ExpandAll('AllowMenu')" />
+                            </div>*@
                         </div>
                         <div id="collapse2" class="panel-collapse collapse">
                             <div class="panel-body">
                                 <h5>Select Module Menus</h5>
-                                <div class="menu">
+                                <div class="menu" id="AllowMenu">
 
                                     @for (var i = 0; i < modules.Count; i++)
                                     {
@@ -467,6 +477,12 @@
      
 <script>
 
+    function ExpandAll(parent) {
+        $("#" + parent).children(".accordion-body").each(function (index) {
+            $(this).attr("aria-expanded", true);
+        });
+    }
+
     function EnableTreeSelection(sectionName) { 
 
         $("." + sectionName + "-module-check").on("change", function () {
@@ -505,7 +521,7 @@
             });
         });
     }
-
+    
     $(document).ready(function () {
         EnableTreeSelection("deny");
         EnableTreeSelection("allow");
