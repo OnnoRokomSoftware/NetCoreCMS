@@ -17,6 +17,7 @@ using NetCoreCMS.Framework.Core.Repository;
 using System;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Core.Models.ViewModels;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -49,11 +50,11 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<NccPost> LoadSpecialPosts(bool isSticky, bool isFeatured)
         {
             return _entityRepository.LoadPosts(isSticky, isFeatured);
-        } 
+        }
 
-        public long GetPublishedPostCount()
+        public long GetPublishedPostCount(DateTime? dateFrom = null, DateTime? dateTo = null)
         {
-            return _entityRepository.GetCount(NccPost.NccPostStatus.Published);
+            return _entityRepository.GetCount(NccPost.NccPostStatus.Published, dateFrom, dateTo);
         }
 
         public NccPost Save(NccPost entity)
@@ -204,11 +205,16 @@ namespace NetCoreCMS.Framework.Core.Services
             return pages;
         }
 
-        public List<NccPost> LoadPublished(int from = 0, int total = 10, bool withSticky = true, bool withFeatured = true)
+        public List<NccPost> LoadPublished(int from = 0, int total = 10, bool withSticky = true, bool withFeatured = true, DateTime? dateFrom = null, DateTime? dateTo = null)
         {
-            return _entityRepository.LoadPublished(from, total, withSticky, withFeatured);
+            return _entityRepository.LoadPublished(from, total, withSticky, withFeatured, dateFrom, dateTo);
         }
-        
+
+        public List<ArchiveItemViewModel> LoadAtchive(bool decendingOrder = true)
+        {
+            return _entityRepository.LoadArchive(decendingOrder);
+        }
+
         public int TotalPublishedPostCount()
         {
             return _entityRepository

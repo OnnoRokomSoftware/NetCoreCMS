@@ -343,7 +343,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         #region Public View
         [AllowAnonymous]
         [SiteMenuItem(Name = "Blog Posts", Url = "/Post", Order = 1)]
-        public ActionResult Index(string slug = "", int page = 0)
+        public ActionResult Index(string slug = "", int year = 0, int month = 0, int page = 0)
         {
             ViewBag.CurrentLanguage = CurrentLanguage;
             if (!string.IsNullOrEmpty(slug))
@@ -357,10 +357,21 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 }
                 TempData["Message"] = "Post not found";
             }
-
+            DateTime? dateFrom = null;
+            DateTime? dateTo = null;
+            if (year > 0 && month > 0)
+            {
+                dateFrom = new DateTime(year, month, 1);
+                dateTo = new DateTime(year, month + 1, 1).AddMinutes(-1);
+            }
+            else if (year > 0)
+            {
+                dateFrom = new DateTime(year, 1, 1);
+                dateTo = new DateTime(year + 1, 1, 1).AddMinutes(-1);
+            }
             var postPerPage = GlobalContext.WebSite.PerPagePostSize;
-            var totalPost = _nccPostService.GetPublishedPostCount();
-            var allPost = _nccPostService.LoadPublished(page, postPerPage);
+            var totalPost = _nccPostService.GetPublishedPostCount(dateFrom, dateTo);
+            var allPost = _nccPostService.LoadPublished(page, postPerPage, true, true, dateFrom, dateTo);
             for (int i = 0; i < allPost.Count; i++)
             {
                 allPost[i] = _mediator.Send(new OnPostShow(allPost[i])).Result;
