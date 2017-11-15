@@ -50,7 +50,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NeNewsService neNewsService) : base(
                 "NetCoreCMS.Modules.Widgets.NewsHorizontal",
-                "Horizontal News Widget",
+                "Horizontal News",
                 "This is a widget to scroll news horizontally.",
                 "",
                 false

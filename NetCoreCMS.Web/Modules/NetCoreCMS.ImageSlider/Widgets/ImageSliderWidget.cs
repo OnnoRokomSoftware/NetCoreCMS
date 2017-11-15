@@ -34,7 +34,7 @@ namespace NetCoreCMS.ImageSlider.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NccImageSliderService imageSliderService) : base(
                 "NetCoreCMS.Modules.Widgets.ImageSlider",
-                "Image Slider Widget",
+                "Image Slider",
                 "This is a widget to display responsive image slider.",
                 ""
             )
