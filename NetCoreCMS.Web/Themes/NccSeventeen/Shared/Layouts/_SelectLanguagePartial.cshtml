@@ -64,6 +64,7 @@
         /*background-color: #3f51b5;*/
     }
 </style>
+<label for="exampleInputName2">@_T["Language"]</label>
 <div class="dropdown">
     <button class="dropbtn">@cl.FirstOrDefault().Text <span class="glyphicon glyphicon-triangle-bottom"></span> </button>
     <div class="dropdown-content">
@@ -71,8 +72,6 @@
         {
             <a href="/Home/SetLanguage/?culture=@item.Value&returnUrl=@Context.Request.Path">@item.Text</a>
         }
-        
-        @*<a href="#">Link 2</a>*@
     </div>
 </div>
 <span>|</span>
