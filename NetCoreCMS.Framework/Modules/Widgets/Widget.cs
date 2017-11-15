@@ -35,11 +35,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
             Description = description;
             Footer = footer;
             DisplayTitle = "";
-            IsDefault = isDefault;
-
-            var languageDetector = new NccLanguageDetector(new HttpContextAccessor());
-            CurrentLanguage = languageDetector.GetCurrentLanguage();
-            _T = new NccTranslator(CurrentLanguage);
+            IsDefault = isDefault;            
         }
 
         public bool IsDefault { get; }
@@ -55,10 +51,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         private string ConfigSuffix { get; set; }
         public long WebSiteWidgetId { get; set; }
         public string ViewFileName { get; set; }
-        public string ConfigViewFileName { get; set; }
-        public INccTranslator _T { get; set; }
-        public string CurrentLanguage { get; set; }
-
+        public string ConfigViewFileName { get; set; } 
         public abstract void Init(long websiteWidgetId);
         public abstract string RenderBody();
         public string RenderConfig()

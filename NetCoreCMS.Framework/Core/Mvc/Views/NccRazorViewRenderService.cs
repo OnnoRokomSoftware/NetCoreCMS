@@ -49,11 +49,33 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         
         public async Task<string> RenderToStringAsync<T>(string viewName, object model)
         {
-            var httpContext = new DefaultHttpContext { RequestServices = _serviceProvider };            
+            var httpContext = _httpContextAccessor.HttpContext; //new DefaultHttpContext { RequestServices = _serviceProvider };            
             var routeData = httpContext.GetRouteData();
             var cad = new ControllerActionDescriptor();            
             var ac = new ActionContext(httpContext, new RouteData(), cad);
             var actionContext = new ControllerContext(ac);
+
+            _nccLanguageDetector = new NccLanguageDetector(_httpContextAccessor);
+            var language = _nccLanguageDetector.GetCurrentLanguage();
+            _nccTranslator = new NccTranslator(language);
+
+            if (httpContext.Items.ContainsKey("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE"))
+            {
+                httpContext.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE"] = language;
+            }
+            else
+            {
+                httpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE", language);
+            }
+            
+            if (httpContext.Items.ContainsKey("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR"))
+            {
+                httpContext.Items["NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR"] = _nccTranslator;
+            }
+            else
+            {
+                httpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR", _nccTranslator);
+            }
 
             var typeInfo = typeof(T).GetTypeInfo();
             actionContext.ActionDescriptor.ActionName = "Index";
@@ -74,12 +96,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 {
                     Model = model                    
                 };
-
-                _nccLanguageDetector = new NccLanguageDetector(_httpContextAccessor);
-                _nccTranslator = new NccTranslator(_nccLanguageDetector.GetCurrentLanguage());
-                viewDictionary["_T"] = _nccTranslator;
-                viewDictionary["CurrentLanguage"] = _nccLanguageDetector.GetCurrentLanguage();
-
+                
                 var viewContext = new ViewContext(
                     actionContext,
                     viewResult.View,

@@ -57,16 +57,18 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
             {
                 context.HttpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_CODE", languageCode);
             }
-
             
-
-            //NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR
-            //var controller = context.Controller;
-
             var translator = new NccTranslator(language);
             if(translator != null)
             {
-                context.HttpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR", translator);
+                if (context.HttpContext.Items.ContainsKey("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR"))
+                {
+                    context.HttpContext.Items["NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR"] = translator;
+                }
+                else
+                {
+                    context.HttpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR", translator);
+                }
             }
         }
 
