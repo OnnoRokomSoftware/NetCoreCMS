@@ -15,6 +15,7 @@ using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
+using NetCoreCMS.Framework.Core.Models.ViewModels;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -110,6 +111,11 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<NccTag> Search(string name, int count = 20)
         {
             return _entityRepository.Search(name, count);
+        }
+
+        public List<TagCloudItemViewModel> LoadTagCloud()
+        {
+            return _entityRepository.LoadTagCloud();
         }
     }
 }
