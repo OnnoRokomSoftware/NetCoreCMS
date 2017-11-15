@@ -16,7 +16,7 @@
 
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName })
+        .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName.Split(" ").FirstOrDefault() })
         .ToList();
     var selectList = new SelectList(cultureItems,"Value","Text", currentLanguage);
 
@@ -30,7 +30,7 @@
     {
         lang = "/" + currentLanguage;
     }
-    var cl = LocOptions.Value.SupportedUICultures.Where(x => x.TwoLetterISOLanguageName.ToLower() == CurrentLanguage).Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName });
+    var cl = LocOptions.Value.SupportedUICultures.Where(x => x.TwoLetterISOLanguageName.ToLower() == CurrentLanguage).Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName.Split(" ").FirstOrDefault() });
 }
 @*<form id="selectLanguage" action="@lang/Home/SetLanguage/" method="post" class="form-inline" role="form" style="display:inline;">
     <div class="form-group">
@@ -60,14 +60,14 @@
         display: none;
         position: absolute;
         /*background-color: #f9f9f9;*/
-        /*min-width: 160px;*/
+        min-width: 100px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
         z-index: 1;
     }
 
         .dropdown-content a {
             /*color: black;*/
-            padding: 4px 4px;
+            padding: 8px 8px;
             text-decoration: none;
             display: block;
         }
