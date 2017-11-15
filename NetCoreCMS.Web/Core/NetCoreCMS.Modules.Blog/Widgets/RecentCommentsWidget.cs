@@ -35,7 +35,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NccCommentsService nccCommentsService) : base(
                 "NetCoreCMS.Core.Modules.Blog.Widgets.RecentComments",
-                "Recent Comments Widget",
+                "Recent Comments",
                 "This is a widget to display recent blog Comments.",
                 "",
                 true

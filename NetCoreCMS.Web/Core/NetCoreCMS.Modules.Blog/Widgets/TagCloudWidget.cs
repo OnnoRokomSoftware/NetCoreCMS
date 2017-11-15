@@ -36,7 +36,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NccTagService nccTagService) : base(
                 "NetCoreCMS.Core.Modules.Blog.Widgets.TagCloud",
-                "TagCloud Widget",
+                "Tag Cloud",
                 "This is a widget to display Tags Cloud.",
                 "",
                 true

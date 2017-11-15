@@ -38,7 +38,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NccCategoryService nccCategoryService) : base(
                 "NetCoreCMS.Core.Modules.Blog.Widgets.Category",
-                "Category Widget",
+                "Category",
                 "This is a widget to display category.",
                 "",
                 true

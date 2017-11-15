@@ -37,7 +37,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NccPostService nccPostService) : base(
                 "NetCoreCMS.Core.Modules.Blog.Widgets.Archive",
-                "Archive Widget",
+                "Archive",
                 "This is a widget to display archive.",
                 "",
                 true
