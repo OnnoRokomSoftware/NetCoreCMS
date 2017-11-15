@@ -50,7 +50,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NeNewsService neNewsService) : base(
                 "NetCoreCMS.Modules.Widgets.News",
-                "News Widget",
+                "News",
                 "This is a widget to display news.",
                 "",
                 false

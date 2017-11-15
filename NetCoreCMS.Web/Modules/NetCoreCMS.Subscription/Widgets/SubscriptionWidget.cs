@@ -31,7 +31,7 @@ namespace NetCoreCMS.Subscription.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             SubscriptionUserService subscriptionUserService) : base(
                 "NetCoreCMS.Modules.Widgets.Subscription", 
-                "Subscription Widget", 
+                "Subscription", 
                 "This widget display subscription form", 
                 "", 
                 true

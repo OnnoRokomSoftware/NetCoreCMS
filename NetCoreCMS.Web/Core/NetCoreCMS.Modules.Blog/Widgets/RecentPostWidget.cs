@@ -36,7 +36,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             NccWebSiteWidgetService websiteWidgetService,
             NccPostService nccPostService) : base(
                 "NetCoreCMS.Core.Modules.Blog.Widgets.RecentPost",
-                "Recent Post Widget",
+                "Recent Post",
                 "This is a widget to display recent blog posts.",
                 "",
                 true

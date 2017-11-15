@@ -23,33 +23,34 @@ using System.Text;
 
 namespace NetCoreCMS.Modules.News.Widgets
 {
-    public class RecentCommentsWidget : Widget
+    public class TagCloudWidget : Widget
     {
-        NccCommentsService _nccCommentsService;
+        NccTagService _nccTagService;
         IViewRenderService _viewRenderService;
         NccWebSiteWidgetService _websiteWidgetService;
-        int CommentsCount = 5;
+        bool ShowTagHasPost = false;
+        bool ShowPostCount = false;
 
-        public RecentCommentsWidget(
+        public TagCloudWidget(
             IViewRenderService viewRenderService,
             NccWebSiteWidgetService websiteWidgetService,
-            NccCommentsService nccCommentsService) : base(
-                "NetCoreCMS.Core.Modules.Blog.Widgets.RecentComments",
-                "Recent Comments",
-                "This is a widget to display recent blog Comments.",
+            NccTagService nccTagService) : base(
+                "NetCoreCMS.Core.Modules.Blog.Widgets.TagCloud",
+                "Tag Cloud",
+                "This is a widget to display Tags Cloud.",
                 "",
                 true
             )
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
-            _nccCommentsService = nccCommentsService;
+            _nccTagService = nccTagService;
         }
 
         public override void Init(long websiteWidgetId)
         {
             WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/RecentComments";
+            ViewFileName = "Widgets/TagCloud";
 
             var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
             if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
@@ -62,21 +63,27 @@ namespace NetCoreCMS.Modules.News.Widgets
 
                 try
                 {
-                    string cc = config.commentsCount;
-                    CommentsCount = Convert.ToInt32(cc);
-                }
-                catch (Exception) { CommentsCount = 5; }
+                    string temp = config.showPostCount;
+                    ShowPostCount = (temp == "on") ? true : false;
 
+                    temp = config.showTagHasPost;
+                    ShowTagHasPost = (temp == "on") ? true : false;
+                }
+                catch (Exception) { }
             }
 
-            ConfigViewFileName = "Widgets/RecentCommentsConfig";
+            ConfigViewFileName = "Widgets/TagCloudConfig";
             ConfigHtml = _viewRenderService.RenderToStringAsync<BlogController>(ConfigViewFileName, webSiteWidget).Result;
         }
 
         public override string RenderBody()
         {
-            List<NccComment> commentsList = _nccCommentsService.LoadRecentComments(CommentsCount);
-            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, commentsList).Result;
+            var itemList = _nccTagService.LoadTagCloud();
+            TagCloudViewModel item = new TagCloudViewModel();
+            item.ShowTagHasPost = ShowTagHasPost;
+            item.ShowPostCount = ShowPostCount;
+            item.ItemList = itemList;
+            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, item).Result;
             return body;
         }
     }
