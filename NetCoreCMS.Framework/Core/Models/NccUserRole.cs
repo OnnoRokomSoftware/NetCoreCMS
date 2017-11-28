@@ -8,10 +8,12 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
 using Microsoft.AspNetCore.Identity;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccUserRole : IdentityUserRole<long>
     {
         public override long UserId { get; set; }

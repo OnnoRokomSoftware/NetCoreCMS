@@ -15,6 +15,7 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
         public string Name { get; set; }
         public string Group { get; set; }
         public string Description { get; set; }
+        public int Rank { get; set; }
 
         public int ModuleCount { get; set; }
         public int MenuCount { get; set; }
@@ -75,7 +76,8 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
             Id = permission.Id;
             Group = permission.Group;
             Name = permission.Name;
-            Description = permission.Description;            
+            Description = permission.Description;
+            Rank = permission.Rank;
             ModuleCount = permission.PermissionDetails.GroupBy(x => x.ModuleId).Count();
             MenuCount = permission.PermissionDetails.GroupBy(x => x.Action).Count();
             UserCount = permission.Users.Count;
@@ -130,20 +132,30 @@ namespace NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels
             foreach (var item in menuItems)
             {
                 string controller = "", action = "";
+                //if (string.IsNullOrEmpty(item.Url) == false)
+                //{
+                //    var parts = item.Url.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+                //    if (parts.Length > 1)
+                //    {
+                //        controller = parts[0];
+                //        action = parts[1];
+                //    }
+                //    else if (parts.Length == 1) {
+                //        controller = parts[0];
+                //        action = "Index";
+                //    }
+                //}
+
                 if (string.IsNullOrEmpty(item.Url) == false)
                 {
-                    var parts = item.Url.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length > 1)
-                    {
-                        controller = parts[0];
-                        action = parts[1];
-                    }
-                    else if (parts.Length == 1) {
-                        controller = parts[0];
-                        action = "Index";
-                    }
+                    (controller, action) = NccUrlHelper.GetControllerActionFromUrl(item.Url);
                 }
-                
+                else
+                {
+                    controller = item.Controller;
+                    action = item.Action;
+                }
+
                 var mip = _permission?.PermissionDetails?.Where(x => x.ModuleId == moduleId && x.Action == action && x.Controller == controller).FirstOrDefault();
                 if (mip != null)
                 {

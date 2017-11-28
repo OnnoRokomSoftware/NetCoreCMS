@@ -16,6 +16,7 @@ using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using System;
 using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Core.Models.ViewModels;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -166,5 +167,25 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Query().Where(x => x.PageStatus == status).ToList();
         }
 
+
+        public long Count(bool isActive, string keyword)
+        {
+            return _entityRepository.Count(isActive, keyword);
+        }
+
+        public List<NccPage> Load(int from, int total, bool isActive, string keyword, string orderBy, string orderDir)
+        {
+            return _entityRepository.Load(from, total, isActive, keyword, orderBy, orderDir);
+        }
+
+        public long SearchCount(string keyword)
+        {
+            return _entityRepository.SearchCount(keyword);
+        }
+
+        public List<NccSearchViewModel> SearchLoad(int from, int total, string keyword)
+        {
+            return _entityRepository.SearchLoad(from, total, keyword);
+        }
     }
 }

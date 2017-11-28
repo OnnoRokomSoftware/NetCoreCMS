@@ -27,6 +27,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
 using NetCoreCMS.Framework.Core.Auth.Handlers;
+using System.Text.RegularExpressions;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -50,6 +51,8 @@ namespace NetCoreCMS.Framework.Utility
         /// </summary>
         public static List<IModule> Modules { get; set; } = new List<IModule>();
 
+        private static Hashtable _moduleDependencies = new Hashtable();
+
         /// <summary>
         /// Website configurations.
         /// </summary>
@@ -72,7 +75,7 @@ namespace NetCoreCMS.Framework.Utility
             var activeModules = GetActiveModules();
             foreach (var item in activeModules)
             {
-                var types = item.GetType().Assembly.GetTypes().Where(x=> typeof(INccAuthorizationHandler).IsAssignableFrom(x)).ToList();
+                var types = item.GetType().Assembly.GetTypes().Where(x => typeof(INccAuthorizationHandler).IsAssignableFrom(x)).ToList();
                 foreach (var type in types)
                 {
                     if (type != null && type.Name.Equals(className))
@@ -87,7 +90,7 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// Widget list of all active modules widget. It populates when modules are loaded.
         /// </summary>
-        public static List<Widget> Widgets{ get; set; } = new List<Widget>();
+        public static List<Widget> Widgets { get; set; } = new List<Widget>();
         /// <summary>
         /// List of already placed widgets on different layout zone of theme.
         /// </summary>
@@ -101,6 +104,16 @@ namespace NetCoreCMS.Framework.Utility
         {
             var module = Modules.Where(x => x.Assembly.GetName().Name == assemblyName.Name).FirstOrDefault();
             return module;
+        }
+
+        internal static void SetModuleDependencies(Hashtable moduleDependencies)
+        {
+            _moduleDependencies = moduleDependencies;
+        }
+
+        internal static Hashtable GetModuleDependencies()
+        {
+            return _moduleDependencies;
         }
 
         /// <summary>
@@ -124,7 +137,7 @@ namespace NetCoreCMS.Framework.Utility
         /// </summary>
         public static IApplicationBuilder App { get; set; }
         //public static Theme ActiveTheme { get; set; }
-        
+
         public string SiteBaseUrl { get; set; }
         public string StartupController { get; set; }
 
@@ -136,7 +149,7 @@ namespace NetCoreCMS.Framework.Utility
         /// <returns></returns>
         public static List<IModule> GetActiveModules()
         {
-            var query = from m in Modules where m.ModuleStatus == (int) NccModule.NccModuleStatus.Active select m;
+            var query = from m in Modules where m.ModuleStatus == (int)NccModule.NccModuleStatus.Active select m;
             return query.ToList();
         }
 
@@ -144,8 +157,8 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// All registered service and class instance container. Which are used for dependency injection.
         /// </summary>
-        public static IServiceCollection Services { get; set; } 
-        
+        public static IServiceCollection Services { get; set; }
+
         /// <summary>
         /// Short code list of all modules.
         /// </summary>
@@ -171,8 +184,8 @@ namespace NetCoreCMS.Framework.Utility
         /// <returns>retuns long id</returns>
         public static long GetCurrentUserId()
         {
-            HttpContextAccessor hca = new HttpContextAccessor();
-            long? userId = hca.HttpContext?.User?.GetUserId();
+            IHttpContextAccessor hca = ServiceProvider?.GetService<IHttpContextAccessor>();
+            long? userId = hca?.HttpContext?.User?.GetUserId();
             if (userId == null)
                 return 0;
             return userId.Value;
@@ -186,7 +199,7 @@ namespace NetCoreCMS.Framework.Utility
         public static Theme GetThemeByName(string themeName)
         {
             return Themes.Where(x => x.ThemeName == themeName).FirstOrDefault();
-        } 
+        }
 
         /// <summary>
         /// Provides currently logged user's name.
@@ -194,8 +207,8 @@ namespace NetCoreCMS.Framework.Utility
         /// <returns></returns>
         public static string GetCurrentUserName()
         {
-            HttpContextAccessor hca = new HttpContextAccessor();
-            string userName = hca.HttpContext?.User?.Identity.Name;
+            IHttpContextAccessor hca = ServiceProvider?.GetService<IHttpContextAccessor>();
+            string userName = hca?.HttpContext?.User?.Identity.Name;
             return userName;
         }
 
@@ -207,6 +220,78 @@ namespace NetCoreCMS.Framework.Utility
         public static IModule GetModuleByModuleId(string moduleId)
         {
             return Modules.Where(x => x.ModuleId == moduleId).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// Get Table Name from class
+        /// </summary>
+        /// <typeparam name="ModelT">Provide your class</typeparam>
+        /// <returns></returns>
+        public static string GetTableName<ModelT>()
+        {
+            var type = typeof(ModelT);
+
+            #region Db Table Prefix
+            string dbTablePrefix = "ncc_";
+            if (WebSite != null)
+                dbTablePrefix = WebSite.TablePrefix;
+            else
+                dbTablePrefix = SetupHelper.TablePrefix;
+            if (dbTablePrefix == null || dbTablePrefix.Trim() == "")
+                dbTablePrefix = "ncc_";
+            if (dbTablePrefix.EndsWith("_") == false)
+                dbTablePrefix = dbTablePrefix.Trim() + "_";
+            #endregion
+
+            string moduleTablePrefix = "";
+            var moduleName = type.Assembly.GetName();
+            var moduleList = Modules;
+            foreach (var item in moduleList)
+            {
+                if (item.Folder == moduleName.Name)
+                {
+                    moduleTablePrefix = item.TablePrefix;
+                }
+            }
+            if (moduleTablePrefix.Trim() == "")
+                moduleTablePrefix = "mod_";
+            if (moduleTablePrefix.EndsWith("_") == true)
+                moduleTablePrefix = moduleTablePrefix.Substring(0, moduleTablePrefix.Length - 1);
+
+            string model_name = type.Name;
+            model_name = string.Join('_', Regex.Split(model_name, @"(?=\p{Lu}\p{Ll})|(?<=\p{Ll})(?=\p{Lu})"));
+            var tableName = dbTablePrefix + moduleTablePrefix + model_name;
+            return tableName.ToLower();
+        }
+
+        /// <summary>
+        /// Get Table Name from class
+        /// </summary>
+        /// <typeparam name="ModelT">Provide your class</typeparam>
+        /// <returns></returns>
+        public static string GetSettingsKey<ModelT>()
+        {
+            var type = typeof(ModelT);
+
+            #region Db Table Prefix
+            string dbTablePrefix = "ncc_";
+            if (WebSite != null)
+                dbTablePrefix = WebSite.TablePrefix;
+            else
+                dbTablePrefix = SetupHelper.TablePrefix;
+            if (dbTablePrefix == null || dbTablePrefix.Trim() == "")
+                dbTablePrefix = "ncc_";
+            if (dbTablePrefix.EndsWith("_") == false)
+                dbTablePrefix = dbTablePrefix.Trim() + "_";
+            dbTablePrefix = dbTablePrefix.ToUpper(); 
+            #endregion
+
+            string moduleName = type.Assembly.GetName().Name.Trim().ToUpper() + "_";
+
+            string model_name = type.Name;
+            model_name = string.Join('_', Regex.Split(model_name, @"(?=\p{Lu}\p{Ll})|(?<=\p{Ll})(?=\p{Lu})"));
+            var tableName = dbTablePrefix + moduleName + model_name;
+            return tableName;
         }
     }
 }

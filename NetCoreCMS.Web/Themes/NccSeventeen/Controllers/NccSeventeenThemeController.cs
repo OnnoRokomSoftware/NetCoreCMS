@@ -14,6 +14,7 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Themes;
 using System;
 using System.Collections.Generic;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace Default.Controllers
 {
@@ -26,12 +27,14 @@ namespace Default.Controllers
 
         }
 
+        [SubActionOf(Controller = "CmsTheme", Action = "Settings")]
         public ActionResult Index()
         {
             ViewBag.style = new SelectList(style, "Key", "Value", ThemeHelper.ActiveTheme.Settings["style"]);
             return View();
         }
         [HttpPost]
+        [SubActionOf(Controller = "CmsTheme", Action = "Settings")]
         public ActionResult Index(string[] key, string[] value)
         {
             foreach (var item in style)
@@ -54,7 +57,7 @@ namespace Default.Controllers
                 ThemeHelper.ActiveTheme.Settings.Add(key[i], value[i]);
             }
             ThemeHelper.ActiveTheme.Save();
-            TempData["ThemeSuccessMessage"] = "Settings Updated Successfully";
+            ShowMessage("Settings Updated Successfully", NetCoreCMS.Framework.Core.Mvc.Views.MessageType.Success, false, true);
             return RedirectToAction("Index");
         }
     }

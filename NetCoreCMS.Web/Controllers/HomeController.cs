@@ -29,6 +29,7 @@ using System.Collections.Generic;
 using NetCoreCMS.Framework.Resources;
 using NetCoreCMS.Framework.Core.Models;
 using System.Linq;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Web.Controllers
 {
@@ -37,12 +38,12 @@ namespace NetCoreCMS.Web.Controllers
     {
         IHostingEnvironment _env;
         private readonly IStringLocalizer<SharedResource> _sharedLocalizer;
-
+        
         public HomeController(IHostingEnvironment env, ILoggerFactory factory, IStringLocalizer<SharedResource> sharedLocalizer)
         {
             _logger = factory.CreateLogger<HomeController>();
             _env = env;
-            _sharedLocalizer = sharedLocalizer;
+            _sharedLocalizer = sharedLocalizer;            
         }
 
         [AllowAnonymous]
@@ -59,7 +60,7 @@ namespace NetCoreCMS.Web.Controllers
 
                 if (setupConfig == null)
                 {
-                    TempData["Message"] = "Setup config file is missed. Please reinstall.";
+                    TempData["ErrorMessage"] = "Setup config file is missed. Please reinstall.";
                     return Redirect("~/CmsHome/ResourceNotFound");
                 }
                 if (setupConfig.StartupData.Trim('/') == "" || setupConfig.StartupData.Trim().ToLower() == "/home")
@@ -84,7 +85,7 @@ namespace NetCoreCMS.Web.Controllers
         public IActionResult NotAuthorized()
         {
             return View();
-        }       
+        }
 
         [AllowAnonymous]
         public ActionResult RedirectToDefaultLanguage()
@@ -173,7 +174,7 @@ namespace NetCoreCMS.Web.Controllers
             return View();
         }
 
-        [Authorize(Roles = "SuperAdmin, Administrator")]
+        [Authorize(Roles = "SuperAdmin")]
         public async System.Threading.Tasks.Task<IActionResult> RestartHost()
         {
             string referer = Request.Headers["Referer"].ToString();
@@ -196,7 +197,7 @@ namespace NetCoreCMS.Web.Controllers
         {
             if (_env.IsDevelopment())
             {
-                ViewData["Message"] = "<strong style='color:black;font-family:Monda;'>Possible steps you may try:</strong><br/> 1. Build the modules after change. <br/>2. Restart <br/>3. Delete setup.json and setup the CMS again.";
+                ViewData["ErrorMessage"] = "<strong style='color:black;font-family:Monda;'>Possible steps you may try:</strong><br/> 1. Build the modules after change. <br/>2. Restart <br/>3. Delete setup.json and setup the CMS again.";
             }
             return View();
         }

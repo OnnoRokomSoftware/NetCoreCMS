@@ -12,32 +12,18 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Models.ViewModels;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
-using NetCoreCMS.Framework.i18n;
-using NetCoreCMS.Framework.Modules;
-using NetCoreCMS.Framework.Setup;
-using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Modules.Admin.Models.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
+using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Core.Modules.Admin.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Administrator")]
-    //[AdminMenu(Name = "Dashboard", IconCls = "fa-cogs", Order = 99)]
+    [AdminMenu( IsVisible = false, Name = "Dashboard", IconCls = "fa-cogs", Order = 99)]
     public class DashboardController : NccController
     {
         NccWebSiteService _webSiteService;
@@ -68,9 +54,8 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             _moduleService = moduleService;
             _logger = loggarFactory.CreateLogger<AdminController>();
         }
-
-        [Authorize]
-        //[AdminMenuItem(Name = "Dashboard", Url = "/Dashboard", IconCls = "fa-dashboard", Order = 1)]
+        
+        [AdminMenuItem( IsVisible = false, Name = "Dashboard", Url = "/Dashboard/Index", IconCls = "fa-dashboard", Order = 1)]
         public ActionResult Index()
         {
             var webSite = new NccWebSite();
@@ -82,7 +67,7 @@ namespace NetCoreCMS.Core.Modules.Admin.Controllers
             }
             ViewBag.TotalPublishedPage = _pageService.LoadAllByPageStatus(NccPage.NccPageStatus.Published).Count();
             ViewBag.TotalPage = _pageService.LoadAll(true).Count();
-            ViewBag.TotalPublishedPost = _postService.TotalPublishedPostCount();
+            ViewBag.TotalPublishedPost = _postService.Count(true, true, true, true);
             ViewBag.TotalPost = _postService.LoadAll(true).Count();
             ViewBag.TotalUser = _userManager.Users.Count();
             ViewBag.TotalModule = _moduleService.LoadAll().Count();

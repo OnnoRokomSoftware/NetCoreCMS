@@ -10,7 +10,15 @@
             <div id="navbarWebsiteName" class="navbar-brand navbar-brand-with-top-menu">@ThemeHelper.GetWebSiteName()</div>
         </div>
         <div class="navbar-collapse collapse">
-            @Html.Raw(ThemeHelper.PrepareMenuHtml("Navigation", CurrentLanguage))
+            <form asp-controller="Search" asp-action="Index" method="get" class="navbar-form navbar-right">
+                <div class="input-group">
+                    <input type="text" name="q" id="q" class="form-control" value="@ViewBag.Q" placeholder="Search for..." aria-label="Search for..." />
+                    <span class="input-group-btn">
+                        <input type="submit" class="btn btn-primary" value="Search" />
+                    </span>
+                </div>
+            </form>
+            @Html.Raw(ThemeHelper.PrepareMenuHtml("Navigation", CurrentLanguage))            
             <div class="userMenu">
                 @await Html.PartialAsync("_SiteLoginPartial")
             </div>

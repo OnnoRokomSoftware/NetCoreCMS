@@ -10,12 +10,13 @@
 
 namespace NetCoreCMS.Framework.Core.Data
 {
-    public enum DatabaseEngine
+    public enum SupportedDatabases
     {
         SqLite,
         MsSqlLocalStorage,
         MySql,        
         MSSQL,
-        PgSql
+        PgSql,
+        InMemory
     }
 }

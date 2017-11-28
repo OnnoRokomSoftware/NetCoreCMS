@@ -27,6 +27,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Auth;
+using Microsoft.CodeAnalysis;
+using System.Collections;
+using NetCoreCMS.Framework.Modules;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
@@ -138,6 +141,6 @@ namespace NetCoreCMS.Framework.Core.Extensions
             var container = builder.Build();
 
             return container.Resolve<IServiceProvider>();
-        }
+        } 
     }
 }

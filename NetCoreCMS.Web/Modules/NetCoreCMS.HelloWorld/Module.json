@@ -1,6 +1,6 @@
 ﻿{
   "ModuleId": "com.NetCoreCMS.HelloWorld",
-  "ModuleTitle": "NetCoreCMS HelloWorld Module",
+  "ModuleTitle": "NetCoreCMS HelloWorld",
   "Author": "NetCoreCMS",
   "Email": "netcorecms@gmail.com",
   "Website": "http://DotNetCoreCMS.com",
@@ -10,7 +10,8 @@
   "Description": "Builtin Content Management Example Module.",
   "Version": "0.1.1",
   "MinNccVersion": "0.1.1",
-  "MaxNccVersion": "0.3.5",
+  "MaxNccVersion": "0.4.5",
   "Dependencies": [],
+  "TablePrefix": "",
   "Category": "HelloWorld,Example"
 }

@@ -10,9 +10,11 @@
 
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System.Collections.Generic;
+using System;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccModule : BaseModel<long>
     { 
         public NccModule()

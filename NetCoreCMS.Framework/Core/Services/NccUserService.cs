@@ -24,16 +24,32 @@ namespace NetCoreCMS.Framework.Core.Services
     {
         private readonly NccUserRepository _entityRepository;
         private readonly NccPermissionRepository _nccPermissionRepository;
-        
+        private readonly List<string> userRelations;
+
         public NccUserService(NccUserRepository entityRepository, NccPermissionRepository nccPermissionRepository)
         {
             _entityRepository = entityRepository;
             _nccPermissionRepository = nccPermissionRepository;
+            userRelations = new List<string>() {
+                    "Roles",
+                    "Roles.Role",
+                    "Permissions",
+                    "ExtraDenies",
+                    "ExtraPermissions",
+                    "Permissions.Permission",
+                    "Permissions.Permission.PermissionDetails",
+                    "Permissions.User"
+                };
         }
          
         public NccUser Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId,isAsNoTracking, new List<string>() { "Permissions","ExtraDenies","ExtraPermissions", "Permissions.Permission", "Permissions.User" });
+            return _entityRepository.Get(
+                entityId,
+                isAsNoTracking,
+                userRelations
+                );
+
         }
 
         public List<NccUser> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
@@ -43,14 +59,12 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccUser GetByUserName(string userName)
         {
-            return _entityRepository.Query()
-                .Include("Roles")
-                .Include("Permissions")
-                .Include("ExtraDenies")
-                .Include("ExtraPermissions")
-                .Include("Permissions.Permission")
-                .Include("Permissions.User")
-                .FirstOrDefault(x => x.UserName == userName);
+            var query =  _entityRepository.Query();
+            foreach (var item in userRelations)
+            {
+                query = query.Include(item);
+            }
+            return query.FirstOrDefault(x => x.UserName == userName);
         }
 
         public NccUser Save(NccUser entity)

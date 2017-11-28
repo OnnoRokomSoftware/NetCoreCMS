@@ -26,8 +26,7 @@ using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
 namespace NetCoreCMS.Core.Modules.Media.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Administrator,Editor,Author")]
-    [AdminMenu(Name = "Media", IconCls = "fa-folder-open-o", Order = 9)]
+    [AdminMenu(Name = "Media", IconCls = "fa-folder-open-o", Order = 2)]
     public class MediaHomeController : NccController
     {
         #region Initialization
@@ -137,7 +136,7 @@ namespace NetCoreCMS.Core.Modules.Media.Controllers
         #endregion
 
         #region Manage Operation
-        [AdminMenuItem(Name = "Manage Gallary", Url = "/MediaHome/Index", IconCls = "fa-image", Order = 1)]
+        [AdminMenuItem(Name = "Manage Gallary", Url = "/MediaHome/Index", IconCls = "fa-image", SubActions = new string[] { "Delete" }, Order = 1)]
         public ActionResult Index(bool isFile = false, string inputId = "", string sq = "", string successMessage = "", string errorMessage = "")
         {
             ViewBag.IsFile = isFile;

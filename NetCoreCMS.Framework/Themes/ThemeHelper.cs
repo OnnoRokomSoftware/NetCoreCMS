@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System;
+using NetCoreCMS.Framework.Core.Messages;
 
 namespace NetCoreCMS.Framework.Themes
 {
@@ -398,6 +399,79 @@ namespace NetCoreCMS.Framework.Themes
         {
             return "<link rel=\"stylesheet\" href=\"/lib/bootstrap/css/bootstrap.css\" />" +
                 "<script src=\"/lib/bootstrap/js/bootstrap.min.js\"></script>";
+        }
+        public static string GetGlobalMessages(GlobalMessage.MessageFor messageFor)
+        {
+            var content = "";
+            var messages = GlobalMessageRegistry.GetMessages(messageFor);
+            foreach (var item in messages)
+            {
+                var cssClass = "";
+                if (item.Type == GlobalMessage.MessageType.Error)
+                {
+                    cssClass = "alert alert-danger";
+                }
+                else if (item.Type == GlobalMessage.MessageType.Info)
+                {
+                    cssClass = "alert alert-info";
+                }
+                else if (item.Type == GlobalMessage.MessageType.Success)
+                {
+                    cssClass = "alert alert-success";
+                }
+                else if (item.Type == GlobalMessage.MessageType.Warning)
+                {
+                    cssClass = "alert alert-warning";
+                }
+
+                var registerer = $"<strong>{item.Registrater}:</strong>";
+
+                var close = "";
+                if (item.ForUsers.Count > 0)
+                {
+                    var user = GlobalContext.GetCurrentUserName();
+                    if (string.IsNullOrEmpty(user) == false && item.ForUsers.Contains(user))
+                    {
+                        close = $"<a href='#' data-ncc-global-message-id='{item.MessageId}' class='close-ncc-global-message pull-right'>X</a>";
+                        content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{registerer}{item.Text} {close}</div>";
+                    }
+                }
+                else
+                {
+                    content += $"<div id='{item.MessageId}' class='{cssClass}' style='margin-bottom:5px;padding:10px 20px;' >{registerer}{item.Text} {close}</div>";
+                }
+            }
+
+            if (string.IsNullOrEmpty(content) == false)
+            {
+                content += "<script>";
+                content += @"
+                    $(document).ready(function(){
+                        $('.close-ncc-global-message').on('click',function(){
+                            var id = $(this).attr('data-ncc-global-message-id');  
+                            $.ajax({
+                                url:'/CmsHome/RemoveGlobalMessage',
+                                method:'POST',
+                                data:{id:id},
+                                success: function(rsp){
+                                    if(rsp.isSuccess){
+                                        $('#'+id).remove();
+                                    }
+                                    else{
+                                        NccAlert.ShowError('Could not remove');
+                                    }
+                                },
+                                error:function(){
+                                    NccAlert.ShowError('Could not remove');
+                                }
+                            }); 
+                        });
+                    });
+                ";
+                content += "</script>";
+            }
+
+            return content;
         }
         #endregion
 

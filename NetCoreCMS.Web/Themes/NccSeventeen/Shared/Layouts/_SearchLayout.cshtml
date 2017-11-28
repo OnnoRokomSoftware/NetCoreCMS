@@ -1,0 +1,85 @@
+﻿@{
+    CurrentLayout = "SiteLayout";      
+}
+
+<!DOCTYPE html>
+<html lang="@CurrentLanguageCode">
+<head>
+    @NccRenderHead()
+    @Html.Raw(JavaScriptSnippet.FullScript)
+    @NccRenderHeaderCss()
+    @NccRenderHeaderScripts()
+
+    @RenderSection(ThemeHelper.Sections.StyleHeader, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptHeader, required: false)
+    @RenderSection("Styles", required: false)
+</head>
+<body id="body">
+    <!--MessageContainer-->
+    <div class="row">
+        <div id="messageContainer">
+            @if (TempData.ContainsKey("SuccessMessage") || ViewBag.SuccessMessage != null)
+            {
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    @Html.Raw(TempData["SuccessMessage"])@Html.Raw(ViewBag.SuccessMessage)
+                </div>
+            }
+            @if (TempData.ContainsKey("InfoMessage") || ViewBag.InfoMessage != null)
+            {
+                <div class="alert alert-info alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    @Html.Raw(TempData["InfoMessage"])@Html.Raw(ViewBag.InfoMessage)
+                </div>
+            }
+            @if (TempData.ContainsKey("WarningMessage") || ViewBag.WarningMessage != null)
+            {
+                <div class="alert alert-warning alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    @Html.Raw(TempData["WarningMessage"]) @Html.Raw(ViewBag.WarningMessage)
+                </div>
+            }
+            @if (TempData.ContainsKey("ErrorMessage") || ViewBag.ErrorMessage != null)
+            {
+                <div class="alert alert-danger alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    @Html.Raw(TempData["ErrorMessage"])@Html.Raw(ViewBag.ErrorMessage)
+                </div>
+            }
+        </div>
+    </div>    
+    <!--GlobalMessages-->
+    @NccRenderGlobalMessages()
+    <!--Loading-->
+    @NccRenderLoadingMaskContainer()
+    <!--Header-->
+    @NccRenderHeader()
+    <!--Navbar-->
+    @NccRenderNavigation("Parts/_NavigationNoSearch")
+
+    <!--MainBody-->
+    <div class="container mainBody">
+        <!--LeftColumn-->
+        @NccRenderLeftColumn()
+
+        <!--RightColumn-->
+        @NccRenderRightColumn()
+
+        <!--Maincontent-->
+        <div class="col-md-@BodyWidth">
+            <!--Featured-->
+            @NccRenderFeaturedSection() 
+            @NccRenderBody()
+        </div>
+    </div>
+
+    <!--Footer-->
+    @NccRenderFooter()
+    @NccRenderFooterCss()
+    @NccRenderFooterScripts()
+    @RenderSection(ThemeHelper.Sections.StyleFooter, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptFooter, required: false)
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

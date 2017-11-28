@@ -1,6 +1,6 @@
 ﻿ 
 @{ 
-    ViewData["Title"] = "Not authorized";
+    Title = "Not Authorized";
     Layout = "_SimpleLayout";
 }
 <style>
@@ -13,17 +13,17 @@
 </style>
 
 <div id="container">
-    <h1>Permission denied</h1>
+    <h1>Permission Denied</h1>
 
-    @if (TempData.Keys.Contains("Message"))
+    @if (TempData.Keys.Contains("SuccessMessage"))
     {
-        <div class="alert">
-            <h3>@TempData["Message"]</h3>
+        <div class="alert alert-success">
+            <h3>@TempData["SuccessMessage"]</h3>
         </div>
     }
     @if (TempData.Keys.Contains("ErrorMessage"))
     {
-        <div class="alert">
+        <div class="alert alert-danger">
             <h3>@TempData["ErrorMessage"]</h3>
         </div>
     }

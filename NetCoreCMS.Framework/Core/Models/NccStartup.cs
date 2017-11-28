@@ -8,10 +8,12 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccStartup : BaseModel<long>
     {  
         public long UserId { get; set; }
@@ -22,7 +24,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string StartupUrl { get; set; }
         public StartupFor StartupFor { get; set; }
 
-        public NccRole Role { get; set; }
+        public NccPermission Permission { get; set; }
     }
 
     public enum StartupFor

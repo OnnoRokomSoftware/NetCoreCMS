@@ -1,0 +1,52 @@
+﻿@using NetCoreCMS.Framework.Utility
+@using System.Text.RegularExpressions;
+
+@model NccPost
+
+@{  
+    var postDetails = ViewHelper.GetCurrentLanguagePostDetails(Model, ViewBag.CurrentLanguage, true);
+    var isSticky = "icon-pin-classic";
+
+    if (postDetails != null)
+    {
+
+        <div style="">
+            @if (Model.ThumImage != null)
+            {
+                <div style="width:220px; float:left; margin-right:10px;">
+                    <img src="@Model.ThumImage" width="220" height="110" />
+                </div>
+            }
+            <div>
+                <a href="/Post/@postDetails.Slug"><h3 style="margin-top:0px;">@postDetails.Title</h3></a>
+                @{
+                    var content = postDetails.Content;
+                    if (content?.Length > 0)
+                    {
+                        content = Regex.Replace(content, "<[^>]*>", string.Empty);
+                    }
+                    if (content?.Length > 0)
+                    {
+                        content = Regex.Replace(content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
+                    }
+                    var len = content?.Length;
+                    if (len > 200)
+                    {
+                        len = 200;
+                        content = content.Substring(0, len);
+                    }
+                    <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">@_T["More"]</a></p>
+                }
+                <p style="float:right; font-style:italic; font-size:12px;">
+                    @_T["Author"]:
+                    @if (Model.Author != null)
+                    { <span>@Model.Author.FullName</span> }
+                    else
+                    {<span>@_T["Anonymous"]</span> }
+                    <span> | @_T["Published Date"]: @Model.PublishDate.ToString("MMM dd, yyyy") </span>
+                </p>
+            </div>
+        </div>
+        <br />
+    }
+}

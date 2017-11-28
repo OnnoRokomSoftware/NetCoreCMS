@@ -23,6 +23,7 @@ using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
+using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
@@ -39,12 +40,18 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
         IHttpContextAccessor _httpContextAccessor;
         ILoggerFactory _loggerFactory;
 
-        public SetupHomeController(IHttpContextAccessor httpContextAccessor, ILoggerFactory loggerFactory)
+        //public NccWebSiteWidgetService nccWebSiteWidgetService { get; }
+        //public NccWebSiteService nccWebSiteService { get; }
+
+        public SetupHomeController(IHttpContextAccessor httpContextAccessor, ILoggerFactory loggerFactory/*, NccWebSiteWidgetService webSiteWidgetService, NccWebSiteService webSiteService*/)
         {
             _httpContextAccessor = httpContextAccessor;
             _loggerFactory = loggerFactory;
+            //nccWebSiteWidgetService = webSiteWidgetService;
+            //nccWebSiteService = webSiteService;
             _logger = loggerFactory.CreateLogger<SetupHomeController>();
         }
+
         public ActionResult Index()
         {
             if (!SetupHelper.IsDbCreateComplete)
@@ -66,8 +73,10 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             {
                 SetupHelper.ConnectionString = DatabaseFactory.GetConnectionString(setup.Database, setup);
                 SetupHelper.SelectedDatabase = setup.Database.ToString();
-                SetupHelper.IsDbCreateComplete = SetupHelper.CreateDatabase(setup.Database, setup);               
+                SetupHelper.IsDbCreateComplete = SetupHelper.CreateDatabase(setup.Database, setup);
+                SetupHelper.TablePrefix = setup.TablePrefix;
                 SetupHelper.SaveSetup();
+                TempData["TablePrefix"] = setup.TablePrefix;
                 return RedirectToAction("CreateAdmin");
             }
             else
@@ -93,6 +102,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             if (SetupHelper.IsDbCreateComplete == true && SetupHelper.IsAdminCreateComplete == false)
             {
                 ViewBag.Languages = new SelectList(SupportedCultures.Cultures.Select(x => new { Value = x.TwoLetterISOLanguageName, Text = x.DisplayName }).ToList(), "Value","Text");
+                ViewBag.TablePrefix = TempData["TablePrefix"];
                 return View();
             }
 
@@ -121,22 +131,22 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                 
                 var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
 
-                DatabaseEngine dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
+                SupportedDatabases supportedDatabases = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
 
-                switch (dbe)
+                switch (supportedDatabases)
                 {
-                    case DatabaseEngine.MSSQL:
+                    case SupportedDatabases.MSSQL:
                         optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                         break;
-                    case DatabaseEngine.MsSqlLocalStorage:
+                    case SupportedDatabases.MsSqlLocalStorage:
                         break;
-                    case DatabaseEngine.MySql:
+                    case SupportedDatabases.MySql:
                         optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                         break;
-                    case DatabaseEngine.SqLite:
+                    case SupportedDatabases.SqLite:
                         optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                         break;
-                    case DatabaseEngine.PgSql:
+                    case SupportedDatabases.PgSql:
                         break;
                 }
 
@@ -193,18 +203,28 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                     ConnectionString = SetupHelper.ConnectionString,
                     Database = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase),
                     Email = viewModel.Email,
-                    Language = viewModel.Language
+                    Language = viewModel.Language,
+                    TablePrefix = viewModel.TablePrefix
                 };
 
-                SetupHelper.RegisterAuthServices(dbe);
-                var admin = await SetupHelper.CreateSuperAdminUser(userManager, roleManager, signInManager, setupInfo);
-                SetupHelper.IsAdminCreateComplete = true;
-                SetupHelper.Language = viewModel.Language;
-                SetupHelper.SaveSetup();
-                SetupHelper.CrateNccWebSite(nccDbConetxt, setupInfo);
+                //SetupHelper.RegisterAuthServices(supportedDatabases);
+                var admin = await SetupHelper.CreateSuperAdminUser(nccDbConetxt, userManager, roleManager, signInManager, setupInfo);
+                if(admin != null)
+                {
+                    SetupHelper.IsAdminCreateComplete = true;
+                    SetupHelper.Language = viewModel.Language;
+                    SetupHelper.SaveSetup();
+                    SetupHelper.CrateNccWebSite(nccDbConetxt, setupInfo);
 
-                return Redirect("/Home/SetupSuccess");
+                    await SetupHelper.SaveBasicData(admin, nccDbConetxt, userManager, roleManager, signInManager, setupInfo/*, nccWebSiteWidgetService, nccWebSiteService*/);
 
+                    return Redirect("/Home/SetupSuccess");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Could not create Admin user and Roles.";
+                    return Redirect("/Home/Error");
+                }                
             }
 
             TempData["ErrorMessage"] = "Setup already completed.";
@@ -214,7 +234,6 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
         public ActionResult Success()
         {
             return View();
-        }
-        
+        }        
     }
 }

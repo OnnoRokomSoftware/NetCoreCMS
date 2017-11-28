@@ -19,7 +19,7 @@ using NetCoreCMS.Framework.Core.Models;
 
 namespace NetCoreCMS.Framework.Core.Repository
 {
-    public class NccPermissionRepository : BaseRepository<NccPermission, long>, ITransient
+    public class NccPermissionRepository : BaseRepository<NccPermission, long>
     {
         public NccPermissionRepository(NccDbContext context) : base(context)
         {

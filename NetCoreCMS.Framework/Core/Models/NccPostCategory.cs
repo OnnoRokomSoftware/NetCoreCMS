@@ -8,8 +8,11 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
+
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccPostCategory
     {
         public long PostId { get; set; }        

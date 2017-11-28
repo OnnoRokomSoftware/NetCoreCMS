@@ -1,6 +1,6 @@
 ﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-
 @inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>@ViewData["Title"] - NetCoreCMS</title>
+    <title>@ViewData["Title"] - NetCoreCMS Admin</title>
       
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
@@ -45,33 +45,42 @@
 
     @RenderSection("Styles", required: false)
 </head>
+
 <body>
     <div id="loadingMask" class="loader loader-double"></div>
+    @{ 
+        var globalMessageContainer = "";
+        var content = ThemeHelper.GetGlobalMessages(GlobalMessage.MessageFor.Admin);
+        if (string.IsNullOrEmpty(content) == false)
+        {
+            globalMessageContainer = "<div id=\"globalMessageContainer\" class=\"ncc-global-message\">" + content + "</div>";
+        }
+    }
     <div id="wrapper">
         <div class="row">
             <div id="messageContainer">
-                @if (TempData.ContainsKey("SuccessMessage") || ViewBag.SuccessMessage != null)
+                @if (TempData.ContainsKey("SuccessMessage") || ViewBag.SuccessMessage != null || ViewData["SuccessMessage"] != null)
                 {
                     <div class="alert alert-success alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         @Html.Raw(TempData["SuccessMessage"])@Html.Raw(ViewBag.SuccessMessage)
                     </div>
                 }
-                @if (TempData.ContainsKey("InfoMessage") || ViewBag.InfoMessage != null)
+                @if (TempData.ContainsKey("InfoMessage") || ViewBag.InfoMessage != null || ViewData["InfoMessage"] != null)
                 {
                     <div class="alert alert-info alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                         @Html.Raw(TempData["InfoMessage"])@Html.Raw(ViewBag.InfoMessage)
                     </div>
                 }
-                @if (TempData.ContainsKey("WarningMessage") || ViewBag.WarningMessage != null)
+                @if (TempData.ContainsKey("WarningMessage") || ViewBag.WarningMessage != null || ViewData["WarningMessage"] != null)
                 {
                     <div class="alert alert-warning alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        @Html.Raw(TempData["WarningMessage"]) @Html.Raw(ViewBag.WarningMessage)
+                        @Html.Raw(TempData["WarningMessage"])@Html.Raw(ViewBag.WarningMessage)
                     </div>
                 }
-                @if (TempData.ContainsKey("ErrorMessage") || ViewBag.ErrorMessage != null)
+                @if (TempData.ContainsKey("ErrorMessage") || ViewBag.ErrorMessage != null || ViewData["ErrorMessage"] != null)
                 {
                     <div class="alert alert-danger alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -133,7 +142,7 @@
                         <li class="active">
                             <a asp-controller="Dashboard" asp-action="Index"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>                       
-                        @Html.Raw(NccMenuHelper.GetAdminMenuHtml(NccMenuHelper.GetModulesAdminMenus()))
+                        @Html.Raw(NccMenuHelper.GetAdminMenuHtml(NccMenuHelper.GetModulesAdminMenus(), User.GetUserId()))
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
@@ -146,11 +155,15 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="row">
-                            <div id="globalMessageContainer" class="ncc-global-message">
-
+                            <div class="row">
+                                <div class="row">
+                                    @Html.Raw(globalMessageContainer)
+                                </div>
                             </div>                            
+                            @*<div id="globalMessageContainer" class="ncc-global-message">
+                            </div>*@                            
                         </div>
-                        <h1 class="page-header">@ViewData["PageTitle"]</h1> 
+                        <h1 class="page-header">@Title</h1> 
                         @RenderBody()
                     </div>
                     <!-- /.col-lg-12 -->

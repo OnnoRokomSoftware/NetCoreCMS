@@ -1,0 +1,167 @@
+﻿@using NetCoreCMS.Framework.Utility
+@model NccPage
+
+@{
+    Layout = Constants.AdminLayoutName;
+    Title = "Page Creation";
+    SubTitle = "Create a new page";
+}
+
+    <div class="row">
+
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @SubTitle
+                <div class="pull-right"><a asp-controller="CmsPage" asp-action="Index" class="btn btn-outline btn-primary btn-xs">Back to Manage</a></div> 
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <form id="pageCreateForm" class="form-horizontal" asp-controller="CmsPage" asp-action="Create" method="post">
+
+                        <div class="col-sm-8 pull-left">
+                            @*<h3>@Title</h3>*@
+                            <div class="col-md-12">
+                                <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">Page Title: </span>
+                                    <input type="text" class="form-control" id="Title" name="Title" asp-for="Title" placeholder="Enter Page Title">
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                                <div class="form-group input-group">
+                                    <span class="input-group-addon">http://yourdomain.com/CmsPage/</span>
+                                    <input type="text" class="form-control" id="Slug" name="Slug" asp-for="Slug" placeholder="Slug">
+                                    <span asp-validation-for="Slug" class="text-danger"></span>
+                                </div>
+                            </div>
+                            @*<div>
+                                <label for="Title">Title:</label>
+                                <div>
+                                    <input type="text" class="form-control" id="Title" name="Title" asp-for="Title" placeholder="Enter Page Title">
+                                    <span asp-validation-for="Title" class="text-danger"></span>
+                                </div>
+                            </div>*@
+                            @*<div>
+                                <label for="Slug">Slug:</label>
+                                <div>
+                                    <label>http://yourdomain.com/CmsPage/</label>
+                                    <input type="text" class="form-control" id="Slug" name="Slug" asp-for="Slug">
+                                    <span asp-validation-for="Slug" class="text-danger"></span>
+                                </div>
+                            </div>*@
+
+                            <div>
+                                <label>Page Content</label>
+                                <textarea id="PageContent" name="PageContent" class="form-control" data-val="false"></textarea>
+                                <span asp-validation-for="Content" class="text-danger"></span>
+                            </div>
+
+                            <div>
+                                <label>Meta Description</label>
+                                <textarea class="form-control" asp-for="MetaDescription"></textarea>
+                            </div>
+
+                            <div>
+                                <label>Meta Keyword</label>
+                                <textarea class="form-control" asp-for="MetaKeyword"></textarea>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-4 pull-right">
+                            <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingOne">
+                                        <div class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                                <i class="more-less glyphicon glyphicon-chevron-down" ></i>
+                                                Publish
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div id="collapseOne" class="panel-collapse" role="tabpanel" aria-labelledby="headingOne">
+                                        <div class="panel-body">
+                                            <div>
+                                                <label>Status</label>
+                                                <select class="form-control" asp-for="PageStatus">
+                                                    <option value="Draft">Draft</option>
+                                                    <option value="Review">Review</option>
+                                                    <option value="Published" selected>Published</option>
+                                                    <option value="Unpublished">Unpublished</option>
+                                                    <option value="Archived">Archived</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Visibility</label>
+                                                <select class="form-control" asp-for="PageType">
+                                                    <option value="Public">Public</option>
+                                                    <option value="Private">Private</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Schedule Date</label>
+                                                <input type="text" class="form-control" asp-for="PublishDate" value="@DateTime.Now" />
+                                            </div>
+                                            <div>
+                                                <label>Add to Navigation Menu</label>
+                                                <input type="checkbox" asp-for="AddToNavigationMenu" />
+                                            </div>
+                                        </div>
+                                        <div class="panel-footer">
+                                            <div class="pull-left">
+                                                <button id="saveDraft" class="btn btn-sm btn-default" type="button">Save Draft</button>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button id="publish" class="btn btn-sm btn-primary" type="button">Publish</button>
+                                            </div>
+                                            <div style="clear:both;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel panel-default">
+                                    <div class="panel-heading" role="tab" id="headingTwo">
+                                        <div class="panel-title">
+                                            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                                                <i class="more-less glyphicon glyphicon-chevron-down"></i>
+                                                Atributs
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div id="collapseTwo" class="panel-collapse " role="tabpanel" aria-labelledby="headingTwo">
+                                        <div class="panel-body">
+                                            <div>
+                                                <label>Parent Page:</label>
+                                                <select class="form-control" asp-for="Parent">
+                                                    <option value="0">Select Parent</option>
+                                                    <option value="1">Page1</option>
+                                                    <option value="2">Page2</option>
+                                                    <option value="3">Page3</option>
+                                                    <option value="4">Page4</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label>Order</label>
+                                                <input type="tel" class="form-control" asp-for="PageOrder" value="0" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+@section Scripts{
+    <script>
+    KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
+    </script>
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <link href="/NetCoreCMS.Modules.Cms/css/page.css" rel="stylesheet" />
+    <script src="/NetCoreCMS.Modules.Cms/js/page.js"></script>
+}

@@ -10,7 +10,8 @@
   "Description": "Builtin Media module for Content Management.",
   "Version": "0.1.1",
   "MinNccVersion": "0.1.1",
-  "MaxNccVersion": "0.3.5",
+  "MaxNccVersion": "0.4.5",
   "Category": "Core",
+  "TablePrefix": "",
   "Dependencies": []
 }

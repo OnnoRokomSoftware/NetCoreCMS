@@ -22,7 +22,7 @@ namespace NetCoreCMS.Framework.Core.Services
     /// <summary>
     /// Service for user permission details. 
     /// </summary>
-    public class NccPermissionDetailsService : IBaseService<NccPermissionDetails>, ITransient
+    public class NccPermissionDetailsService : IBaseService<NccPermissionDetails>
     {
         private readonly NccPermissionDetailsRepository _entityRepository;
 

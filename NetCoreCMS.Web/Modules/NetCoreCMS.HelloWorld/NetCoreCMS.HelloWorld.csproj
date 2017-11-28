@@ -18,6 +18,10 @@
   </ItemGroup>
   
   <ItemGroup>
+    <PackageReference Include="PaulMiami.AspNetCore.Mvc.Recaptcha" Version="1.2.1" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\..\..\NetCoreCMS.Framework\NetCoreCMS.Framework.csproj" />
   </ItemGroup>
 

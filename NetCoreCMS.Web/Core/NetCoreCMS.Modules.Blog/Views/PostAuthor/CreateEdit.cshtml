@@ -1,0 +1,427 @@
+﻿@using NetCoreCMS.Framework.Utility
+@model NccPost
+
+@{
+    Layout = Constants.AdminLayoutName;
+    var mainName = "My Post";
+    var controllerName = "PostAuthor";
+    Title = mainName + " Create";
+    SubTitle = "Create a new " + mainName.ToLower();
+    if (Model.Id > 0)
+    {
+        Title = mainName + " Edit";
+        SubTitle = "Update information of a " + mainName.ToLower();
+    }
+}
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .bootstrap-tagsinput {
+        width: 100%;
+        min-height: 100px;
+    }
+
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @SubTitle
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        if (GlobalContext.WebSite.IsMultiLangual == true || Model.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
+                        {
+                            for (var j = 0; j < Model.PostDetails.Count; j++)
+                            {
+                                <a asp-controller="@controllerName" asp-action="Details" asp-route-slug="@Model.PostDetails[j].Slug" target="_blank" class="btn btn-outline btn-info btn-xs">
+                                    <i class="fa fa-eye"></i> @Model.PostDetails[j].Language
+                                </a>
+                            }
+                        }
+                        else
+                        {
+                            var temp = Model.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
+                            <a asp-controller="@controllerName" asp-action="Details" asp-route-slug="@temp.Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @temp.Language</a>
+                        }
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Post</a>
+                    }
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Post</a>
+                </div> 
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                        <div class="col-md-8">                            
+                            <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+                            <input type="hidden" asp-for="Id" />
+                            <input type="hidden" asp-for="Status" />
+                            <div class="">
+                                @{
+                                    var tabBorderDesign = "";
+                                }
+                                @if (GlobalContext.WebSite.IsMultiLangual == true)
+                                {
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        @foreach (var item in Model.PostDetails)
+                                        {
+                                            if (GlobalContext.WebSite.Language == item.Language)
+                                            {
+                                                <li role="presentation" class="active">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                        (D)
+                                                        @SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName
+                                                    </a>
+                                                </li>
+                                            }
+                                            else
+                                            {
+                                                <li role="presentation" class="">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                        @if (SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).Count() > 0)
+                                                        {
+                                                            <span>@SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@item.Language</span>
+                                                        }
+                                                    </a>
+                                                </li>
+                                            }
+                                        }
+                                    </ul>
+                                    tabBorderDesign = "tabBorderDesign";
+                                }
+                                <!-- Tab panes -->
+                                <div class="tab-content @tabBorderDesign">
+                                    @{ var activeClass = ""; var i = 0;}
+                                    @foreach (var item in Model.PostDetails)
+                                    {
+                                        if (GlobalContext.WebSite.Language == item.Language)
+                                        { activeClass = "active"; }
+                                        else { activeClass = ""; }
+                                        <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">
+                                            <div class="" style="padding:10px 25px 25px 25px;">
+                                                <div class="col-md-12">
+                                                    <input type="hidden" asp-for="PostDetails[i].Id" />
+                                                    <input type="hidden" asp-for="PostDetails[i].Language" />
+                                                    <input type="hidden" asp-for="PostDetails[i].Status" />
+                                                    <div class="form-group input-group">
+                                                        <span class="input-group-addon">Post Title: </span>
+                                                        <input type="text" class="form-control postTitle" asp-for="PostDetails[i].Title" placeholder="Enter Post Title in @item.Language">
+                                                        <span asp-validation-for="PostDetails[i].Title" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group input-group">
+                                                        <span class="input-group-addon">@ViewBag.DomainName</span>
+                                                        <input type="text" class="form-control postSlug" asp-for="PostDetails[i].Slug" placeholder="Slug in @item.Language">
+                                                        <span asp-validation-for="PostDetails[i].Slug" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="">
+                                                    <label>Content</label>
+                                                    <textarea class="form-control postContent" asp-for="PostDetails[i].Content"></textarea>
+                                                    <span asp-validation-for="PostDetails[i].Content" class="text-danger"></span>
+                                                </div>
+                                                <div class="">
+                                                    <label>Meta Description</label>
+                                                    <textarea class="form-control" asp-for="PostDetails[i].MetaDescription" placeholder="Meta description in @item.Language"></textarea>
+                                                </div>
+                                                <div class="">
+                                                    <label>Meta Keyword</label>
+                                                    <textarea class="form-control" asp-for="PostDetails[i].MetaKeyword" placeholder="Meta keyword in @item.Language"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        i++;
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="panel panel-default">
+                                <div class="panel-body" style="padding:0;">
+                                    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="margin:0;">
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingOne">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="color:#000;">
+                                                    <div class="panel-title">
+                                                        <i class="more-less glyphicon glyphicon-chevron-down"></i>
+                                                        Attributes
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                                                <div class="panel-body">
+                                                    <div class="row" style="margin-bottom:5px;">
+                                                        <label class="control-label col-sm-4">Status</label>
+                                                        <div class="col-sm-8">
+                                                            <select class="form-control" asp-for="PostStatus" id="PostStatus" asp-items="@ViewBag.PostStatus"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-bottom:5px;">
+                                                        <label class="control-label col-sm-4">Visibility</label>
+                                                        <div class="col-sm-8">
+                                                            <select class="form-control" asp-for="PostType" asp-items="@ViewBag.PostType"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-bottom:5px;">
+                                                        <label class="control-label col-sm-4">Schedule Date</label>
+                                                        <div class="col-sm-8">
+                                                            <div class='input-group date datetimepicker'>
+                                                                <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("MMM dd, yyyy hh:mm tt")" />
+                                                                <span class="input-group-addon">
+                                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-bottom:5px;">
+                                                        <label class="control-label col-sm-4 text-right">Layout</label>
+                                                        <div class="col-sm-8">
+                                                            <select class="form-control" asp-for="Layout" asp-items="@ViewBag.Layouts"></select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="margin-bottom:5px;">
+                                                        <label class="control-label col-sm-4 text-right">Parrent:</label>
+                                                        <div class="col-sm-8">
+                                                            <select class="form-control" asp-for="Parent" name="ParentId" asp-items="@ViewBag.AllPosts">
+                                                                <option value="0">Select Parent</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="pull-right" style="padding:5px;">
+                                                        <label>Is Featured</label>
+                                                        <input type="checkbox" asp-for="IsFeatured" />
+                                                    </div>
+                                                    <div class="pull-right" style="padding:5px;">
+                                                        <label>Is Stiky</label>
+                                                        <input type="checkbox" asp-for="IsStiky" />
+                                                    </div>
+                                                    <div class="pull-right" style="padding:5px;">
+                                                        <label>Allow Comment</label>
+                                                        <input type="checkbox" asp-for="AllowComment" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+                                        <!--Category-->
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingTwo">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" class="collapsed" style="color:#000;">
+                                                    <div class="panel-title">
+                                                        <i class="more-less glyphicon glyphicon-chevron-down"></i>
+                                                        Categories
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" aria-labelledby="headingTwo">
+                                                <div class="panel-body" style="max-height:30vh;overflow:auto;">
+                                                    <div>
+                                                        @*<select class="form-control" asp-for="Categories" asp-items="@ViewBag.Categories"></select>*@
+                                                        @foreach (NccCategory item in ViewBag.CategoryList)
+                                                        {
+                                                            if (Model.Categories.Where(x => x.CategoryId == item.Id).Count() > 0)
+                                                            {
+                                                                <input type="checkbox" name="SelecetdCategories[]" value="@item.Id" checked="checked" />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="checkbox" name="SelecetdCategories[]" value="@item.Id" />
+                                                            }
+		                                                    <span>@item.Name </span><br />
+	                                                   }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--TAGs-->
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingThree">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree" class="collapsed" style="color:#000;">
+                                                    <div class="panel-title">
+                                                        <i class="more-less glyphicon glyphicon-chevron-down"></i>
+                                                        Tags
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" aria-labelledby="headingThree">
+                                                <div class="panel-body">
+                                                    <div>
+                                                        @{ var tags = string.Join(", ", Model.Tags.Select(x => x.Tag.Name));}
+                                                        <input type="hidden" class="form-control" id="SelectedTags" name="SelectedTags" value="@tags" data-role="tagsinput" style="width:100%; min-height:30px;" placeholder="Enter tags here" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!--Featured Image-->
+                                        <div class="panel panel-default">
+                                            <div class="panel-heading" role="tab" id="headingFour">
+                                                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFour" aria-expanded="false" aria-controls="collapseFour" class="collapsed" style="color:#000;">
+                                                    <div class="panel-title">
+                                                        <i class="more-less glyphicon glyphicon-chevron-down"></i>
+                                                        Featured Image
+                                                    </div>
+                                                </a>
+                                            </div>
+                                            <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-expanded="false" aria-labelledby="headingFour">
+                                                <div class="panel-body">
+                                                    <div>
+                                                        <img src="@Model.ThumImage" id="ThumImageView" style="max-width:350px;max-height:100px;padding-bottom:5px;" /><br />
+                                                        <input type="button" class="btn btn-default" id="ThumImageSelect" value="Select Image" onclick="openFFPromotionPopup('/MediaHome/?inputId=ThumImage')" />
+                                                        <input type="hidden" class="form-control" asp-for="ThumImage" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="panel-footer">
+                                    <input type="hidden" name="SubmitType" id="SubmitType" value="Save" />
+                                    <div class="pull-left">
+                                        <button id="save" class="btn btn-sm btn-primary" type="button">
+                                            @if (Model.Id > 0)
+                                            {
+                                                <span>Update</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Save</span>
+                                            }
+                                        </button>
+                                    </div>
+                                    <div class="pull-right">
+                                        @if (Model.Id == 0 || (int)Model.PostStatus != 2)
+                                        {
+                                            <button id="publish" class="btn btn-sm btn-success" type="button">Save and exit</button>
+                                        }
+                                    </div>
+                                    <div style="clear:both;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+@section Scripts{
+    <link href="~/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.css" rel="stylesheet" />
+    <script src="~/lib/bootstrap-tagsinput-latest/dist/bootstrap-tagsinput.min.js"></script>
+    <script>
+        $('#SelectedTags').tagsinput({
+
+        });
+    </script>
+
+    <script>
+        KEDITOR_BASEPATH = "@Url.Content("~/lib/ckeditor/")";
+    </script>
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script>
+        $(document).ready(function () {
+            var elements = document.getElementsByClassName('postContent');
+            for (var i = 0; i < elements.length; ++i) {
+                CKEDITOR.replace(elements[i], {
+                    enterMode: CKEDITOR.ENTER_DIV,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    //filebrowserUploadUrl: '/media/files',
+                    //filebrowserImageUploadUrl: '/MediaHome/Upload',
+                    //filebrowserWindowWidth: 800,
+                    //filebrowserWindowHeight: 500,
+                    toolbar: [
+                        { name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        { name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
+                        { name: 'editing1', items: ['SpellChecker', 'Scayt'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        { name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
+                        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                        { name: 'insert', items: ['Image', /*'Flash',*/ 'Table'] },
+                        //'/',
+                        { name: 'colors', items: ['TextColor', 'BGColor'] },
+                        { name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
+                        { name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                    ],
+                });
+            }
+
+            $(".postTitle").change(function () {
+                $(this).parent().parent().find(".postSlug").val(NccUtil.GetSafeSlug($(this).val()));
+            });
+
+            $("#publish").click(function () {
+                //var element = document.getElementById('PostStatus');
+                //element.value = "2";
+                //console.log($("#Slug").val());
+                //if ($("#Slug").val() == "") {
+                //    document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
+                //    console.log($("#Slug").val());
+                //}
+                document.getElementById("SubmitType").value = "saveAndExit";
+                //$("#SubmitType").value = "publish";
+
+                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
+                document.getElementById("createEditForm").submit();
+            });
+
+            $("#save").click(function () {
+                //if ($("#Slug").val() == "") {
+                //    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+                //}
+                $("#SubmitType").val("Save");
+
+                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
+                document.getElementById("createEditForm").submit();
+            });
+
+
+        });
+    </script>
+    <script>
+        var windowObjectReference = null; // global variable
+        function openFFPromotionPopup(siteUrl) {
+            if (windowObjectReference == null || windowObjectReference.closed) {
+                windowObjectReference = window.open(siteUrl, "PromoteFirefoxWindowName", "resizable,scrollbars,status");
+            }
+            else {
+                windowObjectReference.focus();
+            };
+        }
+        setInterval(function () {
+            $("#ThumImageView").attr("src", $("#ThumImage").val());
+            //console.log($("#SiteLogoUrl").val());
+        }, 500);
+    </script>
+}

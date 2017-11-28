@@ -145,7 +145,7 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<NccStartup>(b => {
                 b.ToTable("Ncc_Startup");
                 //b.HasOne(p => p.User);
-                b.HasOne(p => p.Role);                
+                b.HasOne(p => p.Permission);                
             });
              
             modelBuilder.Entity<NccUser>(b =>
@@ -168,6 +168,7 @@ namespace NetCoreCMS.Framework.Core.Models
             modelBuilder.Entity<NccWebSite>(b => {
                 b.ToTable("Ncc_WebSite");
                 b.HasMany(w => w.WebSiteInfos);
+                b.Property(p => p.EnableCache).HasDefaultValue(false);
             });
 
             modelBuilder.Entity<NccWebSiteInfo>().ToTable("Ncc_WebSite_Info");

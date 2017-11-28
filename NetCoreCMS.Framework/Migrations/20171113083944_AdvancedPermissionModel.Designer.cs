@@ -498,6 +498,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<int>("Rank");
+
                     b.Property<string>("Group");
 
                     b.Property<string>("Metadata");
@@ -541,6 +543,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long>("ModifyBy");
 
                     b.Property<string>("ModuleId");
+
+                    b.Property<string>("MenuType");
 
                     b.Property<string>("Name");
 

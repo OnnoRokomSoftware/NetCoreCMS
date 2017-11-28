@@ -1,49 +1,135 @@
-﻿@using NetCoreCMS.Modules.News.Models
-@using System.Collections
-
-@model NeCategory
+﻿@model NeCategory
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "Category Create";
-    ViewData["PageSubtitle"] = "Create a new linkshare category";
+    var mainName = "News Category";
+    Title = mainName + " Create";
+    SubTitle = "Create a new " + mainName.ToLower();
     if (Model.Id > 0)
     {
-        ViewData["PageTitle"] = "Category Update";
-        ViewData["PageSubtitle"] = "Update an existing linkshare category";
+        Title = mainName + " Update";
+        SubTitle = "Update an existing " + mainName.ToLower();
     }
+
     var controllerName = "NeCategory";
 }
-    
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .input-group-addon {
+        min-width: 180px;
+        text-align: right;
+    }
+</style>  
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New @mainName</a>
+                    }
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage @mainName</a>
+                </div>
             </div>
             <div class="panel-body">
-
-                <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
-                    <input type="hidden" asp-for="Id" value="@Model.Id" />
-                    <input type="hidden" asp-for="Status" value="@Model.Status" />
-                    <div class="col-sm-6 pull-left">
-                        <div class="form-group">
-                            <label class="col-md-3 text-right">Name </label>
-                            <div class="col-md-9">
-                                <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
+                <div class="col-md-6">
+                    <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Status" />
+                        <div class="col-md-12">
+                            <div class="row">
+                                @{
+                                    var tabBorderDesign = "";
+                                }
+                                @if (GlobalContext.WebSite.IsMultiLangual == true)
+                                {
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        @foreach (var item in Model.Details)
+                                    {
+                                        if (GlobalContext.WebSite.Language == item.Language)
+                                        {
+                                                <li role="presentation" class="active">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                        (D)
+                                                        @SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName
+                                                    </a>
+                                                </li>
+                                        }
+                                        else
+                                        {
+                                                <li role="presentation" class="">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                        @if (SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).Count() > 0)
+                                                    {
+                                                            <span>@SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName</span>
+                                                    }
+                                                    else
+                                                    {
+                                                            <span>@item.Language</span>
+                                                    }
+                                                    </a>
+                                                </li>
+                                        }
+                                    }
+                                    </ul>
+                                    tabBorderDesign = "tabBorderDesign";
+                                }
+                                <!-- Tab panes -->
+                                <div class="tab-content @tabBorderDesign">
+                                    @{ var activeClass = ""; var i = 0;}
+                                    @foreach (var item in Model.Details)
+                                    {
+                                        if (GlobalContext.WebSite.Language == item.Language)
+                                        { activeClass = "active"; }
+                                        else { activeClass = ""; }
+                                        <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">
+                                            <div class="" style="padding:10px 25px 25px 25px;">
+                                                <div class="col-md-12">
+                                                    <input type="hidden" asp-for="Details[i].Id" />
+                                                    <input type="hidden" asp-for="Details[i].Language" />
+                                                    <input type="hidden" asp-for="Details[i].Status" />
+                                                    <div class="form-group">
+                                                        <label class="control-label col-md-3">Name: </label>
+                                                        <div class="col-md-9">
+                                                            <input type="text" class="form-control categoryName" asp-for="Details[i].Name" placeholder="Enter Name in @item.Language">
+                                                            <span asp-validation-for="Details[i].Name" class="text-danger"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        i++;
+                                    }
+                                </div>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <br />
+                            @*<div class="form-group">
+                                <label class="col-md-3 text-right">Name </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
+                                </div>
+                            </div>*@
 
-                        <div>
-                            <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
-                            <input type="submit" class="btn btn-primary" name="Save" value="Save" />
-                            @*<input type="submit" class="btn btn-default" name="Save" value="Save And Edit" />*@
+                            <div class="text-center">
+                                <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
+                                <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                                @if (Model.Id == 0)
+                                {
+                                    <input type="submit" class="btn btn-success" name="Save" value="Save And New" />
+                                }
+                            </div>
                         </div>
-
-                    </div>
-
-
-                </form>
+                    </form>
+                </div>
             </div>
             <!-- /.panel-body -->
         </div>

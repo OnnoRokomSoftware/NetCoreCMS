@@ -1,6 +1,6 @@
 ﻿{
   "ModuleId": "com.NetCoreCMS.News",
-  "ModuleTitle": "NetCoreCMS News Module",
+  "ModuleTitle": "News Module",
   "Author": "NetCoreCMS",
   "Email": "netcorecms@gmail.com",
   "Website": "http://DotNetCoreCMS.com",
@@ -10,7 +10,8 @@
   "Description": "Builtin News Module.",
   "Version": "1.1",
   "MinNccVersion": "0.1.1",
-  "MaxNccVersion": "0.3.5",
+  "MaxNccVersion": "0.4.5",
   "Category": "Link,share,notice,News",
-  "Dependencies": [] 
+  "TablePrefix": "Ne_",
+  "Dependencies": []
 }

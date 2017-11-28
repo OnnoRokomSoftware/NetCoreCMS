@@ -14,8 +14,8 @@ using System.Linq;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Modules.News.Repository;
-using NetCoreCMS.Modules.News.Models;
 using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Modules.News.Models.Entity;
 
 namespace NetCoreCMS.Modules.News.Services
 {
@@ -30,7 +30,7 @@ namespace NetCoreCMS.Modules.News.Services
 
         public NeCategory Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId, isAsNoTracking);
+            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "Details" });
         }
 
         public NeCategory Save(NeCategory entity)
@@ -42,7 +42,7 @@ namespace NetCoreCMS.Modules.News.Services
 
         public NeCategory Update(NeCategory entity)
         {
-            var oldEntity = _entityRepository.Query().FirstOrDefault(x => x.Id == entity.Id);
+            var oldEntity = _entityRepository.Query().Include("Details").FirstOrDefault(x => x.Id == entity.Id);
             if (oldEntity != null)
             {
                 using (var txn = _entityRepository.BeginTransaction())
@@ -70,7 +70,7 @@ namespace NetCoreCMS.Modules.News.Services
 
         public List<NeCategory> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "Details" });
         }
 
         public void DeletePermanently(long entityId)
@@ -87,8 +87,40 @@ namespace NetCoreCMS.Modules.News.Services
         {
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;
+            oldEntity.Metadata = entity.Metadata;
             oldEntity.Name = entity.Name;
             oldEntity.Status = entity.Status;
+
+            var currentDateTime = DateTime.Now;
+            foreach (var item in entity.Details)
+            {
+                var isNew = false;
+                var temp = oldEntity.Details.Where(x => x.Language == item.Language).FirstOrDefault();
+                if (temp == null)
+                {
+                    isNew = true;
+                    temp = new NeCategoryDetails();
+                    temp.Language = item.Language;
+                }                
+                temp.Metadata = item.Metadata;
+                temp.Name = item.Name;
+                if (isNew)
+                {
+                    oldEntity.Details.Add(temp);
+                }
+            }
+        }
+
+
+
+        public long Count(bool isActive, string keyword)
+        {
+            return _entityRepository.Count(isActive, keyword);
+        }
+
+        public List<NeCategory> Load(int from, int total, bool isActive, string keyword, string orderBy, string orderDir)
+        {
+            return _entityRepository.Load(from, total, isActive, keyword, orderBy, orderDir);
         }
     }
 }

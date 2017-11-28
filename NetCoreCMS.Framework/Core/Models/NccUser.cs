@@ -17,6 +17,7 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccUser : IdentityUser<long>, IBaseModel<long>
     {
         public NccUser()

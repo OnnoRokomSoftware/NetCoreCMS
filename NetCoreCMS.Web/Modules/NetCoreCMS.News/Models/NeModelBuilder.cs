@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Modules.News.Models;
+using NetCoreCMS.Modules.News.Models.Entity;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Modules.News.Models
 {
@@ -20,12 +22,14 @@ namespace NetCoreCMS.Modules.News.Models
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NeCategory>().ToTable("Ncc_Ne_Category");
-            modelBuilder.Entity<NeNews>().ToTable("Ncc_Ne_News");
+            modelBuilder.Entity<NeCategory>().ToTable(GlobalContext.GetTableName<NeCategory>());
+            modelBuilder.Entity<NeCategoryDetails>().ToTable(GlobalContext.GetTableName<NeCategoryDetails>());
+            modelBuilder.Entity<NeNews>().ToTable(GlobalContext.GetTableName<NeNews>());
+            modelBuilder.Entity<NeNewsDetails>().ToTable(GlobalContext.GetTableName<NeNewsDetails>());
 
             modelBuilder.Entity<NeNewsCategory>(b =>
             {
-                b.ToTable("Ncc_Ne_News_Category");
+                b.ToTable(GlobalContext.GetTableName<NeNewsCategory>());
                 b.HasKey(bc => new { bc.NeCategoryId, bc.NeNewsId });
             });
 

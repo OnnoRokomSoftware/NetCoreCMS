@@ -12,29 +12,38 @@
             @if (Model.HeaderTitle != "")
             {
                 <div class='panel-heading' style="color:@Model.HeaderColor; background-color:@Model.HeaderBgColor;">
-                    @Html.Raw(Model.HeaderTitle)
+                    @_T[Model.HeaderTitle]
                 </div>
             }
             <div class='panel-body' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
                 <marquee behavior="scroll" direction="up" scrollamount="@Model.Scrollamount" height="@Model.Height">
                     @foreach (var item in Model.NeNewsList)
                     {
-                        if (i == 0)
+                        NeNewsDetails details = item.Details.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+                        if (details == null)
                         {
-                            i = 1;
+                            details = item.Details.FirstOrDefault();
                         }
-                        else
+                        if (details != null)
                         {
-                            <hr />
+                            if (i == 0)
+                            {
+                                i = 1;
+                            }
+                            else
+                            {
+                                <hr />
+                            }
+                            <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(details.Name)</font></a></span>
                         }
-                        <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(item.Name)</font></a></span>
+
                     }
                 </marquee>
             </div>
             @if (Model.FooterTitle != "")
             {
                 <div class='panel-footer' style="color:@Model.FooterColor; background-color:@Model.FooterBgColor;">
-                    @Html.Raw(Model.FooterTitle)
+                    @_T[Model.FooterTitle]
                 </div>
             }
         </div>
@@ -45,15 +54,24 @@
             <marquee behavior="scroll" direction="up" scrollamount="@Model.Scrollamount" height="@Model.Height">
                 @foreach (var item in Model.NeNewsList)
                 {
-                    if (i == 0)
+                    NeNewsDetails details = item.Details.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+                    if (details == null)
                     {
-                        i = 1;
+                        details = item.Details.FirstOrDefault();
                     }
-                    else
+                    if (details != null)
                     {
-                        <hr />
+                        if (i == 0)
+                        {
+                            i = 1;
+                        }
+                        else
+                        {
+                            <hr />
+                        }
+                        <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(details.Name)</font></a></span>
                     }
-                    <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(item.Name)</font></a></span>
+
                 }
             </marquee>
         </div>

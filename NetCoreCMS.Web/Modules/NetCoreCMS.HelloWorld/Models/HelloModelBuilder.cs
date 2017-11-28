@@ -8,12 +8,10 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.ImageSlider.Models;
-using NetCoreCMS.HelloWorld.Models;
+using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.HelloWorld.Models.Entity;
 
 namespace NetCoreCMS.ImageSlider.Models
 {
@@ -21,7 +19,7 @@ namespace NetCoreCMS.ImageSlider.Models
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<HelloModel>().ToTable("Ncc_Hello");
+            modelBuilder.Entity<HelloModel>().ToTable(GlobalContext.GetTableName<HelloModel>());
         }
     }
 }

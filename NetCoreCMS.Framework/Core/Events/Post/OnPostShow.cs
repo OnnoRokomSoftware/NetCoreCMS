@@ -21,4 +21,13 @@ namespace NetCoreCMS.Framework.Core.Events.Post
             Post = post;
         }
     }
+
+    public enum PostEvent
+    {
+        Create,
+        StatusChange,        
+        Show,
+        Edit,
+        Delete        
+    }
 }

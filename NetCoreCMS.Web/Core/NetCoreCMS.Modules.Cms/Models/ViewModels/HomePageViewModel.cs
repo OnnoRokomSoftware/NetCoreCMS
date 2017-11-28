@@ -24,7 +24,7 @@ namespace NetCoreCMS.Modules.Cms.Models.ViewModels
         public int PreviousPage { get; set; }
         public int NextPage { get; set; }
         public int TotalPage { get; set; }
-        public NccPost  StickyPost { get; set; }
+        public List<NccPost>  StickyPosts { get; set; }
         public List<NccPost> FeaturedPosts { get; set; }
         public List<NccPost> AllPosts { get; set; }
     }

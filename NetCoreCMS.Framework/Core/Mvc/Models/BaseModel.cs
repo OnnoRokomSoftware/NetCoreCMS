@@ -14,6 +14,7 @@ using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Models
 {
+    [Serializable]
     public class BaseModel<IdT> : ValidateableModel, IBaseModel<IdT>
     {
         public BaseModel()
@@ -36,6 +37,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Models
         public DateTime ModificationDate { get; set; }
         public long CreateBy { get; set; }
         public long ModifyBy { get; set; }        
-        public int Status { get; set; }        
+        public int Status { get; set; }       
     }
 }

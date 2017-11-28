@@ -37,21 +37,23 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _logger = factory.CreateLogger<CmsHomeController>();
         }
 
+        [AllowAnonymous]
+        [ResponseCache(Duration = 300, VaryByQueryKeys = new string[] { "pageNumber"})]
         public ActionResult Index(int pageNumber = 0)
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)
             {
-                var postPerPage = GlobalContext.WebSite.PerPagePostSize;
-                var totalPost = _postService.GetPublishedPostCount();
-                var stickyPost = _postService.LoadSpecialPosts(true, false);
+                var postPerPage = GlobalContext.WebSite.WebSitePageSize;
+                var totalPost = _postService.Count(true, true, true, false);
+                var stickyPosts = _postService.LoadSpecialPosts(true, false);
                 var featuredPosts = _postService.LoadSpecialPosts(false,true);
-                var allPost = _postService.LoadPublished(pageNumber, postPerPage, false, false);
+                var allPost = _postService.Load(pageNumber, postPerPage, true, true, false, false);
 
                 return View(new HomePageViewModel() {
                     AllPosts = allPost,
                     CurrentLanguage = CurrentLanguage,
                     FeaturedPosts = featuredPosts,
-                    StickyPost = stickyPost.FirstOrDefault(),
+                    StickyPosts = stickyPosts,
                     PageNumber = pageNumber,
                     PostPerPage = postPerPage,
                     TotalPost = totalPost,
@@ -62,13 +64,15 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             }
             return Redirect("/SetupHome/Index");
         }
-        
+
+        [AllowAnonymous]
         public JsonResult RemoveGlobalMessage(string id)
         {
             GlobalMessageRegistry.UnRegisterMessage(id);
             return Json(new ApiResponse() { IsSuccess = true, Message = "Success" });
         }
 
+        [AllowAnonymous]
         public IActionResult ResourceNotFound()
         {
             return View();

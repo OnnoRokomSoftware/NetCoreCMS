@@ -1,0 +1,22 @@
+﻿@model NccPost
+
+@if (Model != null)
+{
+    NccPostDetails details = null;
+    if (GlobalContext.WebSite.IsMultiLangual == true)
+    {
+        details = Model.PostDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+    }
+    if (details == null)
+    {
+        details = Model.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
+    }
+    if (details == null)
+    {
+        details = Model.PostDetails.FirstOrDefault();
+    }
+    if (details != null)
+    {
+        <div>@Html.Raw(details.Content)</div>
+    }
+}

@@ -8,11 +8,13 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Models
 {
+    [Serializable]
     public abstract class ValidateableModel
     {
         public virtual bool IsValid()

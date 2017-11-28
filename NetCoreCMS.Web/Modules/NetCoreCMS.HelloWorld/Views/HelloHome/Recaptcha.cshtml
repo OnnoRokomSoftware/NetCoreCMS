@@ -1,0 +1,23 @@
+﻿@using NetCoreCMS.Framework.Utility
+@using NetCoreCMS.HelloWorld.Controllers
+
+@{
+    Layout = Constants.SiteLayoutName;    
+}
+
+@addTagHelper *, PaulMiami.AspNetCore.Mvc.Recaptcha
+
+@section Scripts{
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+    <recaptcha-script jquery-validation="false" />
+}
+
+<h1>Recaptcha</h1>
+<hr/>
+
+<form action="RecaptchaPost" method="post">
+    <recaptcha size="RecaptchaSize.Compact" />
+    <input type="submit" value="Submit" />
+</form>
+
+<hr/>

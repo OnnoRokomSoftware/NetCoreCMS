@@ -1,0 +1,60 @@
+﻿@using System.Collections
+
+@{
+    Layout = Constants.AdminLayoutName;
+    Title = "Demo Data Generation";
+    SubTitle = "Demo Data Generation";
+    var controllerName = "DemoDataHome";
+}
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @SubTitle
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#easy">Easy</a></li>
+                        <li><a data-toggle="tab" href="#advanced">Advanced</a></li>
+                        <li><a data-toggle="tab" href="#delete">Delete</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div id="easy" class="tab-pane fade in active">
+                            @Html.Partial("_Easy")
+                        </div>
+                        <div id="advanced" class="tab-pane fade">
+                            @Html.Partial("_Advanced")
+                        </div>
+                        <div id="delete" class="tab-pane fade">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="">
+                                        <div class="panel-body">
+                                            <form id="delete" asp-controller="@controllerName" asp-action="Delete" method="post">
+                                                <h2 class="text-center">Are you sure you want to delete all demo data?</h2><br />
+                                                <div class="form-group row">
+                                                    <div class="col-sm-12" style="text-align:center;">
+                                                        <input type="submit" class="btn btn-danger" name="submit" value="Delete" />
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <!-- /.panel-body -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+@section Scripts{
+
+}

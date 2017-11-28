@@ -33,6 +33,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "Posts" });
         }
 
+        public NccTag Get(string name)
+        {
+            return _entityRepository.Get(name);
+        }
+
         public NccTag GetWithPost(string name)
         {
             long entityId = 0;
@@ -116,6 +121,32 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<TagCloudItemViewModel> LoadTagCloud()
         {
             return _entityRepository.LoadTagCloud();
+        }
+
+        /// <summary>
+        /// Use this function to count tags
+        /// </summary>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <returns></returns>
+        public long Count(bool isActive, string keyword = "")
+        {
+            return _entityRepository.Count(isActive, keyword);
+        }
+
+        /// <summary>
+        /// Use this function to lead tags
+        /// </summary>
+        /// <param name="from">Starting index Default 0</param>
+        /// <param name="total">Total record you want</param>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <param name="orderBy">Order by column name</param>
+        /// <param name="orderDir">Order direction (asc / desc)</param>
+        /// <returns></returns>
+        public List<NccTag> Load(int from, int total, bool isActive, string keyword = "", string orderBy = "", string orderDir = "")
+        {
+            return _entityRepository.Load(from, total, isActive, keyword, orderBy, orderDir);
         }
     }
 }

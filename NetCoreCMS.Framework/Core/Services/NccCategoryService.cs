@@ -33,6 +33,11 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "CategoryDetails", "Parent" });
         }
 
+        public NccCategory GetBySlug(string slug)
+        {
+            return _entityRepository.GetBySlug(slug);
+        }
+
         public List<NccCategory> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
             return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "CategoryDetails", "Parent" });
@@ -135,5 +140,30 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.GetWithPost(slug);
         }
 
+        /// <summary>
+        /// Use this function to count post
+        /// </summary>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <returns></returns>
+        public long Count(bool isActive, string keyword = "")
+        {
+            return _entityRepository.Count(isActive, keyword);
+        }
+
+        /// <summary>
+        /// Use this function to lead post
+        /// </summary>
+        /// <param name="from">Starting index Default 0</param>
+        /// <param name="total">Total record you want</param>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <param name="orderBy">Order by column name</param>
+        /// <param name="orderDir">Order direction (asc / desc)</param>
+        /// <returns></returns>
+        public List<NccCategory> Load(int from, int total, bool isActive, string keyword = "", string orderBy = "", string orderDir = "")
+        {
+            return _entityRepository.Load(from, total, isActive, keyword, orderBy, orderDir);
+        }
     }
 }

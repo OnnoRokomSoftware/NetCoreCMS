@@ -22,16 +22,18 @@ namespace NetCoreCMS.Modules.Cms.Lib
     {
         public static NccPostDetails GetCurrentLanguagePostDetails(NccPost post, string language, bool isRequireContentSummary = false)
         {
-            if(post != null)
+            if (post != null)
             {
                 var postDetails = post.PostDetails.Where(x => x.Language == language).FirstOrDefault();
-                
+
                 if (postDetails != null && isRequireContentSummary)
                 {
-                    postDetails.Content = Regex.Replace(postDetails.Content, "<[^>]*>", string.Empty);
-                    postDetails.Content = Regex.Replace(postDetails.Content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
+                    if (postDetails.Content?.Length > 0)
+                        postDetails.Content = Regex.Replace(postDetails.Content, "<[^>]*>", string.Empty);
+                    if (postDetails.Content?.Length > 0)
+                        postDetails.Content = Regex.Replace(postDetails.Content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
 
-                    if (postDetails.Content.Length > 300)
+                    if (postDetails.Content?.Length > 300)
                     {
                         postDetails.Content = postDetails.Content.Substring(0, 300);
                     }

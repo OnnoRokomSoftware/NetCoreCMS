@@ -14,6 +14,7 @@ using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Modules.News.Controllers;
 using NetCoreCMS.Modules.News.Models;
+using NetCoreCMS.Modules.News.Models.ViewModel;
 using NetCoreCMS.Modules.News.Services;
 using Newtonsoft.Json;
 using System;

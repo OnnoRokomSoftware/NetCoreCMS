@@ -6,8 +6,8 @@
     Layout = Constants.AdminLayoutName;
     var mainName = "Category";
     var controllerName = "Category";
-    ViewData["PageTitle"] = mainName + " Manage";
-    ViewData["PageSubtitle"] = "Manage existing " + mainName.ToLower();
+    Title = mainName + " Manage";
+    SubTitle = "Manage existing " + mainName.ToLower();
 }
 <style>
     hr {
@@ -18,15 +18,12 @@
     .table th {
         text-align: center;
     }
-    .table td {
-        text-align: center;
-    }
 </style> 
 <div class="row">
     <div class="col-md-12 pull-right">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
                 <div class="pull-right"><a asp-controller="@controllerName" asp-action="CreateEdit" class="btn btn-outline btn-primary btn-xs">Add New</a></div>
             </div>
             <div class="panel-body">
@@ -34,102 +31,17 @@
                     <thead>
                         <tr>
                             <th>Name</th>
-                            <th>Slug</th>
                             <th>Image</th>
                             <th>Parrent</th>
-                            <th>Create By</th>
-                            <th>Create Date</th>
+                            <th>Total Post</th>
+                            <th>User</th>
+                            <th>Date</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
-                                    {
-                                        for (var i = 0; i < item.CategoryDetails.Count; i++)
-                                        {
-                                            if (i > 0)
-                                            {
-                                                <hr />
-                                            }
-                                            <span>@item.CategoryDetails[i].Language: </span><span>@item.CategoryDetails[i].Name</span>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span>@item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Name</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
-                                    {
-                                        for (var i = 0; i < item.CategoryDetails.Count; i++)
-                                        {
-                                            if (i > 0)
-                                            {
-                                                <hr />
-                                            }
-                                            <span>@item.CategoryDetails[i].Language: </span><span>@item.CategoryDetails[i].Slug</span>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span>@item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug </span>
-                                    }
-                                </td>
-                                <td style="text-align:center;"><img src="@item.CategoryImage" style="max-width:300px;max-height:100px;" /></td>
-                                <td style="text-align:center;">
-                                    @if (item.Parent != null)
-                                    {
-                                        <span>@item.Parent.Name</span>
-                                    }
-                                    else
-                                    {
-                                        <span>-</span>
-                                    }
-                                </td>
-                                <td style="text-align:center;">@item.CreateBy</td>
-                                <td style="text-align:center;">@Html.Raw(item.CreationDate.ToString("MMM dd, yyyy hh:mm tt"))</td>
-                                <td style="text-align:center;">
-                                    @if (item.Status == EntityStatus.Active)
-                                    {
-                                        <span>Active</span>
-                                    }
-                                    else
-                                    {
-                                        <span>Inactive</span>
-                                    }
-                                </td>
-                                <td style="text-align:center;">                                    
-                                    <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="@item.Id" class="btn btn-xs btn-primary btn-outline">Edit</a>
-                                    @if (item.Status == EntityStatus.Active)
-                                    {
-                                        <a asp-controller="@controllerName" asp-action="StatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-danger btn-outline">Inactive</a>
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="@controllerName" asp-action="StatusUpdate" asp-route-id="@item.Id" class="btn btn-xs btn-success btn-outline">Active</a>
-                                    }
-                                    <a asp-controller="@controllerName" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-xs btn-danger">Delete</a>
-
-                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
-                                    {
-                                        for (var i = 0; i < item.CategoryDetails.Count; i++)
-                                        {
-                                            <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@item.CategoryDetails[i].Slug" class="btn btn-xs btn-info btn-outline" target="_blank"><i class="fa fa-eye"></i> @item.CategoryDetails[i].Language</a>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@item.CategoryDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug" class="btn btn-xs btn-info btn-outline" target="_blank"><i class="fa fa-eye"></i> @GlobalContext.WebSite.Language</a>
-                                    }
-                                </td>
-                            </tr>
-                        }
+                        
                     </tbody>
                 </table>
             </div>
@@ -140,9 +52,60 @@
     
 </div>
  
+@section Styles{
+    <!-- DataTables CSS -->
+    <link href="~/lib/DataTables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- DataTables Responsive CSS -->
+    <link href="~/lib/DataTables/media/css/dataTables.responsive.css" rel="stylesheet">
+    <!-- DataTables fixColumns CSS -->
+    <link href="~/lib/DataTables/FixedColumns/css/fixedColumns.bootstrap.css" rel="stylesheet">
+}
+
 @section Scripts{
-    <link href="~/lib/DataTables/dataTables.bootstrap.css" rel="stylesheet" />
-    <link href="~/lib/DataTables/jquery.dataTables.min.css" rel="stylesheet" />
-    <script src="~/lib/DataTables/jquery.dataTables.min.js"></script>
-    <script src="~/lib/DataTables/dataTables.bootstrap.min.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="~/lib/DataTables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/DataTables/media/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/lib/DataTables/media/js/dataTables.responsive.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="~/lib/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js"></script>
+
+    <script type="text/javascript">
+
+        function dataTableRender() {
+            var pageSize = @GlobalContext.WebSite.AdminPageSize;
+
+            $('#pageListDt').DataTable({
+                fixedColumns: true,
+                //responsive: true,
+                destroy: true,
+                "processing": true,
+                searching: true,
+                serverSide: true,
+                "scrollX": true,
+                "scrollY": '60vh',
+                "bLengthChange": true,
+                "iDisplayLength": pageSize,
+                "aoColumnDefs": [
+                    { "bSortable": false, "aTargets": [1, 2, 3, 4, 5, 6, 7] },
+                    { "className": "text-center", "aTargets": [1, 2, 3, 4, 5, 6, 7] }
+                ],
+                order: [[1, "ASC"]],
+                fixedColumns: {
+                    rightColumns: 1
+                },
+                ajax: {
+                    url: '/@controllerName/ManageAjax',
+                    type: 'POST',
+                    data: function (d) {
+                        //d.unitIdList = $('#UnitId').val();
+                        //d.programId = $('#Program').val();
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            dataTableRender();
+        });
+    </script>
 }

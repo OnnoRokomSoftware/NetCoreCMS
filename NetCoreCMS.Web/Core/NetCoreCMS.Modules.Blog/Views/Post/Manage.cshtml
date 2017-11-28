@@ -4,9 +4,9 @@
 @{
     Layout = Constants.AdminLayoutName;
     var mainName = "Post";
+    Title = mainName + " Manage";
+    SubTitle = "Manage existing " + mainName.ToLower();
     var controllerName = "Post";
-    ViewData["PageTitle"] = mainName + " Manage";
-    ViewData["PageSubtitle"] = "Manage existing " + mainName.ToLower();
 }
 
 @*<script src="~/lib/ckeditor/ckeditor.js"></script>*@
@@ -24,156 +24,29 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
                 <div class="pull-right"><a asp-controller="@controllerName" asp-action="CreateEdit" class="btn btn-outline btn-primary btn-xs">Add New</a></div> 
             </div>
             <div class="panel-body">
                 <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            @*<th>Slug</th>*@
-                            <th>Parent</th>
-                            <th>Meta Keyword</th>
-                            <th>Meta Description</th>
-                            <th>Author</th>
-                            <th>Status</th>
-                            <th>Layout</th>
-                            <th>Visibility</th>
-                            <th>Action</th>
+                            <th class="text-center">Title</th>
+                            @*<th class="text-center">Slug</th>*@
+                            <th class="text-center">Parent</th>
+                            @*<th class="text-center">Meta Keyword</th>*@
+                            @*<th class="text-center">Meta Description</th>*@
+                            <th class="text-center">Author</th>
+                            <th class="text-center">Categories</th>
+                            <th class="text-center">Tags</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Layout</th>
+                            <th class="text-center">Visibility</th>
+                            <th class="text-center">Shotcode</th>
+                            <th class="text-center">Action</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        @foreach (var item in Model)
-                        {
-                            <tr>
-                                <td>
-                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
-                                    {
-                                        for (var i = 0; i < item.PostDetails.Count; i++)
-                                        {
-                                            if (i > 0)
-                                            {
-                                                <hr />
-                                            }
-                                            <span>@item.PostDetails[i].Language: </span><span>@item.PostDetails[i].Title</span>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span>@item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Title</span>
-                                    }
-                                </td>
-                                @*<td>
-                                    @if (GlobalConfig.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).Count() <= 0)
-                                    {
-                                        for (var i = 0; i < item.PostDetails.Count; i++)
-                                        {
-                                            if (i > 0)
-                                            {
-                                                <hr />
-                                            }
-                                            <span>@item.PostDetails[i].Language: </span><span>@item.PostDetails[i].Slug</span>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <span>@item.PostDetails.Where(x => x.Language == GlobalConfig.WebSite.Language).FirstOrDefault().Slug </span>
-                                    }
-                                </td>*@
-                                <td style="text-align:center;">
-                                    @if (item.Parent != null)
-                                    {
-                                        <span>@item.Parent.PostDetails.FirstOrDefault().Title</span>
-                                    }
-                                    else
-                                    {
-                                        <span>-</span>
-                                    }
-                                </td>
-                                <td>
-                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
-                                    {
-                                        for (var i = 0; i < item.PostDetails.Count; i++)
-                                        {
-                                            if (!string.IsNullOrEmpty(item.PostDetails[i].MetaKeyword))
-                                            {
-                                                if (i > 0)
-                                                {
-                                                    <hr />
-                                                }
-                                                <span>@item.PostDetails[i].Language: </span><span>@item.PostDetails[i].MetaKeyword</span>
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var mk = item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().MetaKeyword;
-                                        if (!string.IsNullOrEmpty(mk))
-                                        {
-                                            <span>@mk</span>
-                                        }
-                                    }
-                                </td>
-                                <td>
-                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
-                                    {
-                                        for (var i = 0; i < item.PostDetails.Count; i++)
-                                        {
-                                            if (!string.IsNullOrEmpty(item.PostDetails[i].MetaDescription))
-                                            {
-                                                if (i > 0)
-                                                {
-                                                    <hr />
-                                                }
-                                                <span>@item.PostDetails[i].Language: </span><span>@item.PostDetails[i].MetaDescription</span>
-                                            }
-                                        }
-                                    }
-                                    else
-                                    {
-                                        var md = item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().MetaDescription;
-                                        if (!string.IsNullOrEmpty(md))
-                                        {
-                                            <span>@md</span>
-                                        }
-                                    }
-                                </td>
-                                <td style="text-align:center;">@item.CreateBy</td>
-                                <td>
-                                    @if ((int)item.PostStatus == 2)
-                                    {
-                                        <span>@item.PostStatus</span><span> [@item.PublishDate.ToString("MMM dd, yyyy hh:mm tt")]</span>
-                                    }
-                                    else
-                                    {
-                                        <span>@item.PostStatus</span>
-                                    }
-                                    <br />
-                                    Last Update: [@item.ModificationDate.ToString("MMM dd, yyyy hh:mm tt")]
-                                </td>
-                                <td style="text-align:center;">@item.Layout</td>
-                                <td style="text-align:center;">@item.PostType</td>
-                                <td style="text-align:center;">
-                                    <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="@item.Id" class="btn btn-outline btn-success btn-xs">Edit</a>
-                                    <a asp-controller="@controllerName" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline btn-danger btn-xs">Delete</a>
-                                    @if (GlobalContext.WebSite.IsMultiLangual == true || item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).Count() <= 0)
-                                    {
-                                        <hr />
-                                        for (var i = 0; i < item.PostDetails.Count; i++)
-                                        {
-                                            <a href="/@item.PostDetails[i].Language/Post/@item.PostDetails[i].Slug" target="_blank" class="btn btn-outline btn-info btn-xs"><i class="fa fa-eye"></i> @item.PostDetails[i].Language</a>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <a href="/Post/@item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug" target="_blank">
-                                            View-@item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language
-                                        </a>
-                                    }
-                                </td>
-                            </tr>
-                        }
+                    <tbody>                        
                     </tbody>
                 </table>
 
@@ -184,9 +57,60 @@
     </div>
 </div>
 
+@section Styles{
+    <!-- DataTables CSS -->
+    <link href="~/lib/DataTables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- DataTables Responsive CSS -->
+    <link href="~/lib/DataTables/media/css/dataTables.responsive.css" rel="stylesheet">
+    <!-- DataTables fixColumns CSS -->
+    <link href="~/lib/DataTables/FixedColumns/css/fixedColumns.bootstrap.css" rel="stylesheet">
+}
+
 @section Scripts{
-    <link href="~/lib/DataTables/dataTables.bootstrap.css" rel="stylesheet" />
-    <link href="~/lib/DataTables/jquery.dataTables.min.css" rel="stylesheet" />
-    <script src="~/lib/DataTables/jquery.dataTables.min.js"></script>
-    <script src="~/lib/DataTables/dataTables.bootstrap.min.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="~/lib/DataTables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/DataTables/media/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/lib/DataTables/media/js/dataTables.responsive.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="~/lib/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js"></script>
+
+    <script type="text/javascript">
+
+        function dataTableRender() {
+            var pageSize = @GlobalContext.WebSite.AdminPageSize;
+
+            $('#pageListDt').DataTable({
+                fixedColumns: true,
+                //responsive: true,
+                destroy: true,
+                "processing": true,
+                searching: true,
+                serverSide: true,
+                "scrollX": true,
+                "scrollY": '60vh',
+                "bLengthChange": true,
+                "iDisplayLength": pageSize,
+                "aoColumnDefs": [
+                    { "bSortable": false, "aTargets": [1, 2, 3, 4, 6, 7, 8,9] },
+                    { "className": "text-center", "aTargets": [1, 2, 3, 4, 5, 6, 7, 8,9] }
+                ],
+                order: [[1, "DESC"]],
+                fixedColumns: {
+                    rightColumns: 1
+                },
+                ajax: {
+                    url: '/@controllerName/ManageAjax',
+                    type: 'POST',
+                    data: function (d) {
+                        //d.unitIdList = $('#UnitId').val();
+                        //d.programId = $('#Program').val();
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            dataTableRender();
+        });
+    </script>
 }

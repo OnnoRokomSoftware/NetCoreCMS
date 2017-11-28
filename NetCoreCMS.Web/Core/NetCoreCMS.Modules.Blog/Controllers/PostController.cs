@@ -29,12 +29,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using NetCoreCMS.Modules.Blog.Events;
+using System.Text.RegularExpressions;
 
 namespace NetCoreCMS.Core.Modules.Blog.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Administrator,Editor")]
     [SiteMenu(IconCls = "fa-newspaper-o", Name = "Blog", Order = 100)]
-    [AdminMenu(IconCls = "fa-newspaper-o", Name = "Blog", Order = 3)]
+    [AdminMenu(IconCls = "fa-newspaper-o", Name = "Blog", Order = 1)]
     public class PostController : NccController
     {
         #region Initialization
@@ -63,7 +64,148 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "New post", Url = "/Post/CreateEdit", IconCls = "fa-pencil-square-o", Order = 3)]
+        [AdminMenuItem(Name = "Manage post", Url = "/Post/Manage", IconCls = "fa-th-list", Order = 1, SubActions = new string[] { "ManageAjax", "Delete" })]
+        public ActionResult Manage()
+        {
+            return View();
+        }
+
+        [HttpPost]        
+        public JsonResult ManageAjax(int draw, int start, int length)
+        {
+            var data = new List<object>();
+            long recordsTotal = 0;
+            long recordsFiltered = 0;
+            try
+            {
+                string searchText = HttpContext.Request.Form["search[value]"];
+                searchText = searchText.Trim();
+                #region OrderBy and Direction
+                string orderBy = HttpContext.Request.Form["order[0][column]"];
+                string orderDir = HttpContext.Request.Form["order[0][dir]"];
+                if (!string.IsNullOrEmpty(orderDir))
+                    orderDir = orderDir.ToUpper();
+                if (!string.IsNullOrEmpty(orderBy))
+                {
+                    switch (orderBy)
+                    {
+                        case "0":
+                            orderBy = "name";
+                            break;
+                        case "5":
+                            orderBy = "publishdate";
+                            break;
+                        default:
+                            orderBy = "";
+                            break;
+                    }
+                }
+                #endregion
+
+                recordsTotal = _nccPostService.Count(false, false, false, true, null, null, 0, 0, 0, searchText);
+                recordsFiltered = recordsTotal;
+                List<NccPost> itemList = _nccPostService.Load(start, length, false, false, false, true, null, null, 0, 0, 0, searchText, orderBy, orderDir);
+                string controllerName = "Post";
+                foreach (var item in itemList)
+                {
+                    var str = new List<string>();
+                    var temp = "";
+                    #region Title
+                    temp = "";
+                    if (GlobalContext.WebSite.IsMultiLangual)
+                    {
+                        foreach (var details in item.PostDetails)
+                        {
+                            if (!string.IsNullOrEmpty(temp))
+                            {
+                                temp += "<br />";
+                            }
+                            temp += "<b>" + details.Language + ":</b> " + details.Title;
+                        }
+                    }
+                    else
+                    {
+                        temp = item.Name;
+                    }
+                    str.Add(temp);
+                    #endregion
+                    if (item.Parent != null)
+                        str.Add(item.Parent.PostDetails.FirstOrDefault().Title);
+                    else
+                        str.Add("-");
+
+                    if (item.CreateBy == item.ModifyBy)
+                    {
+                        str.Add(_nccUserService.Get(item.CreateBy)?.UserName);
+                    }
+                    else
+                    {
+                        str.Add("<b>Cr:</b> " + _nccUserService.Get(item.CreateBy)?.UserName + "<br /><b>Mo:</b> " + _nccUserService.Get(item.ModifyBy)?.UserName);
+                    }
+                    #region Categories
+                    temp = "";
+                    foreach (var cat in item.Categories)
+                    {
+                        if (temp != "") temp += ", ";
+                        temp += cat.Category.Name;
+                    }
+                    str.Add(temp);
+                    #endregion
+                    #region Tags
+                    temp = "";
+                    foreach (var tag in item.Tags)
+                    {
+                        if (temp != "") temp += ", ";
+                        temp += tag.Tag.Name;
+                    }
+                    str.Add(temp);
+                    #endregion
+
+                    str.Add(item.PostStatus == NccPost.NccPostStatus.Published ? NccPost.NccPostStatus.Published.ToString() + ": " + item.PublishDate.ToString("yyyy-MM-dd hh:mm tt") : "Update: "+item.ModificationDate.ToString("yyyy-MM-dd hh:mm tt"));
+
+                    str.Add(item.Layout);
+                    str.Add(item.PostType.ToString());
+                    str.Add("[Post Id=\"" + item.Id + "\" Post]");
+                   
+                    string actionLink = " <a href='" + Url.Action("CreateEdit", controllerName, new { id = item.Id.ToString() }) + "' class='btn btn-xs btn-primary btn-outline'>Edit</a> ";
+                    //if (item.Status == EntityStatus.Active)
+                    //    actionLink += " <a href='" + Url.Action("StatusUpdate", controllerName, new { id = item.Id.ToString() }) + "' class='btn btn-xs btn-danger btn-outline'>Inactive</a> ";
+                    //else
+                    //    actionLink += " <a href='" + Url.Action("StatusUpdate", controllerName, new { id = item.Id.ToString() }) + "' class='btn btn-xs btn-success btn-outline'>Active</a> ";
+                    actionLink += " <a href='" + Url.Action("Delete", controllerName, new { id = item.Id.ToString() }) + "' class='btn btn-xs btn-danger'>Delete</a> ";
+                    if (GlobalContext.WebSite.IsMultiLangual == true)
+                    {
+                        actionLink += "";
+                        foreach (var Details in item.PostDetails)
+                        {
+                            actionLink += " <a href='/" + Details.Language + "/Post/" + Details.Slug + "' target='_blank' class='btn btn-outline btn-info btn-xs'><i class='fa fa-eye'></i> " + Details.Language + "</a> ";
+                        }
+                    }
+                    else
+                    {
+                        actionLink += " <a href='/Post/" + item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug + "'  target='_blank' class='btn btn-outline btn-info btn-xs'><i class='fa fa-eye'></i> " + item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language + "</a> ";
+                    }
+                    str.Add(actionLink);
+                    data.Add(str);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+            }
+
+            return Json(new
+            {
+                draw = draw,
+                recordsTotal = recordsTotal,
+                recordsFiltered = recordsFiltered,
+                start = start,
+                length = length,
+                data = data
+            });
+        }
+
+        [AdminMenuItem(Name = "New post", Url = "/Post/CreateEdit", IconCls = "fa-pencil-square-o", Order = 2)]
         public ActionResult CreateEdit(long Id = 0)
         {
             NccPost post = new NccPost();
@@ -100,6 +242,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
         [HttpPost]
         public ActionResult CreateEdit(NccPost model, long ParentId, long[] SelecetdCategories, string SelectedTags, string SubmitType)
         {
+            var oldModel = NccHelper.DeepClone(model);
             ViewBag.MessageType = "ErrorMessage";
             ViewBag.Message = "Error occoured. Please fill up all field correctly.";
 
@@ -133,6 +276,12 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                     {
                         defaultPostDetails.Title = defaultPostDetails.Title.Trim();
                         defaultPostDetails.Slug = defaultPostDetails.Slug.Trim();
+                        if (defaultPostDetails.MetaDescription?.Trim() == "")
+                        {
+                            defaultPostDetails.MetaDescription = Regex.Replace(defaultPostDetails.Content, "<.*?>", String.Empty);
+                            if (defaultPostDetails.MetaDescription.Length > 161)
+                                defaultPostDetails.MetaDescription = defaultPostDetails.MetaDescription.Substring(0, 160);
+                        }
                         model.Name = defaultPostDetails.Slug;
 
                         var temp = _nccPostDetailsService.Get(defaultPostDetails.Slug, defaultPostDetails.Language);
@@ -171,7 +320,12 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                         {
                             item.Title = item.Title.Trim();
                             item.Slug = item.Slug.Trim();
-
+                            if (item.MetaDescription == null || item.MetaDescription.Trim() == "")
+                            {
+                                item.MetaDescription = Regex.Replace(item.Content, "<.*?>", String.Empty);
+                                if (item.MetaDescription.Length > 161)
+                                    item.MetaDescription = item.MetaDescription.Substring(0, 160);
+                            }
                             var temp = _nccPostDetailsService.Get(item.Slug, item.Language);
                             if (temp != null && temp.Id != item.Id)
                             {
@@ -248,6 +402,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                         try
                         {
                             _nccPostService.Update(model);
+                            model = _mediator.FirePostEvent(oldModel, PostEvent.Edit, model, _logger);
                             ViewBag.MessageType = "SuccessMessage";
                             ViewBag.Message = "Page updated successful";
                         }
@@ -261,7 +416,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                         try
                         {
                             _nccPostService.Save(model);
-                            FireEvent("PostCreated",model);
+                            model = _mediator.FirePostEvent(model, PostEvent.Create);
                             ViewBag.MessageType = "SuccessMessage";
                             ViewBag.Message = "Page save successful";
                         }
@@ -285,32 +440,13 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
 
             if (ViewBag.MessageType == "SuccessMessage")
             {
-                return RedirectToAction("CreateEdit", new { Id = model.Id });
+                return RedirectToAction("CreateEdit", new { Id = oldModel.Id });
             }
 
             SetPostViewData(model);
             return View(model);
         }
-
-        private void FireEvent(string actionType, NccPost model)
-        {
-            try
-            {
-                _mediator.Send(new OnPostCreated(model));
-            }
-            catch (Exception ex)
-            {
-                //Ignore exception
-            }
-        }
-
-        [AdminMenuItem(Name = "Manage post", Url = "/Post/Manage", IconCls = "fa-th-list", Order = 1)]
-        public ActionResult Manage()
-        {
-            var allPages = _nccPostService.LoadAll(false).OrderByDescending(p => p.PublishDate).ToList();
-            return View(allPages);
-        }
-
+        
         public ActionResult Delete(long Id)
         {
             var page = _nccPostService.Get(Id);
@@ -318,7 +454,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             return View(page);
         }
 
-        [HttpPost]
+        [HttpPost]        
         public ActionResult Delete(long Id, int status)
         {
             var post = _nccPostService.Get(Id);
@@ -351,7 +487,7 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 var post = _nccPostService.GetBySlug(slug);
                 if (post != null)
                 {
-                    post = _mediator.Send(new OnPostShow(post)).Result;
+                    post = _mediator.FirePostEvent(post, PostEvent.Show,null,_logger);
                     SetShortCodeContent(post);
                     return View("Details", post);
                 }
@@ -369,13 +505,14 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
                 dateFrom = new DateTime(year, 1, 1);
                 dateTo = new DateTime(year + 1, 1, 1).AddMinutes(-1);
             }
-            var postPerPage = GlobalContext.WebSite.PerPagePostSize;
-            var totalPost = _nccPostService.GetPublishedPostCount(dateFrom, dateTo);
-            var allPost = _nccPostService.LoadPublished(page, postPerPage, true, true, dateFrom, dateTo);
+            var postPerPage = GlobalContext.WebSite.WebSitePageSize;
+            var totalPost = _nccPostService.Count(true, true, true, true, dateFrom, dateTo);
+            var allPost = _nccPostService.Load(page, postPerPage, true, true, true, true, dateFrom, dateTo,0,0,0,"","PublishDate","desc");
             for (int i = 0; i < allPost.Count; i++)
             {
-                allPost[i] = _mediator.Send(new OnPostShow(allPost[i])).Result;
+                allPost[i] = _mediator.FirePostEvent(allPost[i], PostEvent.Show);
             }
+
             ViewBag.CurrentPage = page;
             ViewBag.PostPerPage = postPerPage;
             ViewBag.TotalPost = totalPost;
@@ -396,14 +533,15 @@ namespace NetCoreCMS.Core.Modules.Blog.Controllers
             ViewBag.CurrentLanguage = CurrentLanguage;
             var post = _nccPostService.GetBySlug(slug);
             if (post == null)
-                return Redirect(Constants.NotFoundUrl);
-            post = _mediator.Send(new OnPostShow(post)).Result;
+                return Redirect(Constants.NotFoundUrl);            
+            post = _mediator.FirePostEvent(post, PostEvent.Show, null, _logger);
             SetShortCodeContent(post);
             return View(post);
         }
         #endregion
 
         #region Helper
+        
         private void SetPostViewData(NccPost post)
         {            
             ViewBag.Layouts = new SelectList(ThemeHelper.ActiveTheme.Layouts, "Name", "Name", post.Layout);

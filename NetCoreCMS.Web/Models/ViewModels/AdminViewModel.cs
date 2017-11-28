@@ -31,6 +31,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Models.ViewModels
         public string ConfirmPassword { get; set; }
         [Required]
         public string Language { get; set; }
+        public string TablePrefix { get; set; }
 
     }
 }

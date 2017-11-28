@@ -17,13 +17,14 @@ using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.IoC;
 using NetCoreCMS.Framework.Core.Exceptions;
+using Microsoft.EntityFrameworkCore;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     /// <summary>
     /// Service for user authorization policy. 
     /// </summary>
-    public class NccPermissionService : IBaseService<NccPermission>, ITransient
+    public class NccPermissionService : IBaseService<NccPermission>
     {
         private readonly NccPermissionRepository _entityRepository;
 
@@ -35,7 +36,16 @@ namespace NetCoreCMS.Framework.Core.Services
         public NccPermission Get(long entityId, bool isAsNoTracking = false)
         {
             return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "Users", "PermissionDetails" });
-        } 
+        }
+
+        public NccPermission Get(string permissionName)
+        {
+            var query = _entityRepository.Query()
+                .Include("Users")
+                .Include("PermissionDetails")
+                .Where(x => x.Name == permissionName);
+            return query.FirstOrDefault();
+        }
 
         public List<NccPermission> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
@@ -47,6 +57,21 @@ namespace NetCoreCMS.Framework.Core.Services
             _entityRepository.Add(entity);
             _entityRepository.SaveChange();
             return entity;
+        }
+
+        public List<NccPermission> Save(List<NccPermission> entities)
+        {
+            using(var txn = _entityRepository.BeginTransaction())
+            {
+                foreach (var entity in entities)
+                {
+                    _entityRepository.Add(entity);                    
+                }
+                _entityRepository.SaveChange();
+                txn.Commit();
+            }
+            
+            return entities;
         }
 
         public NccPermission Update(NccPermission entity)
@@ -147,6 +172,6 @@ namespace NetCoreCMS.Framework.Core.Services
                     throw new DuplicateRecordException("Name already exist. Please use different name.");
                 }
             }
-        }
+        } 
     }
 }

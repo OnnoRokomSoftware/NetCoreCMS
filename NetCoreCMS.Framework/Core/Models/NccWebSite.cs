@@ -10,15 +10,19 @@
  
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System.Collections.Generic;
+using System;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccWebSite : BaseModel<long>
     {
         public NccWebSite()
         {
             WebSiteInfos = new List<NccWebSiteInfo>();
-            PerPagePostSize = 10;
+            WebSitePageSize = 10;
+            AdminPageSize = 10;
+            TablePrefix = "ncc_";
         }
         
         public string DomainName { get; set; }
@@ -32,9 +36,12 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Language { get; set; }
         public bool IsMultiLangual { get; set; }
         public string GoogleAnalyticsId { get; set; }
-        public int PerPagePostSize { get; set; }
+        public int WebSitePageSize { get; set; }
+        public int AdminPageSize { get; set; }
         public bool IsShowFullPost { get; set; }
+        public string TablePrefix { get; set; }
 
+        public bool EnableCache { get; set; }
 
         public List<NccWebSiteInfo> WebSiteInfos { get; set; }
     }

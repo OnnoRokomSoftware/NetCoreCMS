@@ -137,7 +137,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
                 else
                     tempDbSet = tempDbSet.Where(x => x.Name.ToLower() == name.ToLower());
             }
-
+                                                                                                                                                                                                    
+            // :) 
             return tempDbSet.ToList();
         }
         

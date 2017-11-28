@@ -8,10 +8,12 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccModuleDependency : BaseModel<long>
     {
         public string ModuleId { get; set; }

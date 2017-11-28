@@ -1,0 +1,22 @@
+﻿@model NccPage
+
+@if (Model != null)
+{
+    NccPageDetails details = null;
+    if (GlobalContext.WebSite.IsMultiLangual == true)
+    {
+        details = Model.PageDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+    }
+    if (details == null)
+    {
+        details = Model.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault();
+    }
+    if (details == null)
+    {
+        details = Model.PageDetails.FirstOrDefault();
+    }
+    if (details != null)
+    {
+        <div>@Html.Raw(details.Content)</div>
+    }
+}

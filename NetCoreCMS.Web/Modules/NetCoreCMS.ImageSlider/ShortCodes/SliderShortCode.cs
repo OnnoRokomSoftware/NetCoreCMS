@@ -33,7 +33,7 @@ namespace NetCoreCMS.ImageSlider.ShortCodes
 
         public string Render(params object[] paramiters)
         {
-            var id = paramiters[0].ToString();
+            var id = paramiters[0].ToString().Trim();
             var slider = _nccImageSliderService.Get(long.Parse(id));
             var content = "";
             if(slider != null)

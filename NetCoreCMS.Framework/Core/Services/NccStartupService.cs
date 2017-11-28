@@ -26,12 +26,12 @@ namespace NetCoreCMS.Framework.Core.Services
     public class NccStartupService : IBaseService<NccStartup>
     {
         private readonly NccStartupRepository _entityRepository;
-        private readonly RoleManager<NccRole> _roleManager;
+        private readonly NccPermissionRepository _nccPermissionRepository;
          
-        public NccStartupService(NccStartupRepository entityRepository, RoleManager<NccRole> roleManager)
+        public NccStartupService(NccStartupRepository entityRepository, NccPermissionRepository nccPermissionRepository)
         {
             _entityRepository = entityRepository;
-            _roleManager = roleManager;
+            _nccPermissionRepository = nccPermissionRepository;
         }
          
         public NccStartup Get(long entityId, bool isAsNoTracking = false)
@@ -41,7 +41,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public List<NccStartup> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch,new List<string>() { "Role" });
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch,new List<string>() { "Permission" });
         }
 
         public NccStartup Save(NccStartup entity)
@@ -101,7 +101,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
             oldEntity.Status = entity.Status; 
             oldEntity.VersionNumber = entity.VersionNumber;
-            oldEntity.Role = entity.Role;
+            oldEntity.Permission = entity.Permission;
             oldEntity.StartupFor = entity.StartupFor;
             oldEntity.StartupType = entity.StartupType;
             oldEntity.StartupUrl = entity.StartupUrl;
@@ -117,11 +117,11 @@ namespace NetCoreCMS.Framework.Core.Services
                     var startup = new NccStartup();
                     var startupType = (StartupType)Enum.Parse(typeof(StartupType), roleStartupType);
                     var existingStartup = Get(item, StartupFor.Role);
-                    var role = _roleManager.FindByIdAsync(item.ToString()).Result;
+                    var permission = _nccPermissionRepository.Get(item);
 
                     if (existingStartup == null)
                     {
-                        startup.Role = role;
+                        startup.Permission = permission;
                         startup.StartupFor = StartupFor.Role;
                         startup.StartupType = startupType;
                         startup.StartupUrl = startupUrl;
@@ -129,7 +129,7 @@ namespace NetCoreCMS.Framework.Core.Services
                     }
                     else
                     {
-                        existingStartup.Role = role;
+                        existingStartup.Permission = permission;
                         existingStartup.StartupFor = StartupFor.Role;
                         existingStartup.StartupType = startupType;
                         existingStartup.StartupUrl = startupUrl;

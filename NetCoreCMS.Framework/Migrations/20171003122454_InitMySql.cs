@@ -296,7 +296,10 @@ namespace NetCoreCMS.Framework.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     TimeFormat = table.Column<string>(type: "longtext", nullable: true),
                     TimeZone = table.Column<string>(type: "longtext", nullable: true),
-                    VersionNumber = table.Column<int>(type: "int", nullable: false)
+                    VersionNumber = table.Column<int>(type: "int", nullable: false),
+                    TablePrefix = table.Column<string>(type: "longtext", nullable: true),
+                    EnableCache = table.Column<bool>(type: "bit", nullable: false, defaultValue: false),
+                    
                 },
                 constraints: table =>
                 {

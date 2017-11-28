@@ -497,6 +497,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Description");
 
+                    b.Property<int>("Rank");
+
                     b.Property<string>("Group");
 
                     b.Property<string>("Metadata");
@@ -532,6 +534,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long?>("ExtraAllowUserId");
 
                     b.Property<long?>("ExtraDenyUserId");
+
+                    b.Property<string>("MenuType");
 
                     b.Property<string>("Metadata");
 
@@ -859,6 +863,8 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<long?>("PermissionId");
+
                     b.Property<long>("RoleId");
 
                     b.Property<int>("StartupFor");
@@ -875,7 +881,7 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("PermissionId");
 
                     b.ToTable("Ncc_Startup");
                 });
@@ -1010,6 +1016,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<int>("AdminPageSize");
+
                     b.Property<bool>("AllowRegistration");
 
                     b.Property<long>("CreateBy");
@@ -1040,8 +1048,6 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<string>("NewUserRole");
 
-                    b.Property<int>("PerPagePostSize");
-
                     b.Property<int>("Status");
 
                     b.Property<string>("TimeFormat");
@@ -1049,6 +1055,12 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<string>("TimeZone");
 
                     b.Property<int>("VersionNumber");
+
+                    b.Property<int>("WebSitePageSize");
+
+                    b.Property<string>("TablePrefix");
+
+                    b.Property<bool>("EnableCache");
 
                     b.HasKey("Id");
 
@@ -1391,10 +1403,9 @@ namespace NetCoreCMS.Framework.Migrations
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccStartup", b =>
                 {
-                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccRole", "Role")
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPermission", "Permission")
                         .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PermissionId");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserPermission", b =>

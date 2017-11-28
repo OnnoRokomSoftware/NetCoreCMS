@@ -15,6 +15,7 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccScheduleTaskHistory : BaseModel<long>
     {
         public string TaskId { get; set; }

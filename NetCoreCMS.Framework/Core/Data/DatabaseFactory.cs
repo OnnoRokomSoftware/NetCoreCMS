@@ -31,31 +31,31 @@ namespace NetCoreCMS.Framework.Core.Data
         private static string _msSqlConString = "Data Source={0}; Initial Catalog={1}; User Id = {2}; Password = {3}; MultipleActiveResultSets=true";
         private static string _pgSqlConString = "Host={0}; Port={1}; Database={2}; User ID={3}; Password={4}; Pooling=true;";
 
-        public static string GetConnectionString(DatabaseEngine engine, DatabaseInfo dbInfo)
+        public static string GetConnectionString(SupportedDatabases engine, DatabaseInfo dbInfo)
         {
             switch (engine)
             {
-                case DatabaseEngine.MSSQL:
+                case SupportedDatabases.MSSQL:
                     if (string.IsNullOrEmpty(dbInfo.DatabasePort))
                         return string.Format(_msSqlConString, dbInfo.DatabaseHost, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                     else
                         return string.Format(_msSqlConString, dbInfo.DatabaseHost + "," + dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
 
-                case DatabaseEngine.MsSqlLocalStorage:
+                case SupportedDatabases.MsSqlLocalStorage:
                     return _sqlLocalDb;
 
-                case DatabaseEngine.MySql:
+                case SupportedDatabases.MySql:
                     if (string.IsNullOrEmpty(dbInfo.DatabasePort))
                         return string.Format(_mySqlConString, dbInfo.DatabaseHost, "3306", dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                     else
                         return string.Format(_mySqlConString, dbInfo.DatabaseHost, dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
 
-                case DatabaseEngine.PgSql:
+                case SupportedDatabases.PgSql:
                     if (string.IsNullOrEmpty(dbInfo.DatabasePort))
                         return string.Format(_pgSqlConString, dbInfo.DatabaseHost, "5432", dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
                     else
                         return string.Format(_pgSqlConString, dbInfo.DatabaseHost, dbInfo.DatabasePort, dbInfo.DatabaseName, dbInfo.DatabaseUserName, dbInfo.DatabasePassword);
-                case DatabaseEngine.SqLite:
+                case SupportedDatabases.SqLite:
                     var path = GlobalContext.ContentRootPath;
                     return string.Format(_sqLiteConString, Path.Combine(path,"Data"), "NetCoreCMS.Database.SqLite");
                 default:
@@ -64,19 +64,19 @@ namespace NetCoreCMS.Framework.Core.Data
             }
         }
 
-        public static bool CreateDatabase(DatabaseEngine database, DatabaseInfo databaseInfo)
+        public static bool CreateDatabase(SupportedDatabases database, DatabaseInfo databaseInfo)
         {
             switch (database)
             {
-                case DatabaseEngine.MSSQL:
+                case SupportedDatabases.MSSQL:
                     break;
-                case DatabaseEngine.MsSqlLocalStorage:
+                case SupportedDatabases.MsSqlLocalStorage:
                     break;
-                case DatabaseEngine.MySql:
+                case SupportedDatabases.MySql:
                     break;
-                case DatabaseEngine.PgSql:
+                case SupportedDatabases.PgSql:
                     break;
-                case DatabaseEngine.SqLite:
+                case SupportedDatabases.SqLite:
                     string path = GlobalContext.ContentRootPath;
                     path = Path.Combine(path, "Data");
                     string dbFileName = Path.Combine(path, "NetCoreCMS.Database.SqLite.db");
@@ -97,22 +97,22 @@ namespace NetCoreCMS.Framework.Core.Data
 
         internal static DbContextOptions GetDbContextOptions()
         {
-            DatabaseEngine dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
+            SupportedDatabases dbe = TypeConverter.TryParseDatabaseEnum(SetupHelper.SelectedDatabase);
             var optionBuilder = new DbContextOptionsBuilder<NccDbContext>();
 
             switch (dbe)
             {
-                case DatabaseEngine.MSSQL:                    
+                case SupportedDatabases.MSSQL:                    
                     optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                     return optionBuilder.Options;                    
-                case DatabaseEngine.MsSqlLocalStorage:
+                case SupportedDatabases.MsSqlLocalStorage:
                     break;
-                case DatabaseEngine.MySql:                    
+                case SupportedDatabases.MySql:                    
                     optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                     return optionBuilder.Options;                    
-                case DatabaseEngine.PgSql:
+                case SupportedDatabases.PgSql:
                     break;
-                case DatabaseEngine.SqLite:                    
+                case SupportedDatabases.SqLite:                    
                     optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                     return optionBuilder.Options;
             }
@@ -120,24 +120,24 @@ namespace NetCoreCMS.Framework.Core.Data
             return null;
         }
 
-        public static bool InitilizeDatabase(DatabaseEngine database, string connectionString)
+        public static bool InitilizeDatabase(SupportedDatabases database, string connectionString)
         {
             var builder = new DbContextOptionsBuilder<NccDbContext>();
             
             switch (database)
             {
-                case DatabaseEngine.MSSQL:
+                case SupportedDatabases.MSSQL:
                     builder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                     break;
-                case DatabaseEngine.MsSqlLocalStorage:
+                case SupportedDatabases.MsSqlLocalStorage:
                     break;
-                case DatabaseEngine.MySql:
+                case SupportedDatabases.MySql:
                     builder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                     break;
-                case DatabaseEngine.SqLite:
+                case SupportedDatabases.SqLite:
                     builder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
                     break;
-                case DatabaseEngine.PgSql:
+                case SupportedDatabases.PgSql:
                     break;
             }
             //builder.UseSqlite(connectionString, options => options.MigrationsAssembly("NetCoreCMS.Framework"));

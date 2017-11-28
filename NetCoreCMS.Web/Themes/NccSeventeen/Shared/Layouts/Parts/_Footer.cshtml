@@ -55,29 +55,29 @@
                                     {
                                         if (widget.DisplayTitle != "" || widget.Footer != "")
                                         {
-                                                <div class='panel panel-default'>
-                                                    @if (widget.DisplayTitle != "")
+                                            <div class='panel panel-default'>
+                                                @if (widget.DisplayTitle != "")
                                                 {
-                                                        <div class='panel-heading'>
-                                                            @Html.Raw(widget.DisplayTitle)
-                                                        </div>
-                                                }
-                                                    <div class='panel-body'>
-                                                        @Html.Raw(widget.RenderBody())
+                                                    <div class='panel-heading'>
+                                                        @_T[widget.DisplayTitle]
                                                     </div>
-                                                    @if (widget.Footer != "")
-                                                {
-                                                        <div class='panel-footer'>
-                                                            @Html.Raw(widget.Footer)
-                                                        </div>
                                                 }
+                                                <div class='panel-body'>
+                                                    @Html.Raw(widget.RenderBody())
                                                 </div>
+                                                @if (widget.Footer != "")
+                                                {
+                                                    <div class='panel-footer'>
+                                                        @_T[widget.Footer]
+                                                    </div>
+                                                }
+                                            </div>
                                         }
                                         else
                                         {
-                                                <div>
-                                                    @Html.Raw(widget.RenderBody())
-                                                </div>
+                                            <div>
+                                                @Html.Raw(widget.RenderBody())
+                                            </div>
                                         }
                                     }
                                 }

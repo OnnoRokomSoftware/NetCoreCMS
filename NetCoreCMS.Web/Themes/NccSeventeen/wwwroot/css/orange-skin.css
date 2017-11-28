@@ -194,3 +194,19 @@ footer a {
         color: #FFF;
         background-color: #ec4200;
     }
+
+.btn-primary {
+    color: #FFF;
+    background-color: #d93d00;
+    border-color: #d93d00;
+}
+    .btn-primary:hover {
+        color: #FFF;
+        background-color: #ec4200;
+        border-color: #ec4200;
+    }
+    .btn-primary:focus {
+        color: #FFF;
+        background-color: #ec4200;
+        border-color: #ec4200;
+    }

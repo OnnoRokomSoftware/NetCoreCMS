@@ -10,12 +10,14 @@
 
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System.ComponentModel.DataAnnotations.Schema;
+using System;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
     /// <summary>
     /// Permission details will contain in which menu of a module user will get permission.
     /// </summary>
+    [Serializable]
     public class NccPermissionDetails : BaseModel<long>
     {
         public NccPermission Permission { get; set; }        
@@ -23,6 +25,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public virtual NccUser AllowUser { get; set; }
 
         public string ModuleId { get; set; }
+        public string MenuType { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
         public int Order { get; set; }

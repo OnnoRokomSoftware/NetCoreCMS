@@ -1,0 +1,76 @@
+﻿@using  NetCoreCMS.Modules.Admin.Lib
+@model TranslationFile
+
+@{
+    Layout = Constants.AdminLayoutName;
+    ViewData["Title"] = "Edit Translation file";
+    Title = "Edit Translation file";
+    SubTitle = "Edit Translation file";
+}
+
+<link href="~/NetCoreCms.Modules.Cms/lib/jsoneditor/jsoneditor.min.css" rel="stylesheet" />
+
+<div class="panel panel-primary">
+     
+    <div class="panel-heading">
+        Edit Language file
+    </div> 
+    <div class="panel-body">
+        <div id="editor">
+
+        </div>
+        <div>
+            <br/>
+            <input type="hidden" id="Id" value="@Model.Id"/>
+            <input class="btn btn-primary" type="button" id="update" value="Update" /> &nbsp;&nbsp;
+            <a class="btn btn-default" href="/Language/TranslationFiles"> Back </a>
+        </div>
+    </div>
+    
+
+</div>
+<script src="~/NetCoreCms.Modules.Cms/lib/jsoneditor/jsoneditor.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        
+        var container = document.getElementById("editor");
+        var options = { mode: 'tree' };
+
+        editor = new JSONEditor(container, options);        
+        var json = @Html.Raw(Model.Content);
+
+        editor.set(json);
+        editor.expandAll();
+
+        var url = "/Language/EditTranslationFile";
+
+        $("#update").on("click", function () {
+
+            var changedJson = editor.get();
+            var id = $("#Id").val();
+
+            console.log(changedJson);
+
+            $.ajax({
+                method: "POST",
+                url: url,
+                type:"JSON",
+                data: { id: id, contentJson: JSON.stringify(changedJson) },
+                success: function (rsp) {
+                    if (rsp.isSuccess) {
+                        NccAlert.ShowSuccess(rsp.message);
+                    }
+                    else {
+                        NccAlert.ShowError("Error: " + rsp.message);
+                    }
+                    
+                },
+                error: function (rsp) {
+                    NccAlert.ShowError("Error. Try again.");
+                }
+            });
+        });
+    });
+
+</script>

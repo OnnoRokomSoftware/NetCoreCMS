@@ -25,20 +25,21 @@ namespace NetCoreCMS.Framework.Core.App
             if (SetupHelper.SelectedDatabase == "SqLite")
             {
                 services.AddDbContext<NccDbContext>(options =>
-                    options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                    options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework")), ServiceLifetime.Scoped, ServiceLifetime.Scoped
                 );
             }
             else if (SetupHelper.SelectedDatabase == "MSSQL")
             {
                 services.AddDbContext<NccDbContext>(options =>
-                    options.UseSqlServer(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                    options.UseSqlServer(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework")), ServiceLifetime.Scoped, ServiceLifetime.Scoped
                 );
             }
             else if (SetupHelper.SelectedDatabase == "MySql")
             {
                 services.AddDbContext<NccDbContext>(options =>
-                    options.UseMySql(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework"))
+                    options.UseMySql(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework")), ServiceLifetime.Scoped, ServiceLifetime.Scoped
                 );
+                
             }
             else
             {

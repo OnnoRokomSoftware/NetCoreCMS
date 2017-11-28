@@ -8,11 +8,13 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccCategory : BaseModel<long>
     { 
         public NccCategory()

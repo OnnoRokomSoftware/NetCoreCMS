@@ -8,10 +8,12 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccComment : BaseModel<long>
     { 
         public string Title { get; set; }
@@ -32,7 +34,5 @@ namespace NetCoreCMS.Framework.Core.Models
             Rejected,
             Spam
         }
-    }
-
-    
+    } 
 }

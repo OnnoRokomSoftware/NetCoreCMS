@@ -12,6 +12,7 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.i18n;
 using System;
 using System.Web;
+using System.Linq;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -120,6 +121,27 @@ namespace NetCoreCMS.Framework.Utility
             finalUrl = finalUrl.Replace("%3a", ":");            
 
             return finalUrl;
+        }
+
+        public static (string Controller, string Action) GetControllerActionFromUrl(string url)
+        {
+            string controller = "", action = "";
+            if (string.IsNullOrEmpty(url) == false)
+            {
+                var parts = url.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+                if (parts.Length > 1)
+                {
+                    controller = parts[0];
+                    action = parts[1];
+                }
+                else if (parts.Length == 1)
+                {
+                    controller = parts[0];
+                    action = "Index";
+                }
+            }
+
+            return (controller, action);
         }
     }
 }

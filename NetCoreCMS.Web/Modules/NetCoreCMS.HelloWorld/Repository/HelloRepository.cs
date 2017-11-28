@@ -9,9 +9,9 @@
  *************************************************************/
 
 using NetCoreCMS.Framework.Core.Mvc.Repository;
-using NetCoreCMS.HelloWorld.Models;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.IoC;
+using NetCoreCMS.HelloWorld.Models.Entity;
 
 namespace NetCoreCMS.HelloWorld.Repository
 {

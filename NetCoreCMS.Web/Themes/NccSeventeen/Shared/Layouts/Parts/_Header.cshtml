@@ -12,6 +12,7 @@
                 <a href="/">
                     <img src="@ThemeHelper.GetWebSiteLogoUrl()" alt="@ThemeHelper.GetWebSiteName()" title="@ThemeHelper.GetWebSiteTagline()" width="200px" />
                 </a>
+                <h4 style="margin-top:-25px; margin-bottom:0px;">@ThemeHelper.GetWebSiteTagline()</h4>
             }
         </div>
         <div id="topMenu" class="topMenu pull-right">
@@ -62,7 +63,7 @@
                                             @if (widget.DisplayTitle != "")
                                             {
                                                 <div class='panel-heading'>
-                                                    @Html.Raw(widget.DisplayTitle)
+                                                    @_T[widget.DisplayTitle]
                                                 </div>
                                             }
                                             <div class='panel-body'>
@@ -71,7 +72,7 @@
                                             @if (widget.Footer != "")
                                             {
                                                 <div class='panel-footer'>
-                                                    @Html.Raw(widget.Footer)
+                                                    @_T[widget.Footer]
                                                 </div>
                                             }
                                         </div>

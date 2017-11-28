@@ -24,7 +24,7 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
                 <div class="pull-right">
                     @if (Model.Id > 0)
                     {
@@ -32,14 +32,13 @@
                         {
                             for (var j = 0; j < Model.PageDetails.Count; j++)
                             {
-                                <a href="/@Model.PageDetails[j].Language/@Model.PageDetails[j].Slug"  target="_blank">View-@Model.PageDetails[j].Language</a><span> | </span>
+                                <a href="/@Model.PageDetails[j].Language/@Model.PageDetails[j].Slug" class="btn btn-sm btn-info btn-outline btn-xs" target="_blank"><i class="fa fa-eye"> </i> @Model.PageDetails[j].Language</a>
                             }
                         }
                         else
                         {
-                            <a href="/@Model.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug" target="_blank">View-@Model.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language</a><span> | </span>
+                            <a href="/@Model.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug" class="btn btn-sm btn-info btn-outline btn-xs" target="_blank"><i class="fa fa-eye"> </i> @GlobalContext.WebSite.Language</a>
                         }
-                        @*<a asp-controller="@controllerName" asp-action="Index" asp-route-slug="@Model.Slug" target="_blank" class="btn btn-outline btn-info btn-xs">View</a>*@
                         <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>
                     }
                     <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Page</a>
@@ -146,26 +145,34 @@
                                     </div>
                                     <div id="collapseOne" class="panel-collapse" role="tabpanel" aria-labelledby="headingOne">
                                         <div class="panel-body">
-                                            <div>
-                                                <label>Status</label>
-                                                <select class="form-control" asp-for="PageStatus" id="PageStatus" asp-items="@ViewBag.PageStatus"></select>
+                                            <div class="from-group">
+                                                <label class="control-label col-sm-4">Status</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" asp-for="PageStatus" id="PageStatus" asp-items="@ViewBag.PageStatus"></select>
+                                                </div>
                                             </div>                                            
-                                            <div>
-                                                <label>Visibility</label>
-                                                <select class="form-control" asp-for="PageType" asp-items="@ViewBag.PageType"></select>                                                
-                                            </div>
-                                            <div>
-                                                <label>Schedule Date</label>
-                                                <div class='input-group date datetimepicker'>
-                                                    <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("MMM dd, yyyy hh:mm tt")" />
-                                                    <span class="input-group-addon">
-                                                        <span class="glyphicon glyphicon-calendar"></span>
-                                                    </span>
+                                            <div class="from-group">
+                                                <label class="control-label col-sm-4">Visibility</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" asp-for="PageType" asp-items="@ViewBag.PageType"></select>
                                                 </div>
                                             </div>
-                                            <div>
-                                                <label>Layout</label>
-                                                <select class="form-control" asp-for="Layout" asp-items="@ViewBag.Layouts"></select>
+                                            <div class="from-group">
+                                                <label class="control-label col-sm-4">Schedule Date</label>
+                                                <div class="col-sm-8">
+                                                    <div class='input-group date datetimepicker'>
+                                                        <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("MMM dd, yyyy hh:mm tt")" />
+                                                        <span class="input-group-addon">
+                                                            <span class="glyphicon glyphicon-calendar"></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="from-group">
+                                                <label class="control-label col-sm-4">Layout</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" asp-for="Layout" asp-items="@ViewBag.Layouts"></select>
+                                                </div>
                                             </div>
                                             @*<div>
                                                 <label>Add to Navigation Menu</label>
@@ -207,15 +214,19 @@
                                     </div>
                                     <div id="collapseTwo" class="panel-collapse " role="tabpanel" aria-labelledby="headingTwo">
                                         <div class="panel-body">
-                                            <div>
-                                                <label>Parent Page:</label>
-                                                <select class="form-control" asp-for="Parent" name="ParentId" asp-items="@ViewBag.AllPages">
-                                                    <option value="0">Select Parent</option>
-                                                </select>
+                                            <div class="from-group">
+                                                <label class="control-label col-sm-4">Parent Page:</label>
+                                                <div class="col-sm-8">
+                                                    <select class="form-control" asp-for="Parent" name="ParentId" asp-items="@ViewBag.AllPages">
+                                                        <option value="0">Select Parent</option>
+                                                    </select>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <label>Order</label>
-                                                <input type="tel" class="form-control" asp-for="PageOrder" value="0" />
+                                            <div class="from-group">
+                                                <label class="control-label col-sm-4">Order</label>
+                                                <div class="col-sm-8">
+                                                    <input type="tel" class="form-control" asp-for="PageOrder" value="0" />
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

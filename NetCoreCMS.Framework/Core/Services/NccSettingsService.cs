@@ -11,6 +11,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
@@ -22,12 +23,12 @@ namespace NetCoreCMS.Framework.Core.Services
     public class NccSettingsService : IBaseService<NccSettings>
     {
         private readonly NccSettingsRepository _entityRepository;
-         
+
         public NccSettingsService(NccSettingsRepository entityRepository)
         {
             _entityRepository = entityRepository;
         }
-         
+
         public NccSettings Get(long entityId, bool isAsNoTracking = false)
         {
             return _entityRepository.Get(entityId);
@@ -48,7 +49,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public NccSettings Update(NccSettings entity)
         {
             var oldEntity = _entityRepository.Get(entity.Id);
-            if(oldEntity != null)
+            if (oldEntity != null)
             {
                 using (var txn = _entityRepository.BeginTransaction())
                 {
@@ -58,13 +59,13 @@ namespace NetCoreCMS.Framework.Core.Services
                     txn.Commit();
                 }
             }
-            
+
             return entity;
         }
-        
+
         public void Remove(long entityId)
         {
-            var entity = _entityRepository.Get(entityId );
+            var entity = _entityRepository.Get(entityId);
             if (entity != null)
             {
                 entity.Status = EntityStatus.Deleted;
@@ -84,19 +85,19 @@ namespace NetCoreCMS.Framework.Core.Services
         }
 
         private void CopyNewData(NccSettings oldEntity, NccSettings entity)
-        {             
+        {
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;
-            oldEntity.Name = entity.Name; 
-            oldEntity.Status = entity.Status; 
+            oldEntity.Name = entity.Name;
+            oldEntity.Status = entity.Status;
             oldEntity.CreateBy = entity.CreateBy;
             oldEntity.CreationDate = entity.CreationDate;
             oldEntity.Metadata = entity.Metadata;
-            oldEntity.Status = entity.Status; 
+            oldEntity.Status = entity.Status;
             oldEntity.VersionNumber = entity.VersionNumber;
             oldEntity.Key = entity.Key;
             oldEntity.Value = entity.Value;
-        }        
+        }
 
 
 
@@ -104,14 +105,14 @@ namespace NetCoreCMS.Framework.Core.Services
         public bool CreateKey(string key, string value, out string message)
         {
             var existingKey = _entityRepository.GetByKey(key);
-            if(existingKey != null)
+            if (existingKey != null)
             {
                 message = "Key already exists. Please use another key";
                 return false;
             }
             else
             {
-                _entityRepository.Add(new NccSettings() {Key = key, Value = value });
+                _entityRepository.Add(new NccSettings() { Key = key, Value = value });
                 _entityRepository.SaveChange();
                 message = "Create successful";
                 return true;
@@ -135,15 +136,15 @@ namespace NetCoreCMS.Framework.Core.Services
             }
         }
 
-        public NccSettings GetByKey(string key)
+        public NccSettings GetByKey(string key = "Settings")
         {
-            return _entityRepository.GetByKey(key);
+            return _entityRepository.GetByKey(GetKeyName(key));
         }
-
-        public NccSettings SetByKey(string key, string value)
+        public NccSettings SetByKey(string value, string key = "Settings")
         {
+            key = GetKeyName(key);
             var settings = _entityRepository.Query().FirstOrDefault(x => x.Key == key);
-            if(settings != null)
+            if (settings != null)
             {
                 settings.Value = value;
                 _entityRepository.Edit(settings);
@@ -158,8 +159,19 @@ namespace NetCoreCMS.Framework.Core.Services
             return settings;
         }
 
-        public NccSettings SetByKey<EntityT>(string key, EntityT value)
+
+        public EntityT GetByKey<EntityT>()
         {
+            string key = GetKeyName(typeof(EntityT).Name);
+            var settings = _entityRepository.GetByKey(key);
+            if (settings == null)
+                return default(EntityT);
+            return JsonConvert.DeserializeObject<EntityT>(settings.Value);
+        }
+        public EntityT SetByKey<EntityT>(EntityT value)
+        {
+            string key = GetKeyName(typeof(EntityT).Name);
+
             var json = JsonConvert.SerializeObject(value);
             var settings = _entityRepository.GetByKey(key);
             if (settings != null)
@@ -169,20 +181,27 @@ namespace NetCoreCMS.Framework.Core.Services
             }
             else
             {
-                settings = new NccSettings() { Key = key, Value = json};
+                settings = new NccSettings() { Key = key, Value = json };
                 _entityRepository.Add(settings);
             }
             _entityRepository.SaveChange();
 
-            return settings;
+            return value;
         }
 
-        public EntityT GetByKey<EntityT>(string key)
+        #region Helper
+        private string GetKeyName(string key)
         {
-            var settings = _entityRepository.GetByKey(key);
-            if (settings == null)
-                return default(EntityT);
-            return JsonConvert.DeserializeObject<EntityT>(settings.Value);
+            key = key.Trim();
+            var callingAssembly = Assembly.GetEntryAssembly().ManifestModule.Name;
+            string prefix = callingAssembly;
+            if (prefix.EndsWith(".dll"))
+            {
+                prefix = prefix.Replace(".dll", "");
+            }
+            prefix = prefix.Trim() + "_";
+            return prefix + key;
         }
+        #endregion
     }
 }

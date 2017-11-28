@@ -1,0 +1,104 @@
+﻿@{
+    var controllerName = "DemoDataHome";
+}
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                User
+                <div class="pull-right">@ViewBag.TotalUser</div>
+            </div>
+            <div class="panel-body">
+                <form id="generateUser" asp-controller="@controllerName" asp-action="GenerateUser" method="post">
+                    Total: <input type="number" name="totalCount" id="totalCount" value="5" />
+                    <input type="submit" name="submit" value="Submit" />
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Page
+                <div class="pull-right">@ViewBag.TotalPublishedPage / @ViewBag.TotalPage</div>
+            </div>
+            <div class="panel-body">
+                <form id="generatePage" asp-controller="@controllerName" asp-action="GeneratePage" method="post">
+                    Total: <input type="number" name="totalCount" id="totalCount" value="10" />
+                    From: <input type="datetime" name="dateFrom" id="dateForm" value="@DateTime.Now.AddDays(-20).ToString("yyyy-MM-dd")" />
+                    To: <input type="datetime" name="dateTo" id="dateTo" value="@DateTime.Now.AddDays(10).ToString("yyyy-MM-dd")" />
+                    <input type="submit" name="submit" value="Submit" />
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Blog Category
+                <div class="pull-right">@ViewBag.TotalCategory</div>
+            </div>
+            <div class="panel-body">
+                <form id="generateCategory" asp-controller="@controllerName" asp-action="GenerateCategory" method="post">
+                    Total: <input type="number" name="totalCount" id="totalCount" value="10" />
+                    <input type="submit" name="submit" value="Submit" />
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Blog Tag
+                <div class="pull-right">@ViewBag.TotalTag</div>
+            </div>
+            <div class="panel-body">
+                <form id="generateTag" asp-controller="@controllerName" asp-action="GenerateTag" method="post">
+                    Total: <input type="number" name="totalCount" id="totalCount" value="20" />
+                    <input type="submit" name="submit" value="Submit" />
+                </form>
+
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Blog Post
+                <div class="pull-right">@ViewBag.TotalPublishedPost / @ViewBag.TotalPost</div>
+            </div>
+            <div class="panel-body">
+                <form id="generatePost" asp-controller="@controllerName" asp-action="GeneratePost" method="post">
+                    Total: <input type="number" name="totalCount" id="totalCount" value="100" />
+                    From: <input type="datetime" name="dateFrom" id="dateForm" value="@DateTime.Now.AddDays(-365).ToString("yyyy-MM-dd")" />
+                    To: <input type="datetime" name="dateTo" id="dateTo" value="@DateTime.Now.AddDays(30).ToString("yyyy-MM-dd")" />
+                    <input type="submit" name="submit" value="Submit" />
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Blog Comments
+                <div class="pull-right">@ViewBag.TotalComments</div>
+            </div>
+            <div class="panel-body">
+                <form id="generateComments" asp-controller="@controllerName" asp-action="GenerateComments" method="post">
+                    Total: <input type="number" name="totalCount" id="totalCount" value="40" />
+                    <input type="submit" name="submit" value="Submit" />
+                </form>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+    </div>
+</div>
+            
+@section Scripts{
+
+}

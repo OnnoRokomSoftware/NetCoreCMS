@@ -52,6 +52,7 @@ namespace NetCoreCMS.Framework.Modules
         string SortName { get; set; }
         string Path { get; set; }
         string Folder { get; set; }
+        string TablePrefix { get; set; }
         int ModuleStatus { get; set; }
         List<Widget> Widgets { get; set; }
         List<Menu> Menus { get; set; }

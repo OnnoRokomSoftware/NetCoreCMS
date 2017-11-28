@@ -8,14 +8,9 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Mvc.Repository;
-using NetCoreCMS.ImageSlider.Models;
-using System.Linq;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.ImageSlider.Models.Entity;
 
 namespace NetCoreCMS.ImageSlider.Repository
 {

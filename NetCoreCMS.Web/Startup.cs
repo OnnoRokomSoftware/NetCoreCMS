@@ -50,6 +50,12 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Resources;
 using NetCoreCMS.Framework.Core.Auth.Handlers;
+using NetCoreCMS.Framework.Core.Services.Auth;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.Extensions.DependencyModel;
+using Microsoft.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc;
+using NetCoreCMS.Framework.Core.Mvc.Cache;
 
 namespace NetCoreCMS.Web
 {
@@ -63,7 +69,7 @@ namespace NetCoreCMS.Web
         SetupConfig                 _setupConfig;
         IServiceCollection          _services;
         IServiceProvider            _serviceProvider;
-
+        
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
             Configuration = configuration;
@@ -88,6 +94,13 @@ namespace NetCoreCMS.Web
         {
             _services = services;
 
+            _services.AddTransient<IEmailSender, AuthMessageSender>();
+            _services.AddTransient<ISmsSender, AuthMessageSender>();
+            _services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            _services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+            _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
+
             _services.AddLogging(loggingBuilder =>
             loggingBuilder.AddSerilog(dispose: true));
             
@@ -97,9 +110,15 @@ namespace NetCoreCMS.Web
             _services.AddLocalization();
             _mvcBuilder = services.AddMvc(config => {                
                 var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new AuthorizeFilter(policy));                
+                config.Filters.Add(new AuthorizeFilter(policy));
+                config.CacheProfiles.Add(NccCacheProfile.Default,
+                new CacheProfile()
+                {
+                    Duration = 300,
+                    VaryByQueryKeys = new string[] { "id","name","pageNumber","page","pageSize","model","lang","status","sessionId","requestId","start","slug",}
+                });
             });
-
+            
             _mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
             _mvcBuilder.AddDataAnnotationsLocalization(options => {
                 options.DataAnnotationLocalizerProvider = (type, factory) => new NccStringLocalizer<SharedResource>(factory, new HttpContextAccessor());
@@ -121,8 +140,7 @@ namespace NetCoreCMS.Web
 
             _services.AddNccCoreModuleServices();
             _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-            
-           
+                       
             var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
             var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
             var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
@@ -133,9 +151,11 @@ namespace NetCoreCMS.Web
             
             var coreModules = _moduleManager.LoadModules(coreModuleFolder);
             var userModules = _moduleManager.LoadModules(moduleFolder);
-
-            GlobalContext.Modules.AddRange(userModules);
             
+            GlobalContext.Modules.AddRange(userModules);
+
+            _services.AddModuleDependencies(_mvcBuilder);
+
             if (SetupHelper.IsDbCreateComplete)
             {
                  
@@ -245,7 +265,7 @@ namespace NetCoreCMS.Web
                         logFilePath,
                         shared: true,
                         fileSizeLimitBytes: 10485760,
-                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [Ncc v{Version}] [{Level}] [{SourceContext}] {NewLine}Message: {Message}{NewLine}{Exception}",
+                        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [Ncc v{Version}] [{Level}] [{SourceContext}] # Message: {Message} {Properties} {NewLine}{Exception}",
                         flushToDiskInterval: new TimeSpan(0, 0, 30)
                     );
                 switch (_setupConfig.LoggingLevel)

@@ -16,7 +16,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Models.ViewModels
 {
     public class SetupViewModel : DatabaseInfo
     { 
-        public DatabaseEngine Database { get; set; }
+        public SupportedDatabases Database { get; set; }
         
     }
 }

@@ -46,6 +46,7 @@ namespace NetCoreCMS.Framework.Modules
         public string SortName { get; set; }
         public string Path { get; set; }
         public string Folder{ get; set; }
+        public string TablePrefix { get; set; }
         public string AssemblyPath { get; set; }
         public int ModuleStatus { get; set; }
  

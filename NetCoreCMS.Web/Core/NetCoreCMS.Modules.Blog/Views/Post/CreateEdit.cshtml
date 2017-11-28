@@ -5,12 +5,12 @@
     Layout = Constants.AdminLayoutName;
     var mainName = "Post";
     var controllerName = "Post";
-    ViewData["PageTitle"] = mainName + " Create";
-    ViewData["PageSubtitle"] = "Create a new " + mainName.ToLower();
+    Title = mainName + " Create";
+    SubTitle = "Create a new " + mainName.ToLower();
     if (Model.Id > 0)
     {
-        ViewData["PageTitle"] = mainName + " Edit";
-        ViewData["PageSubtitle"] = "Update information of a " + mainName.ToLower();
+        Title = mainName + " Edit";
+        SubTitle = "Update information of a " + mainName.ToLower();
     }
 }
 <style>
@@ -33,7 +33,7 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
                 <div class="pull-right">
                     @if (Model.Id > 0)
                     {
@@ -161,19 +161,19 @@
                                             <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
                                                 <div class="panel-body">
                                                     <div class="row" style="margin-bottom:5px;">
-                                                        <label class="col-sm-4 text-right">Status</label>
+                                                        <label class="control-label col-sm-4">Status</label>
                                                         <div class="col-sm-8">
                                                             <select class="form-control" asp-for="PostStatus" id="PostStatus" asp-items="@ViewBag.PostStatus"></select>
                                                         </div>
                                                     </div>
                                                     <div class="row" style="margin-bottom:5px;">
-                                                        <label class="col-sm-4 text-right">Visibility</label>
+                                                        <label class="control-label col-sm-4">Visibility</label>
                                                         <div class="col-sm-8">
                                                             <select class="form-control" asp-for="PostType" asp-items="@ViewBag.PostType"></select>
                                                         </div>
                                                     </div>
                                                     <div class="row" style="margin-bottom:5px;">
-                                                        <label class="col-sm-4 text-right">Schedule Date</label>
+                                                        <label class="control-label col-sm-4">Schedule Date</label>
                                                         <div class="col-sm-8">
                                                             <div class='input-group date datetimepicker'>
                                                                 <input type="text" class="form-control" asp-for="PublishDate" value="@Model.PublishDate.ToString("MMM dd, yyyy hh:mm tt")" />
@@ -184,13 +184,13 @@
                                                         </div>
                                                     </div>
                                                     <div class="row" style="margin-bottom:5px;">
-                                                        <label class="col-sm-4 text-right">Layout</label>
+                                                        <label class="control-label col-sm-4 text-right">Layout</label>
                                                         <div class="col-sm-8">
                                                             <select class="form-control" asp-for="Layout" asp-items="@ViewBag.Layouts"></select>
                                                         </div>
                                                     </div>
                                                     <div class="row" style="margin-bottom:5px;">
-                                                        <label class="col-sm-4 text-right">Parrent:</label>
+                                                        <label class="control-label col-sm-4 text-right">Parrent:</label>
                                                         <div class="col-sm-8">
                                                             <select class="form-control" asp-for="Parent" name="ParentId" asp-items="@ViewBag.AllPosts">
                                                                 <option value="0">Select Parent</option>

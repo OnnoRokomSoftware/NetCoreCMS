@@ -31,8 +31,7 @@ using NetCoreCMS.Modules.Admin.Models.ViewModels.UserAuthViewModels;
 
 namespace NetCoreCMS.Modules.Admin.Controllers
 {
-    [Authorize(Roles = "SuperAdmin,Administrator")]
-    [AdminMenu(Name = "Users", Order = 16, IconCls = "fa-users")]
+    [AdminMenu(Name = "Users", Order = 6, IconCls = "fa-users")]
     public class UsersController : NccController
     {
         UserManager<NccUser> _userManager;
@@ -213,6 +212,11 @@ namespace NetCoreCMS.Modules.Admin.Controllers
                 {
                     TempData["ErrorMessage"] = "Password does not match.";
                 }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Please enter all required fields.";
+                ModelState.AddModelError("", "Please enter all required fields.");
             }
 
             var activeModules = GlobalContext.GetActiveModules();

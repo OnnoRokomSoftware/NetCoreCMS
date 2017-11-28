@@ -18,7 +18,7 @@ namespace NetCoreCMS.Themes.Default.Lib
         {
             ThemeHelper.RegisterCss("/css/ncc-common.css", NccResource.IncludePosition.Header);
             ThemeHelper.RegisterCss("/lib/css-loader/dist/css-loader.css", NccResource.IncludePosition.Header);
-            ThemeHelper.RegisterCss(string.Concat("/Themes/Default/css/", ThemeHelper.ActiveTheme.Settings["style"], ".css"), NccResource.IncludePosition.Header);
+            ThemeHelper.RegisterCss(string.Concat("/Themes/Default/css/", ThemeHelper.ActiveTheme.Settings["style"]), NccResource.IncludePosition.Header, ThemeHelper.ActiveTheme.Settings["version"].ToString());
 
             ThemeHelper.RegisterResource(NccResource.JQuery);
             ThemeHelper.RegisterResource(NccResource.Bootstrap);

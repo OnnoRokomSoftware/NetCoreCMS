@@ -14,8 +14,9 @@ using System.Linq;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Modules.News.Repository;
-using NetCoreCMS.Modules.News.Models;
 using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Modules.News.Models.Entity;
 
 namespace NetCoreCMS.Modules.News.Services
 {
@@ -30,7 +31,7 @@ namespace NetCoreCMS.Modules.News.Services
 
         public NeNews Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "CategoryList" });
+            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "CategoryList", "Details" });
         }
 
         public NeNews Save(NeNews entity)
@@ -43,9 +44,10 @@ namespace NetCoreCMS.Modules.News.Services
         public NeNews Update(NeNews entity)
         {
             RemoveCategories(entity);
-            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "CategoryList" });
+            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "CategoryList", "Details" });
             if (oldEntity != null)
             {
+                oldEntity.ModifyBy = GlobalContext.GetCurrentUserId();
                 using (var txn = _entityRepository.BeginTransaction())
                 {
                     CopyNewData(oldEntity, entity);
@@ -83,12 +85,12 @@ namespace NetCoreCMS.Modules.News.Services
 
         public List<NeNews> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
         {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "CategoryList" });
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "CategoryList", "Details" });
         }
 
         public List<NeNews> LoadAllByCategory(string categoryName, int page = 0, int count = 10)
         {
-            return _entityRepository.Query().AsNoTracking()
+            return _entityRepository.Query().Include("Details").Include("CategoryList").AsNoTracking()
                 .Where(x => x.Status >= EntityStatus.Active
                     && x.CategoryList.Any(c => c.NeCategory.Name == categoryName)
                     && (
@@ -119,14 +121,45 @@ namespace NetCoreCMS.Modules.News.Services
             oldEntity.Name = entity.Name;
             oldEntity.Status = entity.Status;
 
-            oldEntity.Content = entity.Content;
-            oldEntity.Excerpt = entity.Excerpt;
             oldEntity.HasDateRange = entity.HasDateRange;
             oldEntity.PublishDate = entity.PublishDate;
             oldEntity.ExpireDate = entity.ExpireDate;
             oldEntity.Order = entity.Order;
 
             oldEntity.CategoryList = entity.CategoryList;
+
+            var currentDateTime = DateTime.Now;
+            foreach (var item in entity.Details)
+            {
+                var isNew = false;
+                var temp = oldEntity.Details.Where(x => x.Language == item.Language).FirstOrDefault();
+                if (temp == null)
+                {
+                    isNew = true;
+                    temp = new NeNewsDetails();
+                    temp.Language = item.Language;
+                }
+                temp.Metadata = item.Metadata;
+                temp.Name = item.Name;
+                temp.Content = item.Content;
+                temp.Excerpt = item.Excerpt;
+                if (isNew)
+                {
+                    oldEntity.Details.Add(temp);
+                }
+            }
+        }
+
+
+
+        public long Count(bool isActive, string keyword)
+        {
+            return _entityRepository.Count(isActive, keyword);
+        }
+
+        public List<NeNews> Load(int from, int total, bool isActive, string keyword, string orderBy, string orderDir)
+        {
+            return _entityRepository.Load(from, total, isActive, keyword, orderBy, orderDir);
         }
     }
 }

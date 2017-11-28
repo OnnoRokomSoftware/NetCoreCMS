@@ -1,0 +1,77 @@
+﻿@model List<NccSearchViewModel>
+
+@{
+    Layout = "_SearchLayout";
+    Title = _T["Search Result"];
+    SubTitle = _T["Search Result for"] + " \"" + ViewBag.Q+"\"";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-controller="Search" asp-action="Index" method="get">
+            <div class="input-group">
+                <input type="text" name="q" id="q" class="form-control" value="@ViewBag.Q" placeholder="Search for..." aria-label="Search for..." />
+                <span class="input-group-btn">
+                    <input type="submit" class="btn btn-primary" value="Search" />
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <h4>@_T["Search Result for"] <strong>"@ViewBag.Q"</strong></h4>
+        @if (ViewBag.TotalResult > 0)
+        {
+            <p><i>@_T["Total"] <strong>@ViewBag.TotalResult</strong> @_T["results found"]</i></p>
+        }
+        else
+        {
+            <p><i>@_T["Total"] <strong>@ViewBag.TotalResult</strong> @_T["result found"]</i></p>
+        }
+        @foreach (NccSearchViewModel item in Model)
+        {
+            <div style="border: dashed 1px gray;padding:10px 10px;">
+                <div>
+                    <a href="@item.Url"><h3 style="margin-top:0px;">@item.Title</h3></a>
+                    <p style="font-style:italic; font-size:12px;">@ViewBag.DomainName@item.Url</p>
+                    <hr style="margin:0px;padding:0px;" />
+                    <p>@item.Description</p>
+                </div>
+            </div>
+            <br />
+        }
+    </div>
+    <div class="col-md-12">
+        @{
+            float floatPage = (float)ViewBag.TotalPost / (float)ViewBag.PostPerPage;
+            int totalPage = (int)(ViewBag.TotalPost / ViewBag.PostPerPage);
+            if (ViewBag.CurrentPage > totalPage && floatPage != totalPage)
+            {
+                ViewBag.CurrentPage = totalPage + 1;
+            }
+            else if (ViewBag.CurrentPage > totalPage)
+            {
+                ViewBag.CurrentPage = totalPage;
+            }
+
+            if (floatPage == totalPage)
+            {
+                totalPage = totalPage - 1;
+            }
+        }
+        @*<span>@floatPage</span>
+            <span>@totalPage</span>*@
+        @if (ViewBag.CurrentPage > 0)
+            {
+            <div class="pull-left"><a href="/Search/?q=@ViewBag.Q&page=@(ViewBag.CurrentPage-1)">< @_T["Previous"]</a></div>
+        }
+        @if (ViewBag.CurrentPage < totalPage)
+            {
+            <div class="pull-right"><a href="/Search/?q=@ViewBag.Q&page=@(ViewBag.CurrentPage+1)">@_T["Next"] ></a></div>
+        }
+    </div>
+</div>
+

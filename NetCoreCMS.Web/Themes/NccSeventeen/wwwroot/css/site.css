@@ -32,6 +32,7 @@ footer {
 }
 .topLogo {
     float: left;
+    line-height: 100px;
 }
     .topLogo a {
         color: inherit;
@@ -79,7 +80,7 @@ footer {
 }
 
 .mainBody {
-    /*min-height: 100vh;*/
+    min-height: 65vh;
     padding: 0px;
     word-wrap: break-word;
 }

@@ -934,6 +934,10 @@ namespace NetCoreCMS.Framework.Migrations
 
                     b.Property<int>("VersionNumber");
 
+                    b.Property<string>("TablePrefix");
+
+                    b.Property<bool>("EnableCache");
+
                     b.HasKey("Id");
 
                     b.ToTable("Ncc_WebSite");

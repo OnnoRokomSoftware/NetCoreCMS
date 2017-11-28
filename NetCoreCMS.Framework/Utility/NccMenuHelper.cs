@@ -16,6 +16,8 @@ using System.Reflection;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Messages;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
+using NetCoreCMS.Framework.Core.Services;
+using NetCoreCMS.Framework.Core.Auth;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -29,7 +31,7 @@ namespace NetCoreCMS.Framework.Utility
         /// </summary>
         /// <returns>A dictionary of menu and menu items. Key is the menu and valus is a list of menu items.</returns>
         public static Dictionary<AdminMenu, List<AdminMenuItem>> GetModulesAdminMenus()
-        {
+        { 
             Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic = new Dictionary<AdminMenu, List<AdminMenuItem>>();
 
             foreach (var module in GlobalContext.Modules)
@@ -42,7 +44,7 @@ namespace NetCoreCMS.Framework.Utility
                         try
                         {
                             var atrib = controller.GetTypeInfo().GetCustomAttribute<AdminMenu>();
-                            if (atrib != null)
+                            if (atrib != null && atrib.IsVisible)
                             {
                                 var key = adminMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
@@ -55,8 +57,10 @@ namespace NetCoreCMS.Framework.Utility
                                 foreach (var item in actions)
                                 {
                                     var menuItem = item.GetCustomAttribute<AdminMenuItem>();
-                                    if (menuItem != null)
+                                    if (menuItem != null && menuItem.IsVisible)
                                     {
+                                        menuItem.Controller = controller.Name.Substring(0, controller.Name.Length-10);
+                                        menuItem.Action = item.Name;
                                         adminMenuDic[key].Add(menuItem);
                                     }
                                 }
@@ -90,7 +94,7 @@ namespace NetCoreCMS.Framework.Utility
                         try
                         {
                             var atrib = controller.GetTypeInfo().GetCustomAttribute<SiteMenu>();
-                            if (atrib != null)
+                            if (atrib != null && atrib.IsVisible)
                             {
                                 var key = siteMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
@@ -103,8 +107,14 @@ namespace NetCoreCMS.Framework.Utility
                                 foreach (var item in actions)
                                 {
                                     var menuItem = item.GetCustomAttribute<SiteMenuItem>();
-                                    if (menuItem != null)
+                                    if (menuItem != null && menuItem.IsVisible)
                                     {
+                                        if (string.IsNullOrEmpty(menuItem.Url))
+                                        {
+                                            menuItem.Controller = controller.Name.Substring(0, controller.Name.Length - 10);
+                                            menuItem.Action = item.Name;
+                                            menuItem.Url = "/" + menuItem.Controller + "/" + menuItem.Action;
+                                        }
                                         siteMenuDic[key].Add(menuItem);
                                     }
                                 }
@@ -124,41 +134,109 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// Provide generated menu HTML code using ul and li
         /// </summary>
-        /// <param name="adminMenuDic"></param>
+        /// <param name="adminMenuDic">Module admin menu list</param>
+        /// <param name="userId">Logged user Id</param>
         /// <returns>Menu HTML text</returns>
-        public static string GetAdminMenuHtml(Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic)
+        public static string GetAdminMenuHtml(Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic, long userId)
         {
+            var userService = (NccUserService)GlobalContext.ServiceProvider.GetService(typeof(NccUserService));
+            var user = userService.Get(userId, true);
+
             var menuStr = "";
             var orderdMenu = adminMenuDic.OrderBy(x => x.Key.Order);
 
             foreach (var item in orderdMenu)
             {
-                string icon = "fa-list";
+                if (item.Key.IsVisible == false)
+                    continue;
+
+                string menuIcon = "fa-list";
                 if (!string.IsNullOrEmpty(item.Key.IconCls))
                 {
-                    icon = item.Key.IconCls;
+                    menuIcon = item.Key.IconCls;
                 }
-                menuStr += "<li><a href=\"#\"><i class=\"fa " + icon + " fa-fw\"></i> " + item.Key.Name + " <span class=\"fa arrow\"></span></a>"
-                            + "<ul class=\"nav nav-second-level\">";
+
+                var menuItemCount = 0;
+                var menuItemHtml = "";
+
                 foreach (var subItem in item.Value.OrderBy(x => x.Order))
-                {
-                    icon = "fa-arrow-right";
+                {                    
+                    if (subItem.IsVisible == false)
+                    {
+                        continue;
+                    }
+
+                    if(string.IsNullOrEmpty(subItem.Url) == true)
+                    {
+                        subItem.Url = "/" + subItem.Controller + "/" + subItem.Action;
+                    }
+                    
+                    var icon = "fa-arrow-right";
                     if (!string.IsNullOrEmpty(subItem.IconCls))
                     {
                         icon = subItem.IconCls;
                     }
+
                     var qStr = "";
                     if (!string.IsNullOrEmpty(subItem.QueryString))
                     {
                         qStr = "/?" + subItem.QueryString;
                     }
-                    menuStr += "<li><a href=\"" + subItem.Url + qStr + "\" ><i class=\"fa " + icon + " fa-fw\"></i> " + subItem.Name + "</a></li>";
-                }
-                menuStr += "</ul></li>";
-            }
 
+                    if(subItem.HasAllowAnonymous || HasUserPermission(user, subItem) )
+                    {
+                        menuItemHtml += "<li><a href=\"" + subItem.Url + qStr + "\" ><i class=\"fa " + icon + " fa-fw\"></i> " + subItem.Name + "</a></li>";
+                        menuItemCount++;
+                    }
+                }
+                               
+                if (menuItemCount > 0)
+                {
+                    menuStr += "<li><a href=\"#\"><i class=\"fa " + menuIcon + " fa-fw\"></i> " + item.Key.Name + " <span class=\"fa arrow\"></span></a>"
+                            + "<ul class=\"nav nav-second-level\">";
+                    menuStr += menuItemHtml;
+                    menuStr += "</ul></li>";
+                }
+            }
+            
             return menuStr;
         }
 
+        private static bool HasUserPermission(NccUser user, AdminMenuItem subItem)
+        {
+            if(user.Roles.Where(x=>x.Role.Name == NccCmsRoles.SuperAdmin).Count() > 0)
+            {
+                return true;
+            }
+
+            var controller = "";
+            var action = "";
+
+            if(string.IsNullOrEmpty(subItem.Url) == false)
+            {
+                (controller, action) = NccUrlHelper.GetControllerActionFromUrl(subItem.Url);
+            }
+            else
+            {
+                controller = subItem.Controller;
+                action = subItem.Action;
+            }
+
+            if (user.ExtraDenies.Where(x => x.Action == action && x.Controller == controller).Count() > 0) {
+                return false;
+            }
+            else if(user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y=>y.Action == action && y.Controller == controller).Count() > 0).Count() > 0)
+            {
+                return true;
+            }
+            else if(user.ExtraPermissions.Where(x => x.Action == action && x.Controller == controller).Count() > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

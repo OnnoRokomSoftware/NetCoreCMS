@@ -12,7 +12,7 @@ using System;
 using NetCoreCMS.Framework.Core.IoC;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using System.Collections.Generic;
-using NetCoreCMS.HelloWorld.Models;
+using NetCoreCMS.HelloWorld.Models.Entity;
 
 namespace NetCoreCMS.HelloWorld.Services
 {

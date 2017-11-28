@@ -21,6 +21,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Setup;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Design;
+using NetCoreCMS.Framework.Core.Messages;
 
 namespace NetCoreCMS.Framework.Core.Data
 {
@@ -39,7 +40,23 @@ namespace NetCoreCMS.Framework.Core.Data
             List<Type> typeToRegisters = new List<Type>();
             foreach (var module in GlobalContext.Modules.Where(x=>x.ModuleStatus == (int) NccModule.NccModuleStatus.Active).ToList())
             {
-                typeToRegisters.AddRange(module.Assembly.DefinedTypes.Select(t => t.AsType()));
+                try
+                {
+                    typeToRegisters.AddRange(module.Assembly.DefinedTypes.Select(t => t.AsType()));
+                }
+                catch (Exception ex)
+                {
+                    GlobalMessageRegistry.RegisterMessage(
+                        new GlobalMessage()
+                        {
+                            For = GlobalMessage.MessageFor.Admin,
+                            Registrater = "OnModelCreating",
+                            Text = ex.Message,
+                            Type = GlobalMessage.MessageType.Error
+                        },
+                        new TimeSpan(0, 0, 60)
+                    );
+                }
             }
             
             //ScanEntities(modelBuilder, typeToRegisters);
@@ -83,10 +100,26 @@ namespace NetCoreCMS.Framework.Core.Data
             var customModelBuilderTypes = typeToRegisters.Where(x => typeof(INccModuleBuilder).IsAssignableFrom(x));
             foreach (var builderType in customModelBuilderTypes)
             {
-                if (builderType != null && builderType != typeof(INccModuleBuilder))
+                try
                 {
-                    var builder = (INccModuleBuilder)Activator.CreateInstance(builderType);
-                    builder.Build(modelBuilder);
+                    if (builderType != null && builderType != typeof(INccModuleBuilder))
+                    {
+                        var builder = (INccModuleBuilder)Activator.CreateInstance(builderType);
+                        builder.Build(modelBuilder);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    GlobalMessageRegistry.RegisterMessage(
+                        new GlobalMessage()
+                        {
+                            For = GlobalMessage.MessageFor.Admin,
+                            Registrater = "RegisterUserModuleModels",
+                            Text = ex.Message,
+                            Type = GlobalMessage.MessageType.Error
+                        },
+                        new TimeSpan(0, 0, 60)
+                    );
                 }
             }
         }

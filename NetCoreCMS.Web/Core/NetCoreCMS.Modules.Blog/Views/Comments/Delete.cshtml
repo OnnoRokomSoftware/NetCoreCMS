@@ -5,14 +5,14 @@
     Layout = Constants.AdminLayoutName;
     var mainName = "Comments";
     var controllerName = "Comments";
-    ViewData["PageTitle"] = mainName + " Delete";
-    ViewData["PageSubtitle"] = "Delete " + mainName.ToLower();
+    Title = mainName + " Delete";
+    SubTitle = "Delete " + mainName.ToLower();
 }
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
             @*<div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
                 <div class="pull-right"><a asp-controller="CmsPage" asp-action="Index" class="btn btn-outline btn-primary btn-xs">Back to Manage</a></div> 
             </div>*@
             <div class="panel-body">

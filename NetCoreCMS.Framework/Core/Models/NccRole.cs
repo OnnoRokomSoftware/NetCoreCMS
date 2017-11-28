@@ -17,6 +17,7 @@ using System.Collections.Generic;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccRole : IdentityRole<long>, IBaseModel<long>
     {
         public NccRole()

@@ -52,11 +52,6 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.LoadPosts(isSticky, isFeatured);
         }
 
-        public long GetPublishedPostCount(DateTime? dateFrom = null, DateTime? dateTo = null)
-        {
-            return _entityRepository.GetCount(NccPost.NccPostStatus.Published, dateFrom, dateTo);
-        }
-
         public NccPost Save(NccPost entity)
         {
             using (var txn = _entityRepository.BeginTransaction())
@@ -205,22 +200,51 @@ namespace NetCoreCMS.Framework.Core.Services
             return pages;
         }
 
-        public List<NccPost> LoadPublished(int from = 0, int total = 10, bool withSticky = true, bool withFeatured = true, DateTime? dateFrom = null, DateTime? dateTo = null)
-        {
-            return _entityRepository.LoadPublished(from, total, withSticky, withFeatured, dateFrom, dateTo);
-        }
-
         public List<ArchiveItemViewModel> LoadAtchive(bool decendingOrder = true)
         {
             return _entityRepository.LoadArchive(decendingOrder);
         }
 
-        public int TotalPublishedPostCount()
+        /// <summary>
+        /// Use this function to count post
+        /// </summary>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="isPublished">Load Published Records</param>
+        /// <param name="withSticky">True to count with sticky and False to count without sticky post</param>
+        /// <param name="withFeatured">True to count with featured and False to count without featured post</param>
+        /// <param name="dateFrom">Pass value if you want to search between dates</param>
+        /// <param name="dateTo">Pass value if you want to search between dates</param>
+        /// <param name="categoryId">To count by category</param>
+        /// <param name="tagId">To count by tag</param>
+        /// <param name="createBy">To load by user</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <returns></returns>
+        public long Count(bool isActive, bool isPublished, bool withSticky, bool withFeatured, DateTime? dateFrom = null, DateTime? dateTo = null, long categoryId = 0, long tagId = 0, long createBy = 0, string keyword = "")
         {
-            return _entityRepository
-                .Query()
-                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now)
-                .Count();
+            return _entityRepository.Count(isActive, isPublished, withSticky, withFeatured, dateFrom, dateTo, categoryId, tagId, createBy, keyword);
+        }
+
+        /// <summary>
+        /// Use this function to lead post
+        /// </summary>
+        /// <param name="from">Starting index Default 0</param>
+        /// <param name="total">Total record you want</param>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="isPublished">Load Published Records</param>
+        /// <param name="withSticky">True to load with sticky and False to load without sticky post</param>
+        /// <param name="withFeatured">True to load with featured and False to load without featured post</param>
+        /// <param name="dateFrom">Pass value if you want to search between dates</param>
+        /// <param name="dateTo">Pass value if you want to search between dates</param>
+        /// <param name="categoryId">To load by category</param>
+        /// <param name="tagId">To load by tag</param>
+        /// <param name="createBy">To load by user</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <param name="orderBy">Order by column name</param>
+        /// <param name="orderDir">Order direction (asc / desc)</param>
+        /// <returns></returns>
+        public List<NccPost> Load(int from, int total, bool isActive, bool isPublished, bool withSticky = true, bool withFeatured = true, DateTime? dateFrom = null, DateTime? dateTo = null, long categoryId = 0, long tagId = 0, long createBy = 0, string keyword = "", string orderBy = "", string orderDir = "")
+        {
+            return _entityRepository.Load(from, total, isActive, isPublished, withSticky, withFeatured, dateFrom, dateTo, categoryId, tagId, createBy, keyword, orderBy, orderDir);
         }
     }
 }

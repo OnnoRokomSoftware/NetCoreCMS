@@ -44,7 +44,7 @@ namespace NetCoreCMS.Framework.Core.Services.Auth
         public Task SendEmailAsync(string email, string subject, string message)
         {
 
-            var smtpSettings = _nccSettingsService.GetByKey<SmtpSettings>(Constants.SMTPSettingsKey);
+            var smtpSettings = _nccSettingsService.GetByKey<SmtpSettings>();
             if (smtpSettings == null)
             {
                 _logger.LogError("SMTP Settings not found");

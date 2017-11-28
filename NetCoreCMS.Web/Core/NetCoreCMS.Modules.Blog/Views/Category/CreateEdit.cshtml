@@ -5,12 +5,12 @@
     Layout = Constants.AdminLayoutName;
     var mainName = "Category";
     var controllerName = "Category";
-    ViewData["PageTitle"] = mainName + " Create";
-    ViewData["PageSubtitle"] = "Create a new " + mainName.ToLower();
+    Title = mainName + " Create";
+    SubTitle = "Create a new " + mainName.ToLower();
     if (Model.Id > 0)
     {
-        ViewData["PageTitle"] = mainName + " Edit";
-        ViewData["PageSubtitle"] = "Update information of a " + mainName.ToLower();
+        Title = mainName + " Edit";
+        SubTitle = "Update information of a " + mainName.ToLower();
     }
 }
 <style>
@@ -24,7 +24,7 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
                 <div class="pull-right">
                     @if (Model.Id > 0)
                     {

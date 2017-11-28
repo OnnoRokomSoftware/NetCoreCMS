@@ -2,7 +2,7 @@
 @model AdminViewModel
 
 @{
-    ViewData["Title"] = "Create Admin";
+    Title = "Create Admin";
     Layout = "_SimpleLayout";
 }
 
@@ -12,6 +12,7 @@
 <p class="lead text-center">This is the NetCoreCMS Setup Page. Please fill the following information and press submit to complete the setup process.</p>
 @*<hr />*@
 <form class="form-horizontal" asp-controller="SetupHome" asp-action="CreateAdmin" method="post">
+    <input type="hidden" asp-for="TablePrefix" value="@ViewBag.TablePrefix" />
     <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
     <div class="form-group">
         <label class="control-label col-sm-2" for="SiteName">Site Name:</label>

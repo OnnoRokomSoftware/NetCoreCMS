@@ -3,8 +3,8 @@
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "New Users";
-    ViewData["PageSubtitle"] = "User";
+    Title = "New Users";
+    SubTitle = "User";
     var chk = "";
     var modules = ((List<IModule>)ViewBag.Modules);
 }
@@ -13,42 +13,45 @@
 
 <div class="row">
     <div class="col-sm-12">
-        <form class="form-horizontal" asp-controller="Users" asp-action="CreateEditPost" method="post">
+        <form class="form-horizontal" asp-controller="Users" asp-action="CreateEditPost" method="post" asp-antiforgery="true">
 
-            <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+            <div>
+                <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+            </div>
+
             <input type="hidden" name="Id" value="@Model.Id" />
             @if (Model.Id == 0)
             {
             <div class="form-group">
                 <div class="col-sm-2 text-right"><label for="UserName">User Name: </label></div>
-                <div class="col-sm-6"><input type="text" name="UserName" value="@Model.UserName" class="form-control" /></div>
+                <div class="col-sm-6"><input type="text" asp-for="UserName" value="@Model.UserName" class="form-control" /></div>
                 
             </div>
             }
             <div class="form-group">
                 <div class="col-sm-2 text-right"><label>Full Name: </label></div>
-                <div class="col-sm-6"><input type="text" name="FullName" value="@Model.FullName"  class="form-control"/></div>
+                <div class="col-sm-6"><input type="text" asp-for="FullName" value="@Model.FullName"  class="form-control"/></div>
             </div>
             @if (Model.Id == 0)
             {
             <div class="form-group">
                 <div class="col-sm-2 text-right"><label>Password: </label></div>
-                <div class="col-sm-6"><input type="password" name="Password" value="@Model.Password"  class="form-control"/></div>
+                <div class="col-sm-6"><input type="password" asp-for="Password" value="@Model.Password"  class="form-control"/></div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-2 text-right"><label>Confirm Password: </label></div>
-                <div class="col-sm-6"><input type="password" name="ConfirmPassword" value="@Model.ConfirmPassword"  class="form-control"/></div>
+                <div class="col-sm-6"><input type="password" asp-for="ConfirmPassword" value="@Model.ConfirmPassword"  class="form-control"/></div>
             </div>
             }
             <div class="form-group">
                 <div class="col-sm-2 text-right"><label>Email: </label></div>
-                <div class="col-sm-6"><input type="email" name="Email" value="@Model.Email"  class="form-control"/></div>
+                <div class="col-sm-6"><input type="email" asp-for="Email" value="@Model.Email"  class="form-control"/></div>
             </div>
 
             <div class="form-group">
                 <div class="col-sm-2 text-right"><label>Mobile: </label></div>
-                <div class="col-sm-6"><input type="text" name="Mobile" value="@Model.Mobile"  class="form-control"/></div>
+                <div class="col-sm-6"><input type="text" asp-for="Mobile" value="@Model.Mobile"  class="form-control"/></div>
             </div>
 
             @if (Model.Id == 0)

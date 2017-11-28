@@ -1,53 +1,123 @@
-﻿@using NetCoreCMS.Modules.News.Models
-@using System.Collections
-
-@model NeNews
+﻿@model NeNews
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "News Create";
-    ViewData["PageSubtitle"] = "Create a new item.";
+    var mainName = "News";
+    Title = mainName + " Create";
+    SubTitle = "Create a new " + mainName.ToLower();
     if (Model.Id > 0)
     {
-        ViewData["PageTitle"] = "News Update";
-        ViewData["PageSubtitle"] = "Update an existing item.";
+        Title = mainName + " Update";
+        SubTitle = "Update an existing " + mainName.ToLower();
     }
+
     var controllerName = "NeNews";
 }
-    
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+</style>   
 <div class="row">
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New @mainName</a>
+                    }
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage @mainName</a>
+                </div>
             </div>
             <div class="panel-body">
 
                 <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
-                    <input type="hidden" asp-for="Id" value="@Model.Id" />
-                    <input type="hidden" asp-for="Status" value="@Model.Status" />
-                    <div class="col-md-12 pull-left">
-
+                    <input type="hidden" asp-for="Id" />
+                    <input type="hidden" asp-for="Status" />
+                    <div class="col-md-12">
                         <div class="col-md-8">
-                            <div class="form-group">
-                                <label class="col-md-2 text-right">Title </label>
-                                <div class="col-md-10">
-                                    <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-2 text-right">Content </label>
-                                <div class="col-md-10">
-                                    <textarea class="form-control" asp-for="Content" placeholder="" value="@Model.Content">@Model.Content</textarea>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label class="col-md-2 text-right">Excerpt </label>
-                                <div class="col-md-10">
-                                    <textarea class="form-control" asp-for="Excerpt" placeholder="" value="@Model.Excerpt">@Model.Excerpt</textarea>
-                                </div>
+                            @{
+                                var tabBorderDesign = "";
+                            }
+                            @if (GlobalContext.WebSite.IsMultiLangual == true)
+                            {
+                                <ul class="nav nav-tabs" role="tablist">
+                                    @foreach (var item in Model.Details)
+                                    {
+                                        if (GlobalContext.WebSite.Language == item.Language)
+                                        {
+                                            <li role="presentation" class="active">
+                                                <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                    (D)
+                                                    @SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName
+                                                </a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li role="presentation" class="">
+                                                <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                    @if (SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).Count() > 0)
+                                                    {
+                                                        <span>@SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@item.Language</span>
+                                                    }
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                </ul>
+                                tabBorderDesign = "tabBorderDesign";
+                            }
+                            <!-- Tab panes -->
+                            <div class="tab-content @tabBorderDesign">
+                                @{ var activeClass = ""; var i = 0;}
+                                @foreach (var item in Model.Details)
+                                {
+                                    if (GlobalContext.WebSite.Language == item.Language)
+                                    { activeClass = "active"; }
+                                    else { activeClass = ""; }
+                                    <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">
+                                        <div class="" style="padding:10px 25px 25px 25px;">
+                                            <div class="col-md-12">
+                                                <input type="hidden" asp-for="Details[i].Id" />
+                                                <input type="hidden" asp-for="Details[i].Language" />
+                                                <input type="hidden" asp-for="Details[i].Status" />
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Name: </label>
+                                                    <div class="col-md-10">
+                                                        <input type="text" class="form-control categoryName" asp-for="Details[i].Name" placeholder="Enter Name in @item.Language">
+                                                        <span asp-validation-for="Details[i].Name" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Content: </label>
+                                                    <div class="col-md-10">
+                                                        <textarea class="form-control newsContent" asp-for="Details[i].Content" placeholder="" value="@item.Content">@item.Content</textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label class="control-label col-md-2">Excerpt: </label>
+                                                    <div class="col-md-10">
+                                                        <textarea class="form-control" asp-for="Details[i].Excerpt" placeholder="" value="@item.Excerpt">@item.Excerpt</textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    i++;
+                                }
                             </div>
                         </div>
+
                         <div class="col-md-4">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
@@ -55,32 +125,43 @@
                                 </div>
                                 <div class="panel-body">
                                     <div class="form-group">
-                                        <label class="col-md-3 text-right">Date Range? </label>
-                                        <div class="col-md-1">
+                                        <label class="col-md-4 text-right">Date Range? </label>
+                                        <div class="col-md-8">
                                             <input type="checkbox" asp-for="HasDateRange" @{Model.HasDateRange == true ? "checked" : "";} />
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-3 text-right">Publish Date </label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control" asp-for="PublishDate" placeholder="" value="@Model.PublishDate" />
+                                        <label class="control-label col-md-4">Publish Date </label>
+                                        <div class="col-md-8">
+                                            <div class='input-group date datetimepicker'>
+                                                <input type="text" class="form-control" asp-for="PublishDate" placeholder="" value="@Model.PublishDate.ToString("MMM dd, yyyy hh:mm tt")" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>                                            
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-3 text-right">Expire Date </label>
-                                        <div class="col-md-9">
-                                            <input type="text" class="form-control" asp-for="ExpireDate" placeholder="" value="@Model.ExpireDate" />
+                                        <label class="control-label col-md-4">Expire Date </label>
+                                        <div class="col-md-8">
+                                            <div class='input-group date datetimepicker'>
+                                                <input type="text" class="form-control" asp-for="ExpireDate" placeholder="" value="@Model.ExpireDate.ToString("MMM dd, yyyy hh:mm tt")" />
+                                                <span class="input-group-addon">
+                                                    <span class="glyphicon glyphicon-calendar"></span>
+                                                </span>
+                                            </div>               
+                                            
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-3 text-right">Order </label>
-                                        <div class="col-md-9">
+                                        <label class="control-label col-md-4">Order </label>
+                                        <div class="col-md-8">
                                             <input type="text" class="form-control" asp-for="Order" placeholder="" value="@Model.Order" />
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label class="col-md-3 text-right">Category </label>
-                                        <div class="col-md-9">
+                                        <label class="text-right col-md-4">Category </label>
+                                        <div class="col-md-8">
                                             @foreach (var item in ViewBag.CategoryList)
                                             {
                                                 if (Model.CategoryList != null && Model.CategoryList.Count() > 0 && Model.CategoryList.Where(x => x.NeCategoryId == item.Id).Count() > 0)
@@ -98,7 +179,7 @@
                                 <div class="panel-footer">
                                     <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
                                     <input type="submit" class="btn btn-primary" name="Save" value="Save" />
-                                    @*<input type="submit" class="btn btn-default" name="Save" value="Save And Edit" />*@
+                                    <input type="submit" class="btn btn-success" name="Save" value="Save And New" />
                                 </div>                                
                             </div>                            
                         </div>
@@ -123,43 +204,45 @@
 <script src="~/lib/ckeditor/ckeditor.js"></script>
 <script>
         $(document).ready(function () {
-
-            CKEDITOR.replace('Content', {
-                filebrowserBrowseUrl: '/media/files',
-                filebrowserUploadUrl: '/media/files',
-                filebrowserImageBrowseUrl: '/media/Images',
-                filebrowserImageUploadUrl: '/media/Images',
-                //filebrowserWindowWidth: 800,
-                //filebrowserWindowHeight: 500,
-                toolbar: [
-                    //{ name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
-                    { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
-                    { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
-                    { name: 'clipboard2', items: ['Undo', 'Redo'] },
-                    //{ name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
-                    //{ name: 'editing1', items: ['SpellChecker', 'Scayt'] },
-                    { name: 'styles', items: ['Styles'] },
-                    { name: 'styles1', items: ['Format'] },
-                    { name: 'styles2', items: ['Font'] },
-                    { name: 'styles3', items: ['FontSize'] },
-                    { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
-                    //{ name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
-                    //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
-                    { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
-                    { name: 'paragraph1', items: ['Outdent', 'Indent'] },
-                    { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
-                    { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
-                    //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
-                    { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
-                    { name: 'insert', items: ['Image', /*'Flash',*/ 'Table'] },
-                    //'/',
-                    { name: 'colors', items: ['TextColor', 'BGColor'] },
-                    //{ name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
-                    //{ name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
-                    { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
-                ],
-            });
-
+            var elements = document.getElementsByClassName('newsContent');
+            for (var i = 0; i < elements.length; ++i) {
+                CKEDITOR.replace(elements[i], {
+                    enterMode: CKEDITOR.ENTER_DIV,
+                    filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
+                    filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
+                    //filebrowserUploadUrl: '/media/files',
+                    //filebrowserImageUploadUrl: '/MediaHome/Upload',
+                    //filebrowserWindowWidth: 800,
+                    //filebrowserWindowHeight: 500,
+                    toolbar: [
+                        //{ name: 'document', items: ['Source', '-', /*'Save', 'NewPage', 'DocProps', 'Preview', 'Print', '-', 'Templates'*/] },
+                        { name: 'clipboard', items: ['Cut', 'Copy', 'Paste'] },
+                        { name: 'clipboard1', items: ['PasteText', 'PasteFromWord'] },
+                        { name: 'clipboard2', items: ['Undo', 'Redo'] },
+                        //{ name: 'editing', items: ['Find', 'Replace', 'SelectAll'] },
+                        //{ name: 'editing1', items: ['SpellChecker', 'Scayt'] },
+                        { name: 'styles', items: ['Styles'] },
+                        { name: 'styles1', items: ['Format'] },
+                        { name: 'styles2', items: ['Font'] },
+                        { name: 'styles3', items: ['FontSize'] },
+                        { name: 'basicstyles', items: ['Bold', 'Italic', 'Underline'] },
+                        //{ name: 'basicstyles1', items: ['Strike', 'Subscript', 'Superscript'] },
+                        //{ name: 'basicstyles2', items: ['-', 'RemoveFormat'] },
+                        { name: 'paragraph', items: ['NumberedList', 'BulletedList'] },
+                        { name: 'paragraph1', items: ['Outdent', 'Indent'] },
+                        { name: 'paragraph2', items: ['Blockquote', 'CreateDiv'] },
+                        { name: 'paragraph3', items: ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'] },
+                        //{ name: 'paragraph4', items: ['-', 'BidiLtr', 'BidiRtl'] },
+                        { name: 'links', items: ['Link', 'Unlink', 'Anchor'] },
+                        { name: 'insert', items: ['Image', /*'Flash',*/ 'Table'] },
+                        //'/',
+                        { name: 'colors', items: ['TextColor', 'BGColor'] },
+                        //{ name: 'insert1', items: ['HorizontalRule', 'Smiley'] },
+                        //{ name: 'insert2', items: ['SpecialChar', 'PageBreak'] },
+                        { name: 'tools', items: ['Maximize', 'ShowBlocks'] }
+                    ],
+                });
+            }
             $("#Title").change(function () {
                 $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
             });

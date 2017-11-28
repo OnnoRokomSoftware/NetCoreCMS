@@ -27,8 +27,10 @@ namespace NetCoreCMS.Framework.Setup
         public string StartupType { get; set; } = StartupTypeText.Url;
         public string StartupData { get; set; } = "/CmsHome";
         public string StartupUrl { get; set; } = "/CmsHome";
-        
-        public int LoggingLevel { get; set; } = (int) LogLevel.Information;
+        public string TablePrefix { get; set; } = "ncc_";
+        public bool EnableCache { get; set; } = false;
+
+        public int LoggingLevel { get; set; } = (int) LogLevel.Warning;
         public bool IsMaintenanceMode { get; set; }
         public int MaintenanceDownTime { get; set; } = 30;
         public string MaintenanceMessage { get; set; } = "Doing Maintenance. Comming back soon...";

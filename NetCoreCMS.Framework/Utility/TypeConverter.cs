@@ -37,10 +37,10 @@ namespace NetCoreCMS.Framework.Utility
         /// </summary>
         /// <param name="input">enum field name string</param>
         /// <returns>enum object</returns>
-        public static DatabaseEngine TryParseDatabaseEnum(string input)
+        public static SupportedDatabases TryParseDatabaseEnum(string input)
         {
-            DatabaseEngine dbEnum;
-            Enum.TryParse<DatabaseEngine>(input, out dbEnum);
+            SupportedDatabases dbEnum;
+            Enum.TryParse<SupportedDatabases>(input, out dbEnum);
             return dbEnum;
         }
 

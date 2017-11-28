@@ -12,8 +12,7 @@ body {
 
 /*Side design*/
 .topHeader {
-    height: 80px;
-    padding-top:5px;
+    height: 100px;
 }
 /*.topMenu {
     display: block;
@@ -35,7 +34,7 @@ body {
 
 .topLogo {
     float: left;
-    margin-top:15px;
+    line-height: 100px;
 }
 .topLogo a {
     color: inherit;

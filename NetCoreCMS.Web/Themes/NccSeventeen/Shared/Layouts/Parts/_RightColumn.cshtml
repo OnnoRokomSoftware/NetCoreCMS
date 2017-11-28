@@ -58,7 +58,7 @@
                                     @if (widget.DisplayTitle != "")
                                     {
                                         <div class='panel-heading'>
-                                            @Html.Raw(widget.DisplayTitle)
+                                            @_T[widget.DisplayTitle]
                                         </div>
                                     }
                                     <div class='panel-body'>
@@ -67,7 +67,7 @@
                                     @if (widget.Footer != "")
                                     {
                                         <div class='panel-footer'>
-                                            @Html.Raw(widget.Footer)
+                                            @_T[widget.Footer]
                                         </div>
                                     }
                                 </div>

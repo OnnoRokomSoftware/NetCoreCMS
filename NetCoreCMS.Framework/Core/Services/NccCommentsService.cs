@@ -140,5 +140,33 @@ namespace NetCoreCMS.Framework.Core.Services
         {
             return _entityRepository.LoadRecentComments(count);
         }
+
+        /// <summary>
+        /// Use this function to count post
+        /// </summary>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="createBy">To load by user</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <returns></returns>
+        public long Count(bool isActive, long createBy = 0, string keyword = "")
+        {
+            return _entityRepository.Count(isActive, createBy, keyword);
+        }
+
+        /// <summary>
+        /// Use this function to lead post
+        /// </summary>
+        /// <param name="from">Starting index Default 0</param>
+        /// <param name="total">Total record you want</param>
+        /// <param name="isActive">Load active records</param>
+        /// <param name="createBy">To load by user</param>
+        /// <param name="keyword">To load by keyword(search in title)</param>
+        /// <param name="orderBy">Order by column name</param>
+        /// <param name="orderDir">Order direction (asc / desc)</param>
+        /// <returns></returns>
+        public List<NccComment> Load(int from, int total, bool isActive, long createBy = 0, string keyword = "", string orderBy = "", string orderDir = "")
+        {
+            return _entityRepository.Load(from, total, isActive, createBy, keyword, orderBy, orderDir);
+        }
     }
 }

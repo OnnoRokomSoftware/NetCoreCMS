@@ -13,22 +13,6 @@
     MetaKeyword = "NetCoreCMS"; //Take from website settings.
 }
 
-@if (Model.StickyPost != null)
-{
-    <div class="stickyPost" style="margin-top:10px;">
-        <div class="panel panel-primary">
-            <div class="panel-heading">
-                <div class="panel-title">
-                    <i class="fa fa-thumb-tack"></i>@_T["Sticky"]
-                </div>
-            </div>
-            <div class="panel-body">
-                @Html.Partial("_PostRow", Model.StickyPost)
-            </div>
-        </div>
-    </div>
-}
-
 @if (Model.PageNumber == 0 && Model.FeaturedPosts != null && Model.FeaturedPosts.Count > 0)
 {
     <div class="featuredPosts" style="margin-bottom:10px;">
@@ -44,7 +28,7 @@
                 }
             </ol>
 
-            <div class="carousel-inner" role="listbox" style="border: dashed 1px;">
+            <div class="carousel-inner text-center" role="listbox" style="">
                 @{ active = "active";}
                 @foreach (var item in Model.FeaturedPosts)
                 {
@@ -83,8 +67,35 @@
             }
         </div>
     </div>
+} 
+
+@if (Model.StickyPosts.Count > 0)
+{
+    <div class="stickyPost" style="margin-top:10px;">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <i class="fa fa-thumb-tack"></i>@_T["Sticky"]
+                </div>
+            </div>
+            <div class="panel-body">
+                @{ var i = 0;}
+                @foreach (var item in Model.StickyPosts)
+                {
+                    if (i > 0)
+                    {
+                        <hr />
+                    }
+                    i = i + 1;
+                    <div class="">
+                        @Html.Partial("_PostRowSticky", @item)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
 }
- 
+
 @if (Model.AllPosts != null && Model.AllPosts.Count > 0)
 {
     <div class="allposts">
@@ -96,14 +107,42 @@
 }
 
 <div class="row">
-    @if (Model.PreviousPage >= 0)
+    @*@if (Model.PreviousPage >= 0)
     {
         <div class="pull-left"><a href="/CmsHome/?pageNumber=@Model.PreviousPage">< @_T["Previous"]</a></div>
     }
     @if (Model.NextPage <= Model.TotalPage)
     {
         <div class="pull-right" ><a href="/CmsHome/?pageNumber=@Model.NextPage">@_T["Next"] ></a></div>
-    }    
+    }*@  
+    
+    @{
+        float floatPage = (float)Model.TotalPost / (float)Model.PostPerPage;
+        int totalPage = (int)(Model.TotalPost / Model.PostPerPage);
+        if (Model.PageNumber > totalPage && floatPage != totalPage)
+        {
+            Model.PageNumber = totalPage + 1;
+        }
+        else if (ViewBag.CurrentPage > totalPage)
+        {
+            Model.PageNumber = totalPage;
+        }
+
+        if (floatPage == totalPage)
+        {
+            totalPage = totalPage - 1;
+        }
+    }
+    @*<span>@floatPage</span>
+        <span>@totalPage</span>*@
+    @if (Model.PageNumber > 0)
+    {
+        <div class="pull-left"><a href="/CmsHome/?pageNumber=@(Model.PageNumber-1)">< @_T["Previous"]</a></div>
+    }
+    @if (Model.PageNumber < totalPage)
+    {
+        <div class="pull-right"><a href="/CmsHome/?pageNumber=@(Model.PageNumber+1)">@_T["Next"] ></a></div>
+    }
 </div>
 
 

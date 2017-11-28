@@ -1,0 +1,16 @@
+{
+  "Group": "NetCoreCMS",
+  "Description": "Permission for Subscriber.",
+  "Rank": 1000,
+  "Users": [],
+  "PermissionDetails": [],
+  "Id": 0,
+  "VersionNumber": 1,
+  "Metadata": "",
+  "Name": "Subscriber",
+  "CreationDate": "2017-11-19T09:57:41.6673727+06:00",
+  "ModificationDate": "2017-11-19T09:57:41.6675173+06:00",
+  "CreateBy": 0,
+  "ModifyBy": 0,
+  "Status": 0
+}

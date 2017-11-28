@@ -46,7 +46,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Widgets
             }
 
             ConfigViewFileName = "Widgets/CmsHtmlDisplayConfig";
-            ConfigHtml = _viewRenderService.RenderToStringAsync<CmsWidgetController>(ConfigViewFileName, webSiteWidget).Result;
+            ConfigHtml = _viewRenderService.RenderToStringAsync<CmsHomeController>(ConfigViewFileName, webSiteWidget).Result;
         }
 
         public override string RenderBody()

@@ -83,7 +83,7 @@ namespace NetCoreCMS.Framework.Core.App
         {
             try
             {
-                Mediator?.Send(
+                Mediator?.SendAll(
                     new OnAppActivity(
                         new AppActivity() {
                             ActivityType = started,

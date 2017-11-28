@@ -4,7 +4,7 @@
 
 @{
     ViewData["Title"] = "Create Permission Templates";
-    ViewData["PageTitle"] = "New Permission Templates";
+    Title = "New Permission Templates";
     var expand = true;
     Layout = Constants.AdminLayoutName;
     var model = Model;
@@ -31,6 +31,10 @@
         <div class="form-group">
             <label for="Group">Description:</label>
             <input type="text" class="form-control" asp-for="Description">
+        </div>
+        <div class="form-group">
+            <label for="Rank">Rank:</label>
+            <input type="number" class="form-control" asp-for="Rank">
         </div>
         <input type ="hidden" asp-for="Id" value="@Model.Id"/>
     </div>

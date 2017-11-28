@@ -1,16 +1,13 @@
-﻿@using NetCoreCMS.ImageSlider.Models
-@using System.Collections
-
-@model NccImageSlider
+﻿@model NccImageSlider
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "Image Slider Create";
-    ViewData["PageSubtitle"] = "Create a new slider";
+    Title = "Image Slider Create";
+    SubTitle = "Create a new slider";
     if (Model.Id > 0)
     {
-        ViewData["PageTitle"] = "Image Slider Update";
-        ViewData["PageSubtitle"] = "Update an existing slider";
+        Title = "Image Slider Update";
+        SubTitle = "Update an existing slider";
     }
 }
     
@@ -18,7 +15,7 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                @ViewData["PageSubtitle"]
+                @SubTitle
                 @*<div class="pull-right"><a asp-controller="NoticeHome" asp-action="CreateEdit" class="btn btn-outline btn-primary btn-xs">Add New</a></div>*@
             </div>
             <div class="panel-body">

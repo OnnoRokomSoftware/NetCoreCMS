@@ -18,6 +18,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         public string IconCls { get; set; }
         public int Order { get; set; }
         public string Url { get; set; }
+        public bool IsVisible { get; set; } = true;
     }
 
     public class AdminMenuItem : Attribute, IMenuItem
@@ -26,11 +27,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         {
             SubActions = new string[] { };
         }
+
         public string Name { get; set; }
         public string Url { get; set; }
+        public string Controller { get; set; }
+        public string Action { get; set; }
         public string QueryString { get; set; }
         public int Order { get; set; }
         public string IconCls { get; set; }
         public string[] SubActions { get; set; }
+        public bool HasAllowAnonymous { get; set; }
+        public bool IsVisible { get; set; } = true;
     }
 }

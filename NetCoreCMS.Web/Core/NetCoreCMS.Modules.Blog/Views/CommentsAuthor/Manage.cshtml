@@ -1,0 +1,110 @@
+﻿@using NetCoreCMS.Framework.Utility
+@using System.Collections
+@model List<NccComment>
+@{
+    Layout = Constants.AdminLayoutName;
+    var mainName = "My Comments";
+    var controllerName = "CommentsAuthor";
+    Title = mainName + " Manage";
+    SubTitle = "Manage " + mainName.ToLower();
+}
+
+@*<script src="~/lib/ckeditor/ckeditor.js"></script>*@
+<style>
+    hr {
+        margin-top: 2px;
+        margin-bottom: 2px;
+    }
+    .table th{
+        text-align: center;
+    }
+</style>
+
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @SubTitle
+                @*<div class="pull-right"><a asp-controller="@controllerName" asp-action="CreateEdit" class="btn btn-outline btn-primary btn-xs">Add New</a></div>*@ 
+            </div>
+            <div class="panel-body">
+                <table id="pageListDt" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Post</th>
+                            <th>Comments</th>
+                            <th>Author</th>
+                            <th>User</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>                        
+                    </tbody>
+                </table>
+
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+@section Styles{
+    <!-- DataTables CSS -->
+    <link href="~/lib/DataTables/media/css/dataTables.bootstrap.css" rel="stylesheet">
+    <!-- DataTables Responsive CSS -->
+    <link href="~/lib/DataTables/media/css/dataTables.responsive.css" rel="stylesheet">
+    <!-- DataTables fixColumns CSS -->
+    <link href="~/lib/DataTables/FixedColumns/css/fixedColumns.bootstrap.css" rel="stylesheet">
+}
+
+@section Scripts{
+    <!-- DataTables JavaScript -->
+    <script src="~/lib/DataTables/media/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/DataTables/media/js/dataTables.bootstrap.min.js"></script>
+    <script src="~/lib/DataTables/media/js/dataTables.responsive.js"></script>
+    <!-- DataTables JavaScript -->
+    <script src="~/lib/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js"></script>
+
+    <script type="text/javascript">
+
+        function dataTableRender() {
+            var pageSize = @GlobalContext.WebSite.AdminPageSize;
+
+            $('#pageListDt').DataTable({
+                fixedColumns: true,
+                //responsive: true,
+                destroy: true,
+                "processing": true,
+                searching: true,
+                serverSide: true,
+                "scrollX": true,
+                "scrollY": '60vh',
+                "bLengthChange": true,
+                "iDisplayLength": pageSize,
+                "aoColumnDefs": [
+                    { "bSortable": false, "aTargets": ["_all"] },
+                    { "className": "text-center", "aTargets": [2, 3, 4, 5, 6] }
+                ],
+                order: [[1, "ASC"]],
+                fixedColumns: {
+                    rightColumns: 1
+                },
+                ajax: {
+                    url: '/@controllerName/ManageAjax',
+                    type: 'POST',
+                    data: function (d) {
+                        //d.unitIdList = $('#UnitId').val();
+                        //d.programId = $('#Program').val();
+                    }
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            dataTableRender();
+        });
+    </script>
+}

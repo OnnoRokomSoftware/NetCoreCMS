@@ -1,7 +1,7 @@
 ﻿@using NetCoreCMS.Framework.Utility
 @{
     Layout = Constants.SimpleLayoutName;
-    ViewData["Title"] = "Resource not found";
+    Title = "Resource not found";
 }
 <link href='//fonts.googleapis.com/css?family=Satisfy' rel='stylesheet' type='text/css'>
 <link href='//fonts.googleapis.com/css?family=Monda' rel='stylesheet' type='text/css'>
@@ -41,8 +41,8 @@
     <hr/>
     <div >
         <div style="margin-left:30%; margin-right:auto;">
-            <h3> @Html.Raw(TempData["Message"])</h3>
-            <h3> @Html.Raw(ViewData["Message"])</h3>
+            <h3> @Html.Raw(TempData["ErrorMessage"])</h3>
+            <h3> @Html.Raw(ViewData["ErrorMessage"])</h3>
         </div>
     </div>
     <hr />

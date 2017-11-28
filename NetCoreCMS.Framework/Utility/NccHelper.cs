@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -22,11 +23,12 @@ namespace NetCoreCMS.Framework.Utility
             T objResult;
             using (MemoryStream ms = new MemoryStream())
             {
-                BinaryFormatter bf = new BinaryFormatter();
-                bf.Serialize(ms, obj);
+                var serializer = new XmlSerializer(typeof(T));
+                serializer.Serialize(ms, obj);
                 ms.Position = 0;
-                objResult = (T)bf.Deserialize(ms);
+                objResult = (T)serializer.Deserialize(ms);
             }
+            
             return objResult;
         }
     }

@@ -15,7 +15,7 @@ using System.Linq;
 
 namespace NetCoreCMS.Modules.Admin.Controllers
 {
-    [AdminMenu(Name = "Users", IconCls = "fa fa-users", Order = 16)]    
+    [AdminMenu(Name = "Users", IconCls = "fa fa-users", Order = 6)]    
     public class UserAuthController : NccController
     {
         private readonly UserManager<NccUser> _userManager;
@@ -37,7 +37,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             _logger = loggerFactory.CreateLogger<UserAuthController>();
         }
 
-        [AdminMenuItem(Name = "Manage User Roles", Url = "/UserAuth/ManageUserRoles", Order = 4, SubActions = new string[] { "/UserAuth/CreateEditRoles", "/UserAuth/ExtraPermissions" })]
+        [AdminMenuItem(Name = "Manage User Roles", Url = "/UserAuth/ManageUserRoles", SubActions = new string[] { "ExtraPermissions", "CreateEditRoles", "UserPermissions" }, Order = 4)]
         public ActionResult ManageUserRoles()
         {
             var permissions = _nccPermissionService.LoadAll();
@@ -65,7 +65,7 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             
             return View(permissionViewModels);
         }
-
+        
         public ActionResult CreateEditRoles(long roleId = 0)
         {
             var model = new PermissionViewModel();
@@ -93,7 +93,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             ViewBag.Modules = activeModules;
             var permission = new NccPermission();
             permission.Description = model.Description;
-            permission.Group = model.Group;
+            permission.Rank = model.Rank;
+            permission.Group = model.Group;            
             permission.Name = model.Name;
             permission.Id = model.Id;
 
@@ -168,8 +169,8 @@ namespace NetCoreCMS.Modules.Admin.Controllers
             
             return View(model);
         }
-        
-        //[AdminMenuItem(Name = "Extra Permissions", Url = "/UserAuth/ExtraPermissions", Order = 5 )]
+
+        //[AdminMenuItem(Name = "Extra Permissions", Url = "/UserAuth/ExtraPermissions", Order = 5 )]        
         public ActionResult ExtraPermissions(long roleId = 0)
         {
             var roles = _roleManager.Roles.ToList();
@@ -225,6 +226,9 @@ namespace NetCoreCMS.Modules.Admin.Controllers
         private void UpdateModelData(PermissionViewModel model, NccPermission permission)
         {
             model.Id = permission.Id;
+            model.Rank = permission.Rank;
+            model.Description = permission.Description;
+            model.Group = permission.Group;
             model.MenuCount = permission.PermissionDetails.GroupBy(x => x.Controller).Count();
             model.ModuleCount = permission.PermissionDetails.GroupBy(x => x.ModuleId).Count();
             model.UserCount = permission.Users.Count;

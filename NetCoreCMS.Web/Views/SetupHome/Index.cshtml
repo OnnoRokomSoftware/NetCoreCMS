@@ -2,7 +2,7 @@
 @model SetupViewModel
 
 @{    
-    ViewData["Title"] = "";
+    Title = "";
     Layout = "_SimpleLayout";
 }
 
@@ -54,7 +54,7 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="DatabasePassword">Database Password:</label>
             <div class="col-sm-10">
-                <input asp-for="DatabasePassword" type="password" class="form-control" id="DatabasePassword" name="DatabasePassword" placeholder="Enter Database Password">
+                <input asp-for="DatabasePassword" type="text" class="form-control" id="DatabasePassword" name="DatabasePassword" placeholder="Enter Database Password">
                 <span asp-validation-for="DatabasePassword" class="text-danger"></span>
             </div>
         </div>
@@ -65,6 +65,13 @@
                 <span asp-validation-for="DatabaseName" class="text-danger"></span>
             </div>
         </div>   
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="TablePrefix">Table Prefix:</label>
+            <div class="col-sm-10">
+                <input asp-for="TablePrefix" type="text" class="form-control" placeholder="Enter table Prefix" value="ncc_">
+                <span asp-validation-for="TablePrefix" class="text-danger"></span>
+            </div>
+        </div> 
         <hr />
     </div>
                    

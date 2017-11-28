@@ -18,14 +18,6 @@ namespace NetCoreCMS.Framework.Core.Hooks
     {    
         public AppActivity Handle(OnAppActivity message)
         {
-            //if(message.Data.ActivityType == AppActivity.Type.RequestStart || message.Data.ActivityType == AppActivity.Type.RequestEnd)
-            //    GlobalMessageRegistry.RegisterMessage(new GlobalMessage()
-            //{
-            //    For = GlobalMessage.MessageFor.Both,
-            //    Registrater = "CoreModule",
-            //    Text = message.Data.ActivityType.ToString(),
-            //    Type = GlobalMessage.MessageType.Info
-            //}, new System.TimeSpan(0, 0, 5));
             return message.Data;
         }     
     }

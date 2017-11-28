@@ -3,8 +3,8 @@
 
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["PageTitle"] = "Startup";
-    ViewData["PageSubtitle"] = "Set Startup Page";
+    Title = "Startup";
+    SubTitle = "Set Startup Page";
 }
 
 <div class="row">
@@ -163,7 +163,7 @@
                                         @foreach (var startup in ViewBag.RoleStartups)
                                         {
                                             <tr>
-                                                <td>@startup.Role.Name</td>
+                                                <td>@startup.Permission.Name</td>
                                                 <td>@startup.StartupFor</td>
                                                 <td>@startup.StartupType</td>
                                                 <td>@startup.StartupUrl</td>                                                

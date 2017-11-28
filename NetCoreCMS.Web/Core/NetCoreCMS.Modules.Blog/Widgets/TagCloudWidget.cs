@@ -79,12 +79,17 @@ namespace NetCoreCMS.Modules.News.Widgets
         public override string RenderBody()
         {
             var itemList = _nccTagService.LoadTagCloud();
-            TagCloudViewModel item = new TagCloudViewModel();
-            item.ShowTagHasPost = ShowTagHasPost;
-            item.ShowPostCount = ShowPostCount;
-            item.ItemList = itemList;
-            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, item).Result;
-            return body;
+            if (itemList != null && itemList.Count > 0)
+            {
+                TagCloudViewModel item = new TagCloudViewModel();
+                item.ShowTagHasPost = ShowTagHasPost;
+                item.ShowPostCount = ShowPostCount;
+                item.ItemList = itemList;
+                var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, item).Result;
+                return body;
+            }
+
+            return "";
         }
     }
 }

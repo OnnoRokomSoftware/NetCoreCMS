@@ -13,6 +13,8 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
+using PaulMiami.AspNetCore.Mvc.Recaptcha;
+using Microsoft.AspNetCore.Authorization;
 
 namespace NetCoreCMS.HelloWorld.Controllers
 {
@@ -33,7 +35,7 @@ namespace NetCoreCMS.HelloWorld.Controllers
             return View();
         }
 
-        [SiteMenuItem(Name = "Role Home", Url = "/HelloHome/RoleHome", Order = 1)]
+        [SiteMenuItem(Name = "Role Home", Url = "/HelloHome/RoleHome", Order = 2)]
         public ActionResult RoleHome()
         {
             return View();
@@ -43,7 +45,28 @@ namespace NetCoreCMS.HelloWorld.Controllers
         {
             return View();
         }
+        
+        [AllowAnonymous]
+        [SiteMenuItem(Name ="Recaptcha", Order = 3)]
+        public ActionResult Recaptcha()
+        {
+            return View();
+        }
 
-
+        [ValidateRecaptcha]
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult RecaptchaPost()
+        {
+            if (ModelState.IsValid)
+            {
+                ShowMessage("You were not a robot :)", Framework.Core.Mvc.Views.MessageType.Success, false, true);
+            }
+            else
+            {
+                ShowMessage("Are you human ??? :x", Framework.Core.Mvc.Views.MessageType.Error, false, true);
+            }
+            return RedirectToAction("Recaptcha");
+        }
     }
 }

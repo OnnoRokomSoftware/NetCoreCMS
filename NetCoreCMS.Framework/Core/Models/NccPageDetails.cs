@@ -10,9 +10,11 @@
 
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
+    [Serializable]
     public class NccPageDetails : BaseModel<long>
     { 
         public string Title { get; set; }      

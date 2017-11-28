@@ -33,19 +33,17 @@ using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Mvc.FIlters;
+using NetCoreCMS.Framework.Modules.Loader;
+using Microsoft.Extensions.DependencyModel;
+using System.Collections;
+using Microsoft.CodeAnalysis;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
     public static class NccExtension
     {
         public static IServiceCollection AddNccCoreModuleServices(this IServiceCollection services)
-        {
-
-            services.AddTransient<IEmailSender, AuthMessageSender>();
-            services.AddTransient<ISmsSender, AuthMessageSender>();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
-
+        { 
             services.AddScoped<INccTranslator, NccTranslator>();
 
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
@@ -55,45 +53,57 @@ namespace NetCoreCMS.Framework.Core.Extensions
 
             services.AddScoped<NccLanguageFilter>();
             services.AddScoped<NccGlobalExceptionFilter>();
-            services.AddScoped<NccAuthFilter>();
+            services.AddScoped<NccDataAuthFilter>();
 
             services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
             services.AddScoped<NccShortCodeProvider, NccShortCodeProvider>();
             services.AddScoped<ThemeManager, ThemeManager>();
             services.AddScoped<NccRazorViewRenderService, NccRazorViewRenderService>();
 
-            services.AddTransient<NccCategoryDetailsRepository>();
-            services.AddTransient<NccCategoryDetailsService>();
-            services.AddTransient<NccPageDetailsRepository>();
-            services.AddTransient<NccPageDetailsService>();
-            services.AddTransient<NccPostDetailsRepository>();
-            services.AddTransient<NccPostDetailsService>();
-            services.AddTransient<NccTagRepository>();
-            services.AddTransient<NccTagService>();
-            services.AddTransient<NccCommentsRepository>();
-            services.AddTransient<NccCommentsService>();
+            services.AddScoped<NccCategoryDetailsRepository>();
+            services.AddScoped<NccCategoryDetailsService>();
+            services.AddScoped<NccPageDetailsRepository>();
+            services.AddScoped<NccPageDetailsService>();
 
-            services.AddTransient<NccSettingsRepository>();
-            services.AddTransient<NccSettingsService>();
-            services.AddTransient<NccMenuRepository>();
-            services.AddTransient<NccMenuService>();
-            services.AddTransient<NccMenuRepository>();
-            services.AddTransient<NccMenuItemRepository>();
-            services.AddTransient<NccModuleRepository>();
-            services.AddTransient<NccModuleService>();
+            services.AddTransient<NccPageRepository>();
+            services.AddTransient<NccPageService>();
+            services.AddTransient<NccCategoryRepository>();
+            services.AddTransient<NccCategoryService>();
+
+            services.AddScoped<NccUserRepository>();
+            services.AddScoped<NccUserService>();
+
+            services.AddScoped<NccPostRepository>();
+            services.AddScoped<NccPostService>();
+            services.AddScoped<NccPostDetailsRepository>();
+            services.AddScoped<NccPostDetailsService>();
+            services.AddScoped<NccTagRepository>();
+            services.AddScoped<NccTagService>();
+            services.AddScoped<NccCommentsRepository>();
+            services.AddScoped<NccCommentsService>();
+
+            services.AddScoped<NccSettingsRepository>();
+            services.AddScoped<NccSettingsService>();
+            services.AddScoped<NccMenuRepository>();
+            services.AddScoped<NccMenuService>();
+            services.AddScoped<NccMenuRepository>();
+            services.AddScoped<NccMenuItemRepository>();
+            services.AddScoped<NccModuleRepository>();
+            services.AddScoped<NccModuleService>();
             
-            services.AddTransient<NccWebSiteWidgetRepository>();
-            services.AddTransient<NccWebSiteWidgetService>();
-            services.AddTransient<NccWebSiteRepository>();
-            services.AddTransient<NccWebSiteInfoRepository>();
-            services.AddTransient<NccWebSiteService>();
-            services.AddTransient<NccStartupRepository>();
-            services.AddTransient<NccStartupService>();
+            services.AddScoped<NccWebSiteWidgetRepository>();
+            services.AddScoped<NccWebSiteWidgetService>();
 
-            services.AddTransient<NccPermissionRepository>();
-            services.AddTransient<NccPermissionService>();
-            services.AddTransient<NccPermissionDetailsRepository>();
-            services.AddTransient<NccPermissionDetailsService>();
+            services.AddScoped<NccWebSiteRepository>();
+            services.AddScoped<NccWebSiteInfoRepository>();
+            services.AddScoped<NccWebSiteService>();
+            services.AddScoped<NccStartupRepository>();
+            services.AddScoped<NccStartupService>();
+
+            services.AddScoped<NccPermissionRepository>();
+            services.AddScoped<NccPermissionService>();
+            services.AddScoped<NccPermissionDetailsRepository>();
+            services.AddScoped<NccPermissionDetailsService>();
             
             return services;
         }
@@ -149,7 +159,24 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 });
             }
             
-            return null;
+            return app;
+        }
+
+        public static IServiceCollection AddModuleDependencies(this IServiceCollection services, IMvcBuilder mvcBuilder)
+        {
+            mvcBuilder.AddRazorOptions(options =>
+            {
+                Hashtable moduleDependencies = GlobalContext.GetModuleDependencies();
+                foreach (ModuleDependedLibrary mdl in moduleDependencies.Values)
+                {
+                    foreach (var path in mdl.AssemblyPaths)
+                    {
+                        options.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(path));
+                    }
+                }
+            });
+
+            return services;
         }
     }
 }

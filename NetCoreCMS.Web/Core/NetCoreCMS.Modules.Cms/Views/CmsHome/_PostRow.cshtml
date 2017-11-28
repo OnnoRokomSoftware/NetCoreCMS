@@ -55,9 +55,15 @@
                 <hr style="margin:0px;padding:0px;" />
                 @{
                     var content = postDetails.Content;
-                    content = Regex.Replace(content, "<[^>]*>", string.Empty);
-                    content = Regex.Replace(content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
-                    var len = content.Length;
+                    if (content?.Length > 0)
+                    {
+                        content = Regex.Replace(content, "<[^>]*>", string.Empty);
+                    }
+                    if (content?.Length > 0)
+                    {
+                        content = Regex.Replace(content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
+                    }
+                    var len = content?.Length;
                     if (len > 200)
                     {
                         len = 200;

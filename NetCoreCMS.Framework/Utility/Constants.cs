@@ -51,6 +51,12 @@ namespace NetCoreCMS.Framework.Utility
         /// Used for cryptography
         /// </summary>
         public static string NccSiteKey { get { return "E546C8DF278CD5931069B522E695D4F2"; } }
+
+        /// <summary>
+        /// Modules dependend library location. Depelopers have to copy their dependend library or nuget packages into this folder containing inside module folder.
+        /// </summary>
+        public static string ModuleDepencencyFolder { get { return "Dependency"; } } 
+
         /// <summary>
         /// Email server config saving settings key
         /// </summary>
