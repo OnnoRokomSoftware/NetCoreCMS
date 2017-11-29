@@ -9,14 +9,16 @@
  *************************************************************/
 
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using NetCoreCMS.Framework.Core.Data;
 
-namespace NetCoreCMS.Framework.Core.Data
+
+namespace NetCoreCMS.Core.Modules.Media
 {
-    public interface INccModuleBuilder
+    public class Builder : IModelBuilder
     {
-        void Build(ModelBuilder modelBuilder);
+        public void Build(ModelBuilder modelBuilder)
+        {
+            
+        }
     }
 }

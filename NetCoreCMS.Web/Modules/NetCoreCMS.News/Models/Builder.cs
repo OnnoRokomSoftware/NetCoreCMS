@@ -8,17 +8,14 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
-using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Modules.News.Models;
 using NetCoreCMS.Modules.News.Models.Entity;
 using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Modules.News.Models
 {
-    public class NeModelBuilder : INccModuleBuilder
+    public class Builder : IModelBuilder
     {
         public void Build(ModelBuilder modelBuilder)
         {

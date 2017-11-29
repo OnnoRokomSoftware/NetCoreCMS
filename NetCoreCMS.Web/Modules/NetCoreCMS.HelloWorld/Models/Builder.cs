@@ -15,7 +15,7 @@ using NetCoreCMS.HelloWorld.Models.Entity;
 
 namespace NetCoreCMS.ImageSlider.Models
 {
-    public class HelloModelBuilder : INccModuleBuilder
+    public class Builder : IModelBuilder
     {
         public void Build(ModelBuilder modelBuilder)
         {

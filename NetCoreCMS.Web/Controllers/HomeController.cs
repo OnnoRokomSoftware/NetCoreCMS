@@ -37,13 +37,11 @@ namespace NetCoreCMS.Web.Controllers
     public class HomeController : NccController
     {
         IHostingEnvironment _env;
-        private readonly IStringLocalizer<SharedResource> _sharedLocalizer;
-        
-        public HomeController(IHostingEnvironment env, ILoggerFactory factory, IStringLocalizer<SharedResource> sharedLocalizer)
+
+        public HomeController(IHostingEnvironment env, ILoggerFactory factory)
         {
             _logger = factory.CreateLogger<HomeController>();
             _env = env;
-            _sharedLocalizer = sharedLocalizer;            
         }
 
         [AllowAnonymous]
@@ -201,22 +199,5 @@ namespace NetCoreCMS.Web.Controllers
             }
             return View();
         }
-       
-        [AllowAnonymous]
-        public ActionResult Temp()
-        {
-            var setup = SetupHelper.LoadSetup();
-            GlobalMessageRegistry.RegisterMessage(
-                new GlobalMessage() {
-                    For = GlobalMessage.MessageFor.Both,
-                    MessageId = Guid.NewGuid().ToString(),
-                    Registrater = "Web",
-                    Text = "Registered message from website",
-                    Type = GlobalMessage.MessageType.Info,
-                    ForUsers = new List<string>() { "admin"}
-                }, new TimeSpan(0, 10, 0)
-            );
-            return View();
-        } 
     }
 }

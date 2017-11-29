@@ -14,7 +14,7 @@ using NetCoreCMS.Framework.Core.Data;
 
 namespace NetCoreCMS.Framework.Core.Models
 {
-    public class CoreModelBuilder : INccModuleBuilder
+    public class CoreModelBuilder : IModelBuilder
     {
         public void Build(ModelBuilder modelBuilder)
         {

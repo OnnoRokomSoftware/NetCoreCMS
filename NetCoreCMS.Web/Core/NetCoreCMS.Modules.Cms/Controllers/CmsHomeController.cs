@@ -37,8 +37,7 @@ namespace NetCoreCMS.Core.Modules.Cms.Controllers
             _logger = factory.CreateLogger<CmsHomeController>();
         }
 
-        [AllowAnonymous]
-        [ResponseCache(Duration = 300, VaryByQueryKeys = new string[] { "pageNumber"})]
+        [AllowAnonymous]        
         public ActionResult Index(int pageNumber = 0)
         {
             if (SetupHelper.IsDbCreateComplete && SetupHelper.IsAdminCreateComplete)

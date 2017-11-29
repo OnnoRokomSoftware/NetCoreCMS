@@ -7,20 +7,17 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
-
+ 
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.ImageSlider.Models.Entity;
 
-namespace NetCoreCMS.ImageSlider.Models
+namespace NetCoreCMS.Core.Modules.Cms.Models
 {
-    public class NccImageSliderModelBuilder : INccModuleBuilder
+    public class Builder : IModelBuilder
     {
         public void Build(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NccImageSlider>().ToTable(GlobalContext.GetTableName<NccImageSlider>());
-            modelBuilder.Entity<NccImageSliderItem>().ToTable(GlobalContext.GetTableName<NccImageSliderItem>());
+            
         }
     }
 }
