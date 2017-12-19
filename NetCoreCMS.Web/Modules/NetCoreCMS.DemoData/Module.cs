@@ -32,7 +32,8 @@ namespace NetCoreCMS.Modules.DemoData
 
         }
 
-        public string ModuleId { get; set; }
+        public int ExecutionOrder { get; set; }
+        public string ModuleName { get; set; }
         public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
@@ -42,8 +43,7 @@ namespace NetCoreCMS.Modules.DemoData
         public string ManualUrl { get; set; }
         public bool AntiForgery { get; set; }
         public string Version { get; set; }
-        public string MinNccVersion { get; set; }
-        public string MaxNccVersion { get; set; }
+        public string NccVersion { get; set; }        
         public string Description { get; set; }
         public string Category { get; set; }
         public List<NccModuleDependency> Dependencies { get; set; }
@@ -58,6 +58,9 @@ namespace NetCoreCMS.Modules.DemoData
         [NotMapped]
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
         public List<Menu> Menus { get; set; }
+        public string Area { get { return ""; } }
+
+
         public bool Activate()
         {
             return true;
@@ -68,7 +71,7 @@ namespace NetCoreCMS.Modules.DemoData
             return true;
         }
 
-        public void Init(IServiceCollection services)
+        public void Init(IServiceCollection services, INccSettingsService nccSettingsService)
         {
 
         }
@@ -78,15 +81,15 @@ namespace NetCoreCMS.Modules.DemoData
 
         }
 
-        public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
             return true;
         }
-        public bool Update(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
             return true;
         }
-        public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable)
         {
             return true;
         }

@@ -26,13 +26,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public TopBarWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.TopBarWidget", "TopBar", "TopBar Widget", "")
+            NccWebSiteWidgetService websiteWidgetService):base("TopBar", "TopBar Widget", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
         }
 
-        public override void Init(long websiteWidgetId)
+        public override void Init(long websiteWidgetId, bool renderConfig = false)
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/TopBar";

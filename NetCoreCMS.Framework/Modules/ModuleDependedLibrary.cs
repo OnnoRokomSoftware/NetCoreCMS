@@ -10,7 +10,7 @@ namespace NetCoreCMS.Framework.Modules
             AssemblyPaths = new List<string>();
         }
 
-        public string ModuleId { get; set; }
+        public string ModuleName { get; set; }
         public List<string> AssemblyPaths { get; set; }
     }
 }

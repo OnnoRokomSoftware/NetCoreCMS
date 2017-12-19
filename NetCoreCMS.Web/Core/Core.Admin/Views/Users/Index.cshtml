@@ -1,0 +1,67 @@
+﻿@using System.Collections.Generic
+
+@model List<UserViewModel>
+
+@{
+    Layout = Constants.AdminLayoutName;
+    Title = "Users";
+    SubTitle = "Users";
+    var searchKey = " ";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <a href="~/Users/CreateEdit" class="btn btn-primary">New User </a>
+        <hr/> 
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="col-sm-6">
+                        <select id="dd_bulk_operation_list" class="form-control">
+                            <option value="">Select bulk operation</option>
+                            <option value="Block">Block</option>
+                            <option value="UnBlock">UnBlock</option>                            
+                            <option value="ResetPassword">Reset Password</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="button" id="btn_apply_bulk_operation" value="Apply" class="btn btn-primary" />
+                    </div>        
+                </div>
+                <div class="col-lg-6 pull-right" >
+                    <form method="post" action="/Users/Index" >
+                        <div class="col-sm-8">
+                            @if (ViewBag.SearchKey != null)
+                            {
+                                searchKey = ViewBag.SearchKey;
+                            }
+                            <input type="text" id="searchKey" value="@searchKey" name="searchKey" class="form-control" />
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="submit" id="btn_search_user" value="Search" class="btn btn-default" />
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+            <br/>
+            <table class="table table-striped">
+                <tr><th>Id</th><th>User Name</th><th>Full Name</th><th>Email</th><th>Mobile</th><th>Roles</th><th>Action</th></tr>
+                @foreach(var user in Model){
+                    <tr> <td class="cls_user_chk"> <input type="checkbox" id="chk_@user.Id"  data-user-id="@user.Id" /> @user.Id</td><td>@user.UserName</td><td>@user.FullName</td><td>@user.Email</td><td>@user.Mobile</td><td>@user.RoleNames</td><td><a href="~/Users/CreateEdit/?userName=@user.UserName">Update</a></td></tr>
+                }
+            </table>
+            
+            <div class="row">
+                <div class="col-sm-3">
+                    <select id="dd_user_roles" asp-items="@ViewBag.RoleList" multiple="multiple" class="form-control"> 
+                    </select>
+                </div>
+                <div class="col-sm-9">
+                    <input type="button" id="btn_update_users_role" value="Apply" class="btn btn-primary" />
+                </div>
+            </div>
+    </div>    
+</div>
+
+<script src="~/Core.Admin/js/NccUsers.js" asp-append-version="true"></script>
+     

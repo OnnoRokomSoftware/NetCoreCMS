@@ -14,7 +14,7 @@ using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using Newtonsoft.Json;
 
-namespace NetCoreCMS.HelloWorld.Widgets
+namespace Default.Widgets
 {
     public class DefaultThemeWidget : Widget
     {
@@ -23,13 +23,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public DefaultThemeWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.DefaultThemeWidget", "Default Theme", "Default theme Hello Widget", "")
+            NccWebSiteWidgetService websiteWidgetService):base("Default Theme", "Default theme Hello Widget", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
         }
 
-        public override void Init(long websiteWidgetId)
+        public override void Init(long websiteWidgetId, bool renderConfig = false)
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/Hello";

@@ -18,11 +18,8 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using Microsoft.AspNetCore.Routing;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.ImageSlider.Services;
-using NetCoreCMS.ImageSlider.Repository;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
-using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.ImageSlider.Models.Entity;
 
 namespace NetCoreCMS.Modules.ImageSlider
@@ -35,7 +32,8 @@ namespace NetCoreCMS.Modules.ImageSlider
              
         }
 
-        public string ModuleId { get; set; }
+        public int ExecutionOrder { get; set; }
+        public string ModuleName { get; set; }
         public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
@@ -45,8 +43,7 @@ namespace NetCoreCMS.Modules.ImageSlider
         public string ManualUrl { get; set; }
         public bool AntiForgery { get; set; }
         public string Version { get; set; }
-        public string MinNccVersion { get; set; }
-        public string MaxNccVersion { get; set; }
+        public string NccVersion { get; set; }        
         public string Description { get; set; }
         public string Category { get; set; }
         public List<NccModuleDependency> Dependencies { get; set; }
@@ -61,6 +58,10 @@ namespace NetCoreCMS.Modules.ImageSlider
         [NotMapped]
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
         public List<Menu> Menus { get; set; }
+        public string Area { get { return ""; } }
+
+
+
         public bool Activate()
         {
             return true;
@@ -71,7 +72,7 @@ namespace NetCoreCMS.Modules.ImageSlider
             return true;
         }
 
-        public void Init(IServiceCollection services)
+        public void Init(IServiceCollection services, INccSettingsService nccSettingsService)
         {
             //services.AddTransient<NccImageSliderRepository>();
             //services.AddTransient<NccImageSliderItemRepository>();
@@ -83,73 +84,35 @@ namespace NetCoreCMS.Modules.ImageSlider
             
         }
 
-        public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
-            var createQuery = @"
-                CREATE TABLE IF NOT EXISTS `" + GlobalContext.GetTableName<NccImageSlider>() + @"` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `VersionNumber` INT NOT NULL , 
-                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Name` VARCHAR(250) NOT NULL , 
-                    `CreationDate` DATETIME NOT NULL , 
-                    `ModificationDate` DATETIME NOT NULL , 
-                    `CreateBy` BIGINT NOT NULL , 
-                    `ModifyBy` BIGINT NOT NULL , 
-                    `Status` INT NOT NULL , 
-
-                    `ContainerStyle` TEXT NULL , 
-                    `Interval` INT NOT NULL , 
-                    `ShowNav` BIT(1) NOT NULL , 
-                    `ShowSideNav` BIT(1) NOT NULL , 
-                    `ImageWidth` VARCHAR(255) NULL , 
-                    `ImageHeight` VARCHAR(255) NULL , 
-                PRIMARY KEY (`Id`)) ENGINE = MyISAM;
-
-                CREATE TABLE IF NOT EXISTS `" + GlobalContext.GetTableName<NccImageSliderItem>() + @"` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `VersionNumber` INT NOT NULL , 
-                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Name` VARCHAR(250) NOT NULL , 
-                    `CreationDate` DATETIME NOT NULL , 
-                    `ModificationDate` DATETIME NOT NULL , 
-                    `CreateBy` BIGINT NOT NULL , 
-                    `ModifyBy` BIGINT NOT NULL , 
-                    `Status` INT NOT NULL , 
-
-                    `Path` VARCHAR(1000) NOT NULL , 
-                    `Description` TEXT NOT NULL , 
-                    `Order` INT NOT NULL , 
-
-                    `NccImageSliderId` BIGINT NOT NULL , 
-                PRIMARY KEY (`Id`)) ENGINE = MyISAM;
-            ";
-
-            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = createQuery };
-            var retVal = executeQuery(nccDbQueryText);
-            if (!string.IsNullOrEmpty(retVal))
+            try
             {
-                return true;
+                createUpdateTable(typeof(NccImageSlider));
+                createUpdateTable(typeof(NccImageSliderItem));
             }
-            return false;
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
-        public bool Update(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
             return true;
         }
-        public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable)
         {
-            var deleteQuery = @"
-                DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<NccImageSliderItem>() + @"`; 
-                DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<NccImageSlider>() + @"`
-            ;";
-
-            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };
-            var retVal = executeQuery(nccDbQueryText);
-            if (!string.IsNullOrEmpty(retVal))
+            try
             {
-                return true;
+                deleteTable(typeof(NccImageSliderItem));
+                deleteTable(typeof(NccImageSlider));
             }
-            return false;
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -27,7 +27,7 @@ using NetCoreCMS.Framework.Core.Auth;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Models;
 
-namespace NetCoreCMS.Framework.Core.Mvc.FIlters
+namespace NetCoreCMS.Framework.Core.Mvc.Filters
 {
     public class NccDataAuthFilter : INccActionFilter
     {
@@ -110,19 +110,19 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
             var authRequirement = new NccAuthRequirement(attrib.GetRequirement(), attrib.GetValues());
             authRequirement.RequirementList = attrib.RequirementList;
             authRequirement.ValueList = attrib.ValueList;
-            var moduleId = GetModuleId(nccController);
-            authRequirement.ModuleId = moduleId;
+            var moduleName = GetModuleName(nccController);
+            authRequirement.ModuleName = moduleName;
             return authRequirement;
         }
 
-        private string GetModuleId(NccController nccController)
+        private string GetModuleName(NccController nccController)
         {
             var type = nccController.GetType();
             var assemblyName = type.Assembly.GetName();
             var module = GlobalContext.GetModuleByAssemblyName(assemblyName);
             if(module != null)
             {
-                return module.ModuleId;
+                return module.Folder;
             }
             return null;
         }

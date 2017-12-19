@@ -1,0 +1,64 @@
+﻿@using Core.Admin.Models.ViewModels
+
+@{
+    Layout = Constants.AdminLayoutName;
+    Title = "Logging";
+    SubTitle = "Set Log Level and Download Log";
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <form id="logForm" class="form-horizontal" asp-controller="Admin" asp-action="DownloadLogFile" method="get">
+            <input type="hidden" id="operation" name="operation"/>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-3 text-right">
+                        <label>Log Level: </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <select name="logLevel" asp-items="@( new SelectList(ViewBag.LogLevels, "Value","Key", ViewBag.LogLevel))" onchange="SubmitForm()" class="form-control"></select>
+                    </div>
+                </div>                                                
+            </div>
+            
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-3 text-right">
+                        <label>Download all logs: </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <a href="/Admin/DownloadAllLogs">Download All Log File</a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-sm-3 text-right">
+                        <label>Download single day log: </label>
+                    </div>
+                    <div class="col-sm-5">
+                        <select name="logFileName" asp-items="@( new SelectList(ViewBag.LogFiles, "Value","Key"))" class="form-control"></select>
+                    </div>
+                </div>
+                <br/>
+                <div class="row">
+                    <div class="col-sm-3 text-right">
+                        
+                    </div>
+                    <div class="col-sm-5">
+                        <input class="btn btn-primary" type="submit" value="Download" />
+                    </div>
+                </div>                
+            </div>            
+        </form>
+    </div>    
+</div>
+     
+<script>
+    function SubmitForm() {
+        $("#operation").val("SetLog");
+        $("#logForm").attr("action", "SetLogLevel");
+        $("#logForm").submit();        
+    }
+</script>

@@ -1,0 +1,537 @@
+﻿@model UserViewModel
+
+@{
+    Layout = Constants.AdminLayoutName;
+    Title = "New Users";
+    SubTitle = "User";
+    var chk = "";
+    var modules = ((List<IModule>)ViewBag.Modules);
+}
+
+<link href="/Core.Admin/css/userAuth.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" asp-controller="Users" asp-action="CreateEdit" method="post" asp-antiforgery="true">
+
+            <div>
+                <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+            </div>
+
+            <input type="hidden" name="Id" value="@Model.Id" />
+            @if (Model.Id == 0)
+            {
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label for="UserName">User Name: </label></div>
+                <div class="col-sm-6"><input type="text" asp-for="UserName" value="@Model.UserName" class="form-control" /></div>
+                
+            </div>
+            }
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Full Name: </label></div>
+                <div class="col-sm-6"><input type="text" asp-for="FullName" value="@Model.FullName"  class="form-control"/></div>
+            </div>
+            @if (Model.Id == 0)
+            {
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Password: </label></div>
+                <div class="col-sm-6"><input type="password" asp-for="Password" value="@Model.Password"  class="form-control"/></div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Confirm Password: </label></div>
+                <div class="col-sm-6"><input type="password" asp-for="ConfirmPassword" value="@Model.ConfirmPassword"  class="form-control"/></div>
+            </div>
+            }
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Email: </label></div>
+                <div class="col-sm-6"><input type="email" asp-for="Email" value="@Model.Email"  class="form-control"/></div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Mobile: </label></div>
+                <div class="col-sm-6"><input type="text" asp-for="Mobile" value="@Model.Mobile"  class="form-control"/></div>
+            </div>
+            @if (User.IsInRole("SuperAdmin"))
+            {
+                <div class="form-group">
+                    <div class="col-sm-2 text-right"><label>Is SuperAdmin: </label></div>
+                    <div class="col-sm-6"><input type="checkbox" asp-for="IsSuperAdmin" /></div>
+                </div>
+            }
+            @if (Model.Id == 0)
+            {
+            <div class="form-group">
+                <div class="col-sm-2  text-right"><label>Role: </label></div>
+                <div class="col-sm-6">
+                    <select asp-for="Roles" asp-items="@ViewBag.Roles" multiple="multiple"  class="form-control">                        
+                    </select>
+                </div>
+            </div>
+            }
+
+            <div class="form-group">
+                <div class="col-sm-2 text-right"><label>Send Email Notification: </label></div>
+                 
+                @if (Model.SendEmailNotification == true)
+                {
+                    chk = "checked";
+                }
+                <div class="col-sm-6">
+                    <input type="checkbox" name="SendEmail" @chk />
+                </div>
+            </div>
+
+            <div class="container">
+                <input type="hidden" asp-for="PermissionId" value="@Model.PermissionId" />
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div>
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                        Deny menu permission
+                                    </a>
+                                </h4>
+                            </div>
+                            @*<div class="pull-right">
+                                <input class="btn btn-primary" value="Expand All" onclick="ExpandAll('DenyMenu')" />
+                            </div>*@
+                        </div>
+                        <div id="collapse1" class="panel-collapse collapse in">
+                            <div class="panel-body">
+                                <h5>Select Module Menus</h5>
+                                <div class="menu" id="DenyMenu">
+
+                                    @for (var i = 0; i < modules.Count; i++)
+                                    {
+                                        var module = modules[i];
+                                        var moduleTitle = module.ModuleTitle;
+
+                                        var menus = module.Menus;
+                                        var adminMenus = menus
+                                            .Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.Admin)
+                                            .GroupBy(y => y.DisplayName,
+                                                (key, g) => new { MenuName = key, Menu = g.FirstOrDefault(), Items = g.SelectMany(x => x.MenuItems).ToList() }
+                                            ).ToList();
+
+                                        var siteMenus = menus.Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.WebSite)
+                                            .GroupBy(y => y.DisplayName,
+                                                (key, g) => new { MenuName = key, Menu = g.FirstOrDefault(), Items = g.SelectMany(z => z.MenuItems).ToList() }
+                                            ).ToList();
+
+                                        <div class="accordion">
+                                            <!-- Module -->
+                                            <div class="accordion-group">
+
+                                                <div class="accordion-heading area">
+                                                    <input class="deny-module-check" id="deny-module-check-@i" data-container-id="deny-area-@i" type="checkbox" asp-for="DenyModules[i].IsChecked" />
+                                                    <input type="hidden" asp-for="DenyModules[i].ModuleName" value="@module.ModuleName" />
+                                                    <input type="hidden" asp-for="DenyModules[i].Name" value="@module.ModuleTitle" />
+                                                    <a class="accordion-toggle collapsed" data-toggle="collapse" aria-expanded="false" href="#deny-area-@i">@moduleTitle Module</a>
+                                                </div>
+
+                                                <div class="accordion-body collapse" id="deny-area-@i" aria-expanded="false" style="height: auto;">
+                                                    <div class="accordion-inner">
+                                                        @if (adminMenus.Count > 0)
+                                                        {
+                                                            <div class="accordion" id="deny-equipamento-admin-@i">
+                                                                <div class="accordion-group">
+                                                                    <div class="accordion-heading equipamento">
+                                                                        @{
+                                                                            var checkedTxt = "";
+                                                                            if (adminMenus.Count > 0)
+                                                                            {
+                                                                                var checkedMenu = Model.DenyModules[i].AdminMenus.Where(x => x.IsChecked && x.MenuItems.Where(y => y.IsChecked).ToList().Count > 0).Count();
+                                                                                if (checkedMenu > 0)
+                                                                                {
+                                                                                    checkedTxt = "checked";
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        <input class="deny-admin-check" type="checkbox" @checkedTxt data-container-id="deny-admin-@i" />
+                                                                        <a class="accordion-toggle" data-parent="#deny-equipamento-admin-@i" data-toggle="collapse" aria-expanded="false" href="#deny-admin-@i">Admin Menus</a>
+                                                                    </div>
+                                                                    <div class="accordion-body collapse" id="deny-admin-@i" aria-expanded="false" style="height:auto;">
+                                                                        <div class="accordion-inner">
+
+                                                                            @for (var j = 0; j < adminMenus.Count; j++)
+                                                                            {
+                                                                                var menu = adminMenus[j];
+                                                                                var dn = menu.MenuName;
+                                                                                var menuItems = menu.Items;
+
+                                                                                <div class="accordion" id="deny-menu-admin-@i-@j">
+                                                                                    <div class="accordion-group">
+                                                                                        <div class="accordion-heading ponto">
+                                                                                            <input class="deny-menu-check" type="checkbox" data-container-id="menuItem-admin-@i-@j" asp-for="DenyModules[i].AdminMenus[j].IsChecked" />
+                                                                                            <input type="hidden" asp-for="DenyModules[i].AdminMenus[j].Id" value="@Model.DenyModules[i].AdminMenus[j].Id" />
+                                                                                            <input type="hidden" asp-for="DenyModules[i].AdminMenus[j].Name" value="@menu.MenuName" />
+                                                                                            <input type="hidden" asp-for="DenyModules[i].AdminMenus[j].Type" value="Admin" />
+                                                                                            <a class="accordion-toggle" data-parent="#deny-menu-admin-@i-@j" data-toggle="collapse" aria-expanded="false" href="#deny-menuItem-admin-@i-@j">@menu.MenuName</a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="accordion-body in collapse" id="deny-menuItem-admin-@i-@j" aria-expanded="false" style="height: auto;">
+                                                                                        <div class="accordion-inner">
+                                                                                            @for (var k = 0; k < menuItems.Count; k++)
+                                                                                            {
+                                                                                                var si = menuItems[k];
+                                                                                                var action = si.DisplayName;
+
+                                                                                                <ul class="nav nav-list" style="padding-left:15px;">
+                                                                                                    <li style="margin-bottom:10px;">
+                                                                                                        <input type="checkbox" asp-for="DenyModules[i].AdminMenus[j].MenuItems[k].IsChecked" />
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].AdminMenus[j].MenuItems[k].Name" value="@Model.DenyModules[i].AdminMenus[j].MenuItems[k].Name" />
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].AdminMenus[j].MenuItems[k].Id" value="@Model.DenyModules[i].AdminMenus[j].MenuItems[k].Id" />
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].AdminMenus[j].MenuItems[k].Controller" value="@Model.DenyModules[i].AdminMenus[j].MenuItems[k].Controller" />
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].AdminMenus[j].MenuItems[k].Action" value="@Model.DenyModules[i].AdminMenus[j].MenuItems[k].Action" />
+                                                                                                        <a href="#" style="display:inline;">
+                                                                                                            @action
+                                                                                                        </a>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>						                              }
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                            }
+
+                                                        @if (siteMenus.Count > 0)
+                                                        {
+                                                            <div class="accordion" id="deny-equipamento-website-@i">
+                                                                <div class="accordion-group">
+                                                                    <div class="accordion-heading equipamento">
+                                                                        @{
+                                                                            var checkedTxt = "";
+                                                                            if (adminMenus.Count > 0)
+                                                                            {
+                                                                                var checkedMenu = Model.DenyModules[i].SiteMenus.Where(x => x.IsChecked && x.MenuItems.Where(y => y.IsChecked).ToList().Count > 0).Count();
+                                                                                if (checkedMenu > 0)
+                                                                                {
+                                                                                    checkedTxt = "checked";
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        <input class="deny-website-check" type="checkbox" @checkedTxt data-container-id="deny-website-@i" />
+                                                                        <a class="accordion-toggle" data-parent="#deny-equipamento-website-@i" data-toggle="collapse" aria-expanded="false" href="#deny-website-@i">Site Menus</a>
+                                                                    </div>
+                                                                    <div class="accordion-body collapse" id="deny-website-@i" aria-expanded="false" style="height:auto;">
+                                                                        <div class="accordion-inner">
+
+                                                                            @for (var j = 0; j < siteMenus.Count; j++)
+                                                                            {
+                                                                                var menu = siteMenus[j];
+                                                                                var dn = menu.MenuName;
+                                                                                var menuItems = menu.Items;
+
+                                                                                <div class="accordion" id="deny-menu-website-@i-@j">
+
+                                                                                    <div class="accordion-group">
+                                                                                        <div class="accordion-heading ponto">
+                                                                                            <input type="checkbox" data-container-id="deny-menuItem-website-@i-@j" asp-for="DenyModules[i].SiteMenus[j].IsChecked" />
+                                                                                            <input type="hidden" asp-for="DenyModules[i].SiteMenus[j].Id" value="@Model.DenyModules[i].SiteMenus[j].Id" />
+                                                                                            <input type="hidden" asp-for="DenyModules[i].SiteMenus[j].Name" value="@menu.MenuName" />
+                                                                                            <input type="hidden" asp-for="DenyModules[i].SiteMenus[j].Type" value="WebSite" />
+                                                                                            <a class="accordion-toggle" data-parent="#deny-menu-website-@i-@j" data-toggle="collapse" aria-expanded="false" href="#deny-menuItem-website-@i-@j">@menu.MenuName</a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="accordion-body in collapse" id="deny-menuItem-website-@i-@j" aria-expanded="false" style="height: auto;">
+                                                                                        <div class="accordion-inner">
+                                                                                            @for (var k = 0; k < menuItems.Count; k++)
+                                                                                            {
+                                                                                                var si = menuItems[k];
+                                                                                                var action = si.DisplayName;
+
+                                                                                                <ul class="nav nav-list" style="padding-left:15px;">
+                                                                                                    <li style="margin-bottom:10px;">
+                                                                                                        <input type="checkbox" asp-for="DenyModules[i].SiteMenus[j].MenuItems[k].IsChecked" />
+                                                                                                        <a href="#" style="display:inline;">@action</a>
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].SiteMenus[j].MenuItems[k].Name" value="@Model.DenyModules[i].SiteMenus[j].MenuItems[k].Name" />
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].SiteMenus[j].MenuItems[k].Id" value="@Model.DenyModules[i].SiteMenus[j].MenuItems[k].Id" />
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].SiteMenus[j].MenuItems[k].Controller" value="@Model.DenyModules[i].SiteMenus[j].MenuItems[k].Controller" />
+                                                                                                        <input type="hidden" asp-for="DenyModules[i].SiteMenus[j].MenuItems[k].Action" value="@Model.DenyModules[i].SiteMenus[j].MenuItems[k].Action" />
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            }
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>						                                                       
+                                                                            }
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                            
+                                                            }
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                                                            
+                                        }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel panel-primary">
+                        <div class="panel-heading">
+                            <div>
+                                <h4 class="panel-title">
+                                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                                        Allow extra menu permission
+                                    </a>
+                                </h4>
+                            </div>                            
+                            @*<div class="pull-right">
+                                <input class="btn btn-primary" value="Expand All" onclick="ExpandAll('AllowMenu')" />
+                            </div>*@
+                        </div>
+                        <div id="collapse2" class="panel-collapse collapse">
+                            <div class="panel-body">
+                                <h5>Select Module Menus</h5>
+                                <div class="menu" id="AllowMenu">
+
+                                    @for (var i = 0; i < modules.Count; i++)
+                                    {
+                                        var module = modules[i];
+                                        var moduleTitle = module.ModuleTitle;
+
+                                        var menus = module.Menus;
+                                        var adminMenus = menus
+                                            .Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.Admin)
+                                            .GroupBy(y => y.DisplayName,
+                                                (key, g) => new { MenuName = key, Menu = g.FirstOrDefault(), Items = g.SelectMany(x => x.MenuItems).ToList() }
+                                            ).ToList();
+
+                                        var siteMenus = menus.Where(x => x.Type == NetCoreCMS.Framework.Core.Models.ViewModels.Menu.MenuType.WebSite)
+                                            .GroupBy(y => y.DisplayName,
+                                                (key, g) => new { MenuName = key, Menu = g.FirstOrDefault(), Items = g.SelectMany(z => z.MenuItems).ToList() }
+                                            ).ToList();
+
+                                        <div class="accordion">
+                                            <!-- Module -->
+                                            <div class="accordion-group">
+
+                                                <div class="accordion-heading area">
+                                                    <input class="allow-module-check" id="allow-module-check-@i" data-container-id="allow-area-@i" type="checkbox" asp-for="AllowModules[i].IsChecked" />
+                                                    <input type="hidden" asp-for="AllowModules[i].ModuleName" value="@module.ModuleName" />
+                                                    <input type="hidden" asp-for="AllowModules[i].Name" value="@module.ModuleTitle" />
+                                                    <a class="accordion-toggle collapsed" data-toggle="collapse" aria-expanded="false" href="#allow-area-@i">@moduleTitle Module</a>
+                                                </div>
+
+                                                <div class="accordion-body collapse" id="allow-area-@i" aria-expanded="false" style="height: auto;">
+                                                    <div class="accordion-inner">
+                                                        @if (adminMenus.Count > 0)
+                                                        {
+                                                            <div class="accordion" id="allow-equipamento-admin-@i">
+                                                                <div class="accordion-group">
+                                                                    <div class="accordion-heading equipamento">
+                                                                        @{
+                                                                            var checkedTxt = "";
+                                                                            if (adminMenus.Count > 0)
+                                                                            {
+                                                                                var checkedMenu = Model.AllowModules[i].AdminMenus.Where(x => x.IsChecked && x.MenuItems.Where(y => y.IsChecked).ToList().Count > 0).Count();
+                                                                                if (checkedMenu > 0)
+                                                                                {
+                                                                                    checkedTxt = "checked";
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        <input class="allow-admin-check" type="checkbox" @checkedTxt data-container-id="allow-admin-@i" />
+                                                                        <a class="accordion-toggle" data-parent="#allow-equipamento-admin-@i" data-toggle="collapse" aria-expanded="false" href="#allow-admin-@i">Admin Menus</a>
+                                                                    </div>
+                                                                    <div class="accordion-body collapse" id="allow-admin-@i" aria-expanded="false" style="height:auto;">
+                                                                        <div class="accordion-inner">
+
+                                                                            @for (var j = 0; j < adminMenus.Count; j++)
+                                                                            {
+                                                                                var menu = adminMenus[j];
+                                                                                var dn = menu.MenuName;
+                                                                                var menuItems = menu.Items;
+
+                                                                                <div class="accordion" id="allow-menu-admin-@i-@j">
+                                                                                    <div class="accordion-group">
+                                                                                        <div class="accordion-heading ponto">
+                                                                                            <input class="menu-check" type="checkbox" data-container-id="allow-menuItem-admin-@i-@j" asp-for="AllowModules[i].AdminMenus[j].IsChecked" />
+                                                                                            <input type="hidden" asp-for="AllowModules[i].AdminMenus[j].Id" value="@Model.AllowModules[i].AdminMenus[j].Id" />
+                                                                                            <input type="hidden" asp-for="AllowModules[i].AdminMenus[j].Name" value="@menu.MenuName" />
+                                                                                            <input type="hidden" asp-for="AllowModules[i].AdminMenus[j].Type" value="Admin" />
+                                                                                            <a class="accordion-toggle" data-parent="#allow-allow-menu-admin-@i-@j" data-toggle="collapse" aria-expanded="false" href="#allow-menuItem-admin-@i-@j">@menu.MenuName</a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="accordion-body in collapse" id="allow-menuItem-admin-@i-@j" aria-expanded="false" style="height: auto;">
+                                                                                        <div class="accordion-inner">
+                                                                                            @for (var k = 0; k < menuItems.Count; k++)
+                                                                                            {
+                                                                                                var si = menuItems[k];
+                                                                                                var action = si.DisplayName;
+
+                                                                                                <ul class="nav nav-list" style="padding-left:15px;">
+                                                                                                    <li style="margin-bottom:10px;">
+                                                                                                        <input type="checkbox" asp-for="AllowModules[i].AdminMenus[j].MenuItems[k].IsChecked" />
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].AdminMenus[j].MenuItems[k].Name" value="@Model.AllowModules[i].AdminMenus[j].MenuItems[k].Name" />
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].AdminMenus[j].MenuItems[k].Id" value="@Model.AllowModules[i].AdminMenus[j].MenuItems[k].Id" />
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].AdminMenus[j].MenuItems[k].Controller" value="@Model.AllowModules[i].AdminMenus[j].MenuItems[k].Controller" />
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].AdminMenus[j].MenuItems[k].Action" value="@Model.AllowModules[i].AdminMenus[j].MenuItems[k].Action" />
+                                                                                                        <a href="#" style="display:inline;">
+                                                                                                            @action
+                                                                                                        </a>
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>						                              }
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                                            }
+
+                                                        @if (siteMenus.Count > 0)
+                                                        {
+                                                            <div class="accordion" id="allow-equipamento-website-@i">
+                                                                <div class="accordion-group">
+                                                                    <div class="accordion-heading equipamento">
+                                                                        @{
+                                                                            var checkedTxt = "";
+                                                                            if (adminMenus.Count > 0)
+                                                                            {
+                                                                                var checkedMenu = Model.AllowModules[i].SiteMenus.Where(x => x.IsChecked && x.MenuItems.Where(y => y.IsChecked).ToList().Count > 0).Count();
+                                                                                if (checkedMenu > 0)
+                                                                                {
+                                                                                    checkedTxt = "checked";
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        <input class="allow-website-check" type="checkbox" @checkedTxt data-container-id="allow-website-@i" />
+                                                                        <a class="accordion-toggle" data-parent="#allow-equipamento-website-@i" data-toggle="collapse" aria-expanded="false" href="#allow-website-@i">Site Menus</a>
+                                                                    </div>
+                                                                    <div class="accordion-body collapse" id="allow-website-@i" aria-expanded="false" style="height:auto;">
+                                                                        <div class="accordion-inner">
+
+                                                                            @for (var j = 0; j < siteMenus.Count; j++)
+                                                                            {
+                                                                                var menu = siteMenus[j];
+                                                                                var dn = menu.MenuName;
+                                                                                var menuItems = menu.Items;
+
+                                                                                <div class="accordion" id="allow-menu-website-@i-@j">
+
+                                                                                    <div class="accordion-group">
+                                                                                        <div class="accordion-heading ponto">
+                                                                                            <input type="checkbox" data-container-id="allow-menuItem-website-@i-@j" asp-for="AllowModules[i].SiteMenus[j].IsChecked" />
+                                                                                            <input type="hidden" asp-for="AllowModules[i].SiteMenus[j].Id" value="@Model.AllowModules[i].SiteMenus[j].Id" />
+                                                                                            <input type="hidden" asp-for="AllowModules[i].SiteMenus[j].Name" value="@menu.MenuName" />
+                                                                                            <input type="hidden" asp-for="AllowModules[i].SiteMenus[j].Type" value="WebSite" />
+                                                                                            <a class="accordion-toggle" data-parent="#allow-menu-website-@i-@j" data-toggle="collapse" aria-expanded="false" href="#allow-menuItem-website-@i-@j">@menu.MenuName</a>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="accordion-body in collapse" id="allow-menuItem-website-@i-@j" aria-expanded="false" style="height: auto;">
+                                                                                        <div class="accordion-inner">
+                                                                                            @for (var k = 0; k < menuItems.Count; k++)
+                                                                                            {
+                                                                                                var si = menuItems[k];
+                                                                                                var action = si.DisplayName;
+
+                                                                                                <ul class="nav nav-list" style="padding-left:15px;">
+                                                                                                    <li style="margin-bottom:10px;">
+                                                                                                        <input type="checkbox" asp-for="AllowModules[i].SiteMenus[j].MenuItems[k].IsChecked" />
+                                                                                                        <a href="#" style="display:inline;">@action</a>
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].SiteMenus[j].MenuItems[k].Name" value="@Model.AllowModules[i].SiteMenus[j].MenuItems[k].Name" />
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].SiteMenus[j].MenuItems[k].Id" value="@Model.AllowModules[i].SiteMenus[j].MenuItems[k].Id" />
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].SiteMenus[j].MenuItems[k].Controller" value="@Model.AllowModules[i].SiteMenus[j].MenuItems[k].Controller" />
+                                                                                                        <input type="hidden" asp-for="AllowModules[i].SiteMenus[j].MenuItems[k].Action" value="@Model.AllowModules[i].SiteMenus[j].MenuItems[k].Action" />
+                                                                                                    </li>
+                                                                                                </ul>
+                                                                                            }
+
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>						                                                       
+                                                                            }
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>                                                                            
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+
+            <div class="col-sm-2 text-right"><input class="btn btn-primary" type="submit" value="Save" /></div>
+        </form>
+    </div>    
+</div>
+     
+<script>
+
+    function ExpandAll(parent) {
+        $("#" + parent).children(".accordion-body").each(function (index) {
+            $(this).attr("aria-expanded", true);
+        });
+    }
+
+    function EnableTreeSelection(sectionName) { 
+
+        $("." + sectionName + "-module-check").on("change", function () {
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");
+            console.log(containerId);
+            $("#" + containerId).find(':checkbox').each(function () {
+                $(this).prop("checked", checkBox.prop("checked"));
+            });
+        });
+
+        $("." + sectionName + "-website-check").on("change", function () {
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");
+            console.log(containerId);
+            $("#" + containerId).find(':checkbox').each(function () {
+                $(this).prop("checked", checkBox.prop("checked"));
+            });
+        });
+
+        $("." + sectionName + "-admin-check").on("change", function () {
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");
+            console.log(containerId);
+            $("#" + containerId).find(':checkbox').each(function () {
+                $(this).prop("checked", checkBox.prop("checked"));
+            });
+        });
+
+        $("." + sectionName + "-menu-check").on("change", function () {
+            var checkBox = $(this);
+            var containerId = checkBox.attr("data-container-id");
+            console.log(containerId);
+            $("#" + containerId).find(':checkbox').each(function () {
+                $(this).prop("checked", checkBox.prop("checked"));
+            });
+        });
+    }
+    
+    $(document).ready(function () {
+        EnableTreeSelection("deny");
+        EnableTreeSelection("allow");
+    });
+</script>

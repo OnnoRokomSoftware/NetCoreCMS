@@ -11,6 +11,7 @@
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace NetCoreCMS.Modules.News.Models.Entity
 {
@@ -35,6 +36,7 @@ namespace NetCoreCMS.Modules.News.Models.Entity
 
     public class NeNewsDetails : BaseModel<long>
     {    
+        [MaxLength(int.MaxValue)]
         public string Content { get; set; }
         public string Excerpt { get; set; }
         public string MetaKeyword { get; set; }

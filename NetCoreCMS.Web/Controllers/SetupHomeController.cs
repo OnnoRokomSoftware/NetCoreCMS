@@ -10,7 +10,6 @@
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,7 +22,6 @@ using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
@@ -40,15 +38,10 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
         IHttpContextAccessor _httpContextAccessor;
         ILoggerFactory _loggerFactory;
 
-        //public NccWebSiteWidgetService nccWebSiteWidgetService { get; }
-        //public NccWebSiteService nccWebSiteService { get; }
-
-        public SetupHomeController(IHttpContextAccessor httpContextAccessor, ILoggerFactory loggerFactory/*, NccWebSiteWidgetService webSiteWidgetService, NccWebSiteService webSiteService*/)
+        public SetupHomeController(IHttpContextAccessor httpContextAccessor, ILoggerFactory loggerFactory)
         {
             _httpContextAccessor = httpContextAccessor;
             _loggerFactory = loggerFactory;
-            //nccWebSiteWidgetService = webSiteWidgetService;
-            //nccWebSiteService = webSiteService;
             _logger = loggerFactory.CreateLogger<SetupHomeController>();
         }
 
@@ -118,7 +111,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                 ModelState.AddModelError("ConfirmPassword", "Password does not match");
                 return View(viewModel);
             }
-
+             
             SetupHelper.InitilizeDatabase();
 
             if (SetupHelper.IsDbCreateComplete == true && SetupHelper.IsAdminCreateComplete == false)
@@ -216,7 +209,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
                     SetupHelper.SaveSetup();
                     SetupHelper.CrateNccWebSite(nccDbConetxt, setupInfo);
 
-                    await SetupHelper.SaveBasicData(admin, nccDbConetxt, userManager, roleManager, signInManager, setupInfo/*, nccWebSiteWidgetService, nccWebSiteService*/);
+                    await SetupHelper.SaveBasicData(admin, nccDbConetxt, userManager, roleManager, signInManager, setupInfo);
 
                     return Redirect("/Home/SetupSuccess");
                 }

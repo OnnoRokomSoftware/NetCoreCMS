@@ -32,8 +32,10 @@ namespace NetCoreCMS.Modules.News
         {
              
         }
+
+        public int ExecutionOrder { get; set; }
         public bool IsCore { get; set; }
-        public string ModuleId { get; set; }
+        public string ModuleName { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
         public string Email { get; set; }
@@ -42,8 +44,7 @@ namespace NetCoreCMS.Modules.News
         public string ManualUrl { get; set; }
         public bool AntiForgery { get; set; }
         public string Version { get; set; }
-        public string MinNccVersion { get; set; }
-        public string MaxNccVersion { get; set; }
+        public string NccVersion { get; set; }        
         public string Description { get; set; }
         public string Category { get; set; }
         public List<NccModuleDependency> Dependencies { get; set; }
@@ -58,6 +59,9 @@ namespace NetCoreCMS.Modules.News
         [NotMapped]
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
         public List<Menu> Menus { get; set; }
+        public string Area { get { return ""; } }
+
+
 
         public bool Activate()
         {
@@ -69,7 +73,7 @@ namespace NetCoreCMS.Modules.News
             return true;
         }
 
-        public void Init(IServiceCollection services)
+        public void Init(IServiceCollection services, INccSettingsService nccSettingsService)
         {
             //services.AddTransient<NeNewsRepository>();
             //services.AddTransient<NeCategoryRepository>();
@@ -83,109 +87,43 @@ namespace NetCoreCMS.Modules.News
             
         }
 
-        public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
-            var createQuery = @"
-                CREATE TABLE IF NOT EXISTS `"+ GlobalContext.GetTableName<NeCategory>() + @"` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `VersionNumber` INT NOT NULL , 
-                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Name` VARCHAR(250) COLLATE utf8_unicode_ci NULL , 
-                    `CreationDate` DATETIME NOT NULL , 
-                    `ModificationDate` DATETIME NOT NULL , 
-                    `CreateBy` BIGINT NOT NULL , 
-                    `ModifyBy` BIGINT NOT NULL , 
-                    `Status` INT NOT NULL , 
-                PRIMARY KEY (`Id`)) ENGINE = InnoDB;
-
-                CREATE TABLE IF NOT EXISTS `"+ GlobalContext.GetTableName<NeCategoryDetails>() + @"` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `VersionNumber` INT NOT NULL , 
-                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Name` VARCHAR(250) COLLATE utf8_unicode_ci NULL , 
-                    `CreationDate` DATETIME NOT NULL , 
-                    `ModificationDate` DATETIME NOT NULL , 
-                    `CreateBy` BIGINT NOT NULL , 
-                    `ModifyBy` BIGINT NOT NULL , 
-                    `Status` INT NOT NULL , 
-
-                    `Language` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `NeCategoryId` BIGINT NOT NULL ,                     
-                PRIMARY KEY (`Id`)) ENGINE = InnoDB;
-
-                CREATE TABLE IF NOT EXISTS `" + GlobalContext.GetTableName<NeNews>() + @"` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `VersionNumber` INT NOT NULL , 
-                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Name` VARCHAR(250) NOT NULL , 
-                    `CreationDate` DATETIME NOT NULL , 
-                    `ModificationDate` DATETIME NOT NULL , 
-                    `CreateBy` BIGINT NOT NULL , 
-                    `ModifyBy` BIGINT NOT NULL , 
-                    `Status` INT NOT NULL , 
-
-                    `HasDateRange` bit(1) NOT NULL , 
-                    `PublishDate` DATETIME NULL , 
-                    `ExpireDate` DATETIME NULL , 
-                    `Order` INT NOT NULL , 
-                PRIMARY KEY (`Id`)) ENGINE = InnoDB;
-
-                CREATE TABLE IF NOT EXISTS `" + GlobalContext.GetTableName<NeNewsDetails>() + @"` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `VersionNumber` INT NOT NULL , 
-                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Name` VARCHAR(250) COLLATE utf8_unicode_ci NULL , 
-                    `CreationDate` DATETIME NOT NULL , 
-                    `ModificationDate` DATETIME NOT NULL , 
-                    `CreateBy` BIGINT NOT NULL , 
-                    `ModifyBy` BIGINT NOT NULL , 
-                    `Status` INT NOT NULL , 
-
-                    `Language` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Content` longtext NULL, 
-                    `MetaKeyword` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `MetaDescription` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Excerpt` VARCHAR(1000) NULL, 
-                    `NeNewsId` BIGINT NOT NULL ,    
-                PRIMARY KEY (`Id`)) ENGINE = InnoDB;
-
-                CREATE TABLE IF NOT EXISTS `" + GlobalContext.GetTableName<NeNewsCategory>() + @"` ( 
-                    `NeCategoryId` BIGINT NOT NULL , 
-                    `NeNewsId` BIGINT NOT NULL  
-                ) ENGINE = InnoDB;
-            ";
-
-            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = createQuery };
-            var retVal = executeQuery(nccDbQueryText);
-            if (!string.IsNullOrEmpty(retVal))
+            try
             {
-                return true;
+                createUpdateTable(typeof(NeCategory));
+                createUpdateTable(typeof(NeCategoryDetails));
+                createUpdateTable(typeof(NeNews));
+                createUpdateTable(typeof(NeNewsDetails));
+                createUpdateTable(typeof(NeNewsCategory));
             }
-            return false;
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
 
-        public bool Update(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
             return true;
         }
 
-        public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable)
         {
-            var deleteQuery = @"
-                DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<NeNewsCategory>() + @"`;
-                DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<NeCategoryDetails>() + @"`;
-                DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<NeCategory>() + @"`;
-                DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<NeNewsDetails>() + @"`; 
-                DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<NeNews>() + @"`; 
-            ;";
-
-            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };
-            var retVal = executeQuery(nccDbQueryText);
-            if (!string.IsNullOrEmpty(retVal))
+            try
             {
-                return true;
+                deleteTable(typeof(NeNewsCategory));
+                deleteTable(typeof(NeNewsDetails));
+                deleteTable(typeof(NeNews));
+                deleteTable(typeof(NeCategoryDetails));
+                deleteTable(typeof(NeCategory));
             }
-            return false;
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

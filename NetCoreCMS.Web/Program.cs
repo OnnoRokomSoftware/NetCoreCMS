@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Hosting;
 using System.Threading;
 using NetCoreCMS.Framework.Core.App;
 using System.Diagnostics;
+using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Web
 {

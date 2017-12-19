@@ -34,7 +34,8 @@ namespace NetCoreCMS.Modules.HelloWorld
              
         }
 
-        public string ModuleId { get; set; }
+        public int ExecutionOrder { get; set; }
+        public string ModuleName { get; set; }
         public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
@@ -44,8 +45,7 @@ namespace NetCoreCMS.Modules.HelloWorld
         public string ManualUrl { get; set; }
         public bool AntiForgery { get; set; }
         public string Version { get; set; }
-        public string MinNccVersion { get; set; }
-        public string MaxNccVersion { get; set; }
+        public string NccVersion { get; set; }        
         public string Description { get; set; }
         public string Category { get; set; }
         public List<NccModuleDependency> Dependencies { get; set; }
@@ -60,6 +60,9 @@ namespace NetCoreCMS.Modules.HelloWorld
         [NotMapped]
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
         public List<Menu> Menus { get; set; }
+        public string Area { get { return "NetCoreCMS"; } }
+
+
         public bool Activate()
         {
             return true;
@@ -70,7 +73,7 @@ namespace NetCoreCMS.Modules.HelloWorld
             return true;
         }
 
-        public void Init(IServiceCollection services)
+        public void Init(IServiceCollection services, INccSettingsService nccSettingsService)
         {
             //You can also register your services and repositories here.
             services.AddRecaptcha(new RecaptchaOptions
@@ -85,39 +88,33 @@ namespace NetCoreCMS.Modules.HelloWorld
             
         }
 
-        public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
-            var createQuery = @"
-                CREATE TABLE IF NOT EXISTS `" + GlobalContext.GetTableName<HelloModel>() + @"` ( 
-                    `Id` BIGINT NOT NULL AUTO_INCREMENT , 
-                    `VersionNumber` INT NOT NULL , 
-                    `Metadata` varchar(250) COLLATE utf8_unicode_ci NULL,
-                    `Name` VARCHAR(250) NOT NULL , 
-                    `CreationDate` DATETIME NOT NULL , 
-                    `ModificationDate` DATETIME NOT NULL , 
-                    `CreateBy` BIGINT NOT NULL , 
-                    `ModifyBy` BIGINT NOT NULL , 
-                    `Status` INT NOT NULL , 
-
-                    `Hello` TEXT NULL ,                     
-                PRIMARY KEY (`Id`)) ENGINE = MyISAM;";
-            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = createQuery };
-            var retVal = executeQuery(nccDbQueryText);
-            
-            return string.IsNullOrEmpty(retVal) == false;
+            try
+            {
+                createUpdateTable(typeof(HelloModel));
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
-        public bool Update(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
             return true;
         }
-        public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable)
         {
-            var deleteQuery = @"DROP TABLE IF EXISTS `" + GlobalContext.GetTableName<HelloModel>() + @"`;";
-
-            var nccDbQueryText = new NccDbQueryText() { MySql_QueryText = deleteQuery };
-            var retVal = executeQuery(nccDbQueryText);
-            
-            return string.IsNullOrEmpty(retVal) == false;
+            try
+            {
+                deleteTable(typeof(HelloModel));
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

@@ -17,6 +17,7 @@ using NetCoreCMS.Framework.Core.Mvc.Repository;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Repository
 {
@@ -54,7 +55,7 @@ namespace NetCoreCMS.Framework.Core.Repository
         {
             var list = Query()
                 .Include("PostDetails")
-                .Where(x => x.PostStatus == NccPost.NccPostStatus.Published)
+                .Where(x => x.Status == EntityStatus.Active && x.PostStatus == NccPost.NccPostStatus.Published && x.PublishDate <= DateTime.Now)
                 .OrderByDescending(x => x.PublishDate)
                 .Take(count)
                 .ToList();
@@ -62,11 +63,13 @@ namespace NetCoreCMS.Framework.Core.Repository
         }
         public List<ArchiveItemViewModel> LoadArchive(bool decendingOrder = true)
         {
+            //var tablePrefix = SetupHelper.GetCoreModuleTablePrefix();
             NccDbQueryText query = new NccDbQueryText();
-            query.MySql_QueryText = @"SELECT DATE_FORMAT(`PublishDate`, '%Y') `Year`, DATE_FORMAT(`PublishDate`, '%M') `Month`, CAST(DATE_FORMAT(`PublishDate`, '%m') AS UNSIGNED) `MonthValue`, COUNT(*) TotalPost
-                                    FROM `ncc_post`
+            query.MySql_QueryText = $@"SELECT DATE_FORMAT(`PublishDate`, '%Y') `Year`, DATE_FORMAT(`PublishDate`, '%M') `Month`, CAST(DATE_FORMAT(`PublishDate`, '%m') AS UNSIGNED) `MonthValue`, COUNT(*) TotalPost
+                                    FROM `{GlobalContext.GetTableName<NccPost>()}`
                                     WHERE `PublishDate`<=CURRENT_TIME()
-	                                    AND `PostStatus` = " + ((int)NccPost.NccPostStatus.Published).ToString() + @"
+	                                    AND `Status` = {(EntityStatus.Active).ToString()}
+	                                    AND `PostStatus` = {((int)NccPost.NccPostStatus.Published).ToString()}
                                     GROUP BY DATE_FORMAT(`PublishDate`, '%Y'), DATE_FORMAT(`PublishDate`, '%M') ";
             if (decendingOrder) query.MySql_QueryText += " ORDER BY PublishDate DESC ";
             else query.MySql_QueryText += " ORDER BY PublishDate ASC ";

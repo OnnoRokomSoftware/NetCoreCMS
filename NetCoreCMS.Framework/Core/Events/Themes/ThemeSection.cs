@@ -40,6 +40,7 @@ namespace NetCoreCMS.Framework.Core.Events.Themes
             public static string Header { get { return "Header"; } }
             public static string LoadingMask { get { return "LoadingMask"; } }
             public static string GlobalMessageContainer { get { return "GlobalMessageContainer"; } }
+            public static string Messages { get { return "Messages"; } }
             public static string Navigation { get { return "Navigation"; } }
             public static string Featured { get { return "Featured"; } }
             public static string LeftColumn { get { return "LeftColumn"; } }

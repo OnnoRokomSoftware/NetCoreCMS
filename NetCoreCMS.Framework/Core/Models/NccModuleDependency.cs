@@ -16,8 +16,9 @@ namespace NetCoreCMS.Framework.Core.Models
     [Serializable]
     public class NccModuleDependency : BaseModel<long>
     {
-        public string ModuleId { get; set; }
-        public string MinVersion { get; set; }
-        public string MaxVersion { get; set; }
+        public string ModuleName { get; set; }
+        public string ModuleVersion { get; set; }
+
+        public NccModule NccModule { get; set; }
     }
 }

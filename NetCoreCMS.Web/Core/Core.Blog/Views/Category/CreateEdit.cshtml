@@ -1,0 +1,207 @@
+﻿@model NccCategory
+
+@{
+    Layout = Constants.AdminLayoutName;
+    var mainName = "Category";
+    var controllerName = "Category";
+    Title = mainName + " Create";
+    SubTitle = "Create a new " + mainName.ToLower();
+    if (Model.Id > 0)
+    {
+        Title = mainName + " Edit";
+        SubTitle = "Update information of a " + mainName.ToLower();
+    }
+}
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+</style>
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @SubTitle
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Category</a>
+                    }
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Category</a>
+                </div> 
+            </div>
+            <div class="panel-body">
+                <div class="row">
+                    <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                        <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Status" />
+                        <div class="col-md-12">
+                            <div class="">
+                                @{
+                                    var tabBorderDesign = "";
+                                }
+                                @if (GlobalContext.WebSite.IsMultiLangual == true)
+                                {
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        @foreach (var item in Model.CategoryDetails)
+                                    {
+                                        if (GlobalContext.WebSite.Language == item.Language)
+                                        {
+                                                <li role="presentation" class="active">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                        (D)
+                                                        @SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName
+                                                    </a>
+                                                </li>
+                                        }
+                                        else
+                                        {
+                                                <li role="presentation" class="">
+                                                    <a href="#@item.Language" aria-controls="@item.Language" role="tab" data-toggle="tab">
+                                                        @if (SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).Count() > 0)
+                                                    {
+                                                            <span>@SupportedCultures.Cultures.Where(x => x.TwoLetterISOLanguageName == item.Language).FirstOrDefault().NativeName</span>
+                                                    }
+                                                    else
+                                                    {
+                                                            <span>@item.Language</span>
+                                                    }
+                                                    </a>
+                                                </li>
+                                        }
+                                    }
+                                    </ul>
+                                    tabBorderDesign = "tabBorderDesign";
+                                }
+                                <!-- Tab panes -->
+                                <div class="tab-content @tabBorderDesign">
+                                    @{ var activeClass = ""; var i = 0;}
+                                    @foreach (var item in Model.CategoryDetails)
+                                    {
+                                        if (GlobalContext.WebSite.Language == item.Language)
+                                        { activeClass = "active"; }
+                                        else { activeClass = ""; }
+                                        <div role="tabpanel" class="tab-pane row @activeClass" id="@item.Language">
+                                            <div class="" style="padding:10px 25px 25px 25px;">
+                                                <div class="col-md-12">
+                                                    <input type="hidden" asp-for="CategoryDetails[i].Id" />
+                                                    <input type="hidden" asp-for="CategoryDetails[i].Language" />
+                                                    <input type="hidden" asp-for="CategoryDetails[i].Status" />
+                                                    <div class="form-group input-group">
+                                                        <span class="input-group-addon">Name: </span>
+                                                        <input type="text" class="form-control categoryName" asp-for="CategoryDetails[i].Name" placeholder="Enter Name in @item.Language">
+                                                        <span asp-validation-for="CategoryDetails[i].Name" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group input-group">
+                                                        <span class="input-group-addon">@ViewBag.DomainName</span>
+                                                        <input type="text" class="form-control categorySlug" asp-for="CategoryDetails[i].Slug" placeholder="Slug in @item.Language">
+                                                        <span asp-validation-for="CategoryDetails[i].Slug" class="text-danger"></span>
+                                                    </div>
+                                                    <div class="form-group input-group">
+                                                        <span class="input-group-addon">Browser Title: </span>
+                                                        <input type="text" class="form-control categoryTitle" asp-for="CategoryDetails[i].Title" placeholder="Enter Browser Title in @item.Language">
+                                                        <span asp-validation-for="CategoryDetails[i].Title" class="text-danger"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        i++;
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="">
+                                <br />
+                                <div class="form-group">
+                                    <label class="col-md-3 text-right">Parent </label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" asp-for="Parent" name="ParentId" asp-items="@ViewBag.AllCategories">
+                                            <option value="0">Select Parent</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 text-right">Image </label>
+                                    <div class="col-md-9">
+                                        <img src="@Model.CategoryImage" id="CategoryImageView" style="max-width:250px;max-height:70px;padding-bottom:5px;" /><br />
+                                        <input type="button" class="btn btn-default" id="LogoSelect" value="Select" onclick="openFFPromotionPopup('/MediaHome/?inputId=CategoryImage')" />
+                                        <input type="hidden" class="form-control" asp-for="CategoryImage" placeholder="" value="@Model.CategoryImage" />
+                                    </div>
+                                </div>
+
+                                <div class="text-center">
+                                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
+                                    <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                                    @if (Model.Id == 0)
+                                    {
+                                        <input type="submit" class="btn btn-success" name="Save" value="Save And New" />
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $(".categoryName").change(function () {
+                $(this).parent().parent().find(".categorySlug").val(NccUtil.GetSafeSlug($(this).val()));
+            });
+
+            $("#publish").click(function () {
+                var element = document.getElementById('PostStatus');
+                element.value = "2";
+                //console.log($("#Slug").val());
+                //if ($("#Slug").val() == "") {
+                //    document.getElementById("Slug").value = NccUtil.GetSafeSlug($("#Title").val());
+                //    console.log($("#Slug").val());
+                //}
+                document.getElementById("SubmitType").value = "publish";
+                //$("#SubmitType").value = "publish";
+
+                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
+                document.getElementById("createEditForm").submit();
+            });
+
+            $("#save").click(function () {
+                //if ($("#Slug").val() == "") {
+                //    $("#Slug").val(NccUtil.GetSafeSlug($(this).val()));
+                //}
+                $("#SubmitType").val("Save");
+
+                //$('#PostContent').html(CKEDITOR.instances["PostContent"].getData());
+                document.getElementById("createEditForm").submit();
+            });
+        });
+    </script>
+    <script>
+       
+        var windowObjectReference = null; // global variable
+
+        function openFFPromotionPopup(siteUrl) {
+            if (windowObjectReference == null || windowObjectReference.closed) {
+                windowObjectReference = window.open(siteUrl, "PromoteFirefoxWindowName", "resizable,scrollbars,status");
+            }
+            else {
+                windowObjectReference.focus();
+            };
+        }
+
+        setInterval(function () {
+            $("#CategoryImageView").attr("src", $("#CategoryImage").val());
+            //console.log($("#SiteLogoUrl").val());
+        }, 500);
+    </script>
+}

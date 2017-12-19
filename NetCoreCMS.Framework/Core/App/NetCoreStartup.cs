@@ -11,6 +11,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Data;
+using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Setup;
 
 namespace NetCoreCMS.Framework.Core.App
@@ -25,20 +26,20 @@ namespace NetCoreCMS.Framework.Core.App
             if (SetupHelper.SelectedDatabase == "SqLite")
             {
                 services.AddDbContext<NccDbContext>(options =>
-                    options.UseSqlite(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework")), ServiceLifetime.Scoped, ServiceLifetime.Scoped
+                    options.UseSqlite(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); }), ServiceLifetime.Scoped, ServiceLifetime.Scoped
                 );
             }
             else if (SetupHelper.SelectedDatabase == "MSSQL")
             {
                 services.AddDbContext<NccDbContext>(options =>
-                    options.UseSqlServer(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework")), ServiceLifetime.Scoped, ServiceLifetime.Scoped
+                    options.UseSqlServer(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); }), ServiceLifetime.Scoped, ServiceLifetime.Scoped
                 );
             }
             else if (SetupHelper.SelectedDatabase == "MySql")
             {
-                services.AddDbContext<NccDbContext>(options =>
-                    options.UseMySql(SetupHelper.ConnectionString, opt => opt.MigrationsAssembly("NetCoreCMS.Framework")), ServiceLifetime.Scoped, ServiceLifetime.Scoped
-                );
+                services.AddDbContext<NccDbContext>(options => {
+                    options.UseMySql(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); }); 
+                }, ServiceLifetime.Scoped, ServiceLifetime.Scoped);
                 
             }
             else

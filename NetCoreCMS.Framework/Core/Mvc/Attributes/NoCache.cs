@@ -14,7 +14,7 @@ using System.Text;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Attributes
 {
-    class NoCache
+    public class NoCache : Attribute
     {
     }
 }

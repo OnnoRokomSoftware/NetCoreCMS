@@ -32,11 +32,17 @@ using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Framework.Core.Mvc.FIlters;
+using NetCoreCMS.Framework.Core.Mvc.Filters;
 using NetCoreCMS.Framework.Modules.Loader;
 using Microsoft.Extensions.DependencyModel;
 using System.Collections;
 using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using NetCoreCMS.Framework.Core.Mvc.Provider;
+using Microsoft.AspNetCore.ResponseCompression;
+using System.IO.Compression;
+using MediatR;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
@@ -49,7 +55,8 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
             services.AddTransient<NccLanguageDetector>();
-            
+
+            services.AddSingleton<IMediator,Mediator>();
 
             services.AddScoped<NccLanguageFilter>();
             services.AddScoped<NccGlobalExceptionFilter>();
@@ -60,51 +67,53 @@ namespace NetCoreCMS.Framework.Core.Extensions
             services.AddScoped<ThemeManager, ThemeManager>();
             services.AddScoped<NccRazorViewRenderService, NccRazorViewRenderService>();
 
-            services.AddScoped<NccCategoryDetailsRepository>();
-            services.AddScoped<NccCategoryDetailsService>();
-            services.AddScoped<NccPageDetailsRepository>();
-            services.AddScoped<NccPageDetailsService>();
+            services.AddTransient<NccCategoryDetailsRepository>();
+            services.AddTransient<NccCategoryDetailsService>();
+            services.AddTransient<NccPageDetailsRepository>();
+            services.AddTransient<NccPageDetailsService>();
 
             services.AddTransient<NccPageRepository>();
             services.AddTransient<NccPageService>();
             services.AddTransient<NccCategoryRepository>();
             services.AddTransient<NccCategoryService>();
 
-            services.AddScoped<NccUserRepository>();
-            services.AddScoped<NccUserService>();
+            services.AddTransient<NccUserRepository>();
+            services.AddTransient<NccUserService>();
 
-            services.AddScoped<NccPostRepository>();
-            services.AddScoped<NccPostService>();
-            services.AddScoped<NccPostDetailsRepository>();
-            services.AddScoped<NccPostDetailsService>();
-            services.AddScoped<NccTagRepository>();
-            services.AddScoped<NccTagService>();
-            services.AddScoped<NccCommentsRepository>();
-            services.AddScoped<NccCommentsService>();
+            services.AddTransient<NccPostRepository>();
+            services.AddTransient<NccPostService>();
+            services.AddTransient<NccPostDetailsRepository>();
+            services.AddTransient<NccPostDetailsService>();
+            services.AddTransient<NccTagRepository>();
+            services.AddTransient<NccTagService>();
+            services.AddTransient<NccCommentsRepository>();
+            services.AddTransient<NccCommentsService>();
 
-            services.AddScoped<NccSettingsRepository>();
-            services.AddScoped<NccSettingsService>();
-            services.AddScoped<NccMenuRepository>();
-            services.AddScoped<NccMenuService>();
-            services.AddScoped<NccMenuRepository>();
-            services.AddScoped<NccMenuItemRepository>();
-            services.AddScoped<NccModuleRepository>();
-            services.AddScoped<NccModuleService>();
+            services.AddTransient<NccSettingsRepository>();
+            services.AddTransient<INccSettingsService, NccSettingsService>();
+            services.AddTransient<NccMenuRepository>();
+            services.AddTransient<NccMenuService>();
+            services.AddTransient<NccMenuRepository>();
+            services.AddTransient<NccMenuItemRepository>();
+            services.AddTransient<NccModuleRepository>();
+            services.AddTransient<NccModuleService>();
             
-            services.AddScoped<NccWebSiteWidgetRepository>();
-            services.AddScoped<NccWebSiteWidgetService>();
+            services.AddTransient<NccWebSiteWidgetRepository>();
+            services.AddTransient<NccWebSiteWidgetService>();
 
-            services.AddScoped<NccWebSiteRepository>();
-            services.AddScoped<NccWebSiteInfoRepository>();
-            services.AddScoped<NccWebSiteService>();
-            services.AddScoped<NccStartupRepository>();
-            services.AddScoped<NccStartupService>();
+            services.AddTransient<NccWebSiteRepository>();
+            services.AddTransient<NccWebSiteInfoRepository>();
+            services.AddTransient<NccWebSiteService>();
+            services.AddTransient<NccStartupRepository>();
+            services.AddTransient<NccStartupService>();
 
-            services.AddScoped<NccPermissionRepository>();
-            services.AddScoped<NccPermissionService>();
-            services.AddScoped<NccPermissionDetailsRepository>();
-            services.AddScoped<NccPermissionDetailsService>();
-            
+            services.AddTransient<NccPermissionRepository>();
+            services.AddTransient<NccPermissionService>();
+            services.AddTransient<NccPermissionDetailsRepository>();
+            services.AddTransient<NccPermissionDetailsService>();
+
+            services.TryAddEnumerable(ServiceDescriptor.Transient<IApplicationModelProvider, NccApplicationModelProvider>());
+
             return services;
         }
          
@@ -112,25 +121,11 @@ namespace NetCoreCMS.Framework.Core.Extensions
         {
             ResourcePathExpendar.RegisterStaticFiles(env, app, GlobalContext.Modules, GlobalContext.Themes);
 
-            //app.UseThemeActivator(env, loggerFactory);
-            //app.UseModuleActivator(env, _mvcBuilder, _services, loggerFactory);
-
-            app.UseResponseCaching(); //Use this attrib for cache [ResponseCache(Duration = 20)]
             app.UseResponseCompression();
+            app.UseResponseCaching(); //Use this attrib for cache [ResponseCache(Duration = 20)]            
             app.UseSession();
             app.UseStaticFiles();
-
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseBrowserLink();
-                app.UseDatabaseErrorPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
-
+            
             GlobalContext.App = app;
 
             if (SetupHelper.IsDbCreateComplete)
@@ -174,6 +169,43 @@ namespace NetCoreCMS.Framework.Core.Extensions
                         options.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(path));
                     }
                 }
+            });
+
+            return services;
+        }
+
+        public static IServiceCollection SetGlobalCache(this IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            GlobalContext.SetGlobalCache(serviceProvider);
+            return services;
+        }
+
+        public static IServiceCollection AddResponseCacheingAndCompression(this IServiceCollection services, IServiceProvider serviceProvider)
+        {
+            services.AddResponseCaching();
+            services.AddDistributedMemoryCache();
+            services.Configure<GzipCompressionProviderOptions>(options =>
+            {
+                options.Level = CompressionLevel.Optimal;
+            });
+
+            services.AddResponseCompression(options =>
+            {
+                options.Providers.Add<GzipCompressionProvider>();
+                //options.Providers.Add<BrotliCompressionProvider>();
+                options.EnableForHttps = true;
+                options.MimeTypes = new[] {
+                        "text/html; charset=utf-8",
+                        "image/svg+xml",
+                        "text/plain",
+                        "text/css",
+                        "application/javascript",
+                        "text/html",
+                        "application/xml",
+                        "text/xml",
+                        "application/json",
+                        "text/json"
+                    };
             });
 
             return services;

@@ -1,0 +1,45 @@
+﻿@using NetCoreCMS.Framework.Core.Mvc.Models
+@{
+    var i = 0;
+    //_T = (INccTranslator)ViewData["_T"];
+    //CurrentLanguage = (string)ViewData["CurrentLanguage"];  
+    var website = "#";
+    var name = "Anonymous";
+}
+@model List<NccComment>
+
+@foreach (var item in Model)
+{
+    var postDetails = item.Post.PostDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+    if (postDetails == null)
+    {
+        postDetails = item.Post.PostDetails.FirstOrDefault();
+    }
+    if (postDetails != null)
+    {
+        if (item.Author?.Id > 0)
+        {
+            name = item.Author.UserName;
+            website = "#";
+        }
+        else
+        {
+            name = item.AuthorName ?? "Anonymous";
+            website = item.WebSite ?? "#";            
+        }
+        if (i == 0)
+        {
+            i = 1;
+        }
+        else
+        {
+            <hr />
+        }
+        <p>
+            <a href="@website" target="_blank">@name</a>
+            <strong> @_T["on"] </strong> 
+            <a href="/Post/@postDetails.Slug">@Html.Raw(postDetails.Title)</a>
+        </p>
+    }
+}
+    

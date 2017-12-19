@@ -1,5 +1,4 @@
 ﻿{
-  "ModuleId": "com.NetCoreCMS.ImageSlider",
   "ModuleTitle": "Image Slider",
   "Author": "NetCoreCMS",
   "Email": "netcorecms@gmail.com",
@@ -9,8 +8,7 @@
   "AntiForgery": true,
   "Description": "Builtin ImageSlider Module.",
   "Version": "1.0",
-  "MinNccVersion": "0.1.1",
-  "MaxNccVersion": "0.4.5",
+  "NccVersion": "0.4.5",
   "Category": "Image,Slider,Media",
   "TablePrefix": "",
   "Dependencies": []

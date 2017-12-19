@@ -1,0 +1,408 @@
+﻿<style>
+    .finalPanelBodyPageHeight {
+        max-height: 20vh;
+        overflow: auto;
+    }
+</style>
+<div class="col-sm-4">
+
+    <div class="row">
+
+        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+
+            <!--Page Start -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapsePage">
+                            Page
+                            <i class="fa fa-angle-down" style="float:right;"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapsePage" class="panel-collapse collapse in">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#recentPages">Recent</a></li>
+                        <li><a data-toggle="tab" href="#searchPages">Search</a></li>
+                    </ul>
+                    <div class="tab-content pageList">
+                        <div id="recentPages" class="tab-pane fade in active">
+                            <div class="panel-body finalPanelBodyPageHeight" style="">
+                                <div class="checkBoxList">
+                                    @foreach (var item in ViewBag.RecentPages)
+                                    {
+                                        <div class="checkbox">
+                                            <label>
+                                                @if (GlobalContext.WebSite.IsMultiLangual)
+                                                {
+                                                    <span><input type="checkbox" class="recentPagesCheckBoxList" value="@item.Id" ncc-title="@item.Title" ncc-slug="@item.Slug">@item.Title                                                 (@item.Language)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span><input type="checkbox" class="recentPagesCheckBoxList" value="@item.Id" ncc-title="@item.Title" ncc-slug="@item.Slug">@item.Title </span>
+                                                }
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div id="searchPages" class="tab-pane fade in">
+                            <div class="panel-body finalPanelBodyPageHeight" style="">
+                                @if (GlobalContext.WebSite.IsMultiLangual)
+                                    {
+                                    <div class="col-sm-8" style="padding:0;margin:0;">
+                                        <input type="text" id="searchPage" class="form-control" />
+                                    </div>
+                                        <div class="col-sm-4" style="padding:0;margin:0;">
+                                            <select id="languagePage" class="form-control" asp-items="ViewBag.MenuLanguages"></select>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                    <div class="col-sm-12" style="padding:0;margin:0;">
+                                        <input type="text" id="searchPage" class="form-control" />
+                                        <input type="hidden" id="languagePage" value="" />
+                                    </div>
+                                    }
+                                <div class="col-md-12">
+                                    <div id="searchPagesCheckBoxList" class="checkBoxList">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <button id="selectAllPages" class="btn btn-outline btn-sm btn-default" type="button">Select All</button>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addPageToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+            <!--Page Start -->
+
+            <!--Post Start -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapsePost">
+                            Post
+                            <i class="fa fa-angle-down" style="float:right;"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapsePost" class="panel-collapse collapse">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#recentPosts">Recent</a></li>
+                        <li><a data-toggle="tab" href="#searchPosts">Search</a></li>
+                    </ul>
+                    <div class="tab-content postList">
+                        <div id="recentPosts" class="tab-pane fade in active">
+                            <div class="panel-body finalPanelBodyPageHeight">
+                                <div class="checkBoxList">
+                                    @foreach (var item in ViewBag.RecentPostDetails)
+                                    {
+                                        <div class="checkbox">
+                                            <label>
+                                                @if (GlobalContext.WebSite.IsMultiLangual)
+                                                {
+                                                    <span><input type="checkbox" class="recentPostCheckBoxList" value="@item.Id" ncc-title="@item.Title" ncc-slug="@item.Slug">@item.Title (@item.Language)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span><input type="checkbox" class="recentPostCheckBoxList" value="@item.Id" ncc-title="@item.Title" ncc-slug="@item.Slug">@item.Title</span>
+                                                }
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div id="searchPosts" class="tab-pane fade in">
+                            <div class="panel-body finalPanelBodyPageHeight">
+                                @if (GlobalContext.WebSite.IsMultiLangual)
+                                {
+                                    <div class="col-sm-8" style="padding:0;margin:0;">
+                                        <input type="text" id="searchPost" class="form-control" />
+                                    </div>
+                                    <div class="col-sm-4" style="padding:0;margin:0;">
+                                        <select id="languagePost" class="form-control" asp-items="ViewBag.MenuLanguages"></select>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-sm-12" style="padding:0;margin:0;">
+                                        <input type="text" id="searchPost" class="form-control" />
+                                        <input type="hidden" id="languagePost" value="" />
+                                    </div>
+                                }
+                                <div class="col-md-12">
+                                    <div id="searchPostsCheckBoxList" class="checkBoxList">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            @*<a id="selectAllPosts" class="pull-left" href="#">Select All</a>*@
+                            <button id="selectAllPosts" class="btn btn-outline btn-sm btn-default" type="button">Select All</button>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addPostToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+            <!--Post End -->
+
+            <!-- Category Start -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseCategory">
+                            Category
+                            <i class="fa fa-angle-down" style="float:right;"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseCategory" class="panel-collapse collapse">
+                    <ul class="nav nav-tabs">
+                        <li class="active">
+                            <a data-toggle="tab" href="#recentCategories">Recent</a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#searchCategories">Search</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content categoryList">
+                        <div id="recentCategories" class="tab-pane fade in active">
+                            <div class="panel-body finalPanelBodyPageHeight">
+                                <div class="checkBoxList">
+                                    @foreach (var item in ViewBag.RecentCategoryDetails)
+                                    {
+                                        <div class="checkbox">
+                                            <label>
+                                                @if (GlobalContext.WebSite.IsMultiLangual)
+                                                {
+                                                    <span><input type="checkbox" class="recentCategoryCheckBoxList" value="@item.Id" ncc-title="@item.Name" ncc-slug="@item.Slug">@item.Title (@item.Language)</span>
+                                                }
+                                                else
+                                                {
+                                                    <span><input type="checkbox" class="recentCategoryCheckBoxList" value="@item.Id" ncc-title="@item.Name" ncc-slug="@item.Slug">@item.Name</span>
+                                                }
+                                            </label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div id="searchCategories" class="tab-pane fade in">
+                            <div class="panel-body finalPanelBodyPageHeight">
+                                @if (GlobalContext.WebSite.IsMultiLangual)
+                                {
+                                    <div class="col-sm-8" style="padding:0;margin:0;">
+                                        <input type="text" id="searchCategory" class="form-control" />
+                                    </div>
+                                    <div class="col-sm-4" style="padding:0;margin:0;">
+                                        <select id="languageCategory" class="form-control" asp-items="ViewBag.MenuLanguages"></select>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-sm-12" style="padding:0;margin:0;">
+                                        <input type="text" id="searchCategory" class="form-control" />
+                                        <input type="hidden" id="languageCategory" value="" />
+                                    </div>
+                                }
+                                <div class="col-md-12">
+                                    <div id="searchCategoriesCheckBoxList" class="checkBoxList">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <button id="selectAllCategories" class="btn btn-outline btn-sm btn-default" type="button">Select All</button>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addCategoryToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Category End-->
+
+            <!-- Module Start -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseModule" class="collapsed" aria-expanded="false">
+                            Modules
+                            <i class="fa fa-angle-down" style="float:right;"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseModule" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#allModules">View All</a></li>
+                        <li><a data-toggle="tab" href="#searchModules">Search</a></li>
+                    </ul>
+                    <div class="tab-content moduleList">
+                        <div id="allModules" class="tab-pane fade in active">
+                            <div class="panel-body finalPanelBodyPageHeight" style="padding-top:5px;">
+                                <div class="row">
+                                    <div class="checkBoxList">
+                                        @foreach (KeyValuePair<SiteMenu, List<SiteMenuItem>> item in ViewBag.ModuleSiteMenus)
+                                        {
+                                            <div style="border: solid 1px rgba(228, 228, 228, 0.88);">
+                                                <div style="padding: 5px 5px;height:30px;background-color:whitesmoke;">
+                                                    <strong> @item.Key.Name</strong>
+                                                </div>
+                                                <div>
+                                                    @foreach (SiteMenuItem subItem in item.Value)
+                                                    {
+                                                        <div class="checkbox" style="padding: 5px 5px;">
+                                                            <label>
+                                                                <span><input type="checkbox" class="allModuleCheckBoxList" data-module-name="@subItem.Module" value="@subItem.Url" ncc-title="@subItem.Name">@subItem.Name</span>
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="searchModules" class="tab-pane fade in" style="">
+                            <div class="panel-body finalPanelBodyPageHeight">                                
+                                <div class="row" style="padding:0;margin:0;">
+                                    <input type="text" id="searchModule" class="form-control" />
+                                </div>
+                                <div class="row" style="margin-top:5px;margin-left:-10px;margin-right:-10px;">
+                                    <div id="searchModulesCheckBoxList" class="checkBoxList">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <button id="selectAllModules" class="btn btn-outline btn-sm btn-default" type="button">Select All</button>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addModuleToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>            
+            <!-- Module End -->
+            
+            <!-- Tag Start -->            
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseTag">
+                            Tag
+                            <i class="fa fa-angle-down" style="float:right;"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseTag" class="panel-collapse collapse">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#recentTags">Recent</a></li>
+                        <li><a data-toggle="tab" href="#searchTags">Search</a></li>
+                    </ul>
+                    <div class="tab-content tagList">
+                        <div id="recentTags" class="tab-pane fade in active">
+                            <div class="panel-body finalPanelBodyPageHeight">
+                                <div class="checkBoxList">
+                                    @foreach (var item in ViewBag.RecentTags)
+                                    {
+                                    <div class="checkbox">
+                                        <label>
+                                            <span><input type="checkbox" class="recentTagCheckBoxList" value="@item.Id" ncc-title="@item.Name">@item.Name</span>
+                                        </label>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div id="searchTags" class="tab-pane fade in">
+                            <div class="panel-body finalPanelBodyPageHeight">
+                                <div class="col-sm-12" style="padding:0;margin:0;">
+                                    <input type="text" id="searchTag" class="form-control" />
+                                </div>
+                                <div class="col-md-12">
+                                    <div id="searchTagsCheckBoxList" class="checkBoxList">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="panel-footer">
+                        <div class="pull-left">
+                            <button id="selectAllTags" class="btn btn-outline btn-sm btn-default" type="button">Select All</button>
+                        </div>
+                        <div class="pull-right">
+                            <button id="addTagToMenu" class="btn btn-sm btn-primary" type="button">Add to Menu</button>
+                        </div>
+                        <div style="clear:both;"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Tag End-->
+
+            <!-- Url Start -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseSix" class="collapsed" aria-expanded="false">
+                            Url
+                            <i class="fa fa-angle-down" style="float:right;"></i>
+                        </a>
+                    </h4>
+                </div>
+                <div id="collapseSix" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                    <div class="panel-body">
+                        <div class="panel-body">
+                            <label>Name:</label>
+                            <input class="form-control input-sm" type="text" id="urlMenuName" />
+                            <label>URL:</label>
+                            <input class="form-control input-sm" type="text" id="urlMenuUrl" />
+                            <label>Target: </label>
+                            <select class="form-control input-sm" id="urlMenuTarget">
+                                <option value="_self">Self</option>
+                                <option value="_blank">Blank Window</option>
+                                <option value="parent">Parent</option>
+                                <option value="_top">Top</option>
+                            </select>
+                        </div>
+                        <div class="panel-footer">
+
+                            <div class="pull-right">
+                                <button id="addUrlToMenu" class="btn  btn-outline btn-sm btn-primary" type="button">Add to Menu</button>
+                            </div>
+                            <div style="clear:both;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Url End -->
+        </div>
+    </div>
+</div>

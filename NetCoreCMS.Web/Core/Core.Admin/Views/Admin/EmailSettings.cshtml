@@ -1,0 +1,68 @@
+﻿@using Core.Admin.Models.ViewModels
+@using NetCoreCMS.Framework.Core.Network
+
+@model SmtpSettings
+
+@{
+    Layout = Constants.AdminLayoutName;
+    Title = "Email Settings";
+    SubTitle = "Set Email SMTP Settings";
+    var isChecked = "false";
+    var checkedTxt = "";
+    if (Model.UseSSL)
+    {
+        isChecked = "true";
+        checkedTxt = "checked";
+    }
+
+}
+
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" asp-controller="Admin" asp-action="EmailSettings" method="post">
+            <div class="form-group">
+                <div asp-validation-summary="All" class="text-danger"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>Host Address: </label></div>
+                <div class="col-sm-5"><input type="text" asp-for="Host" value="@Model.Host" class="form-control"/></div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>Port: </label></div>
+                <div class="col-sm-5"><input type="text" asp-for="Port" value="@Model.Port"  class="form-control" /></div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>User Name: </label></div>
+                <div class="col-sm-5"><input type="text" asp-for="UserName" value="@Model.UserName" class="form-control"  /></div>
+            </div>
+            
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>Password: </label></div>
+                <div class="col-sm-5"><input type="password" asp-for="Password" value="@Model.Password"  class="form-control" /></div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>Use SSL: </label></div>
+                <div class="col-sm-5"><input asp-for="UseSSL" type="checkbox" @*value="@isChecked"*@ @checkedTxt /> </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>From Name:</label></div>
+                <div class="col-sm-5"><input type="text" asp-for="FromName" value="@Model.FromName" class="form-control" /></div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>From Email:</label></div>
+                <div class="col-sm-5"><input type="text" asp-for="FromEmail" value="@Model.FromEmail" class="form-control"/></div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-3 text-right">  </div>
+                <input class="btn btn-primary" type="submit" value="Update" />
+            </div>
+            
+        </form>
+    </div>    
+</div>
+     

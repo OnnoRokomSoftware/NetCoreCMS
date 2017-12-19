@@ -1,15 +1,12 @@
-﻿@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
-@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
-
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="@CurrentLanguageCode">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>@ViewData["Title"] - NetCoreCMS Admin</title>
+    <title>@Title - NetCoreCMS Admin</title>
       
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
@@ -21,6 +18,8 @@
     <link rel="stylesheet" type="text/css" href="~/lib/font-awesome/css/font-awesome.min.css">
 
     <link href="~/lib/css-loader/dist/css-loader.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    @*<link rel="stylesheet" href="~/css/purple-skin.css">*@
 
     <!-- jQuery -->
     <script src="~/lib/jquery/jquery.min.js"></script>

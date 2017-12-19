@@ -27,9 +27,9 @@ namespace NetCoreCMS.Framework.Core.Services.Auth
     public class AuthMessageSender : IEmailSender, ISmsSender
     {
         ILogger _logger;
-        NccSettingsService _nccSettingsService;
+        INccSettingsService _nccSettingsService;
 
-        public AuthMessageSender(NccSettingsService settingsService, ILoggerFactory factory)
+        public AuthMessageSender(INccSettingsService settingsService, ILoggerFactory factory)
         {
             _nccSettingsService = settingsService;
             _logger = factory.CreateLogger<AuthMessageSender>();

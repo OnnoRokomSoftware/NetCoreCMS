@@ -1,0 +1,36 @@
+﻿body {
+    background-color: #1b0029;
+}
+
+.navbar-default {
+    background-color: #1b0029;
+    border-color: #5c018e;
+}
+    .navbar-default .navbar-brand {
+        color: #FEE;
+    }
+    .navbar-default .navbar-brand:hover {
+        color: #FFF;
+    }
+    .navbar-default .navbar-nav > li > a {
+        color: #AAA;
+    }
+    .navbar-default .navbar-nav > li > a:hover {
+        color: #FFF;
+    }
+
+
+    .navbar-default a {
+        color: #AAA;
+    }
+    .navbar-default a:hover {
+        color: #FFF;
+    background-color: #5c018e;
+    }
+
+.sidebar ul li {
+    border-bottom: 1px solid #5c018e;
+}
+.sidebar ul li a.active {
+    background-color: #5c018e;
+}

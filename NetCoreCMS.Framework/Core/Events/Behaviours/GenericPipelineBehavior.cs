@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Core.Events.Behaviours

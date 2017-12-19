@@ -11,17 +11,19 @@
 using NetCoreCMS.Framework.Utility;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Core.Messages
 {
     public class GlobalMessageRegistry
     {
         public static string MessageDbFile { get { return "global_message_db.json"; } }
-        private static Dictionary<string, GlobalMessageEntry> _messageCache = new Dictionary<string, GlobalMessageEntry>();
+        private static volatile ConcurrentDictionary<string, GlobalMessageEntry> _messageCache = new ConcurrentDictionary<string, GlobalMessageEntry>();
         
         public static string RegisterMessage(GlobalMessage message, TimeSpan duration)
         {
@@ -30,50 +32,103 @@ namespace NetCoreCMS.Framework.Core.Messages
             message.MessageId = msgId;
             entry.ExpireTime = DateTime.Now.Add(duration);
             entry.Message = message;
-            _messageCache.Add(msgId, entry);
+            _messageCache.TryAdd(msgId, entry);
             WriteMessagesToStorage();
             return msgId;
         }
 
         private static void WriteMessagesToStorage()
         {
-            var messages = JsonConvert.SerializeObject(_messageCache, Formatting.Indented);
-            var messageDbFolder = Path.Combine(GlobalContext.ContentRootPath,"Data","GlobalMessages");
-            if (Directory.Exists(messageDbFolder) == false)
-            {
-                Directory.CreateDirectory(messageDbFolder);
-            }
+            var task = new Task(() => {
 
-            var messageDbFilePath = Path.Combine(messageDbFolder, MessageDbFile);             
-            using (var sw = File.CreateText(messageDbFilePath))
-            {
-                sw.WriteLine(messages);
-            }             
+                try
+                {
+                    var messages = JsonConvert.SerializeObject(_messageCache, Formatting.Indented);
+                    var messageDbFilePath = GetMessageDbFilePath();
+
+                    if (_messageCache.Count > 0)
+                    {
+                        using (var originalFileStream = File.Open(messageDbFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                        {
+                            using (var sw = new StreamWriter(originalFileStream))
+                            {
+                                sw.WriteLine(messages);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        using (var originalFileStream = File.Open(messageDbFilePath, FileMode.Truncate, FileAccess.ReadWrite, FileShare.ReadWrite)) { }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //TODO: have to improve this.
+                }                
+            });
+            task.Start();
+            task.Wait();            
         }
 
         public static void LoadMessagesFromStorage()
         {
-           
-            var messageDbFolder = Path.Combine(GlobalContext.ContentRootPath, "Data", "GlobalMessages"); 
-            var messageDbFilePath = Path.Combine(messageDbFolder, MessageDbFile);
-            if (File.Exists(messageDbFilePath))
+
+            try
             {
-                var msgJson = File.ReadAllText(messageDbFilePath, Encoding.UTF8);
-                if(string.IsNullOrEmpty(msgJson) == false)
+                var messageDbFilePath = GetMessageDbFilePath();
+                if (File.Exists(messageDbFilePath))
                 {
-                    var msgs = JsonConvert.DeserializeObject<Dictionary<string, GlobalMessageEntry>>(msgJson);
-                    if (msgs != null) {
-                        _messageCache = msgs;
+                    var msgJson = "";
+                    using (var originalFileStream = File.Open(messageDbFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                    {
+                        using (var sw = new StreamReader(originalFileStream))
+                        {
+                            msgJson = sw.ReadToEndAsync().Result;
+                        }
+                    }
+
+                    if (string.IsNullOrEmpty(msgJson) == false)
+                    {
+                        var msgs = JsonConvert.DeserializeObject<Dictionary<string, GlobalMessageEntry>>(msgJson);
+                        if (msgs != null)
+                        {
+                            foreach (var item in msgs)
+                            {
+                                _messageCache.AddOrUpdate(item.Key, item.Value, (key, val) =>
+                                {
+                                    return item.Value;
+                                });
+                            }
+
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                //TODO: have to chose better approch.
+                using (var originalFileStream = File.Open(GetMessageDbFilePath(), FileMode.Truncate, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {                    
+                }
+            }
+        }
+
+        private static string GetMessageDbFilePath()
+        {
+            var messageDbFolder = Path.Combine(GlobalContext.ContentRootPath, "Data", "GlobalMessages");            
+            if (Directory.Exists(messageDbFolder) == false)
+            {
+                Directory.CreateDirectory(messageDbFolder);
+            }                       
+            return Path.Combine(messageDbFolder, MessageDbFile);
         }
 
         public static bool UnRegisterMessage(string messageId)
         {
             if (_messageCache.ContainsKey(messageId) )
             {
-                return _messageCache.Remove(messageId);
+                GlobalMessageEntry msg;
+                return _messageCache.TryRemove(messageId, out msg);
             }
             return false;
         }
@@ -95,6 +150,8 @@ namespace NetCoreCMS.Framework.Core.Messages
 
         private static void Cleanup()
         {
+            bool requireWrite = false;
+
             List<string> removeList = new List<string>();
             foreach (var item in _messageCache)
             {
@@ -103,12 +160,18 @@ namespace NetCoreCMS.Framework.Core.Messages
                     removeList.Add(item.Key);
                 }
             }
+
             foreach (var item in removeList)
             {
-                _messageCache.Remove(item);
+                GlobalMessageEntry msg;
+                _messageCache.TryRemove(item, out msg);
+                requireWrite = true;
             }
 
-            WriteMessagesToStorage();
+            if (requireWrite)
+            {
+                WriteMessagesToStorage();
+            }
         }
          
         public class GlobalMessageEntry

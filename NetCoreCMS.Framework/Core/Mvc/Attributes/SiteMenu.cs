@@ -25,6 +25,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
     {
         string Name { get; set; }
         string Url { get; set; }
+        string Module { get; set; }
+        string Area { get; set; }
         string Controller { get; set; }
         string Action { get; set; }
         string QueryString { get; set; }
@@ -52,6 +54,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Attributes
         }
         public string Name { get; set; }
         public string Url { get; set; }
+        public string Module { get; set; }
+        public string Area { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
         public string QueryString { get; set; }

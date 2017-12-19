@@ -8,13 +8,17 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace NetCoreCMS.Modules.News.Models.Entity
 {
     public class NeNewsCategory
     {
         public long NeCategoryId { get; set; }
+        //[NotMapped]
         public NeCategory NeCategory { get; set; }
         public long NeNewsId { get; set; }
+        //[NotMapped]
         public NeNews NeNews { get; set; }
     }
 }

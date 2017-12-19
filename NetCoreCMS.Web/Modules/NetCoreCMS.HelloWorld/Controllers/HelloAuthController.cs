@@ -15,19 +15,19 @@ namespace NetCoreCMS.HelloWorld.Controllers
             _logger = loggerFactory.CreateLogger<HelloHomeController>();
         }
 
-        [AdminMenuItem(Name = "Index", Url = "/HelloAuth/Index", Order = 1)]
-        [SiteMenuItem(Name = "Hello world Home", Url = "/HelloAuth/Index", Order = 1)]
-        [NccAuthorize()]
+        [AdminMenuItem(Name = "Index", Order = 1)]
+        [SiteMenuItem(Name = "Hello world Home", Order = 1)]        
         [NccAuthorize(NccAuthRequirementName.Create)]        
         [NccAuthorize(HandlerClassName = "HrAuthHandler", RequirementList = new string[] { "Brunches" }, ValueList = new string[] { "Firmget,Malibag,Mirpur1,Mirpur2" })]
         [NccAuthorize(HandlerClassName = "HrAuthHandler", RequirementList = new string[] { "Organizations" }, ValueList = new string[] { "OnnorokomGroup,OnnorokomSoftware,Rokomari,Electronics,OnnoRokomRobots" })]
+        [NccAuthorize()]
         public ActionResult Index()
         {
             return View();
         }
 
-        [AdminMenuItem(Name = "Custom Permission", Url = "/HelloAuth/CustomPermission", Order = 2)]
-        [SiteMenuItem(Name = "Hello Custom Permission", Url = "/HelloHome/CustomPermission", Order = 2)]
+        [AdminMenuItem(Name = "Custom Permission", Order = 2)]
+        [SiteMenuItem(Name = "Hello Custom Permission", Order = 2)]
         [NccAuthorize(HandlerClassName = "HrAuthHandler", RequirementList = new string[] { "Brunches" })]
         [NccAuthorize(HandlerClassName = "HrAuthHandler", RequirementList = new string[] { "Organizations" })]
         public ActionResult CustomPermission(string[] Brunches, string[] Organizations)

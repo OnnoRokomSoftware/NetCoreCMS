@@ -1,0 +1,55 @@
+﻿@using NetCoreCMS.Framework.Core.Mvc.Models
+
+@model TagCloudViewModel
+
+@{
+    if (Model.ItemList != null)
+    {
+        var i = 0;
+        int maxFont = 30;
+        int minFont = 12;
+        int diffFont = maxFont - minFont;
+
+        int maxCount = Model.ItemList.Max(x => x.TotalPost);
+        int minCount = Model.ItemList.Min(x => x.TotalPost);
+        int diffCount = maxCount - minCount;
+        if (diffCount <= 0)
+        {
+            diffCount = 1;
+        }
+        int fontGroth = diffFont / diffCount;
+        if (fontGroth < 1)
+        {
+            fontGroth = 1;
+        }
+        foreach (var item in Model.ItemList)
+        {
+            if (Model.ShowTagHasPost == true && item.TotalPost <= 0)
+            {
+                continue;
+            }
+            int fontSize = (item.TotalPost - minCount) * fontGroth + minFont;
+            if (fontSize > maxFont)
+            {
+                fontSize = maxFont;
+            }
+            if (i == 0)
+            {
+                i = 1;
+            }
+            else
+            {
+                <span>, </span>
+            }
+            <span style="margin-left:5px;font-size:@(fontSize)px">
+                <a href="/Tags/?name=@item.Name">
+                    @item.Name
+                    @if (Model.ShowPostCount)
+                    {
+                        <span>(@item.TotalPost)</span>
+                    }
+                </a>
+            </span>
+        }
+    }
+}

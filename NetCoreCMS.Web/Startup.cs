@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using MediatR;
 
 using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,207 +36,289 @@ using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Middleware;
-using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Extensions;
-using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Messages;
 using NetCoreCMS.Framework.Core.App;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Resources;
-using NetCoreCMS.Framework.Core.Auth.Handlers;
 using NetCoreCMS.Framework.Core.Services.Auth;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.Extensions.DependencyModel;
 using Microsoft.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Mvc.Cache;
+using System.Net;
+using NetCoreCMS.Framework.Core.Services;
+using System.Collections;
 
 namespace NetCoreCMS.Web
 {
     public class Startup
     {
         private IHostingEnvironment _hostingEnvironment;
-        ModuleManager               _moduleManager;
-        ThemeManager                _themeManager;        
-        NetCoreStartup              _startup;
-        IMvcBuilder                 _mvcBuilder;
-        SetupConfig                 _setupConfig;
-        IServiceCollection          _services;
-        IServiceProvider            _serviceProvider;
-        
+        ModuleManager _moduleManager;
+        ThemeManager _themeManager;
+        NetCoreStartup _startup;
+        IMvcBuilder _mvcBuilder;
+        SetupConfig _setupConfig;
+        IServiceCollection _services;
+        IServiceProvider _serviceProvider;
+
+        private const string ExceptionsOnStartup = "Startup";
+        private const string ExceptionsOnConfigureServices = "ConfigureServices";
+        private const string ExceptionsOnConfigure = "Configure";
+
+        private readonly Dictionary<string, List<Exception>> _exceptions;
+
         public Startup(IConfiguration configuration, IHostingEnvironment env)
         {
-            Configuration = configuration;
-            _hostingEnvironment = env;
-            
-            var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
-            ConfigurationRoot = builder.Build();
-            ResetGlobalContext(configuration, env);
+            _exceptions = new Dictionary<string, List<Exception>>{
+                { ExceptionsOnStartup, new List<Exception>() },
+                { ExceptionsOnConfigureServices, new List<Exception>() },
+                { ExceptionsOnConfigure, new List<Exception>() },
+            };
 
-            _moduleManager  = new ModuleManager();
-            _themeManager   = new ThemeManager();            
-            _startup        = new NetCoreStartup();
-            _setupConfig    = SetupHelper.LoadSetup();
-            AddLogger();
+            try
+            {
+                Configuration = configuration;
+                _hostingEnvironment = env;
+
+                var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
+                ConfigurationRoot = builder.Build();
+                ResetGlobalContext(configuration, env);
+                
+                _moduleManager = new ModuleManager();
+                _themeManager = new ThemeManager();
+                _startup = new NetCoreStartup();
+                _setupConfig = SetupHelper.LoadSetup();
+                AddLogger();
+            }
+            catch (Exception ex)
+            {
+                _exceptions[ExceptionsOnStartup].Add(ex);
+            }
         }
-        
+
         public IConfiguration Configuration { get; }
         public IConfigurationRoot ConfigurationRoot { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            _services = services;
+            try
+            {
+                _services = services;
 
-            _services.AddTransient<IEmailSender, AuthMessageSender>();
-            _services.AddTransient<ISmsSender, AuthMessageSender>();
-            _services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            _services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+                _services.AddTransient<IEmailSender, AuthMessageSender>();
+                _services.AddTransient<ISmsSender, AuthMessageSender>();
+                _services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+                _services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
-            _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
+                _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
 
-            _services.AddLogging(loggingBuilder =>
-            loggingBuilder.AddSerilog(dispose: true));
-            
-            _services.AddOptions();            
-            _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));            
+                _services.AddLogging(loggingBuilder =>
+                loggingBuilder.AddSerilog(dispose: true));
 
-            _services.AddLocalization();
-            _mvcBuilder = services.AddMvc(config => {                
-                var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
-                config.Filters.Add(new AuthorizeFilter(policy));
-                config.CacheProfiles.Add(NccCacheProfile.Default,
-                new CacheProfile()
+                _services.AddOptions();
+                _services.AddSingleton(typeof(IStringLocalizer), typeof(NccStringLocalizer<SharedResource>));
+                _services.AddLocalization();
+
+                _mvcBuilder = _services.AddMvc(config =>
                 {
-                    Duration = 300,
-                    VaryByQueryKeys = new string[] { "id","name","pageNumber","page","pageSize","model","lang","status","sessionId","requestId","start","slug",}
+                    var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
+                    config.Filters.Add(new AuthorizeFilter(policy));
+                    config.CacheProfiles.Add(NccCacheProfile.Default,
+                    new CacheProfile()
+                    {
+                        VaryByHeader = "User-Agent",
+                        Duration = 300,
+                        VaryByQueryKeys = new string[] { "id", "name", "pageNumber", "page", "pageSize", "model", "lang", "status", "sessionId", "requestId", "start", "slug", }
+                    });
                 });
-            });
-            
-            _mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
-            _mvcBuilder.AddDataAnnotationsLocalization(options => {
-                options.DataAnnotationLocalizerProvider = (type, factory) => new NccStringLocalizer<SharedResource>(factory, new HttpContextAccessor());
-            });
-            
-            _services.AddResponseCaching();
-            _services.AddSession(options =>
-            {
-                options.Cookie.Name = ".NetCoreCMS.Cookie.Session";
-                options.IdleTimeout = TimeSpan.FromMinutes(20);
-                options.Cookie.HttpOnly = true;
-            });
 
-            _services.AddDistributedMemoryCache();
-            _services.AddResponseCompression();            
-            _services.AddSingleton(Configuration);
-
-            _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
-
-            _services.AddNccCoreModuleServices();
-            _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-                       
-            var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
-            var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
-            var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
-            var themesDirectoryContents = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
-
-            _themeManager.ScanThemeDirectory(themeFolder);            
-            _themeManager.RegisterThemes(_mvcBuilder, _services,_serviceProvider, themesDirectoryContents);                       
-            
-            var coreModules = _moduleManager.LoadModules(coreModuleFolder);
-            var userModules = _moduleManager.LoadModules(moduleFolder);
-            
-            GlobalContext.Modules.AddRange(userModules);
-
-            _services.AddModuleDependencies(_mvcBuilder);
-
-            if (SetupHelper.IsDbCreateComplete)
-            {
-                 
-                _services.AddCustomizedIdentity();               
-                _startup.SelectDatabase(_services);
-
-                _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-
-                _moduleManager.AddModulesAsApplicationPart(_mvcBuilder, _services, _serviceProvider);
-
-                _moduleManager.AddModuleServices(_services);
-                _moduleManager.AddModuleFilters(_services);
-                _moduleManager.AddShortcodes(_services);                
-                _moduleManager.AddModuleWidgets(_services);
-                _moduleManager.AddModuleAuthorizationHandlers(_services);
-
-                _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-
-                _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
-                _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);                
-                _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider);
-                _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);
+                _mvcBuilder.AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
+                _mvcBuilder.AddDataAnnotationsLocalization(options =>
+                {
+                    options.DataAnnotationLocalizerProvider = (type, factory) => new NccStringLocalizer<SharedResource>(factory, new HttpContextAccessor());
+                });
                 
-                _moduleManager.LoadModuleMenus();
-            }
+                _services.AddMaintenance(() => _setupConfig.IsMaintenanceMode, Encoding.UTF8.GetBytes("<div style='width:100%;text-align:center; padding-top:10px;'><h1>" + _setupConfig.MaintenanceMessage + "</h1></div>"), "text/html", _setupConfig.MaintenanceDownTime * 60);
 
-            var defaultCulture = new RequestCulture("en");
-
-            if (SetupHelper.IsAdminCreateComplete)
-            {
-                GlobalContext.SetupConfig = SetupHelper.LoadSetup();
-                defaultCulture = new RequestCulture(GlobalContext.SetupConfig.Language);
-                GlobalMessageRegistry.LoadMessagesFromStorage();
-            }
-
-            services.Configure<RouteOptions>(options =>
-            {
-                options.ConstraintMap.Add("lang", typeof(LanguageRouteConstraint));
-            });
-
-            _services.Configure<RequestLocalizationOptions>(
-                opts =>
+                _services.AddSession(options =>
                 {
-                    var supportedCultures = SupportedCultures.Cultures;
-                    opts.DefaultRequestCulture = defaultCulture;
-                    opts.SupportedCultures = supportedCultures;
-                    opts.SupportedUICultures = supportedCultures;
+                    options.Cookie.Name = ".NetCoreCMS.Cookie.Session";
+                    options.IdleTimeout = TimeSpan.FromMinutes(20);
+                    options.Cookie.HttpOnly = true;
+                });
 
-                    var provider = new RouteDataRequestCultureProvider();
-                    provider.RouteDataStringKey = "lang";
-                    provider.UIRouteDataStringKey = "lang";
-                    provider.Options = opts;
-                    opts.RequestCultureProviders = new[] { provider };
+                _services.AddResponseCacheingAndCompression(_serviceProvider);
+
+                _services.AddSingleton(Configuration);
+
+                _services.AddNccCoreModuleServices();
+                _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
+
+                _services.SetGlobalCache(_serviceProvider);
+
+                var themeFolder = Path.Combine(_hostingEnvironment.ContentRootPath, NccInfo.ThemeFolder);
+                var moduleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
+                var coreModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.CoreModuleFolder);
+                var themesDirectoryContents = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ThemeFolder);
+
+                _themeManager.ScanThemeDirectory(themeFolder);
+                _themeManager.RegisterThemes(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
+
+                _moduleManager.LoadModules(coreModuleFolder);
+                _moduleManager.LoadModules(moduleFolder);
+
+                _services.AddModuleDependencies(_mvcBuilder);
+
+                if (SetupHelper.IsDbCreateComplete)
+                {
+                    _startup.SelectDatabase(_services);
+                    _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
+                    _moduleManager.AddModulesAsApplicationPart(_mvcBuilder, _services, _serviceProvider);
+
+                    _moduleManager.AddModuleServices(_services);
+                    _moduleManager.AddModuleFilters(_services);
+                    _moduleManager.AddShortcodes(_services);
+                    _moduleManager.AddModuleWidgets(_services);
+                    _moduleManager.AddModuleAuthorizationHandlers(_services);
+
+                    _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
+
+                    _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
+                    _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);
+                    _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider);
+                    _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);
+
+                    _services.AddCustomizedIdentity(_serviceProvider.GetService<INccSettingsService>());                    
+                    _moduleManager.LoadModuleMenus();
                 }
-            );
-            
-            services.Configure<ClassLibraryLocalizationOptions>(
-                options => options.ResourcePaths = new Dictionary<string, string>
+
+                var defaultCulture = new RequestCulture("en");
+
+                if (SetupHelper.IsAdminCreateComplete)
                 {
+                    GlobalContext.SetupConfig = SetupHelper.LoadSetup();
+                    defaultCulture = new RequestCulture(GlobalContext.SetupConfig.Language);                    
+                }
+
+                services.Configure<RouteOptions>(options =>
+                {
+                    options.ConstraintMap.Add("lang", typeof(LanguageRouteConstraint));
+                });
+
+                _services.Configure<RequestLocalizationOptions>(
+                    opts =>
+                    {
+                        var supportedCultures = SupportedCultures.Cultures;
+                        opts.DefaultRequestCulture = defaultCulture;
+                        opts.SupportedCultures = supportedCultures;
+                        opts.SupportedUICultures = supportedCultures;
+
+                        var provider = new RouteDataRequestCultureProvider();
+                        provider.RouteDataStringKey = "lang";
+                        provider.UIRouteDataStringKey = "lang";
+                        provider.Options = opts;
+                        opts.RequestCultureProviders = new[] { provider };
+                    }
+                );
+
+                services.Configure<ClassLibraryLocalizationOptions>(
+                    options => options.ResourcePaths = new Dictionary<string, string>
+                    {
                     { "NetCoreCMS.Framework", "i18n/Resources" },
                     { "NetCoreCMS.Web", "Resources" }
-                }
-            );
+                    }
+                );
 
-            _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-            _serviceProvider = _services.BuildModules(ConfigurationRoot, _hostingEnvironment);
-            
-            GlobalContext.ServiceProvider = _serviceProvider;
-            GlobalContext.Services = _services;
-            NetCoreCmsHost.Mediator = _serviceProvider.GetService<IMediator>();            
-            NetCoreCmsHost.Services = _services;
-            NetCoreCmsHost.ServiceProvider = _serviceProvider;
+                _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
+                _serviceProvider = _services.BuildModules(ConfigurationRoot, _hostingEnvironment);
+                
+                GlobalContext.ServiceProvider = _serviceProvider;
+                GlobalContext.Services = _services;
+                NetCoreCmsHost.Mediator = _serviceProvider.GetService<IMediator>();
+                NetCoreCmsHost.Services = _services;
+                NetCoreCmsHost.ServiceProvider = _serviceProvider;
+                GlobalMessageRegistry.LoadMessagesFromStorage();
+
+            }
+            catch (Exception ex)
+            {
+                _exceptions[ExceptionsOnConfigureServices].Add(ex);
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IMediator mediator, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            app.UseRequestTracker();
-            app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
-            app.UseNccRoutes(env, _serviceProvider, loggerFactory);
-            NetCoreCmsHost.Logger = loggerFactory.CreateLogger<Startup>();
-            NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;            
+            var log = loggerFactory.CreateLogger<Startup>();
+            
+            try
+            {
+                if (env.IsDevelopment())
+                {
+                    app.UseDeveloperExceptionPage();
+                    app.UseBrowserLink();
+                    app.UseDatabaseErrorPage();
+                }
+                else
+                {
+                    app.UseExceptionHandler("/Home/Error");
+                }
+
+                NetCoreCmsHost.Logger = loggerFactory.CreateLogger<Startup>();
+                NetCoreCmsHost.HttpContext = new HttpContextAccessor().HttpContext;
+
+                app.UseRequestTracker();
+                app.UseNetCoreCMS(env, _serviceProvider, loggerFactory);
+                app.UseNccRoutes(env, _serviceProvider, loggerFactory);                
+            }
+            catch (Exception ex)
+            {
+                _exceptions[ExceptionsOnConfigure].Add(ex);                
+            }
+
+            foreach (var item in _exceptions)
+            {
+                foreach (var ex in item.Value)
+                {
+                    log.LogError(ex.Message, ex);
+                }
+            }
+
+            if (_exceptions.Any(p => p.Value.Any()))
+            {
+                app.Run(
+                  async context =>
+                  {
+                      context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                      context.Response.ContentType = "text/html";
+
+                      foreach (var ex in _exceptions)
+                      {
+                          foreach (var val in ex.Value)
+                          {
+                              var errorMessage = "<strong>------------------Begin------------------</strong>";
+                              log.LogError($"{ex.Key}:::{val.Message}");
+                              errorMessage += "<h5 style='color:red;'>" + val.Message + "</h5><hr/>";
+
+                              if(env.IsProduction() == false)
+                              {
+                                  errorMessage += "Stack trace: " + val.StackTrace + "<br/>";
+                              }
+
+                              errorMessage += "<strong>------------------End------------------</strong><br/>";
+                              await context.Response.WriteAsync(errorMessage).ConfigureAwait(false);
+                          }
+                      }
+                  });
+                return;
+            }
         }
 
         private void ResetGlobalContext(IConfiguration configuration, IHostingEnvironment env)
@@ -251,10 +332,11 @@ namespace NetCoreCMS.Web
             GlobalContext.Modules = new List<IModule>();
             GlobalContext.Menus = new List<NccMenu>();
             GlobalContext.Themes = new List<Theme>();
+            GlobalContext.WidgetTypes = new Hashtable();
         }
         private void AddLogger()
         {
-            if(_setupConfig.LoggingLevel != (int)LogLevel.None)
+            if (_setupConfig.LoggingLevel != (int)LogLevel.None)
             {
                 var logFilePath = NccInfo.LogFolder + "\\{Date}_NetCoreCMS_Logs.log";
                 var logCfg = new LoggerConfiguration()
@@ -296,4 +378,3 @@ namespace NetCoreCMS.Web
         }
     }
 }
-

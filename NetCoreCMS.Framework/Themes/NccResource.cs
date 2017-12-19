@@ -14,11 +14,14 @@ namespace NetCoreCMS.Framework.Themes
     {
         public static string JQuery { get { return "JQuery"; } }
         public static string Bootstrap { get { return "Bootstrap"; } }
+        public static string BootstrapBootbox { get { return "BootstrapBootbox"; } }
         public static string BootstrapDateTimePicker { get { return "BootstrapDateTimePicker"; } }
         public static string CkEditor { get { return "CkEditor"; } }
         public static string DataTable { get { return "DataTable"; } }
         public static string DataTableResponsive { get { return "DataTableResponsive"; } }
         public static string DataTableFixedColumn { get { return "DataTableFixedColumn"; } }
+        public static string FontAwesome { get { return "FontAwesome"; } }
+        public static string Lightbox2 { get { return "Lightbox2"; } }
 
         public NccResource()
         {

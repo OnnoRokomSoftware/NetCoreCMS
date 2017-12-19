@@ -14,7 +14,8 @@ namespace NetCoreCMS.Framework.Core.Models.ViewModels
 {
     public class Menu
     {
-        public string ModuleId { get; set; }
+        public string ModuleName { get; set; }
+        public string Area { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
         public string DisplayName { get; set; }

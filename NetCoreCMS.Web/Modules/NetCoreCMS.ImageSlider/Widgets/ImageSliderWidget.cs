@@ -32,8 +32,7 @@ namespace NetCoreCMS.ImageSlider.Widgets
         public ImageSliderWidget(
             IViewRenderService viewRenderService,
             NccWebSiteWidgetService websiteWidgetService,
-            NccImageSliderService imageSliderService) : base(
-                "NetCoreCMS.Modules.Widgets.ImageSlider",
+            NccImageSliderService imageSliderService) : base(               
                 "Image Slider",
                 "This is a widget to display responsive image slider.",
                 ""
@@ -44,7 +43,7 @@ namespace NetCoreCMS.ImageSlider.Widgets
             _imageSliderService = imageSliderService;
         }
 
-        public override void Init(long websiteWidgetId)
+        public override void Init(long websiteWidgetId, bool renderConfig = false)
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/ImageSlider";
@@ -60,9 +59,12 @@ namespace NetCoreCMS.ImageSlider.Widgets
                 selectedImageSliderName = config.name;
             }
 
-            ConfigViewFileName = "Widgets/ImageSliderConfig";
-            var itemList = _imageSliderService.LoadAll(true).ToList();
-            ConfigHtml = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ConfigViewFileName, itemList /*webSiteWidget*/).Result;
+            if (renderConfig)
+            {
+                ConfigViewFileName = "Widgets/ImageSliderConfig";
+                var itemList = _imageSliderService.LoadAll(true).ToList();
+                ConfigHtml = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ConfigViewFileName, itemList /*webSiteWidget*/).Result;
+            } 
         }
 
         public override string RenderBody()

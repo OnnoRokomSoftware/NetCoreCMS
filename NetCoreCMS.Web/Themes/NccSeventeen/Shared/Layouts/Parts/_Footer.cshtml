@@ -4,52 +4,50 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h4>@ThemeHelper.GetWebSiteName()</h4>
-                    <h5>@ThemeHelper.GetWebSiteTagline()</h5>
+                    <h4>@GetWebSiteName()</h4>
+                    <h5>@GetWebSiteTagline()</h5>
                 </div>
                 <div class="col-md-4">
                     @{
-                    var menusFooter = ThemeHelper.GetMenus("Footer", CurrentLanguage);
-                    <!-- Footer Menu Start -->
-                    if (menusFooter != null && menusFooter.Count > 0)
-                    {
+                        var menusFooter = GetMenus("Footer", CurrentLanguage);
+                        <!-- Footer Menu Start -->
+                        if (menusFooter != null && menusFooter.Count > 0)
+                        {
                             <div class="two-column-div">
                                 @foreach (var item in menusFooter)
-                            {
-                                foreach (var menuItem in item.MenuItems)
                                 {
-                                        <a href="@menuItem.Url">@menuItem.Name</a><br />
-                                    foreach (var mi2 in menuItem.Childrens)
+                                    foreach (var menuItem in item.MenuItems)
                                     {
-                                            <span>--</span><a href="@mi2.Url">@mi2.Name</a><br />
-                                        foreach (var mi3 in mi2.Childrens)
+                                        <a href="@menuItem.Url">@menuItem.Name</a><br />
+                                        foreach (var mi2 in menuItem.Childrens)
                                         {
-                                                <span>----</span><a href="@mi3.Url">@mi3.Name</a><br />
-                                            foreach (var mi4 in mi3.Childrens)
+                                            <span>--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                                            foreach (var mi3 in mi2.Childrens)
                                             {
+                                                <span>----</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                                foreach (var mi4 in mi3.Childrens)
+                                                {
                                                     <span>------</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                                }
                                             }
                                         }
                                     }
                                 }
-                            }
                             </div>
-                    }
-                    <!-- Footer Menu End -->
+                        }
+                        <!-- Footer Menu End -->
                     }
                 </div>
                 <div class="col-md-4">
                     @{
-                    var zoneFooterWidgets = ThemeHelper.GetWebsiteWidgets(CurrentLayout, "Footer");
+                        var zoneFooterWidgets = GetWebSiteWidgets(CurrentLayout, "Footer");
                     <!-- Footer Widgets Start -->
-                    if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
-                    {
+                        if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
+                        {
                             <div style="float:right;">
                                 @foreach (var item in zoneFooterWidgets)
-                            {
-                                var widgets = ThemeHelper.GetWidgets(item.WidgetId);
-                                foreach (var widget in widgets)
                                 {
+                                    var widget = item.Widget;
                                     widget.Init(item.Id);
                                     if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage == widget.Language)
                                     {
@@ -81,9 +79,8 @@
                                         }
                                     }
                                 }
-                            }
                             </div>
-                    }
+                        }
                     <!-- Footer Widgets End -->
                     }
                 </div>

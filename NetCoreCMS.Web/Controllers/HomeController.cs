@@ -18,22 +18,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Localization;
 
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.App;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Core.Messages;
-using System.Collections.Generic;
-using NetCoreCMS.Framework.Resources;
-using NetCoreCMS.Framework.Core.Models;
-using System.Linq;
-using NetCoreCMS.Framework.Core.Services;
+
 
 namespace NetCoreCMS.Web.Controllers
 {
-    [AllowAnonymous]
     public class HomeController : NccController
     {
         IHostingEnvironment _env;
@@ -171,8 +164,7 @@ namespace NetCoreCMS.Web.Controllers
             }
             return View();
         }
-
-        [Authorize(Roles = "SuperAdmin")]
+        
         public async System.Threading.Tasks.Task<IActionResult> RestartHost()
         {
             string referer = Request.Headers["Referer"].ToString();

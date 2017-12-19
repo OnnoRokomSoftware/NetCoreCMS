@@ -1,0 +1,119 @@
+﻿@using System.Text.RegularExpressions
+@using System.Linq
+
+@model List<NccPost>
+@{
+    Layout = Constants.SiteLayoutName;
+    var tag = (NccTag)ViewBag.Tag;
+    Title = tag.Name;
+    SubTitle = "All post in tag " + tag.Name;
+}
+
+<h1>@tag.Name</h1>
+<h4>@_T["All post in tag"] @tag.Name</h4>
+<div class="row">
+    <div class="col-md-12">
+        @foreach (var item in Model)
+        {
+            //NccPost item = postTag.Post;
+            NccPostDetails postDetails = item.PostDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
+            if (postDetails == null)
+            {
+                postDetails = item.PostDetails.FirstOrDefault();
+            }
+            if (postDetails != null)
+            {
+                <div style="border: dashed 1px gray;padding:10px 10px;">
+                    @if (item.ThumImage != null)
+                    {
+                        <div style="width:220px; float:left; margin-right:10px;">
+                            <img src="@item.ThumImage" width="220" height="110" />
+                        </div>
+                    }
+                    <div>
+                        <a href="/Post/@postDetails.Slug"><h3 style="margin-top:0px;">@postDetails.Title</h3></a>
+                        <p style="font-style:italic; font-size:12px;">
+                            Author:
+                            @if (item.Author != null)
+                            { <span>@item.Author.FullName</span> }
+                            else
+                            {<span>Anonymous</span> }
+                            <span> | Published Date: @item.PublishDate.ToString("MMM dd, yyyy")</span>
+
+                            @*| <a href="#">@item.Comments.Count() Comments</a>*@
+                            @if (item.Categories.Count > 0)
+                            {
+                                <span>| @_T["Category"] :</span>
+                                @foreach (NccPostCategory cat in item.Categories)
+                                {
+                                    NccCategoryDetails cDetails = cat.Category.CategoryDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
+                                    if (cDetails == null)
+                                    {
+                                        cDetails = cat.Category.CategoryDetails.FirstOrDefault();
+                                    }
+                                    <a href="/Category/Index/?slug=@cDetails.Slug"><span class="label label-primary">@cDetails.Name</span></a>
+                                }
+                            }
+                            @if (item.Tags.Count > 0)
+                            {
+                                <span>| @_T["Tags"] :</span>
+                                @foreach (NccPostTag tag1 in item.Tags)
+                                {
+                                    <a href="/Tags/Index/?name=@tag1.Tag.Name"><span class="label label-info">@tag1.Tag.Name</span></a>
+                                }
+                            }
+                        </p>
+
+                        <hr style="margin:0px;padding:0px;" />
+                        @{
+                            var content = postDetails.Content;
+                            content = Regex.Replace(content, "<[^>]*>", string.Empty);
+                            content = Regex.Replace(content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
+                            var len = content.Length;
+                            if (len > 200)
+                            {
+                                len = 200;
+                                content = content.Substring(0, len);
+                            }
+                            <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">More</a></p>
+                        }
+                    </div>
+                </div>
+                <br />
+            }
+        }
+
+        <hr />
+        @{
+            float floatPage = (float)ViewBag.TotalPost / (float)ViewBag.PostPerPage;
+            int totalPage = (int)(ViewBag.TotalPost / ViewBag.PostPerPage);
+            if (ViewBag.CurrentPage > totalPage && floatPage != totalPage)
+            {
+                ViewBag.CurrentPage = totalPage + 1;
+            }
+            else if (ViewBag.CurrentPage > totalPage)
+            {
+                ViewBag.CurrentPage = totalPage;
+            }
+
+            if (floatPage == totalPage)
+            {
+                totalPage = totalPage - 1;
+            }
+        }
+        @*<span>@floatPage</span>
+            <span>@totalPage</span>*@
+        @if (ViewBag.CurrentPage > 0)
+        {
+            <div class="pull-left"><a href="/Tags/?name=@(ViewBag.Name)&page=@(ViewBag.CurrentPage-1)">< @_T["Previous"]</a></div>
+        }
+        @if (ViewBag.CurrentPage < totalPage)
+        {
+            <div class="pull-right"><a href="/Tags/?name=@(ViewBag.Name)&page=@(ViewBag.CurrentPage+1)">@_T["Next"] ></a></div>
+        }
+        <div class="row text-center">
+            <a asp-controller="Tags" asp-action="Index" asp-route-id="0"> All Tags</a>
+        </div>
+        
+    </div>
+</div>

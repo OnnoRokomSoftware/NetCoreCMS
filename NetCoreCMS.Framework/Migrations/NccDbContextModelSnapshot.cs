@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore.Storage.Internal;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using System;
+using NetCoreCMS.Framework.Utility;
+using Microsoft.AspNetCore.Identity;
 
 namespace NetCoreCMS.Framework.Migrations
 {
@@ -16,1226 +18,1358 @@ namespace NetCoreCMS.Framework.Migrations
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
+            var NccModule = GlobalContext.GetTableName<NccModule>();
+            var NccModuleDependency = GlobalContext.GetTableName<NccModuleDependency>();
+            var NccMenu = GlobalContext.GetTableName<NccMenu>();
+            var NccMenuItem = GlobalContext.GetTableName<NccMenuItem>();
+            var NccPage = GlobalContext.GetTableName<NccPage>();
+            var NccPageHistory = GlobalContext.GetTableName<NccPageHistory>();
+
+            var NccPageDetails = GlobalContext.GetTableName<NccPageDetails>();
+            var NccPageDetailsHistory = GlobalContext.GetTableName<NccPageDetailsHistory>();
+            var NccPlugins = GlobalContext.GetTableName<NccPlugins>();
+            var NccPost = GlobalContext.GetTableName<NccPost>();
+            var NccCategory = GlobalContext.GetTableName<NccCategory>();
+            var NccPostCategory = GlobalContext.GetTableName<NccPostCategory>();
+            var NccComment = GlobalContext.GetTableName<NccComment>();
+            var NccTag = GlobalContext.GetTableName<NccTag>();
+            var NccPostTag = GlobalContext.GetTableName<NccPostTag>();
+            var NccCategoryDetails = GlobalContext.GetTableName<NccCategoryDetails>();
+            var NccPostDetails = GlobalContext.GetTableName<NccPostDetails>();
+            var NccRole = GlobalContext.GetTableName<NccRole>();
+            var NccSettings = GlobalContext.GetTableName<NccSettings>();
+            var NccScheduleTaskHistory = GlobalContext.GetTableName<NccScheduleTaskHistory>();
+            var NccStartup = GlobalContext.GetTableName<NccStartup>();
+            var NccUser = GlobalContext.GetTableName<NccUser>();
+            var NccUserRole = GlobalContext.GetTableName<NccUserRole>();
+            var NccWebSite = GlobalContext.GetTableName<NccWebSite>();
+            var NccWebSiteInfo = GlobalContext.GetTableName<NccWebSiteInfo>();
+
+            var NccPermission = GlobalContext.GetTableName<NccPermission>();
+            var NccPermissionDetails = GlobalContext.GetTableName<NccPermissionDetails>();
+            var NccUserPermission = GlobalContext.GetTableName<NccUserPermission>();
+            var NccWebSiteWidget = GlobalContext.GetTableName<NccWebSiteWidget>();
+            var NccWidget = GlobalContext.GetTableName<NccWidget>();
+            var NccWidgetSection = GlobalContext.GetTableName<NccWidgetSection>();
+            var IdentityUserClaim = GlobalContext.GetTableName<IdentityUserClaim<long>>();
+            var IdentityRoleClaim = GlobalContext.GetTableName<IdentityRoleClaim<long>>();
+            var IdentityUserLogin = GlobalContext.GetTableName<IdentityUserLogin<long>>();
+            var IdentityUserToken = GlobalContext.GetTableName<IdentityUserToken<long>>();
+
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
-                .HasAnnotation("ProductVersion", "2.0.0-rtm-26452");
+                .HasAnnotation("ProductVersion", "2.0.1-rtm-125");
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ClaimType");
+                b.Property<string>("ClaimType");
 
-                    b.Property<string>("ClaimValue");
+                b.Property<string>("ClaimValue");
 
-                    b.Property<long>("RoleId");
+                b.Property<long>("RoleId");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("RoleId");
+                b.HasIndex("RoleId");
 
-                    b.ToTable("Ncc_Role_Claim");
-                });
+                b.ToTable(IdentityRoleClaim);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<long>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<int>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ClaimType");
+                b.Property<string>("ClaimType");
 
-                    b.Property<string>("ClaimValue");
+                b.Property<string>("ClaimValue");
 
-                    b.Property<long?>("NccUserId");
+                b.Property<long?>("NccUserId");
 
-                    b.Property<long>("UserId");
+                b.Property<long>("UserId");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NccUserId");
+                b.HasIndex("NccUserId");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("Ncc_User_Claim");
-                });
+                b.ToTable(IdentityUserClaim);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<long>", b =>
-                {
-                    b.Property<string>("LoginProvider");
+            {
+                b.Property<string>("LoginProvider");
 
-                    b.Property<string>("ProviderKey");
+                b.Property<string>("ProviderKey");
 
-                    b.Property<long?>("NccUserId");
+                b.Property<long?>("NccUserId");
 
-                    b.Property<string>("ProviderDisplayName");
+                b.Property<string>("ProviderDisplayName");
 
-                    b.Property<long>("UserId");
+                b.Property<long>("UserId");
 
-                    b.HasKey("LoginProvider", "ProviderKey");
+                b.HasKey("LoginProvider", "ProviderKey");
 
-                    b.HasIndex("NccUserId");
+                b.HasIndex("NccUserId");
 
-                    b.HasIndex("UserId");
+                b.HasIndex("UserId");
 
-                    b.ToTable("Ncc_User_Login");
-                });
+                b.ToTable(IdentityUserLogin);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<long>", b =>
-                {
-                    b.Property<long>("UserId");
+            {
+                b.Property<long>("UserId");
 
-                    b.Property<string>("LoginProvider");
+                b.Property<string>("LoginProvider");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<string>("Value");
+                b.Property<string>("Value");
 
-                    b.HasKey("UserId", "LoginProvider", "Name");
+                b.HasKey("UserId", "LoginProvider", "Name");
 
-                    b.ToTable("Ncc_User_Token");
-                });
+                b.ToTable(IdentityUserToken);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccCategory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("CategoryImage");
+                b.Property<string>("CategoryImage");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("ParentId");
+                b.Property<long?>("ParentId");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                b.HasIndex("ParentId");
 
-                    b.ToTable("Ncc_Category");
-                });
+                b.ToTable(NccCategory);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccCategoryDetails", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("CategoryId");
+                b.Property<long?>("CategoryId");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Language");
+                b.Property<string>("Language");
 
-                    b.Property<string>("MetaDescription");
+                b.Property<string>("MetaDescription");
 
-                    b.Property<string>("MetaKeyword");
+                b.Property<string>("MetaKeyword");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<string>("Slug");
+                b.Property<string>("Slug");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Title");
+                b.Property<string>("Title");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("CategoryId");
+                b.HasIndex("CategoryId");
 
-                    b.ToTable("Ncc_Category_Details");
-                });
+                b.ToTable(NccCategoryDetails);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccComment", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long?>("AuthorId");
+                b.Property<long?>("AuthorId");
 
-                    b.Property<string>("AuthorName");
+                b.Property<string>("AuthorName");
 
-                    b.Property<int>("CommentStatus");
+                b.Property<int>("CommentStatus");
 
-                    b.Property<string>("Content");
+                b.Property<string>("Content");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Email");
+                b.Property<string>("Email");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("PostId");
+                b.Property<long?>("PostId");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Title");
+                b.Property<string>("Title");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.Property<string>("WebSite");
+                b.Property<string>("WebSite");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                b.HasIndex("AuthorId");
 
-                    b.HasIndex("PostId");
+                b.HasIndex("PostId");
 
-                    b.ToTable("Ncc_Post_Comment");
-                });
+                b.ToTable(NccComment);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccMenu", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("MenuIconCls");
+                b.Property<string>("MenuIconCls");
 
-                    b.Property<string>("MenuLanguage");
+                b.Property<string>("MenuLanguage");
 
-                    b.Property<int>("MenuOrder");
+                b.Property<int>("MenuOrder");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<string>("Position");
+                b.Property<string>("Position");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_Menu");
-                });
+                b.ToTable(NccMenu);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccMenuItem", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Action");
+                b.Property<string>("Action");
 
-                    b.Property<string>("Controller");
+                b.Property<string>("Controller");
 
-                    b.Property<long>("CreateBy");
+                b.Property<string>("Area");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<long>("CreateBy");
 
-                    b.Property<string>("Data");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<int>("MenuActionType");
+                b.Property<string>("Data");
 
-                    b.Property<int>("MenuFor");
+                b.Property<int>("MenuActionType");
 
-                    b.Property<string>("MenuIconCls");
+                b.Property<int>("MenuFor");
 
-                    b.Property<int>("MenuOrder");
+                b.Property<string>("MenuIconCls");
 
-                    b.Property<string>("Metadata");
+                b.Property<int>("MenuOrder");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<string>("Metadata");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<string>("Module");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Module");
 
-                    b.Property<long?>("NccMenuId");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("NccMenuItemId");
+                b.Property<long?>("NccMenuId");
 
-                    b.Property<long?>("NccMenuItemId1");
+                b.Property<long?>("NccMenuItemId");
 
-                    b.Property<long?>("ParentId");
+                b.Property<long?>("NccMenuItemId1");
 
-                    b.Property<int>("Position");
+                b.Property<long?>("ParentId");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Position");
 
-                    b.Property<string>("Target");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Url");
+                b.Property<string>("Target");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<bool>("IsAnonymous");
 
-                    b.HasKey("Id");
+                b.Property<bool>("IsAllowAuthenticated");
 
-                    b.HasIndex("NccMenuId");
+                b.Property<string>("Url");
 
-                    b.HasIndex("NccMenuItemId");
+                b.Property<int>("VersionNumber");
 
-                    b.HasIndex("NccMenuItemId1");
+                b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                b.HasIndex("NccMenuId");
 
-                    b.ToTable("Ncc_Menu_Item");
-                });
+                b.HasIndex("NccMenuItemId");
+
+                b.HasIndex("NccMenuItemId1");
+
+                b.HasIndex("ParentId");
+
+                b.ToTable(NccMenuItem);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccModule", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("AntiForgery");
+                b.Property<int>("ExecutionOrder");
 
-                    b.Property<string>("Author");
+                b.Property<bool>("AntiForgery");
 
-                    b.Property<string>("Category");
+                b.Property<string>("Author");
 
-                    b.Property<long>("CreateBy");
+                b.Property<string>("Category");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<long>("CreateBy");
 
-                    b.Property<string>("Description");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Folder");
+                b.Property<string>("Description");
 
-                    b.Property<bool>("IsCore");
+                b.Property<string>("Folder");
 
-                    b.Property<string>("MaxNccVersion");
+                b.Property<bool>("IsCore");
+                
+                b.Property<string>("Metadata");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("NccVersion");
 
-                    b.Property<string>("MinNccVersion");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<string>("ModuleName");
 
-                    b.Property<string>("ModuleId");
+                b.Property<int>("ModuleStatus");
 
-                    b.Property<int>("ModuleStatus");
+                b.Property<string>("ModuleTitle");
 
-                    b.Property<string>("ModuleTitle");
+                b.Property<string>("Name");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Path");
 
-                    b.Property<string>("Path");
+                b.Property<int>("Status");
 
-                    b.Property<int>("Status");
+                b.Property<string>("Version");
 
-                    b.Property<string>("Version");
+                b.Property<int>("VersionNumber");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<string>("WebSite");
 
-                    b.Property<string>("WebSite");
+                b.HasKey("Id");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Ncc_Module");
-                });
+                b.ToTable(NccModule);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccModuleDependency", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
+                
+                b.Property<string>("Metadata");
 
-                    b.Property<string>("MaxVersion");
+                b.Property<string>("ModuleVersion");
 
-                    b.Property<string>("Metadata");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<string>("MinVersion");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<string>("ModuleName");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<string>("Name");
 
-                    b.Property<string>("ModuleId");
+                b.Property<long?>("NccModuleId");
 
-                    b.Property<string>("Name");
+                b.Property<int>("Status");
 
-                    b.Property<long?>("NccModuleId");
+                b.Property<int>("VersionNumber");
 
-                    b.Property<int>("Status");
+                b.HasKey("Id");
 
-                    b.Property<int>("VersionNumber");
+                b.HasIndex("NccModuleId");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("NccModuleId");
-
-                    b.ToTable("Ncc_Module_Dependency");
-                });
+                b.ToTable(NccModuleDependency);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPage", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Layout");
+                b.Property<string>("Layout");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<int>("PageOrder");
+                b.Property<int>("PageOrder");
 
-                    b.Property<int>("PageStatus");
+                b.Property<int>("PageStatus");
 
-                    b.Property<int>("PageType");
+                b.Property<int>("PageType");
 
-                    b.Property<long?>("ParentId");
+                b.Property<long?>("ParentId");
 
-                    b.Property<DateTime>("PublishDate");
+                b.Property<DateTime>("PublishDate");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ParentId");
+                b.HasIndex("ParentId");
 
-                    b.ToTable("Ncc_Page");
-                });
+                b.ToTable(NccPage);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPageDetails", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Content")
-                        .HasMaxLength(2147483647);
+                b.Property<string>("Content")
+                    .HasMaxLength(2147483647);
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Language");
+                b.Property<string>("Language");
 
-                    b.Property<string>("MetaDescription");
+                b.Property<string>("MetaDescription");
 
-                    b.Property<string>("MetaKeyword");
+                b.Property<string>("MetaKeyword");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("PageId");
+                b.Property<long?>("PageId");
 
-                    b.Property<string>("Slug");
+                b.Property<string>("Slug");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Title");
+                b.Property<string>("Title");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("PageId");
+                b.HasIndex("PageId");
 
-                    b.ToTable("Ncc_Page_Details");
-                });
+                b.ToTable(NccPageDetails);
+            });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPageDetailsHistory", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<string>("Content")
+                    .HasMaxLength(2147483647);
+
+                b.Property<long>("CreateBy");
+
+                b.Property<DateTime>("CreationDate");
+
+                b.Property<string>("Language");
+
+                b.Property<string>("MetaDescription");
+
+                b.Property<string>("MetaKeyword");
+
+                b.Property<string>("Metadata");
+
+                b.Property<DateTime>("ModificationDate");
+
+                b.Property<long>("ModifyBy");
+
+                b.Property<string>("Name");
+
+                b.Property<long>("PageDetailsId");
+
+                b.Property<long?>("PageHistoryId");
+
+                b.Property<string>("Slug");
+
+                b.Property<int>("Status");
+
+                b.Property<string>("Title");
+
+                b.Property<int>("VersionNumber");
+
+                b.HasKey("Id");
+
+                b.HasIndex("PageHistoryId");
+
+                b.ToTable(NccPageDetailsHistory);
+            });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPageHistory", b =>
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
+
+                b.Property<long>("CreateBy");
+
+                b.Property<DateTime>("CreationDate");
+
+                b.Property<string>("Layout");
+
+                b.Property<string>("Metadata");
+
+                b.Property<DateTime>("ModificationDate");
+
+                b.Property<long>("ModifyBy");
+
+                b.Property<string>("Name");
+
+                b.Property<long>("PageId");
+
+                b.Property<int>("PageOrder");
+
+                b.Property<int>("PageStatus");
+
+                b.Property<int>("PageType");
+
+                b.Property<long?>("ParentId");
+
+                b.Property<DateTime>("PublishDate");
+
+                b.Property<int>("Status");
+
+                b.Property<int>("VersionNumber");
+
+                b.HasKey("Id");
+
+                b.HasIndex("ParentId");
+
+                b.ToTable(NccPageHistory);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPermission", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Description");
+                b.Property<string>("Description");
 
-                    b.Property<int>("Rank");
+                b.Property<string>("Group");
 
-                    b.Property<string>("Group");
+                b.Property<string>("Metadata");
 
-                    b.Property<string>("Metadata");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<string>("Name");
 
-                    b.Property<string>("Name");
+                b.Property<int>("Rank");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_Permission");
-                });
+                b.ToTable(NccPermission);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPermissionDetails", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Action");
+                b.Property<string>("Action");
 
-                    b.Property<string>("Controller");
+                b.Property<string>("Controller");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<long?>("ExtraAllowUserId");
+                b.Property<long?>("ExtraAllowUserId");
 
-                    b.Property<long?>("ExtraDenyUserId");
+                b.Property<long?>("ExtraDenyUserId");
 
-                    b.Property<string>("MenuType");
+                b.Property<string>("MenuType");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("ModuleId");
+                b.Property<string>("ModuleName");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<int>("Order");
+                b.Property<int>("Order");
 
-                    b.Property<long?>("PermissionId");
+                b.Property<long?>("PermissionId");
 
-                    b.Property<string>("Requirements");
+                b.Property<string>("Requirements");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("ExtraAllowUserId");
+                b.HasIndex("ExtraAllowUserId");
 
-                    b.HasIndex("ExtraDenyUserId");
+                b.HasIndex("ExtraDenyUserId");
 
-                    b.HasIndex("PermissionId");
+                b.HasIndex("PermissionId");
 
-                    b.ToTable("Ncc_Permission_Details");
-                });
+                b.ToTable(NccPermissionDetails);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPlugins", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("AntiForgery");
+                b.Property<bool>("AntiForgery");
 
-                    b.Property<string>("Author");
+                b.Property<string>("Author");
 
-                    b.Property<string>("Category");
+                b.Property<string>("Category");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Dependencies");
+                b.Property<string>("Dependencies");
 
-                    b.Property<string>("Description");
+                b.Property<string>("Description");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<string>("NetCoreCMSVersion");
+                b.Property<string>("NetCoreCMSVersion");
 
-                    b.Property<string>("Path");
+                b.Property<string>("Path");
 
-                    b.Property<int>("PluginsStatus");
+                b.Property<int>("PluginsStatus");
 
-                    b.Property<string>("SortName");
+                b.Property<string>("SortName");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Version");
+                b.Property<string>("Version");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.Property<string>("Website");
+                b.Property<string>("Website");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_Plugins");
-                });
+                b.ToTable(NccPlugins);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPost", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<bool>("AllowComment");
+                b.Property<bool>("AllowComment");
 
-                    b.Property<long?>("AuthorId");
+                b.Property<long?>("AuthorId");
 
-                    b.Property<long>("CommentCount");
+                b.Property<long>("CommentCount");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<bool>("IsFeatured");
+                b.Property<bool>("IsFeatured");
 
-                    b.Property<bool>("IsStiky");
+                b.Property<bool>("IsStiky");
 
-                    b.Property<string>("Layout");
+                b.Property<string>("Layout");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("ParentId");
+                b.Property<long?>("ParentId");
 
-                    b.Property<int>("PostStatus");
+                b.Property<int>("PostStatus");
 
-                    b.Property<int>("PostType");
+                b.Property<int>("PostType");
 
-                    b.Property<DateTime>("PublishDate");
+                b.Property<DateTime>("PublishDate");
 
-                    b.Property<string>("RelatedPosts");
+                b.Property<string>("RelatedPosts");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("ThumImage");
+                b.Property<string>("ThumImage");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("AuthorId");
+                b.HasIndex("AuthorId");
 
-                    b.HasIndex("ParentId");
+                b.HasIndex("ParentId");
 
-                    b.ToTable("Ncc_Post");
-                });
+                b.ToTable(NccPost);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostCategory", b =>
-                {
-                    b.Property<long>("PostId");
+            {
+                b.Property<long>("PostId");
 
-                    b.Property<long>("CategoryId");
+                b.Property<long>("CategoryId");
 
-                    b.HasKey("PostId", "CategoryId");
+                b.HasKey("PostId", "CategoryId");
 
-                    b.HasIndex("CategoryId");
+                b.HasIndex("CategoryId");
 
-                    b.ToTable("Ncc_Post_Category");
-                });
+                b.ToTable(NccPostCategory);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostDetails", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Content");
+                b.Property<string>("Content")
+                    .HasMaxLength(2147483647);
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Language");
+                b.Property<string>("Language");
 
-                    b.Property<string>("MetaDescription");
+                b.Property<string>("MetaDescription");
 
-                    b.Property<string>("MetaKeyword");
+                b.Property<string>("MetaKeyword");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("PostId");
+                b.Property<long?>("PostId");
 
-                    b.Property<string>("Slug");
+                b.Property<string>("Slug");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Title");
+                b.Property<string>("Title");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("PostId");
+                b.HasIndex("PostId");
 
-                    b.ToTable("Ncc_Post_Details");
-                });
+                b.ToTable(NccPostDetails);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPostTag", b =>
-                {
-                    b.Property<long>("PostId");
+            {
+                b.Property<long>("PostId");
 
-                    b.Property<long>("TagId");
+                b.Property<long>("TagId");
 
-                    b.HasKey("PostId", "TagId");
+                b.HasKey("PostId", "TagId");
 
-                    b.HasIndex("TagId");
+                b.HasIndex("TagId");
 
-                    b.ToTable("Ncc_Post_Tag");
-                });
+                b.ToTable(NccPostTag);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccRole", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                b.Property<string>("ConcurrencyStamp")
+                    .IsConcurrencyToken();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(256);
+                b.Property<string>("Name")
+                    .HasMaxLength(256);
 
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256);
+                b.Property<string>("NormalizedName")
+                    .HasMaxLength(256);
 
-                    b.Property<string>("Slug");
+                b.Property<string>("Slug");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasName("RoleNameIndex");
+                b.HasIndex("NormalizedName")
+                    .IsUnique()
+                    .HasName("RoleNameIndex");
 
-                    b.ToTable("Ncc_Role");
-                });
+                b.ToTable(NccRole);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccScheduleTaskHistory", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Data");
+                b.Property<string>("Data");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("TaskCreator");
+                b.Property<string>("TaskCreator");
 
-                    b.Property<string>("TaskId");
+                b.Property<string>("TaskId");
 
-                    b.Property<string>("TaskOf");
+                b.Property<string>("TaskOf");
 
-                    b.Property<string>("TaskType");
+                b.Property<string>("TaskType");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_Schedule_Task_History");
-                });
+                b.ToTable(NccScheduleTaskHistory);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccSettings", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("GroupId");
+                b.Property<string>("GroupId");
 
-                    b.Property<string>("Key");
+                b.Property<string>("Key");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Value");
+                b.Property<string>("Value");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_Settings");
-                });
+                b.ToTable(NccSettings);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccStartup", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("PermissionId");
+                b.Property<long?>("PermissionId");
 
-                    b.Property<long>("RoleId");
+                b.Property<long>("RoleId");
 
-                    b.Property<int>("StartupFor");
+                b.Property<int>("StartupFor");
 
-                    b.Property<int>("StartupType");
+                b.Property<int>("StartupType");
 
-                    b.Property<string>("StartupUrl");
+                b.Property<string>("StartupUrl");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<long>("UserId");
+                b.Property<long>("UserId");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("PermissionId");
+                b.HasIndex("PermissionId");
 
-                    b.ToTable("Ncc_Startup");
-                });
+                b.ToTable(NccStartup);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccTag", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_Tag");
-                });
+                b.ToTable(NccTag);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUser", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd()
+                    .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AccessFailedCount");
+                b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                b.Property<string>("ConcurrencyStamp")
+                    .IsConcurrencyToken();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256);
+                b.Property<string>("Email")
+                    .HasMaxLength(256);
 
-                    b.Property<bool>("EmailConfirmed");
+                b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FullName");
+                b.Property<string>("FullName");
 
-                    b.Property<bool>("LockoutEnabled");
+                b.Property<bool>("LockoutEnabled");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                b.Property<DateTimeOffset?>("LockoutEnd");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<string>("Mobile");
+                b.Property<string>("Mobile");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256);
+                b.Property<string>("NormalizedEmail")
+                    .HasMaxLength(256);
 
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256);
+                b.Property<string>("NormalizedUserName")
+                    .HasMaxLength(256);
 
-                    b.Property<string>("PasswordHash");
+                b.Property<string>("PasswordHash");
 
-                    b.Property<string>("PhoneNumber");
+                b.Property<string>("PhoneNumber");
 
-                    b.Property<bool>("PhoneNumberConfirmed");
+                b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<string>("SecurityStamp");
+                b.Property<string>("SecurityStamp");
 
-                    b.Property<string>("Slug");
+                b.Property<string>("Slug");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<bool>("TwoFactorEnabled");
+                b.Property<bool>("TwoFactorEnabled");
 
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256);
+                b.Property<string>("UserName")
+                    .HasMaxLength(256);
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
-                        .HasName("EmailIndex");
+                b.HasIndex("NormalizedEmail")
+                    .HasName("EmailIndex");
 
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasName("UserNameIndex");
+                b.HasIndex("NormalizedUserName")
+                    .IsUnique()
+                    .HasName("UserNameIndex");
 
-                    b.ToTable("Ncc_User");
-                });
+                b.ToTable(NccUser);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserPermission", b =>
-                {
-                    b.Property<long>("UserId");
+            {
+                b.Property<long>("UserId");
 
-                    b.Property<long>("PermissionId");
+                b.Property<long>("PermissionId");
 
-                    b.HasKey("UserId", "PermissionId");
+                b.HasKey("UserId", "PermissionId");
 
-                    b.HasIndex("PermissionId");
+                b.HasIndex("PermissionId");
 
-                    b.ToTable("Ncc_User_Permission");
-                });
+                b.ToTable(NccUserPermission);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccUserRole", b =>
-                {
-                    b.Property<long>("UserId");
+            {
+                b.Property<long>("UserId");
 
-                    b.Property<long>("RoleId");
+                b.Property<long>("RoleId");
 
-                    b.HasKey("UserId", "RoleId");
+                b.HasKey("UserId", "RoleId");
 
-                    b.HasIndex("RoleId");
+                b.HasIndex("RoleId");
 
-                    b.ToTable("Ncc_User_Role");
-                });
+                b.ToTable(NccUserRole);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWebSite", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<int>("AdminPageSize");
+                b.Property<int>("AdminPageSize");
 
-                    b.Property<bool>("AllowRegistration");
+                b.Property<bool>("AllowRegistration");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("DateFormat");
+                b.Property<string>("DateFormat");
 
-                    b.Property<string>("DomainName");
+                b.Property<string>("DomainName");
 
-                    b.Property<string>("EmailAddress");
+                b.Property<string>("EmailAddress");
 
-                    b.Property<string>("GoogleAnalyticsId");
+                b.Property<bool>("EnableCache")
+                    .ValueGeneratedOnAdd()
+                    .HasDefaultValue(false);
 
-                    b.Property<bool>("IsMultiLangual");
+                b.Property<string>("GoogleAnalyticsId");
 
-                    b.Property<bool>("IsShowFullPost");
+                b.Property<bool>("IsMultiLangual");
 
-                    b.Property<string>("Language");
+                b.Property<bool>("IsShowFullPost");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Language");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<string>("Metadata");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<string>("Name");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("NewUserRole");
+                b.Property<string>("Name");
 
-                    b.Property<int>("Status");
+                b.Property<string>("NewUserRole");
 
-                    b.Property<string>("TimeFormat");
+                b.Property<int>("Status");
 
-                    b.Property<string>("TimeZone");
+                b.Property<string>("TablePrefix");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<string>("TimeFormat");
 
-                    b.Property<int>("WebSitePageSize");
+                b.Property<string>("TimeZone");
 
-                    b.Property<string>("TablePrefix");
+                b.Property<int>("VersionNumber");
 
-                    b.Property<bool>("EnableCache");
+                b.Property<int>("WebSitePageSize");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_WebSite");
-                });
+                b.ToTable(NccWebSite);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWebSiteInfo", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<string>("Copyrights");
+                b.Property<string>("Copyrights");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("FaviconUrl");
+                b.Property<string>("FaviconUrl");
 
-                    b.Property<string>("Language");
+                b.Property<string>("Language");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("NccWebSiteId");
+                b.Property<long?>("NccWebSiteId");
 
-                    b.Property<string>("PrivacyPolicyUrl");
+                b.Property<string>("PrivacyPolicyUrl");
 
-                    b.Property<string>("SiteLogoUrl");
+                b.Property<string>("SiteLogoUrl");
 
-                    b.Property<string>("SiteTitle");
+                b.Property<string>("SiteTitle");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Tagline");
+                b.Property<string>("Tagline");
 
-                    b.Property<string>("TermsAndConditionsUrl");
+                b.Property<string>("TermsAndConditionsUrl");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NccWebSiteId");
+                b.HasIndex("NccWebSiteId");
 
-                    b.ToTable("Ncc_WebSite_Info");
-                });
+                b.ToTable(NccWebSiteInfo);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWebSiteWidget", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("LayoutName");
+                b.Property<string>("LayoutName");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("ModuleId");
+                b.Property<string>("ModuleName");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("ThemeId");
+                b.Property<string>("ThemeId");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.Property<long?>("WebSiteId");
+                b.Property<long?>("WebSiteId");
 
-                    b.Property<string>("WidgetConfigJson");
+                b.Property<string>("WidgetConfigJson");
 
-                    b.Property<string>("WidgetData");
+                b.Property<string>("WidgetData");
 
-                    b.Property<string>("WidgetId");
+                b.Property<string>("WidgetId");
 
-                    b.Property<int>("WidgetOrder");
+                b.Property<int>("WidgetOrder");
 
-                    b.Property<string>("Zone");
+                b.Property<string>("Zone");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("WebSiteId");
+                b.HasIndex("WebSiteId");
 
-                    b.ToTable("Ncc_WebSite_Widget");
-                });
+                b.ToTable(NccWebSiteWidget);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWidget", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<byte[]>("Content");
+                b.Property<byte[]>("Content");
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Dependencies");
+                b.Property<string>("Dependencies");
 
-                    b.Property<string>("Description");
+                b.Property<string>("Description");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<long?>("NccPluginsId");
+                b.Property<long?>("NccPluginsId");
 
-                    b.Property<string>("NetCoreCMSVersion");
+                b.Property<string>("NetCoreCMSVersion");
 
-                    b.Property<string>("SortName");
+                b.Property<string>("SortName");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Title");
+                b.Property<string>("Title");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.HasIndex("NccPluginsId");
+                b.HasIndex("NccPluginsId");
 
-                    b.ToTable("Ncc_Widget");
-                });
+                b.ToTable(NccWidget);
+            });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccWidgetSection", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd();
+            {
+                b.Property<long>("Id")
+                    .ValueGeneratedOnAdd();
 
-                    b.Property<long>("CreateBy");
+                b.Property<long>("CreateBy");
 
-                    b.Property<DateTime>("CreationDate");
+                b.Property<DateTime>("CreationDate");
 
-                    b.Property<string>("Dependencies");
+                b.Property<string>("Dependencies");
 
-                    b.Property<string>("Description");
+                b.Property<string>("Description");
 
-                    b.Property<string>("Metadata");
+                b.Property<string>("Metadata");
 
-                    b.Property<DateTime>("ModificationDate");
+                b.Property<DateTime>("ModificationDate");
 
-                    b.Property<long>("ModifyBy");
+                b.Property<long>("ModifyBy");
 
-                    b.Property<string>("Name");
+                b.Property<string>("Name");
 
-                    b.Property<string>("NetCoreCMSVersion");
+                b.Property<string>("NetCoreCMSVersion");
 
-                    b.Property<string>("SortName");
+                b.Property<string>("SortName");
 
-                    b.Property<int>("Status");
+                b.Property<int>("Status");
 
-                    b.Property<string>("Title");
+                b.Property<string>("Title");
 
-                    b.Property<int>("VersionNumber");
+                b.Property<int>("VersionNumber");
 
-                    b.HasKey("Id");
+                b.HasKey("Id");
 
-                    b.ToTable("Ncc_Widget_Sections");
-                });
+                b.ToTable(NccWidgetSection);
+            });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<long>", b =>
                 {
@@ -1340,6 +1474,20 @@ namespace NetCoreCMS.Framework.Migrations
                     b.HasOne("NetCoreCMS.Framework.Core.Models.NccPage", "Page")
                         .WithMany("PageDetails")
                         .HasForeignKey("PageId");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPageDetailsHistory", b =>
+                {
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPageHistory", "PageHistory")
+                        .WithMany("PageDetailsHistory")
+                        .HasForeignKey("PageHistoryId");
+                });
+
+            modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPageHistory", b =>
+                {
+                    b.HasOne("NetCoreCMS.Framework.Core.Models.NccPage", "Parent")
+                        .WithMany()
+                        .HasForeignKey("ParentId");
                 });
 
             modelBuilder.Entity("NetCoreCMS.Framework.Core.Models.NccPermissionDetails", b =>

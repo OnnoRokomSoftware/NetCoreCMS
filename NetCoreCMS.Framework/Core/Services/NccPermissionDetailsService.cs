@@ -97,7 +97,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
             copyTo.Action = copyFrom.Action;
             copyTo.Controller = copyFrom.Controller;
-            copyTo.ModuleId = copyFrom.ModuleId;
+            copyTo.ModuleName = copyFrom.ModuleName;
             copyTo.Permission = copyFrom.Permission;
             copyTo.Requirements = copyFrom.Requirements;            
         }

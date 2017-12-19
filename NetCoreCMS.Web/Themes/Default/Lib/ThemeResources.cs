@@ -10,7 +10,7 @@
  
 using NetCoreCMS.Framework.Themes;
 
-namespace NetCoreCMS.Themes.Default.Lib
+namespace Default.Lib
 {
     public class ThemeResources
     {

@@ -1,0 +1,16 @@
+﻿{
+  "ModuleName": "Core Cms",
+  "ModuleTitle": "CMS",
+  "Author": "NetCoreCMS",
+  "Email": "netcorecms@gmail.com",
+  "Website": "http://DotNetCoreCMS.com",
+  "DemoUrl": "http://demo.DotNetCoreCMS.com",
+  "ManualUrl": "http://demo.DotNetCoreCMS.com/manual",
+  "AntiForgery": true,
+  "Description": "Builtin Content Management System Module.",
+  "Version": "0.1.1",
+  "NccVersion": "0.4.5",  
+  "Category": "Core",
+  "TablePrefix": "",
+  "Dependencies": []
+}

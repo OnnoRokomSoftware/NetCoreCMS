@@ -1,0 +1,145 @@
+﻿@model HomePageViewModel
+
+@{
+    Layout = Constants.SiteLayoutName;
+    var active = "active";
+    var count = 0;
+    ViewBag.CurrentLanguage = Model.CurrentLanguage;
+    Title = "NetCoreCMS Home";
+    MetaDescription = "NetCoreCMS";//Take from website settings.
+    MetaKeyword = "NetCoreCMS"; //Take from website settings.
+}
+
+@if (Model.PageNumber == 0 && Model.FeaturedPosts != null && Model.FeaturedPosts.Count > 0)
+{
+    <div class="featuredPosts" style="margin-bottom:10px;">
+
+        <div id="myCarousel" class="carousel slide" data-ride="carousel" data-interval="2000">
+
+            <ol class="carousel-indicators">
+                @foreach (var item in Model.FeaturedPosts)
+                {
+                    <li data-target="#myCarousel" data-slide-to="@count" class="@active"></li>
+                    active = "";
+                    count++;
+                }
+            </ol>
+
+            <div class="carousel-inner text-center" role="listbox" style="">
+                @{ active = "active";}
+                @foreach (var item in Model.FeaturedPosts)
+                {
+                    var post = ViewHelper.GetCurrentLanguagePostDetails(item, Model.CurrentLanguage, true);
+
+                    if (post != null)
+                    {
+                        <div class="item @active" >
+                            @if (string.IsNullOrEmpty(item.ThumImage) == false)
+                            {
+                                <a href="/Post/@post.Slug"><img src="@item.ThumImage" alt="" class="img-responsive" width="100%" /></a>
+                            }
+                            <div role="option" style="z-index:1000000; padding: 10px 10px;">
+                                <a href="/Post/@post.Slug"><h3>@post.Title</h3></a>
+                                <p >
+                                    @Html.Raw(post.Content)
+                                     ...<a href="/Post/@post.Slug">@_T["More"]</a>
+                                </p>
+                            </div>
+                        </div>
+
+                        active = "";
+                    }
+                }
+            </div>
+            @if (Model.FeaturedPosts.Count > 1)
+            {
+                <a class="left carousel-control" href="#myCarousel" role="button" data-slide="prev" style="height:70%">
+                    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span class="sr-only">@_T["Previous"]</span>
+                </a>
+                <a class="right carousel-control" href="#myCarousel" role="button" data-slide="next" style="height:70%">
+                    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span class="sr-only">@_T["Next"]</span>
+                </a>
+            }
+        </div>
+    </div>
+} 
+
+@if (Model.StickyPosts.Count > 0)
+{
+    <div class="stickyPost" style="margin-top:10px;">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">
+                    <i class="fa fa-thumb-tack"></i>@_T["Sticky"]
+                </div>
+            </div>
+            <div class="panel-body">
+                @{ var i = 0;}
+                @foreach (var item in Model.StickyPosts)
+                {
+                    if (i > 0)
+                    {
+                        <hr />
+                    }
+                    i = i + 1;
+                    <div class="">
+                        @Html.Partial("_PostRowSticky", @item)
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@if (Model.AllPosts != null && Model.AllPosts.Count > 0)
+{
+    <div class="allposts">
+        @foreach (var item in Model.AllPosts)
+        {
+            @Html.Partial("_PostRow", item)
+        }
+    </div>
+}
+
+<div class="row">
+    @*@if (Model.PreviousPage >= 0)
+    {
+        <div class="pull-left"><a href="/CmsHome/?pageNumber=@Model.PreviousPage">< @_T["Previous"]</a></div>
+    }
+    @if (Model.NextPage <= Model.TotalPage)
+    {
+        <div class="pull-right" ><a href="/CmsHome/?pageNumber=@Model.NextPage">@_T["Next"] ></a></div>
+    }*@  
+    
+    @{
+        float floatPage = (float)Model.TotalPost / (float)Model.PostPerPage;
+        int totalPage = (int)(Model.TotalPost / Model.PostPerPage);
+        if (Model.PageNumber > totalPage && floatPage != totalPage)
+        {
+            Model.PageNumber = totalPage + 1;
+        }
+        else if (ViewBag.CurrentPage > totalPage)
+        {
+            Model.PageNumber = totalPage;
+        }
+
+        if (floatPage == totalPage)
+        {
+            totalPage = totalPage - 1;
+        }
+    }
+    @*<span>@floatPage</span>
+        <span>@totalPage</span>*@
+    @if (Model.PageNumber > 0)
+    {
+        <div class="pull-left"><a href="/CmsHome/?pageNumber=@(Model.PageNumber-1)">< @_T["Previous"]</a></div>
+    }
+    @if (Model.PageNumber < totalPage)
+    {
+        <div class="pull-right"><a href="/CmsHome/?pageNumber=@(Model.PageNumber+1)">@_T["Next"] ></a></div>
+    }
+</div>
+
+

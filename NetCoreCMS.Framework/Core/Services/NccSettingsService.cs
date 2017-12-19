@@ -20,7 +20,23 @@ using Newtonsoft.Json;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccSettingsService : IBaseService<NccSettings>
+    public interface INccSettingsService
+    {
+        bool CreateKey(string key, string value, out string message);
+        bool CreateKey<EntityT>(string key, EntityT value, out string message);
+        void DeletePermanently(long entityId);
+        NccSettings Get(long entityId, bool isAsNoTracking = false);
+        NccSettings GetByKey(string key = "Settings");
+        EntityT GetByKey<EntityT>();
+        List<NccSettings> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false);
+        void Remove(long entityId);
+        NccSettings Save(NccSettings entity);
+        NccSettings SetByKey(string value, string key = "Settings");
+        EntityT SetByKey<EntityT>(EntityT value);
+        NccSettings Update(NccSettings entity);
+    }
+
+    public class NccSettingsService : IBaseService<NccSettings>, INccSettingsService
     {
         private readonly NccSettingsRepository _entityRepository;
 

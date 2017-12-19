@@ -1,7 +1,6 @@
 ﻿@{
     BodyWidth = 12;
-    CurrentLayout = ThemeResources.Layouts.HomeLayout;
-    CurrentLanguage = ThemeHelper.GetCurrentLanguage();    
+    CurrentLayout = ThemeResources.Layouts.HomeLayout;       
     ThemeResources.RegisterResources(CurrentLayout);
 }
 <!DOCTYPE html>
@@ -19,38 +18,8 @@
 <body id="body">
     <!--MessageContainer-->
     <div class="row">
-        <div id="messageContainer">
-            @if (TempData.ContainsKey("SuccessMessage") || ViewBag.SuccessMessage != null)
-            {
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    @Html.Raw(TempData["SuccessMessage"])@Html.Raw(ViewBag.SuccessMessage)
-                </div>
-            }
-            @if (TempData.ContainsKey("InfoMessage") || ViewBag.InfoMessage != null)
-            {
-                <div class="alert alert-info alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    @Html.Raw(TempData["InfoMessage"])@Html.Raw(ViewBag.InfoMessage)
-                </div>
-            }
-            @if (TempData.ContainsKey("WarningMessage") || ViewBag.WarningMessage != null)
-            {
-                <div class="alert alert-warning alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    @Html.Raw(TempData["WarningMessage"]) @Html.Raw(ViewBag.WarningMessage)
-                </div>
-            }
-            @if (TempData.ContainsKey("ErrorMessage") || ViewBag.ErrorMessage != null)
-            {
-                <div class="alert alert-danger alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                    @Html.Raw(TempData["ErrorMessage"])@Html.Raw(ViewBag.ErrorMessage)
-                </div>
-            }
-        </div>
+        @NccRenderMessages()
     </div>
-
     <!--GlobalMessages-->
     <div class="row">
         @NccRenderGlobalMessages()
@@ -67,46 +36,44 @@
     <!--FullWidthSliderStart-->
     <div>
         @{
-            var fullWidthSlider = ThemeHelper.GetWebsiteWidgets(ThemeResources.Layouts.FullWidthLayout, ThemeResources.Zones.FullWidthSlider);
+            var fullWidthSlider = GetWebSiteWidgets(ThemeResources.Layouts.FullWidthLayout, ThemeResources.Zones.FullWidthSlider);
             if (fullWidthSlider != null && fullWidthSlider.Count > 0)
             {
                 <div class="fullWidthSlider">
                     @foreach (var item in fullWidthSlider)
                     {
-                        var widgets = ThemeHelper.GetWidgets(item.WidgetId);
-                        foreach (var widget in widgets)
+                        var widget = item.Widget;                        
+                        widget.Init(item.Id);
+
+                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language.ToLower())
                         {
-                            widget.Init(item.Id);
-                            if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language.ToLower())
+                            if (widget.DisplayTitle != "" || widget.Footer != "")
                             {
-                                if (widget.DisplayTitle != "" || widget.Footer != "")
-                                {
-                                    <div class='panel panel-default'>
-                                        @if (widget.DisplayTitle != "")
-                                        {
-                                            <div class='panel-heading'>
-                                                @Html.Raw(widget.DisplayTitle)
-                                            </div>
-                                        }
-                                        <div class='panel-body'>
-                                            @Html.Raw(widget.RenderBody())
+                                <div class='panel panel-default'>
+                                    @if (widget.DisplayTitle != "")
+                                    {
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.DisplayTitle)
                                         </div>
-                                        @if (widget.Footer != "")
-                                        {
-                                            <div class='panel-footer'>
-                                                @Html.Raw(widget.Footer)
-                                            </div>
-                                        }
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div>
+                                    }
+                                    <div class='panel-body'>
                                         @Html.Raw(widget.RenderBody())
                                     </div>
-                                }
+                                    @if (widget.Footer != "")
+                                    {
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.Footer)
+                                        </div>
+                                    }
+                                </div>
                             }
-                        }
+                            else
+                            {
+                                <div>
+                                    @Html.Raw(widget.RenderBody())
+                                </div>
+                            }
+                        }                         
                     }
                 </div>
             }

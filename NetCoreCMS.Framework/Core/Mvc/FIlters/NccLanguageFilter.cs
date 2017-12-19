@@ -18,7 +18,7 @@ using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Utility;
 using System.Linq;
 
-namespace NetCoreCMS.Framework.Core.Mvc.FIlters
+namespace NetCoreCMS.Framework.Core.Mvc.Filters
 {
     public class NccLanguageFilter : IActionFilter
     {

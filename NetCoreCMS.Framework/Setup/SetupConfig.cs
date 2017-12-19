@@ -30,7 +30,7 @@ namespace NetCoreCMS.Framework.Setup
         public string TablePrefix { get; set; } = "ncc_";
         public bool EnableCache { get; set; } = false;
 
-        public int LoggingLevel { get; set; } = (int) LogLevel.Warning;
+        public int LoggingLevel { get; set; } = (int) LogLevel.Error;
         public bool IsMaintenanceMode { get; set; }
         public int MaintenanceDownTime { get; set; } = 30;
         public string MaintenanceMessage { get; set; } = "Doing Maintenance. Comming back soon...";

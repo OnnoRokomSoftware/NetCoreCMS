@@ -30,12 +30,13 @@ using NetCoreCMS.Framework.Core.Auth;
 using Microsoft.CodeAnalysis;
 using System.Collections;
 using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
     public static class ServiceExtension
     {
-        public static IServiceCollection AddCustomizedIdentity(this IServiceCollection services)
+        public static IServiceCollection AddCustomizedIdentity(this IServiceCollection services, INccSettingsService nccSettingsService)
         {
             services.AddIdentity<NccUser, NccRole>(
                 configure => {                
@@ -53,13 +54,44 @@ namespace NetCoreCMS.Framework.Core.Extensions
             .AddRoleStore<NccRoleStore>()
             .AddUserStore<NccUserStore>()
             .AddDefaultTokenProviders();
-            
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+
+            var authBuilder = services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie(options => {
+                options.Cookie.Name = ".NetCoreCMS.Cookie";
+                options.Cookie.Expiration = new TimeSpan(0, 20, 0);
                 options.LoginPath = "/Account/Login";
                 options.LogoutPath = "/Account/Logoff";
             });
 
+
+            if (nccSettingsService != null)
+            {
+                var settings = nccSettingsService.GetByKey<OpenIdSettings>();
+
+                if(settings != null)
+                {
+                    authBuilder.AddFacebook(x =>
+                    {
+                        x.AppId = settings.FacebookAppId;
+                        x.AppSecret = settings.FacebookAppSecret;
+
+                        x.Events = new OAuthEvents
+                        {
+                            OnRemoteFailure = ctx => HandleRemoteLoginFailure(ctx)
+                        };
+                    })
+                    .AddGoogle(x =>
+                    {
+                        x.ClientId = settings.GoogleClientId;
+                        x.ClientSecret = settings.GoogleClientSecret;
+                        x.Events = new OAuthEvents
+                        {
+                            OnRemoteFailure = ctx => HandleRemoteLoginFailure(ctx)
+                        };
+                    });
+                }
+            }
+            
             services.ConfigureApplicationCookie(options => options.LoginPath = "/Account/Login");
 
             /*
