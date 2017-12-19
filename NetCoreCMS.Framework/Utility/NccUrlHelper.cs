@@ -122,14 +122,25 @@ namespace NetCoreCMS.Framework.Utility
 
             return finalUrl;
         }
-
+        /// <summary>
+        /// Split URL into Area / Controller / Action 
+        /// if any part is missing then the function will return other parts.
+        /// </summary>
+        /// <param name="url">/Home/Index or /Home or /Hr/Home/Index</param>
+        /// <returns></returns>
         public static (string Controller, string Action) GetControllerActionFromUrl(string url)
         {
             string controller = "", action = "";
             if (string.IsNullOrEmpty(url) == false)
             {
                 var parts = url.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length > 1)
+
+                if (parts.Length > 2)
+                {
+                    controller = parts[1];
+                    action = parts[2];
+                }
+                else if (parts.Length > 1)
                 {
                     controller = parts[0];
                     action = parts[1];
@@ -142,6 +153,34 @@ namespace NetCoreCMS.Framework.Utility
             }
 
             return (controller, action);
+        }
+
+        public static (string area, string Controller, string Action) GetControllerActionAreaFromUrl(string url)
+        {
+            string area = "", controller = "", action = "";
+            if (string.IsNullOrEmpty(url) == false)
+            {
+                var parts = url.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                if (parts.Length > 2)
+                {
+                    area = parts[0];
+                    controller = parts[1];
+                    action = parts[2];
+                }
+                else if (parts.Length > 1)
+                {
+                    controller = parts[0];
+                    action = parts[1];
+                }
+                else if (parts.Length == 1)
+                {
+                    controller = parts[0];
+                    action = "Index";
+                }
+            }
+
+            return (area, controller, action);
         }
     }
 }

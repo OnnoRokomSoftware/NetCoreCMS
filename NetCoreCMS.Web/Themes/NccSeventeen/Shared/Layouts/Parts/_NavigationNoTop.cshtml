@@ -7,18 +7,18 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <div class="navbar-brand">@ThemeHelper.GetWebSiteName()</div>
+            <div class="navbar-brand">@GetWebSiteName()</div>
         </div>
         <div class="navbar-collapse collapse">
             <form asp-controller="Search" asp-action="Index" method="get" class="navbar-form navbar-right">
                 <div class="input-group">
-                    <input type="text" name="q" id="q" class="form-control" value="@ViewBag.Q" placeholder="Search for..." aria-label="Search for..." />
+                    <input type="text" name="q" id="q" class="form-control" value="@ViewBag.Q" placeholder="@_T["Search for"]..." />
                     <span class="input-group-btn">
-                        <input type="submit" class="btn btn-primary" value="Search" />
+                        <input type="submit" class="btn btn-primary" value="@_T["Search"]" />
                     </span>
                 </div>
             </form>
-            @Html.Raw(ThemeHelper.PrepareMenuHtml("Navigation", LanguageDetector.GetCurrentLanguage()))
+            @Html.Raw(PrepareMenuHtml("Navigation", LanguageDetector.GetCurrentLanguage()))
             @await Html.PartialAsync("_SiteLoginPartial")
         </div>
     </div>

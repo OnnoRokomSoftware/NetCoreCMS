@@ -49,8 +49,7 @@ namespace NetCoreCMS.Modules.News.Widgets
         public NewsHorizontalWidget(
             IViewRenderService viewRenderService,
             NccWebSiteWidgetService websiteWidgetService,
-            NeNewsService neNewsService) : base(
-                "NetCoreCMS.Modules.Widgets.NewsHorizontal",
+            NeNewsService neNewsService) : base(                
                 "Horizontal News",
                 "This is a widget to scroll news horizontally.",
                 "",
@@ -62,7 +61,7 @@ namespace NetCoreCMS.Modules.News.Widgets
             _neNewsService = neNewsService;
         }
 
-        public override void Init(long websiteWidgetId)
+        public override void Init(long websiteWidgetId, bool renderConfig = false)
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/NewsHorizontal";
@@ -96,9 +95,11 @@ namespace NetCoreCMS.Modules.News.Widgets
                 footerColor = config.footerColor;
                 footerBgColor = config.footerBgColor;
             }
-
-            ConfigViewFileName = "Widgets/NewsConfig";
-            ConfigHtml = _viewRenderService.RenderToStringAsync<NewsWidgetController>(ConfigViewFileName, webSiteWidget).Result;
+            if (renderConfig)
+            {
+                ConfigViewFileName = "Widgets/NewsConfig";
+                ConfigHtml = _viewRenderService.RenderToStringAsync<NewsWidgetController>(ConfigViewFileName, webSiteWidget).Result;
+            }
         }
 
         public override string RenderBody()

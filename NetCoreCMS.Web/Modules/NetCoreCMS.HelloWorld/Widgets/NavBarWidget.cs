@@ -26,13 +26,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public NavBarWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.NavBarWidget", "NavBar", "NavBar Widget", "")
+            NccWebSiteWidgetService websiteWidgetService):base( "NavBar", "NavBar Widget", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
         }
 
-        public override void Init(long websiteWidgetId)
+        public override void Init(long websiteWidgetId, bool renderConfig = false)
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/NavBar";

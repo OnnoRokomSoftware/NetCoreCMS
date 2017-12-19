@@ -103,17 +103,17 @@ namespace NetCoreCMS.Framework.Core.Data
             switch (dbe)
             {
                 case SupportedDatabases.MSSQL:                    
-                    optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    optionBuilder.UseSqlServer(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     return optionBuilder.Options;                    
                 case SupportedDatabases.MsSqlLocalStorage:
                     break;
                 case SupportedDatabases.MySql:                    
-                    optionBuilder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    optionBuilder.UseMySql(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     return optionBuilder.Options;                    
                 case SupportedDatabases.PgSql:
                     break;
                 case SupportedDatabases.SqLite:                    
-                    optionBuilder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    optionBuilder.UseSqlite(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     return optionBuilder.Options;
             }
 
@@ -127,15 +127,15 @@ namespace NetCoreCMS.Framework.Core.Data
             switch (database)
             {
                 case SupportedDatabases.MSSQL:
-                    builder.UseSqlServer(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    builder.UseSqlServer(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     break;
                 case SupportedDatabases.MsSqlLocalStorage:
                     break;
                 case SupportedDatabases.MySql:
-                    builder.UseMySql(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    builder.UseMySql(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     break;
                 case SupportedDatabases.SqLite:
-                    builder.UseSqlite(SetupHelper.ConnectionString, opts => opts.MigrationsAssembly("NetCoreCMS.Framework"));
+                    builder.UseSqlite(SetupHelper.ConnectionString, opt => { opt.MigrationsAssembly("NetCoreCMS.Framework"); opt.MigrationsHistoryTable(SetupHelper.TablePrefix + "ef_migration_history"); });
                     break;
                 case SupportedDatabases.PgSql:
                     break;

@@ -1,5 +1,4 @@
 ﻿{
-  "ModuleId": "com.NetCoreCMS.DemoData",
   "ModuleTitle": "Demo Data",
   "Author": "NetCoreCMS",
   "Email": "netcorecms@gmail.com",
@@ -9,9 +8,9 @@
   "AntiForgery": true,
   "Description": "Builtin Demo data for page and blog Module.",
   "Version": "0.1.1",
-  "MinNccVersion": "0.1.1",
-  "MaxNccVersion": "0.4.5",
+  "NccVersion": "0.4.5",
   "Dependencies": [],
   "TablePrefix": "",
+  "Area": "Demo",
   "Category": "Demo, data"
 }

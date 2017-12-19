@@ -11,18 +11,18 @@
 <link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Slab" rel="stylesheet">
 @if (string.IsNullOrEmpty(Title))
 {
-    <title>@ThemeHelper.GetWebSiteTitle()</title>
+    <title>@GetWebSiteTitle()</title>
 }
 else
 {
-    if (string.IsNullOrEmpty(ThemeHelper.GetWebSiteTitle()))
+    if (string.IsNullOrEmpty(GetWebSiteTitle()))
     {
         <title>@Title</title>
 
     }
     else
     {
-        <title>@Title - @ThemeHelper.GetWebSiteTitle()</title>
+        <title>@Title - @GetWebSiteTitle()</title>
     }
 }
 

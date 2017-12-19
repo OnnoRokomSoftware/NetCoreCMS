@@ -26,7 +26,6 @@ namespace NetCoreCMS.Framework.Core.Models
         public string MenuIconCls { get; set; }
         public int MenuOrder { get; set; }
         public string MenuLanguage { get; set; }
-
         public List<NccMenuItem> MenuItems { get; set; }        
         
     }   

@@ -18,32 +18,23 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Localization;
 
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.App;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-using NetCoreCMS.Framework.Core.Messages;
-using System.Collections.Generic;
-using NetCoreCMS.Framework.Resources;
-using NetCoreCMS.Framework.Core.Models;
-using System.Linq;
-using NetCoreCMS.Framework.Core.Services;
+
 
 namespace NetCoreCMS.Web.Controllers
 {
-    [AllowAnonymous]
     public class HomeController : NccController
     {
         IHostingEnvironment _env;
-        private readonly IStringLocalizer<SharedResource> _sharedLocalizer;
-        
-        public HomeController(IHostingEnvironment env, ILoggerFactory factory, IStringLocalizer<SharedResource> sharedLocalizer)
+
+        public HomeController(IHostingEnvironment env, ILoggerFactory factory)
         {
             _logger = factory.CreateLogger<HomeController>();
             _env = env;
-            _sharedLocalizer = sharedLocalizer;            
         }
 
         [AllowAnonymous]
@@ -173,8 +164,7 @@ namespace NetCoreCMS.Web.Controllers
             }
             return View();
         }
-
-        [Authorize(Roles = "SuperAdmin")]
+        
         public async System.Threading.Tasks.Task<IActionResult> RestartHost()
         {
             string referer = Request.Headers["Referer"].ToString();
@@ -201,22 +191,5 @@ namespace NetCoreCMS.Web.Controllers
             }
             return View();
         }
-       
-        [AllowAnonymous]
-        public ActionResult Temp()
-        {
-            var setup = SetupHelper.LoadSetup();
-            GlobalMessageRegistry.RegisterMessage(
-                new GlobalMessage() {
-                    For = GlobalMessage.MessageFor.Both,
-                    MessageId = Guid.NewGuid().ToString(),
-                    Registrater = "Web",
-                    Text = "Registered message from website",
-                    Type = GlobalMessage.MessageType.Info,
-                    ForUsers = new List<string>() { "admin"}
-                }, new TimeSpan(0, 10, 0)
-            );
-            return View();
-        } 
     }
 }

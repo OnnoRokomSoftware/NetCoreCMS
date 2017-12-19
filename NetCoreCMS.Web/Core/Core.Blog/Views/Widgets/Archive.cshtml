@@ -1,0 +1,31 @@
+﻿@using NetCoreCMS.Framework.Core.Mvc.Models
+
+@{
+    var i = 0;
+    //_T = (INccTranslator)ViewData["_T"];
+    //CurrentLanguage = (string) ViewData["CurrentLanguage"];
+}
+@model ArchiveViewModel
+
+@foreach (var item in Model.ItemList)
+{    
+    if (i == 0)
+    {
+        i = 1;
+    }
+    else
+    {
+        <hr style="margin:0px;" />
+    }
+    <p>
+        <a href="/Post/?year=@item.Year&month=@item.MonthValue">
+            @_T[item.Year] - @_T[item.Month]
+            @if (Model.ShowPostCount)
+            {
+                <span>(@item.TotalPost)</span>
+            }
+        </a>
+    </p>
+    
+}
+    

@@ -25,6 +25,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.DependencyInjection;
 
 using Newtonsoft.Json;
+using NetCoreCMS.Framework.Modules.Loader;
+
 namespace NetCoreCMS.Framework.Themes
 {
     public class ThemeManager
@@ -58,7 +60,7 @@ namespace NetCoreCMS.Framework.Themes
                             theme.ResourceFolder    = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
                             theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
                         }
-                        else if(Directory.Exists(themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0"))
+                        else if(Directory.Exists(themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0"))
                         {
                             theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
                             theme.ResourceFolder    = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\Resources";
@@ -217,7 +219,7 @@ namespace NetCoreCMS.Framework.Themes
                         Assembly assembly;
                         try
                         {
-                            assembly = AssemblyLoadContext.Default.LoadFromAssemblyPath(file.FullName);
+                            assembly = NccAssemblyLoader.LoadFromFileName(file.FullName); 
                         }
                         catch (FileLoadException ex)
                         {
@@ -237,7 +239,7 @@ namespace NetCoreCMS.Framework.Themes
                                 var widgetTypeList = assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
                                 foreach (var widgetType in widgetTypeList)
                                 {         
-                                    services.AddTransient(widgetType);                                    
+                                    services.AddScoped(widgetType);                                    
                                 }
                             }
                         }
@@ -253,7 +255,12 @@ namespace NetCoreCMS.Framework.Themes
             {
                 foreach (var theme in _themeDlls)
                 {
-                    o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(theme.Location));
+                    var themeFolder = theme.GetName().Name;
+
+                    if (themeFolder == ThemeHelper.ActiveTheme.Folder)
+                    {
+                        o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(theme.Location));
+                    }
                 }
             });
         }
@@ -277,6 +284,7 @@ namespace NetCoreCMS.Framework.Themes
                             widgets.Add(widgetInstance);
                             ThemeHelper.ActiveTheme.Widgets.Add(widgetInstance);
                             GlobalContext.Widgets.Add(widgetInstance);
+                            GlobalContext.WidgetTypes.Add(widgetInstance.WidgetId, widgetType);
                         }
                     }
                 }

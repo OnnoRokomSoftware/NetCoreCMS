@@ -12,12 +12,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using NetCoreCMS.Framework.Core.Data;
-using NetCoreCMS.Framework.Core.IoC;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Setup;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 
@@ -68,9 +68,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
                 tempDbSet = tempDbSet.AsNoTracking().Where(x => x.Id.Equals(id));
             else
                 tempDbSet = tempDbSet.Where(x => x.Id.Equals(id));
-
-
-            return tempDbSet.FirstOrDefault();
+ 
+            return tempDbSet.FirstOrDefault(); 
         }
 
         public EntityT Get(string name, bool isAsNoTracking = false, List<string> includeRelationalProperties = null)
@@ -88,9 +87,9 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             if (isAsNoTracking)
                 tempDbSet = tempDbSet.AsNoTracking().Where(x => x.Name.Equals(name));
             else
-                tempDbSet = tempDbSet.Where(x => x.Name.Equals(name));
-
-            return tempDbSet.FirstOrDefault();
+                tempDbSet = tempDbSet.Where(x => x.Name.Equals(name)); 
+            
+            return tempDbSet.FirstOrDefault();  
         }
 
         public List<EntityT> Load(string name, List<string> includeRelationalProperties = null)
@@ -105,8 +104,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
                 }
             }
             
-            tempDbSet = tempDbSet.Where(x => x.Name.Contains(name));
-            return tempDbSet.ToList();
+            tempDbSet = tempDbSet.Where(x => x.Name.Contains(name)); 
+            return tempDbSet.ToList(); 
         }
 
         public List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeRelationalProperties = null)
@@ -130,6 +129,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             {
                 tempDbSet = tempDbSet.Where(x => x.Status == status);
             }
+
             if (!string.IsNullOrEmpty(name))
             {
                 if (isLikeSearch)
@@ -137,9 +137,13 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
                 else
                     tempDbSet = tempDbSet.Where(x => x.Name.ToLower() == name.ToLower());
             }
-                                                                                                                                                                                                    
-            // :) 
-            return tempDbSet.ToList();
+
+            /* :) 
+             * 1. If you are installing newly then check setup.json is exists. Delete setup.json and start setup again.
+             * 2. If you are here after installing then may be database tables are missing or databasae server is not running or models are changed have to update database. 
+             */
+           
+            return tempDbSet.ToList();  
         }
         
         public IDbContextTransaction BeginTransaction()
@@ -191,133 +195,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             {
                 return -1;
             }
-
-            var effRow = Context.Database.ExecuteSqlCommand(queryText);
-            return effRow;
+             
+            return Context.Database.ExecuteSqlCommand(queryText); 
         }
 
-        public List<T> ExecuteSqlQuery<T>(NccDbQueryText query)
+        public List<T> ExecuteSqlQuery<T>(NccDbQueryText query, int timeout = 60, CommandType commandType = CommandType.Text)
         {
+            var isNewConnection = false;
             var entityType = typeof(T);
             var list = new List<T>();
-
-            var queryText = "";
-            if (SetupHelper.SelectedDatabase == "SqLite")
-            {
-                queryText = query.SQLite_QueryText;
-            }
-            else if (SetupHelper.SelectedDatabase == "MSSQL")
-            {
-                queryText = query.MSSql_QueryText;
-            }
-            else if (SetupHelper.SelectedDatabase == "MySql")
-            {
-                queryText = query.MySql_QueryText;
-            }
-            else
-            {
-                throw new System.Exception("No supported database found.");
-            }
-
-            var conn = Context.Database.GetDbConnection();
-            try
-            {
-                var entityProperties = entityType.GetProperties();
-                conn.Open();
-                using (var command = conn.CreateCommand())
-                {                    
-                    command.CommandText = queryText;
-                    DbDataReader reader = command.ExecuteReader();
-                    
-                    while (reader.Read())
-                    {
-                        var objArr = new object[reader.FieldCount];
-                        var value = reader.GetValues(objArr);
-                        var obj = Activator.CreateInstance<T>();
-                        for (int i = 0; i < entityProperties.Length; i++)
-                        {
-                            var prop = entityProperties[i];
-                            var ordinal = reader.GetOrdinal(prop.Name);
-                            if(ordinal >= 0)
-                            {
-                                if (prop.PropertyType == typeof(Int16))
-                                {
-                                    var val = reader.GetInt16(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if(prop.PropertyType == typeof(int))
-                                {
-                                    var val = reader.GetInt32(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(long))
-                                {
-                                    var val = reader.GetInt64(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(string))
-                                {
-                                    var val = reader.GetString(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(float))
-                                {
-                                    var val = reader.GetFloat(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(double))
-                                {
-                                    var val = reader.GetDouble(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(decimal))
-                                {
-                                    var val = reader.GetDecimal(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(bool))
-                                {
-                                    var val = reader.GetBoolean(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(DateTime))
-                                {
-                                    var val = reader.GetDateTime(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                                else if (prop.PropertyType == typeof(double))
-                                {
-                                    var val = reader.GetDouble(ordinal);
-                                    var propInfo = entityType.GetProperty(prop.Name);
-                                    propInfo.SetValue(obj, val);
-                                }
-                            }
-                        }
-                        list.Add(obj);
-                    }
-                    
-                    reader.Dispose();
-                }
-            }
-            finally
-            {
-                conn.Close();
-            }
-            return list;
-        }
-
-        public ArrayList ExecuteSqlQuery(NccDbQueryText query)
-        {   
-            var list = new ArrayList();
 
             var queryText = "";
             if (SetupHelper.SelectedDatabase == "SqLite")
@@ -338,27 +224,200 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             }
 
             var conn = Context.Database.GetDbConnection();
+            
             try
             {
-                conn.Open();
+                var entityProperties = entityType.GetProperties();                
+                if (conn.State == ConnectionState.Closed)
+                {
+                    conn.OpenAsync().Wait();
+                    isNewConnection = true;
+                }
+                
                 using (var command = conn.CreateCommand())
                 {
+                    command.CommandTimeout = timeout;
+                    command.CommandType = commandType;
                     command.CommandText = queryText;
-                    DbDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
+                    using (DbDataReader reader = command.ExecuteReader())
                     {
-                        var objArr = new object[reader.FieldCount];
-                        var value = reader.GetValues(objArr);                        
-                        list.Add(objArr);
+                        while (reader.Read())
+                        {
+                            try
+                            {
+                                var objArr = new object[reader.FieldCount];
+                                var value = reader.GetValues(objArr);
+                                var obj = Activator.CreateInstance<T>();
+                                for (int i = 0; i < entityProperties.Length; i++)
+                                {
+                                    var prop = entityProperties[i];
+                                    var ordinal = reader.GetOrdinal(prop.Name);
+                                    if (ordinal >= 0)
+                                    {
+                                        if (prop.PropertyType == typeof(Int16))
+                                        {
+                                            var val = reader.GetInt16(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(int))
+                                        {
+                                            var val = reader.GetInt32(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(long))
+                                        {
+                                            var val = reader.GetInt64(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(string))
+                                        {
+                                            var val = reader.GetString(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(float))
+                                        {
+                                            var val = reader.GetFloat(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(double))
+                                        {
+                                            var val = reader.GetDouble(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(decimal))
+                                        {
+                                            var val = reader.GetDecimal(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(bool))
+                                        {
+                                            var val = reader.GetBoolean(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(DateTime))
+                                        {
+                                            var val = reader.GetDateTime(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                        else if (prop.PropertyType == typeof(double))
+                                        {
+                                            var val = reader.GetDouble(ordinal);
+                                            var propInfo = entityType.GetProperty(prop.Name);
+                                            propInfo.SetValue(obj, val);
+                                        }
+                                    }
+                                }
+                                list.Add(obj);
+                            }
+                            catch (Exception ex)
+                            {
+                                reader.Close();
+                                throw ex;
+                            }
+                        }
+                        reader.Close();
                     }
-                    reader.Dispose();
+                }
+
+                if (isNewConnection && conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
                 }
             }
-            finally
+            catch(Exception ex)
             {
-                conn.Close();
+                if (isNewConnection && conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+                throw ex;
             }
+            
+            return list;
+        }
+
+        public ArrayList ExecuteSqlQuery(NccDbQueryText query, int timeout = 60, CommandType commandType = CommandType.Text)
+        {   
+            var list = new ArrayList();
+            var isNewConnection = false;
+
+            var queryText = "";
+            if (SetupHelper.SelectedDatabase == "SqLite")
+            {
+                queryText = query.SQLite_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MSSQL")
+            {
+                queryText = query.MSSql_QueryText;
+            }
+            else if (SetupHelper.SelectedDatabase == "MySql")
+            {
+                queryText = query.MySql_QueryText;
+            }
+            else
+            {
+                throw new Exception("No supported database found.");
+            }
+
+            var conn = Context.Database.GetDbConnection();
+
+            try
+            {
+                if (conn.State == ConnectionState.Closed)
+                {
+                    conn.OpenAsync().Wait();
+                    isNewConnection = true;
+                }
+
+                using (var command = conn.CreateCommand())
+                    {
+                        command.CommandTimeout = timeout;
+                        command.CommandType = commandType;
+                        command.CommandText = queryText;
+                        using (DbDataReader reader = command.ExecuteReader())
+                        {
+                            try
+                            {
+                                while (reader.Read())
+                                {
+                                    var objArr = new object[reader.FieldCount];
+                                    var value = reader.GetValues(objArr);
+                                    list.Add(objArr);
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                reader.Close();
+                                throw ex;
+                            }
+                            reader.Close();
+                        }
+                    }
+
+                if (isNewConnection && conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+            }
+            catch(Exception ex)
+            {
+                if (isNewConnection && conn.State != ConnectionState.Closed)
+                {
+                    conn.Close();
+                }
+
+                throw ex;
+            }
+
             return list;
         }
     }

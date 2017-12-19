@@ -28,6 +28,9 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using System.Reflection;
 using NetCoreCMS.Framework.Core.Auth.Handlers;
 using System.Text.RegularExpressions;
+using Microsoft.Extensions.Caching.Memory;
+using NetCoreCMS.Framework.Core.Mvc.Cache;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -36,6 +39,7 @@ namespace NetCoreCMS.Framework.Utility
     /// </summary>
     public class GlobalContext
     {
+        public static IMemoryCache GlobalCache { get; private set; }
         /// <summary>
         /// WebSite contains running website's basic information like Title, Slogan, Logo Image, Default Language etc.
         /// </summary>
@@ -91,6 +95,9 @@ namespace NetCoreCMS.Framework.Utility
         /// Widget list of all active modules widget. It populates when modules are loaded.
         /// </summary>
         public static List<Widget> Widgets { get; set; } = new List<Widget>();
+
+        public static Hashtable WidgetTypes { get; set; } = new Hashtable();
+
         /// <summary>
         /// List of already placed widgets on different layout zone of theme.
         /// </summary>
@@ -182,6 +189,33 @@ namespace NetCoreCMS.Framework.Utility
         /// This method provide logged user ID
         /// </summary>
         /// <returns>retuns long id</returns>
+        public static NccUser GetCurrentUser()
+        {
+            IHttpContextAccessor hca = ServiceProvider?.GetService<IHttpContextAccessor>();
+            long? userId = hca?.HttpContext?.User?.GetUserId();
+            if (userId == null || userId.Value == 0)
+                return null;
+
+            var user = GlobalCache.GetNccUser(userId.Value);
+            if(user == null)
+            {
+                var userService = hca.HttpContext.RequestServices.GetService<NccUserService>();
+                if(userService != null)
+                {
+                    user = userService.Get(userId.Value);
+                    if(user != null)
+                    {
+                        GlobalCache.SetNccUser(user);
+                    }
+                }
+            }
+            return user;
+        }
+
+        /// <summary>
+        /// This method provide logged user ID
+        /// </summary>
+        /// <returns>retuns long id</returns>
         public static long GetCurrentUserId()
         {
             IHttpContextAccessor hca = ServiceProvider?.GetService<IHttpContextAccessor>();
@@ -215,11 +249,11 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// Method for getting loaded module by Module ID
         /// </summary>
-        /// <param name="moduleId">Id which contains at Module.json config file</param>
+        /// <param name="moduleName">Id which contains at Module.json config file</param>
         /// <returns>Module instance</returns>
-        public static IModule GetModuleByModuleId(string moduleId)
+        public static IModule GetModuleByModuleName(string moduleName)
         {
-            return Modules.Where(x => x.ModuleId == moduleId).FirstOrDefault();
+            return Modules.Where(x => x.ModuleName == moduleName).FirstOrDefault();
         }
 
         /// <summary>
@@ -230,27 +264,53 @@ namespace NetCoreCMS.Framework.Utility
         public static string GetTableName<ModelT>()
         {
             var type = typeof(ModelT);
+            return GetTableName(type);
+        }
 
+        public static string GetTableName(Type modelType)
+        {
             #region Db Table Prefix
-            string dbTablePrefix = "ncc_";
-            if (WebSite != null)
+            string dbTablePrefix = "";
+            if (WebSite != null && string.IsNullOrEmpty(WebSite.TablePrefix) == false)
+            {
                 dbTablePrefix = WebSite.TablePrefix;
+            }   
+            else if(SetupConfig != null && string.IsNullOrEmpty(SetupConfig.TablePrefix) == false)
+            {
+                dbTablePrefix = SetupConfig.TablePrefix;
+            }
             else
+            {
+                SetupHelper.LoadSetup();
                 dbTablePrefix = SetupHelper.TablePrefix;
+            }
+
             if (dbTablePrefix == null || dbTablePrefix.Trim() == "")
-                dbTablePrefix = "ncc_";
+                throw new Exception("Could not load setup info.");
+
             if (dbTablePrefix.EndsWith("_") == false)
                 dbTablePrefix = dbTablePrefix.Trim() + "_";
             #endregion
 
             string moduleTablePrefix = "";
-            var moduleName = type.Assembly.GetName();
-            var moduleList = Modules;
-            foreach (var item in moduleList)
+            var moduleName = modelType.Assembly.GetName();
+            if (moduleName.Name == "NetCoreCMS.Framework")
             {
-                if (item.Folder == moduleName.Name)
+                moduleTablePrefix = "core_";
+            }
+            else if (moduleName.Name.StartsWith("Microsoft.") == true)
+            {
+                moduleTablePrefix = "ef_";
+            }
+            else
+            {
+                var moduleList = Modules;
+                foreach (var item in moduleList)
                 {
-                    moduleTablePrefix = item.TablePrefix;
+                    if (item.Folder == moduleName.Name)
+                    {
+                        moduleTablePrefix = item.TablePrefix;
+                    }
                 }
             }
             if (moduleTablePrefix.Trim() == "")
@@ -258,10 +318,15 @@ namespace NetCoreCMS.Framework.Utility
             if (moduleTablePrefix.EndsWith("_") == true)
                 moduleTablePrefix = moduleTablePrefix.Substring(0, moduleTablePrefix.Length - 1);
 
-            string model_name = type.Name;
+            string model_name = modelType.Name;
             model_name = string.Join('_', Regex.Split(model_name, @"(?=\p{Lu}\p{Ll})|(?<=\p{Ll})(?=\p{Lu})"));
             var tableName = dbTablePrefix + moduleTablePrefix + model_name;
-            return tableName.ToLower();
+            tableName = tableName.Replace('`', '_');
+            if (tableName.Length > 64)
+                tableName = tableName.Replace("_", "");
+            else
+                tableName = tableName.ToLower();
+            return tableName;
         }
 
         /// <summary>
@@ -292,6 +357,15 @@ namespace NetCoreCMS.Framework.Utility
             model_name = string.Join('_', Regex.Split(model_name, @"(?=\p{Lu}\p{Ll})|(?<=\p{Ll})(?=\p{Lu})"));
             var tableName = dbTablePrefix + moduleName + model_name;
             return tableName;
+        }
+
+        internal static void SetGlobalCache(IServiceProvider serviceProvider)
+        {
+            var cache = serviceProvider.GetRequiredService<IMemoryCache>();
+            if(cache != null)
+            {
+                GlobalCache = cache;
+            }
         }
     }
 }

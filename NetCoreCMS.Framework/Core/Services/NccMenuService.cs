@@ -109,6 +109,7 @@ namespace NetCoreCMS.Framework.Core.Services
         {                
             oldEntity.ModificationDate = entity.ModificationDate;
             oldEntity.ModifyBy = GlobalContext.GetCurrentUserId();
+            oldEntity.MenuLanguage = entity.MenuLanguage;
             oldEntity.Name = entity.Name;            
             oldEntity.Status = entity.Status;            
             oldEntity.MenuIconCls = entity.MenuIconCls;

@@ -1,0 +1,122 @@
+﻿@model NccComment
+
+@{
+    Layout = Constants.AdminLayoutName;
+    var mainName = "Comments";
+    var controllerName = "Comments";
+    Title = mainName + " Create";
+    SubTitle = "Create a new " + mainName.ToLower();
+    if (Model.Id > 0)
+    {
+        Title = mainName + " Edit";
+        SubTitle = "Update information of a " + mainName.ToLower();
+    }
+}
+<style>
+    .tabBorderDesign {
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .bootstrap-tagsinput {
+        width: 100%;
+        min-height: 100px;
+    }
+
+        .bootstrap-tagsinput .label {
+            font-size: 100%;
+        }
+</style>
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @SubTitle
+                <div class="pull-right">
+                    @if (Model.Id > 0)
+                    {
+                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New @mainName</a>
+                    }
+                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage @mainName</a>
+                </div> 
+            </div>
+            <div class="panel-body">
+                <div class="row">                    
+                    <form id="createEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                        <input type="hidden" asp-for="Id" value="@Model.Id" />
+                        <input type="hidden" asp-for="Status" value="@Model.Status" />
+                        <input type="hidden" name="PostId" value="@Model.Post?.Id" />
+                        <input type="hidden" name="AuthorId" value="@Model.Author?.Id" />
+                        <div class="col-sm-6 pull-left">
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Post </label>
+                                <div class="col-md-9">
+                                    @Model.Post?.Name
+                                    @*<select class="form-control" asp-for="Post" name="PostId" asp-items="@ViewBag.AllPosts">
+                                        <option value="0">Select Post</option>
+                                    </select>*@
+                                </div>
+                            </div>
+                            @*<div class="form-group">
+                                <label class="col-md-3 text-right">Name </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="Name" placeholder="" value="@Model.Name" />
+                                </div>
+                            </div>*@
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Comments </label>
+                                <div class="col-md-9">
+                                    <textarea class="form-control" asp-for="Content" placeholder="" required >@Model.Content</textarea>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Status </label>
+                                <div class="col-md-9">
+                                    <select class="form-control" asp-for="CommentStatus" asp-items="@ViewBag.CommentStatus"></select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">AuthorName </label>
+                                <div class="col-md-9">
+                                    <input type="text" class="form-control" asp-for="AuthorName" placeholder="" value="@Model.AuthorName" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">Email </label>
+                                <div class="col-md-9">
+                                    <input type="email" class="form-control" asp-for="Email" placeholder="" value="@Model.Email" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-3 text-right">WebSite </label>
+                                <div class="col-md-9">
+                                    <input type="url" class="form-control" asp-for="WebSite" placeholder="" value="@Model.WebSite" />
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-9 text-center">
+                                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-default">Back</a>
+                                    <input type="submit" class="btn btn-primary" name="Save" value="Save" />
+                                    @*<input type="submit" class="btn btn-default" name="Save" value="Save And Edit" />*@
+                                </div>
+                                
+                            </div>
+
+                        </div>
+
+
+                    </form>
+                </div>
+                <!-- /.row (nested) -->
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+</div>
+
+@section Scripts{
+
+}

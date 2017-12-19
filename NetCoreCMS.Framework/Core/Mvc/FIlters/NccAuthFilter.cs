@@ -1,18 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc.Filters;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿/*************************************************************
+ *          Project: NetCoreCMS                              *
+ *              Web: http://dotnetcorecms.org                *
+ *           Author: OnnoRokom Software Ltd.                 *
+ *          Website: www.onnorokomsoftware.com               *
+ *            Email: info@onnorokomsoftware.com              *
+ *        Copyright: OnnoRokom Software Ltd.                 *
+ *          License: BSD-3-Clause                            *
+ *************************************************************/
+
+using Microsoft.AspNetCore.Mvc.Filters;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Core.Mvc.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Auth;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Authentication;
-using NetCoreCMS.Framework.Core.Auth.Handlers;
-using NetCoreCMS.Framework.Core.Messages;
-using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
-using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Controllers;
@@ -20,7 +23,7 @@ using NetCoreCMS.Framework.Core.Models;
 using Microsoft.Extensions.Caching.Memory;
 using NetCoreCMS.Framework.Core.Mvc.Cache;
 
-namespace NetCoreCMS.Framework.Core.Mvc.FIlters
+namespace NetCoreCMS.Framework.Core.Mvc.Filters
 {
     public class NccAuthFilter : IAuthorizationFilter
     {
@@ -42,7 +45,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
             var isAuthorized = false;            
             var action = (ControllerActionDescriptor)context.ActionDescriptor;
             var actionAttributes = action.MethodInfo.GetCustomAttributes(true);
-            var type = action.ControllerTypeInfo;            
+            var type = action.ControllerTypeInfo;
+            var moduleName = type.Assembly.GetName().Name;
             var controllerAttributes = type.GetCustomAttributes(true);
 
             // Allow actions or controller whoich have AllowAnonymous attribute.
@@ -107,7 +111,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
                 if(item is SubActionOf)
                 {
                     var subActionOf = (SubActionOf)item;
-                    (notFound, isRedirect, isAuthorized) = IsAuthorized(nccUser, subActionOf.Controller, subActionOf.Action);
+                    (notFound, isRedirect, isAuthorized) = IsAuthorized(nccUser, moduleName, subActionOf.Controller, subActionOf.Action);
                     if (isAuthorized)
                         break;
                 }
@@ -115,7 +119,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
 
             if(isAuthorized == false)
             {
-                (notFound, isRedirect, isAuthorized) = IsAuthorized(nccUser, action.ControllerName, action.ActionName);
+                (notFound, isRedirect, isAuthorized) = IsAuthorized(nccUser, moduleName, action.ControllerName, action.ActionName);
             }
             
 
@@ -143,7 +147,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
             }
         }
 
-        private (bool NotFound, bool Redirect, bool isAuthorized) IsAuthorized(NccUser nccUser, string controllerName, string actionName)
+        private (bool NotFound, bool Redirect, bool isAuthorized) IsAuthorized(NccUser nccUser, string moduleName, string controllerName, string actionName)
         {
             bool isAuthorized = false;
             string menuName = "";
@@ -155,19 +159,19 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
                 return (true, true, false);
             }
 
-            if (nccUser.ExtraDenies.Where(x => x.Action == actionName && x.Controller == controllerName).Count() > 0)
+            if (nccUser.ExtraDenies.Where(x => x.ModuleName == moduleName  &&  x.Action == actionName && x.Controller == controllerName).Count() > 0)
             {
                 return (false, true, false);
             }
             else
             {
-                if (nccUser.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.Action == actionName && y.Controller == controllerName).Count() > 0).Count() > 0)
+                if (nccUser.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == moduleName && y.Action == actionName && y.Controller == controllerName).Count() > 0).Count() > 0)
                 {
                     isAuthorized = true;
                 }
                 else
                 {
-                    isAuthorized = nccUser.ExtraPermissions.Where(x => x.Action == actionName && x.Controller == controllerName).Count() > 0;
+                    isAuthorized = nccUser.ExtraPermissions.Where(x => x.ModuleName == moduleName && x.Action == actionName && x.Controller == controllerName).Count() > 0;
                 }
             }
 
@@ -184,16 +188,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.FIlters
             return ("", "", "");
         }
         
-        private string GetModuleId(NccController nccController)
-        {
-            var type = nccController.GetType();
-            var assemblyName = type.Assembly.GetName();
-            var module = GlobalContext.GetModuleByAssemblyName(assemblyName);
-            if (module != null)
-            {
-                return module.ModuleId;
-            }
-            return null;
-        }
+        //private string GetModuleId(TypeInfo type)
+        //{
+        //    var assemblyName = type.Assembly.GetName();
+        //    var module = GlobalContext.GetModuleByAssemblyName(assemblyName);
+        //    if (module != null)
+        //    {
+        //        return module.ModuleId;
+        //    }
+        //    return null;
+        //}
     }
 }

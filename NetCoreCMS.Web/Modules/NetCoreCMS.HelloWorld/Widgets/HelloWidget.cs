@@ -26,13 +26,13 @@ namespace NetCoreCMS.HelloWorld.Widgets
 
         public HelloWidget(
             IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService):base("NetCoreCMS.Modules.Widgets.HelloWidget", "Hello", "Hello Widget", "")
+            NccWebSiteWidgetService websiteWidgetService):base("Hello", "Hello Widget", "")
         {
             _viewRenderService = viewRenderService;
             _websiteWidgetService = websiteWidgetService;
         }
 
-        public override void Init(long websiteWidgetId)
+        public override void Init(long websiteWidgetId, bool renderConfig = false)
         {
             WebSiteWidgetId = websiteWidgetId;
             ViewFileName = "Widgets/Hello";

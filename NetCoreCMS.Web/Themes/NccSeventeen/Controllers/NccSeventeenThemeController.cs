@@ -16,7 +16,7 @@ using System;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 
-namespace Default.Controllers
+namespace NccSeventeen.Controllers
 {
     public class NccSeventeenThemeController : NccController
     {

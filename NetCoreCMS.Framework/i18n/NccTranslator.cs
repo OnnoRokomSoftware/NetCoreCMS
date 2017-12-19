@@ -24,10 +24,12 @@ namespace NetCoreCMS.Framework.i18n
     public sealed class NccTranslator : INccTranslator
     {
         private string _fileName;
-        private string _resourceFilePath;
+        private static string _resourceFilePath;
         private string _cultureCode;
-        private NccTranslationFile _translationFile;
+        private volatile static NccTranslationFile _translationFile;
         public string CultureCode { get { return _cultureCode; } }
+
+        private volatile static object _lockObject = new object();
 
         public string this[string key]
         {
@@ -42,44 +44,52 @@ namespace NetCoreCMS.Framework.i18n
             GetTranslator(cultureCode);         
         }
 
-        public INccTranslator GetTranslator(string cultureCode) {
-            
+        public INccTranslator GetTranslator(string cultureCode)
+        {
+
             _cultureCode = cultureCode;
 
             if (string.IsNullOrEmpty(cultureCode) || cultureCode.ToLower().Equals("en"))
                 return this;
 
-            var path = Path.Combine(GlobalContext.ContentRootPath, "bin", "Debug", "netcoreapp2.0", "Resources");
-
-            if (RuntimeUtil.IsRelease(typeof(SharedResource).Assembly))
+            if (string.IsNullOrEmpty(_resourceFilePath))
             {
-                path = Path.Combine(GlobalContext.ContentRootPath, "bin", "Release", "netcoreapp2.0", "Resources");
-            }
-            
-            _fileName = "NccTranslationFile."+cultureCode+".lang";
-            _resourceFilePath = Path.Combine(path, _fileName);
-
-            if (!File.Exists(_resourceFilePath))
-            {
-                if (!Directory.Exists(path))
+                var path = Path.Combine(GlobalContext.ContentRootPath, "Resources", "Language");
+                
+                if (GlobalContext.HostingEnvironment.EnvironmentName.Contains("Development"))
                 {
-                    Directory.CreateDirectory(path);
+                    path = Path.Combine(GlobalContext.ContentRootPath, "bin", "Debug", "netcoreapp2.0", "Resources");                    
                 }
-                File.Create(_resourceFilePath).Dispose();
+
+                _fileName = "NccTranslationFile." + cultureCode + ".lang";
+                _resourceFilePath = Path.Combine(path, _fileName);
+
+                if (!File.Exists(_resourceFilePath))
+                {
+                    if (!Directory.Exists(path))
+                    {
+                        Directory.CreateDirectory(path);
+                    }
+                    File.Create(_resourceFilePath).Dispose();
+                }
             }
 
-            var translationFileData = File.ReadAllText(_resourceFilePath);
-            if (string.IsNullOrWhiteSpace(translationFileData))
+            if (_translationFile == null)
             {
-                var assembly = typeof(SharedResource).GetTypeInfo().Assembly;
-                using (Stream resource = assembly.GetManifestResourceStream("NetCoreCMS.Framework.Resources.SharedResource.lang")) {
-                    var sr = new StreamReader(resource);
-                    translationFileData = sr.ReadToEndAsync().Result;                   
+                var translationFileData = File.ReadAllText(_resourceFilePath);
+                if (string.IsNullOrWhiteSpace(translationFileData))
+                {
+                    var assembly = typeof(SharedResource).GetTypeInfo().Assembly;
+                    using (Stream resource = assembly.GetManifestResourceStream("NetCoreCMS.Framework.Resources.SharedResource.lang"))
+                    {
+                        var sr = new StreamReader(resource);
+                        translationFileData = sr.ReadToEndAsync().Result;
+                        File.WriteAllText(_resourceFilePath, translationFileData);
+                    }
                 }
-            }
 
-            File.WriteAllText(_resourceFilePath, translationFileData);
-            _translationFile = JsonConvert.DeserializeObject<NccTranslationFile>(translationFileData);
+                _translationFile = JsonConvert.DeserializeObject<NccTranslationFile>(translationFileData);
+            }
 
             return this;
         }
@@ -89,12 +99,15 @@ namespace NetCoreCMS.Framework.i18n
             OrderTranslations();
             var fileData = JsonConvert.SerializeObject(_translationFile, Formatting.Indented);
 
-            using (var resFile = File.Create(_resourceFilePath))
+            lock (_lockObject)
             {
-                var data = Encoding.UTF8.GetBytes(fileData);
-                resFile.Write(data, 0, data.Length);
-                resFile.Flush();
-            }   
+                using (var resFile = File.Create(_resourceFilePath))
+                {
+                    var data = Encoding.UTF8.GetBytes(fileData);
+                    resFile.Write(data, 0, data.Length);
+                    resFile.Flush();
+                }
+            }
         }
 
         private void OrderTranslations()

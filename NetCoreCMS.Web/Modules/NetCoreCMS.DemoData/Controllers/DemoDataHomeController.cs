@@ -35,7 +35,7 @@ namespace NetCoreCMS.DemoData.Controllers
     public class DemoDataHomeController : NccController
     {
         #region Initialization
-        private NccSettingsService _nccSettingsService;
+        private INccSettingsService _nccSettingsService;
 
         RoleManager<NccRole> _roleManager;
         UserManager<NccUser> _userManager;
@@ -51,7 +51,7 @@ namespace NetCoreCMS.DemoData.Controllers
 
         static readonly Random rnd = new Random();
 
-        public DemoDataHomeController(ILoggerFactory factory, NccSettingsService nccSettingsService, RoleManager<NccRole> roleManager, UserManager<NccUser> userManager, NccUserService nccUserService, NccPageService pageService, NccCategoryService categoryService, NccTagService tagService, NccPostService postService, NccCommentsService commentsService, NccPermissionService nccPermissionService)
+        public DemoDataHomeController(ILoggerFactory factory, INccSettingsService nccSettingsService, RoleManager<NccRole> roleManager, UserManager<NccUser> userManager, NccUserService nccUserService, NccPageService pageService, NccCategoryService categoryService, NccTagService tagService, NccPostService postService, NccCommentsService commentsService, NccPermissionService nccPermissionService)
         {
             _logger = factory.CreateLogger<DemoDataHomeController>();
             _nccSettingsService = nccSettingsService;
@@ -92,7 +92,7 @@ Lorem Ipsum শুধু মুদ্রণ এবং typesetting শিল্�
         #endregion
         #endregion
 
-        [AdminMenuItem(Name = "Generate", Url = "/DemoDataHome/Index", SubActions = new string[] { "Generate", "GenerateUser", "GeneratePage", "GenerateCategory", "GenerateTag", "GeneratePost", "GenerateComments" }, Order = 1)]
+        [AdminMenuItem(Name = "Generate", SubActions = new string[] { "Generate", "GenerateUser", "GeneratePage", "GenerateCategory", "GenerateTag", "GeneratePost", "GenerateComments" }, Order = 1)]
 
         public ActionResult Index()
         {
@@ -548,6 +548,7 @@ Lorem Ipsum শুধু মুদ্রণ এবং typesetting শিল্�
                 item.Content = item.Name + " -> " + commentsDemoContent;
                 item.CommentStatus = NccComment.NccCommentStatus.Approved;
                 item.Post = GetRandomPost(postList);
+                item.Author = GetRandomUser();
 
                 _commentsService.Save(item);
                 //ShowMessage(totalCount + " Comments created successfully", Framework.Core.Mvc.Views.MessageType.Success);
@@ -566,6 +567,12 @@ Lorem Ipsum শুধু মুদ্রণ এবং typesetting শিল্�
             var users = _nccUserService.LoadAll();
             int r = rnd.Next(users.Count);
             return users[r].Id;
+        }
+        private NccUser GetRandomUser()
+        {
+            var users = _nccUserService.LoadAll();
+            int r = rnd.Next(users.Count);
+            return users[r];
         }
         private NccPermission GetRandomPermission()
         {

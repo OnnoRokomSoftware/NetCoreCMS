@@ -1,0 +1,21 @@
+﻿@model List<NccTag>
+@{
+    Layout = Constants.SiteLayoutName;
+    Title = SubTitle = "Tags";
+    
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>@_T["All Tags"]</h2>
+        <hr />
+        @foreach (var item in Model)
+        {
+            <div style="border: dashed 1px gray;padding:10px 10px;">
+                <h3><a asp-controller="Tags" asp-action="Index" asp-route-name="@item.Name">@item.Name (@item.Posts.Count())</a></h3>
+            </div>
+            <br />
+        }
+    </div>
+</div>

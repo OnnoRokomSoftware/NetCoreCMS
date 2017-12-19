@@ -30,6 +30,11 @@ using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Auth.Handlers;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using NetCoreCMS.Framework.Core.Models;
+using NetCoreCMS.Framework.Modules.Widgets;
+using Microsoft.AspNetCore.Http;
+using NetCoreCMS.Framework.Core.Auth;
+using System.Text.RegularExpressions;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -382,6 +387,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_DICTIONARY"] = value;
             }
         }
+        
+        private List<Widget> _moduleWidgets = new List<Widget>();
 
         public void SetProperty(string key, object value)
         {
@@ -409,7 +416,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 return null;
             }
         }
-
+        
         private ThemeSection[] FireEvent(string name, string viewFile, string content, TModel model)
         {
             var themeSections = new ThemeSection[] { };
@@ -447,9 +454,10 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             return themeSections;
         }
 
-        public async Task<string> RenderToStringAsync(string viewName, object model)
+        public string RenderToStringAsync(string viewName, object model)
         {
             var viewContent = "";
+           
             try
             {
                 var ac = new ActionContext(Context, ViewContext.RouteData, ViewContext.ActionDescriptor);
@@ -461,7 +469,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 {
                     throw new ArgumentNullException($"{viewName} does not match any available view");
                 }
-                
+
                 using (var sw = new StringWriter())
                 {
                     var viewContext = new ViewContext(
@@ -473,13 +481,22 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                         new HtmlHelperOptions()
                     );
                     viewContext.RouteData = ViewContext.RouteData;
-                    await viewResult.View.RenderAsync(viewContext);
+                    viewResult.View.RenderAsync(viewContext).Wait();
                     viewContent = sw.GetStringBuilder().ToString();
                 }
             }
             catch (Exception ex)
             {
+                _Logger.LogWarning($"ViewFileName: {viewName} throwing exception at render time.");
                 _Logger.LogError(ex.Message, ex);
+                if (GlobalContext.HostingEnvironment.EnvironmentName.Contains("Development"))
+                {
+                    viewContent = $"<p style='color:red;'> {ex.Message}</p>"; ;
+                }
+                else
+                {
+                    viewContent = $"<p style='color:red;'> Error in view rendering, file name is {viewName}</p>"; ;
+                }
             }
             
             return viewContent;
@@ -487,7 +504,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public string NccRenderPertial(string partialViewFileName, object model)
         {
-            var content = RenderToStringAsync(partialViewFileName, model).Result;
+            var content = RenderToStringAsync(partialViewFileName, model);
             var themeSection = FireEvent(ThemeSection.Sections.PartialView, partialViewFileName, content, Model);
             content = themeSection.LastOrDefault()?.Content;
             ViewContext.Writer.WriteLine(content??"");
@@ -496,7 +513,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public string NccRenderHead(string headViewFile = "Parts/_Head")
         {
-            var content = RenderToStringAsync(headViewFile, Model).Result;
+            var content = RenderToStringAsync(headViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.Head,headViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content??"";
             content += Environment.NewLine + $"<meta name=\"generator\" content=\"NetCoreCMS v{NccInfo.Version}\" />";
@@ -524,7 +541,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         
         public string NccRenderHeader(string headerViewFile = "Parts/_Header")
         {
-            var content =  RenderToStringAsync(headerViewFile, Model).Result;
+            var content =  RenderToStringAsync(headerViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.Header, headerViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(content);
@@ -533,7 +550,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public string NccRenderNavigation(string navigationViewFile = "Parts/_Navigation")
         {
-            var content = RenderToStringAsync(navigationViewFile, Model).Result;
+            var content = RenderToStringAsync(navigationViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.Navigation, navigationViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(content);
@@ -542,7 +559,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public string NccRenderFeaturedSection(string featuredViewFile = "Parts/_Featured")
         {
-            var content = RenderToStringAsync(featuredViewFile, Model).Result;
+            var content = RenderToStringAsync(featuredViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.Featured, featuredViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(content);
@@ -551,7 +568,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public string NccRenderLeftColumn(string leftColumnViewFile = "Parts/_LeftColumn")
         {
-            var content = RenderToStringAsync(leftColumnViewFile, Model).Result;
+            var content = RenderToStringAsync(leftColumnViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.LeftColumn, leftColumnViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(content);
@@ -575,7 +592,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public string NccRenderRightColumn(string rightColumnViewFile = "Parts/_RightColumn")
         {
-            var content = RenderToStringAsync(rightColumnViewFile, Model).Result;
+            var content = RenderToStringAsync(rightColumnViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.RightColumn, rightColumnViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(content);
@@ -584,7 +601,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
         public string NccRenderFooter(string footerViewFile = "Parts/_Footer")
         {
-            var content = RenderToStringAsync(footerViewFile, Model).Result;
+            var content = RenderToStringAsync(footerViewFile, Model);
             var themeSections = FireEvent(ThemeSection.Sections.Footer, footerViewFile, content, Model);
             content = themeSections.LastOrDefault()?.Content ?? "";
             ViewContext.Writer.WriteLine(content);
@@ -631,8 +648,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             ViewContext.Writer.WriteLine(globalMessageContainer);
             return string.Empty;            
         }
-
         
+        public string NccRenderMessages(string messagesViewFile = "Parts/_Messages")
+        {
+            var content = RenderToStringAsync(messagesViewFile, Model);
+            var themeSections = FireEvent(ThemeSection.Sections.Messages, messagesViewFile, content, Model);
+            content = themeSections.LastOrDefault()?.Content ?? "";
+            ViewContext.Writer.WriteLine(content);
+            return string.Empty;
+        }
 
         private string MakeResourceList(NccResource.ResourceType type, NccResource.IncludePosition position)
         {
@@ -658,8 +682,17 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             return content;
         }
 
-        public string ShowMessage(string message, MessageType messageType, bool appendMessage = false, bool showAfterRedirect = false)
+        public string ShowMessage(string message, MessageType messageType, bool appendMessage = false, bool showAfterRedirect = false, int durationSecond = 5, bool showCloseButton = true)
         {
+            ViewBag.MessageDuration = durationSecond;
+            ViewBag.MessageShowCloseButton = showCloseButton;
+
+            if (showAfterRedirect)
+            {
+                TempData["MessageDuration"] = durationSecond;
+                TempData["MessageShowCloseButton"] = showCloseButton;
+            }
+
             switch (messageType)
             {
                 case MessageType.Success:
@@ -740,6 +773,340 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             }
             return "";
         }
+
+        public string GetCurrentUserName()
+        {
+            return GlobalContext.GetCurrentUserName();
+        }
+
+        public NccUser GetCurrentUser()
+        {
+            return GlobalContext.GetCurrentUser();
+        }
+
+        public List<NccWebSiteWidget> GetWebSiteWidgets(string layout, string zone)
+        {
+            var webSiteWidgetList = GlobalContext.WebSiteWidgets.Where(x => x.LayoutName == layout && x.Zone == zone).ToList();
+            
+            foreach (var item in webSiteWidgetList)
+            {
+                if (GlobalContext.WidgetTypes.ContainsKey(item.WidgetId))
+                {
+                    item.Widget = (Widget) Context.RequestServices.GetService((Type)GlobalContext.WidgetTypes[item.WidgetId]);
+                }
+            }
+
+            return webSiteWidgetList;
+        }
+         
+        public List<NccMenu> GetMenus(string menuLocation, string language)
+        {
+            return GlobalContext.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || string.IsNullOrEmpty(x.MenuLanguage))).ToList();
+        }
+        
+        #region Website Informations
+
+        public static string GetCurrentLanguage()
+        {
+            var languageDetector = new NccLanguageDetector(new HttpContextAccessor());
+            var currentLanguage = languageDetector.GetCurrentLanguage();
+            return currentLanguage;
+        }
+
+        public static string GetWebSiteName()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.Name;
+                }
+            }
+            return ret;
+        }
+
+        public static string GetWebSiteTitle()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.SiteTitle;
+                }
+            }
+            return ret;
+        }
+
+        public static string GetWebSiteTagline()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.Tagline;
+                }
+            }
+            return ret;
+        }
+
+        public static string GetWebSiteFaviconUrl()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.FaviconUrl;
+                }
+            }
+            return ret;
+        }
+
+        public static string GetWebSiteLogoUrl()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.SiteLogoUrl;
+                }
+            }
+            return ret;
+        }
+
+        public static string GetWebSiteCopyright()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.Copyrights;
+                }
+            }
+            return ret;
+        }
+
+        public static string GetWebSitePrivacyPolicyUrl()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.PrivacyPolicyUrl;
+                }
+            }
+            return ret;
+        }
+
+        public static string GetWebSiteTermsAndConditionsUrl()
+        {
+            var ret = "";
+            if (GlobalContext.WebSite != null)
+            {
+                var webInfo = GlobalContext.WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+                if (webInfo != null)
+                {
+                    ret = webInfo.TermsAndConditionsUrl;
+                }
+            }
+            return ret;
+        }
+        #endregion
+
+        #region Menu
+        public static string PrepareMenuHtml(string position, string currentLanguage)
+        {
+            var menus = GlobalContext.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();
+            var menuTxt = "";
+
+            foreach (var item in menus)
+            {
+                menuTxt += "<div class=\"ncc-main-menu\">";
+                menuTxt += PrepareMenu(item.MenuItems, currentLanguage);
+                menuTxt += "</div>";
+            }
+
+            return menuTxt;
+        }
+
+        public static string PrepareMenu(List<NccMenuItem> menuItem, string currentLanguage, string upperSubMenuCls = "nav navbar-nav", string menuItemCls = "")
+        {
+            var user = GlobalContext.GetCurrentUser();
+            var subMenuText = "";
+
+            menuItem = menuItem.OrderBy(m => m.MenuOrder).ToList();
+
+            foreach (var item in menuItem)
+            {
+                var addItem = false;
+
+                if (item.IsAnonymous)
+                {
+                    addItem = true;
+                }
+                else if (ControllerActionCache.ControllerActions.Where(x => x.MainController == item.Controller && x.MainAction == item.Action && x.ModuleName == item.Module).Count() > 0)
+                {
+
+                    if (user != null)
+                    {
+                        if (item.IsAllowAuthenticated || user.Roles.Where(x => x.Role.Name.Equals(NccCmsRoles.SuperAdmin)).Count() > 0)
+                        {
+                            addItem = true;
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(item.Module))
+                            {
+                                if (user.ExtraDenies.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
+                                {
+                                    if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => string.IsNullOrEmpty(y.ModuleName) && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                    else if (user.ExtraPermissions.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (user.ExtraDenies.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
+                                {
+                                    if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == item.Module && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                    else if (user.ExtraPermissions.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    addItem = true;
+                }
+
+                if (addItem)
+                {
+                    var hasChildren = item.Childrens.Count > 0;
+                    if (hasChildren)
+                    {
+                        subMenuText = "<li class=\"" + menuItemCls + "\">";
+
+                        if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
+                            subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+                        else
+                            subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+
+                        subMenuText += PrepareMenu(item.Childrens, currentLanguage, "dropdown-menu multi-level", "dropdown-submenu");
+                        subMenuText += "</li>";
+                    }
+                    else
+                    {
+                        subMenuText += ListItemHtml(item, currentLanguage);
+                    }
+                }
+            }
+
+            var menuTxt = "";
+            if (string.IsNullOrEmpty(subMenuText) == false)
+            {
+                menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
+                menuTxt += subMenuText;
+                menuTxt += "</ul>";
+            }
+
+            return menuTxt;
+        }
+
+        private static string ListItemHtml(NccMenuItem item, string currentLanguage)
+        {
+            var url = "/";
+            var urlPrefix = "";
+            var data = "";
+
+            if (item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
+            {
+                //urlPrefix = "/Category/";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+            }
+            else if (item.MenuActionType == NccMenuItem.ActionType.BlogPost)
+            {
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+            }
+            else if (item.MenuActionType == NccMenuItem.ActionType.Module)
+            {
+                //urlPrefix = "/" + item.Controller + "/" + item.Action + "/";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+            }
+            else if (item.MenuActionType == NccMenuItem.ActionType.Page)
+            {
+                //urlPrefix = "";/*/CmsHome/CmsPage/View/*/
+                //item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
+                //item.Url = NccUrlHelper.AddLanguageToUrl(currentLanguage, item.Url);
+                //return "<li><a href=\"" + item.Url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+            }
+            else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
+            {
+                url = item.Url;
+                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+            }
+            else if (item.MenuActionType == NccMenuItem.ActionType.Url)
+            {
+                urlPrefix = "";
+            }
+
+            if (!string.IsNullOrEmpty(item.Data))
+            {
+                data = "?slug=" + item.Data;
+            }
+
+            url = urlPrefix + item.Url + data;
+            if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(url))
+            {
+                url = "/" + currentLanguage + url;
+            }
+
+            var li = "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+            return li;
+        }
+
+        private static bool IsExternalUrl(string url)
+        {
+            string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
+            Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            return reg.IsMatch(url);
+        }
+
+        #endregion
     }
 
     public enum MessageType

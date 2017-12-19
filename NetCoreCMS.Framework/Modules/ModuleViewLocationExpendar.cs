@@ -29,19 +29,23 @@ namespace NetCoreCMS.Framework.Modules
                 {
                     var moduleViewLocations = new string[]
                     {
-                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/{1}/{0}.cshtml",
-                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/" + module + "/{0}.cshtml",
-                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/" + module + "/{1}/{0}.cshtml",
-                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/{0}.cshtml",
-                    "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/Layouts/{0}.cshtml",                    
-                    "/Core/" + module + "/Views/{1}/{0}.cshtml",
-                    "/Core/" + module + "/Views/Shared/{0}.cshtml",
-                    "/Core/" + module + "/Views/{0}.cshtml",
-                    "/Modules/" + module + "/Views/{1}/{0}.cshtml",
-                    "/Modules/" + module + "/Views/Shared/{0}.cshtml",
-                    "/Modules/" + module + "/Views/{0}.cshtml",
-                    "/Views/{1}/{0}.cshtml",
-                    "/Views/Shared/{0}.cshtml"
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/{1}/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/" + module + "/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/" + module + "/{1}/{0}.cshtml", 
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/Layouts/{0}.cshtml",
+                        
+                        "/Modules/" + module + "/Views/{1}/{0}.cshtml",
+                        "/Modules/" + module + "/Views/Shared/{0}.cshtml",
+                        "/Modules/" + module + "/Views/{0}.cshtml",
+
+                        "/Core/" + module + "/Views/{1}/{0}.cshtml",
+                        "/Core/" + module + "/Views/Shared/{0}.cshtml",
+                        "/Core/" + module + "/Views/{0}.cshtml",
+
+                        "/Views/{1}/{0}.cshtml",
+                        "/Views/Shared/{0}.cshtml"
                     };
 
                     viewLocations = moduleViewLocations.Concat(viewLocations);
@@ -58,6 +62,7 @@ namespace NetCoreCMS.Framework.Modules
             {
                 var controllerTypeInfo = controller.ControllerTypeInfo;
                 string moduleName = controllerTypeInfo.Module.Name;
+                var area = 
                 moduleName = moduleName.Remove(moduleName.Length - 4);
                 if (moduleName != "NetCoreCMS.Web")
                 {

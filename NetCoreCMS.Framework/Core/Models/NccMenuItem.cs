@@ -24,6 +24,7 @@ namespace NetCoreCMS.Framework.Core.Models
         }
         public NccMenuItem Parent { get; set; }
         public string Module { get; set; }
+        public string Area { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
         public string Url { get; set; }
@@ -35,6 +36,9 @@ namespace NetCoreCMS.Framework.Core.Models
 
         public ActionType MenuActionType { get; set; }
         public MenuItemFor MenuFor { get; set; }
+        
+        public bool IsAnonymous { get; set; }
+        public bool IsAllowAuthenticated { get; set; }
 
         public List<NccMenuItem> SubActions { get; set; }
         public List<NccMenuItem> Childrens { get; set; }

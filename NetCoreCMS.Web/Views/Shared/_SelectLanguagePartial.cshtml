@@ -9,16 +9,12 @@
 @inject IOptions<RequestLocalizationOptions> LocOptions
 
 
-@{   
-    var writer = new System.IO.StringWriter();
-    Component.InvokeAsync("Language").Result.WriteTo(writer, HtmlEncoder);
-    var currentLanguage = writer.GetStringBuilder().ToString();
-
+@{  
     var requestCulture = Context.Features.Get<IRequestCultureFeature>();
     var cultureItems = LocOptions.Value.SupportedUICultures
         .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName.Split(" ").FirstOrDefault() })
         .ToList();
-    var selectList = new SelectList(cultureItems,"Value","Text", currentLanguage);
+    var selectList = new SelectList(cultureItems,"Value","Text", CurrentLanguage);
 
     var returnUrl = WebUtility.UrlDecode(Context.Request.Path);
     if (Context.Request.QueryString.HasValue) {
@@ -28,7 +24,7 @@
     var lang = "";
     if (GlobalContext.WebSite.IsMultiLangual)
     {
-        lang = "/" + currentLanguage;
+        lang = "/" + CurrentLanguage;
     }
     var cl = LocOptions.Value.SupportedUICultures.Where(x => x.TwoLetterISOLanguageName.ToLower() == CurrentLanguage).Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName.Split(" ").FirstOrDefault() });
 }

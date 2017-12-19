@@ -11,7 +11,7 @@
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Logging;
 
-namespace NetCoreCMS.Framework.Core.Mvc.FIlters
+namespace NetCoreCMS.Framework.Core.Mvc.Filters
 {
     public class NccGlobalExceptionFilter : IExceptionFilter
     {

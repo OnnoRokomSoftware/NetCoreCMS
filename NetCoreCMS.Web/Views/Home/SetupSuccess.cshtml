@@ -6,7 +6,44 @@
 <div class="page-header text-center">
     <h1>NetCoreCMS Setup Successful</h1>
     <hr />
-    <h2>Please restart and enjoy <strong>NetCoreCMS</strong></h2> 
+    @*<h2>Please restart and enjoy <strong>NetCoreCMS</strong></h2>*@ 
+    <h2>NetCoreCMS is Restarting</h2>
+    <h3 id="showText">Please wait</h3>   
     <a href="/CmsHome">Home</a>
 </div>       
 
+<script>
+    // Set the date we're counting down to
+    var count = 0;
+    // Update the count down every 1 second
+    var x = setInterval(function() {
+        if (count <= 0) {
+            document.getElementById("showText").innerHTML = "Redirecting to <a href='/CmsHome' >Home</a>";
+            redirect('/CmsHome');
+        }
+        else {
+            document.getElementById("showText").innerText = "Please wait " + count + " second";
+            count--;
+        }
+    }, 5000);
+
+    function redirect(url) {
+        var ua = navigator.userAgent.toLowerCase(),
+            isIE = ua.indexOf('msie') !== -1,
+            version = parseInt(ua.substr(4, 2), 10);
+
+        // Internet Explorer 8 and lower
+        if (isIE && version < 9) {
+            var link = document.createElement('a');
+            link.href = url;
+            document.body.appendChild(link);
+            link.click();
+        }
+
+        // All other browsers can use the standard window.location.href (they don't lose HTTP_REFERER like Internet Explorer 8 & lower does)
+        else {
+            window.location.href = url;
+        }
+    }
+
+</script>

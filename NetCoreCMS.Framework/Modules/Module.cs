@@ -19,15 +19,17 @@ using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
 using Newtonsoft.Json;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
+using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Modules
 {
     public class Module : IModule
     {
         List<Widget> _widgets;
-        
+
+        public int ExecutionOrder { get; set; }
         public string Id { get; set; }
-        public string ModuleId { get; set; }
+        public string ModuleName { get; set; }
         public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Author { get; set; }
@@ -37,8 +39,7 @@ namespace NetCoreCMS.Framework.Modules
         public string ManualUrl { get; set; }
         public bool AntiForgery { get; set; } 
         public string Version { get; set; }
-        public string MinNccVersion { get; set; }
-        public string MaxNccVersion { get; set; }
+        public string NccVersion { get; set; }        
         public string Description { get; set; }        
         public string Category { get; set; }
         public List<NccModuleDependency> Dependencies { get; set; }
@@ -48,11 +49,10 @@ namespace NetCoreCMS.Framework.Modules
         public string Folder{ get; set; }
         public string TablePrefix { get; set; }
         public string AssemblyPath { get; set; }
-        public int ModuleStatus { get; set; }
- 
+        public int ModuleStatus { get; set; } 
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
-
         public List<Menu> Menus { get; set; }
+        public string Area { get; set; }
 
         public Module()
         {
@@ -62,37 +62,37 @@ namespace NetCoreCMS.Framework.Modules
 
         public bool Activate()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
         public bool Inactivate()
         {
-            throw new NotImplementedException();
+            return true;
         }
 
-        public void Init(IServiceCollection services)
+        public void Init(IServiceCollection services, INccSettingsService nccSettingsService)
         {
             //Initilize the module here
         }
   
         public void RegisterRoute(IRouteBuilder routes)
         {
-            throw new NotImplementedException();
+            
         }
 
-        public bool Install(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Update(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
             return true;
         }
 
-        public bool Uninstall(NccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        public bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
         {
-            throw new NotImplementedException();
+            return true;
+        }
+
+        public bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable)
+        {            
+            return true;
         }
     }
 }

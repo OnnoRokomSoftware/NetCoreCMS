@@ -8,7 +8,6 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Models;
@@ -17,6 +16,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
 using NetCoreCMS.Framework.Core.Mvc.Models;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Repository
 {
@@ -40,13 +40,15 @@ namespace NetCoreCMS.Framework.Core.Repository
 
         public List<TagCloudItemViewModel> LoadTagCloud()
         {
+            //var tablePrefix = SetupHelper.GetCoreModuleTablePrefix();
             NccDbQueryText query = new NccDbQueryText();
-            query.MySql_QueryText = @"SELECT nt.Name, COUNT(*) TotalPost
-                                        FROM ncc_tag AS nt
-                                        INNER JOIN ncc_post_tag AS npt ON npt.TagId= nt.Id
-                                        INNER JOIN ncc_post AS np ON np.Id = npt.Postid
+            query.MySql_QueryText = $@"SELECT nt.Name, COUNT(*) TotalPost
+                                        FROM {GlobalContext.GetTableName<NccTag>()} AS nt
+                                        INNER JOIN {GlobalContext.GetTableName<NccPostTag>()} AS npt ON npt.TagId= nt.Id
+                                        INNER JOIN {GlobalContext.GetTableName<NccPost>()} AS np ON np.Id = npt.Postid
                                         WHERE np.PublishDate<=CURRENT_TIME()
-	                                        AND np.PostStatus = " + ((int)NccPost.NccPostStatus.Published).ToString() + @"
+	                                        AND np.Status = {(EntityStatus.Active).ToString()}
+	                                        AND np.PostStatus = {((int)NccPost.NccPostStatus.Published).ToString()}
                                         GROUP BY nt.Id
                                         ORDER BY nt.Name ASC ";
             return ExecuteSqlQuery<TagCloudItemViewModel>(query).ToList();

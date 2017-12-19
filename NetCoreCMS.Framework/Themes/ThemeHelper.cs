@@ -18,12 +18,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System;
 using NetCoreCMS.Framework.Core.Messages;
+using NetCoreCMS.Framework.Core.Mvc.Cache;
+using NetCoreCMS.Framework.Core.Auth;
+using System.Collections.Concurrent;
 
 namespace NetCoreCMS.Framework.Themes
 {
     public static class ThemeHelper
     {
-        private static List<NccResource> _nccResources = new List<NccResource>();
+        private static volatile ConcurrentDictionary<string, NccResource> _nccResources = new ConcurrentDictionary<string,NccResource>();
         public static Theme ActiveTheme { get; set; }
         public static NccWebSite WebSite { get; set; }
         public static string GetCurrentLanguage()
@@ -59,6 +62,10 @@ namespace NetCoreCMS.Framework.Themes
                 RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/bootstrap/css/bootstrap.min.css", NccResource.IncludePosition.Header, "2.3.3", 2, false);
                 RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/bootstrap/js/bootstrap.min.js", NccResource.IncludePosition.Header, "2.3.3", 4, false);
             }
+            else if (resourceLibName == NccResource.BootstrapBootbox)
+            {
+                RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/bootstrap-bootbox/js/bootbox.min.js", NccResource.IncludePosition.Header, "4.4.0", 6, false);
+            }
             else if (resourceLibName == NccResource.BootstrapDateTimePicker)
             {
                 RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css", NccResource.IncludePosition.Header, "2.3.3", 2, false);
@@ -80,6 +87,10 @@ namespace NetCoreCMS.Framework.Themes
                 RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/DataTables/FixedColumns/css/fixedColumns.bootstrap.css", NccResource.IncludePosition.Header, "3.2.3", 5, false);
                 RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/DataTables/FixedColumns/js/dataTables.fixedColumns.min.js", NccResource.IncludePosition.Footer, "3.2.3", 6, false);
             }
+            else if (resourceLibName == NccResource.FontAwesome)
+            {
+                RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/font-awesome/css/font-awesome.min.css", NccResource.IncludePosition.Header, "", 5, false);
+            }
         }
        
         private static void RegisterNccResource(NccResource.ResourceType type, string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
@@ -93,35 +104,33 @@ namespace NetCoreCMS.Framework.Themes
                 UseMinify = minify,
                 Version = version
             };
-
-            var old = _nccResources.Where(x => x.FilePath.ToLower() == resourcePath.ToLower()).FirstOrDefault();
-
-            if (old != null)
-            {   
+            
+            if (_nccResources.ContainsKey(resourcePath))
+            {
+                var old = _nccResources[resourcePath];
                 if(old.Version != version)
                 {
-                    _nccResources.Remove(old);
-                    _nccResources.Add(nccResource);
+                    _nccResources[resourcePath] = nccResource;
                 }                
             }
             else
             {
-                _nccResources.Add(nccResource);
+                _nccResources.TryAdd(resourcePath, nccResource);
             }
         }
 
         private static void UnRegisterNccResource(NccResource.ResourceType type, string resourcePath)
         {
-            var resource = _nccResources.Where(x => x.FilePath.ToLower() == resourcePath.ToLower()).FirstOrDefault();
-            if (resource != null)
-            {   
-                _nccResources.Remove(resource);
+            if (_nccResources.ContainsKey(resourcePath))
+            {
+                NccResource val;
+                _nccResources.TryRemove(resourcePath, out val);
             }
         }
 
         public static List<NccResource> GetAllResources(NccResource.ResourceType type, NccResource.IncludePosition position)
         {
-            return _nccResources.Where(x=>x.Type == type && x.Position == position).OrderBy(x=>x.Order).ToList();
+            return _nccResources.Where(x=>x.Value.Type == type && x.Value.Position == position).OrderBy(x=>x.Value.Order).Select(x=> x.Value).ToList();
         }
 
         #region Website Informations
@@ -262,7 +271,7 @@ namespace NetCoreCMS.Framework.Themes
 
         public static string PrepareMenuHtml(string position, string currentLanguage)
         {
-            var menus = GlobalContext.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();
+            var menus = GlobalContext.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();            
             var menuTxt = "";
 
             foreach (var item in menus)
@@ -277,32 +286,95 @@ namespace NetCoreCMS.Framework.Themes
 
         public static string PrepareMenu(List<NccMenuItem> menuItem, string currentLanguage, string upperSubMenuCls = "nav navbar-nav", string menuItemCls = "")
         {
-            var menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
+            var user = GlobalContext.GetCurrentUser();            
+            var subMenuText = "";
 
             menuItem = menuItem.OrderBy(m => m.MenuOrder).ToList();
+
             foreach (var item in menuItem)
             {
-                var hasChildren = item.Childrens.Count > 0;
-                if (hasChildren)
+                var addItem = false;
+
+                if (item.IsAnonymous)
                 {
+                    addItem = true;
+                }
+                else if (ControllerActionCache.ControllerActions.Where(x=>x.MainController == item.Controller && x.MainAction == item.Action && x.ModuleName == item.Module).Count() > 0) {
 
-                    var subMenuText = "<li class=\"" + menuItemCls + "\">";
-
-                    if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
-                        subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
-                    else
-                        subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
-
-                    subMenuText += PrepareMenu(item.Childrens, currentLanguage, "dropdown-menu multi-level", "dropdown-submenu");
-                    menuTxt += subMenuText + "</li>";
+                    if (user != null)
+                    {
+                        if (item.IsAllowAuthenticated || user.Roles.Where(x => x.Role.Name.Equals(NccCmsRoles.SuperAdmin)).Count() > 0)
+                        {
+                            addItem = true;
+                        }
+                        else
+                        {
+                            if (string.IsNullOrEmpty(item.Module))
+                            {
+                                if (user.ExtraDenies.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
+                                {
+                                    if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => string.IsNullOrEmpty(y.ModuleName) && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                    else if (user.ExtraPermissions.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (user.ExtraDenies.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
+                                {
+                                    if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == item.Module && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                    else if (user.ExtraPermissions.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
+                                    {
+                                        addItem = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    menuTxt += ListItemHtml(item, currentLanguage);
+                    addItem = true;
                 }
+
+                if (addItem)
+                {
+                    var hasChildren = item.Childrens.Count > 0;
+                    if (hasChildren)
+                    {
+                        subMenuText = "<li class=\"" + menuItemCls + "\">";
+
+                        if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
+                            subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+                        else
+                            subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+
+                        subMenuText += PrepareMenu(item.Childrens, currentLanguage, "dropdown-menu multi-level", "dropdown-submenu");
+                        subMenuText += "</li>";
+                    }
+                    else
+                    {
+                        subMenuText += ListItemHtml(item, currentLanguage);
+                    }
+                }            
             }
 
-            menuTxt += "</ul>";
+            var menuTxt = "";
+            if(string.IsNullOrEmpty(subMenuText) == false)
+            {
+                menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
+                menuTxt += subMenuText;
+                menuTxt += "</ul>";
+            }
+
             return menuTxt;
         }
 

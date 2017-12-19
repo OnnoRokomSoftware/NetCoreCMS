@@ -97,14 +97,14 @@ namespace NetCoreCMS.Framework.Core.Data
 
         private static void RegisterUserModuleModels(ModelBuilder modelBuilder, IEnumerable<Type> typeToRegisters)
         {
-            var customModelBuilderTypes = typeToRegisters.Where(x => typeof(INccModuleBuilder).IsAssignableFrom(x));
+            var customModelBuilderTypes = typeToRegisters.Where(x => typeof(IModelBuilder).IsAssignableFrom(x));
             foreach (var builderType in customModelBuilderTypes)
             {
                 try
                 {
-                    if (builderType != null && builderType != typeof(INccModuleBuilder))
+                    if (builderType != null && builderType != typeof(IModelBuilder))
                     {
-                        var builder = (INccModuleBuilder)Activator.CreateInstance(builderType);
+                        var builder = (IModelBuilder)Activator.CreateInstance(builderType);
                         builder.Build(modelBuilder);
                     }
                 }

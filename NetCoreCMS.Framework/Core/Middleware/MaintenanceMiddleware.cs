@@ -28,19 +28,20 @@ namespace NetCoreCMS.Framework.Core.Middleware
         private readonly ILogger logger;
         private readonly MaintenanceWindow window;
 
-        public MaintenanceMiddleware(RequestDelegate next, MaintenanceWindow window, ILogger<MaintenanceMiddleware> logger)
+        public MaintenanceMiddleware(RequestDelegate next, MaintenanceWindow window, ILoggerFactory loggerFactory)
         {
             this.next = next;
-            this.logger = logger;
+            this.logger = loggerFactory.CreateLogger<MaintenanceMiddleware>();
             this.window = window;
         }
 
         public async Task Invoke(HttpContext context)
         {
-            var config = SetupHelper.LoadSetup();            
+             
+            var config = SetupHelper.LoadSetup();
             if (config.IsMaintenanceMode)
             {
-                if(context.User.IsInRole(NccCmsRoles.SuperAdmin) || context.Request.Path.Value.ToLower() == "/login" || context.Request.Path.Value.ToLower() == "/admin" || context.Request.Path.Value.ToLower() == "/account/login")
+                if (context.User.IsInRole(NccCmsRoles.SuperAdmin) || context.Request.Path.Value.ToLower() == "/login" || context.Request.Path.Value.ToLower() == "/admin" || context.Request.Path.Value.ToLower() == "/account/login")
                 {
                     await next.Invoke(context);
                 }
@@ -60,6 +61,7 @@ namespace NetCoreCMS.Framework.Core.Middleware
             {
                 await next.Invoke(context);
             }
+             
         }
     }
 

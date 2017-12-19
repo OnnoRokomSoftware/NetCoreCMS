@@ -27,6 +27,18 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 if (SetupHelper.IsAdminCreateComplete && GlobalContext.WebSite.IsMultiLangual)
                 {
                     routes.MapRoute(
+                        name: "multiLangualAreaDefault",
+                        template: "{area:exists}/{controller}/{action}/{id?}",
+                         defaults: new { controller = "Home", action = "Index" }
+                    );
+
+                    routes.MapRoute(
+                        name: "multiLangualAreaDefaultWithLang",
+                        template: "{lang:lang}/{area:exists}/{controller}/{action}/{id?}",
+                         defaults: new { controller = "Home", action = "Index" }
+                    );
+
+                    routes.MapRoute(
                         name: "MultiLangAnyControlerAction",
                         template: "{lang:lang}/{controller}/{action}/{id?}",
                         defaults: new { controller = "Home", action = "Index" }
@@ -88,10 +100,16 @@ namespace NetCoreCMS.Framework.Core.Extensions
                 else
                 {
                     routes.MapRoute(
+                        name: "areaDefault",
+                        template: "{area:exists}/{controller}/{action}/{id?}",
+                         defaults: new { controller = "Home", action = "Index" }
+                    );
+
+                    routes.MapRoute(
                     name: "login",
                     template: "Login",
                     defaults: new { controller = "Account", action = "Login" });
-
+                    
                     routes.MapRoute(
                         name: "default",
                         template: "{controller}/{action}/{id?}",
@@ -118,6 +136,11 @@ namespace NetCoreCMS.Framework.Core.Extensions
                         template: "{lang:lang}/",
                         defaults: new { controller = "Home", action = "Index" }
                     );
+
+                    routes.MapRoute(
+                     name: "ForMultiLangRedirect",
+                     template: "{*catchall}",
+                     defaults: new { controller = "Home", action = "ResourceNotFound" });
                 }
             });
             return app;

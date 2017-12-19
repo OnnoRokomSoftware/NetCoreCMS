@@ -8,7 +8,6 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Data;
@@ -94,6 +93,8 @@ namespace NetCoreCMS.Framework.Core.Repository
 
         private string GetBaseSearchQuery(string keyword)
         {
+            string pageDetailsTableName = GlobalContext.GetTableName<NccPageDetails>();
+            string postDetailsTableName = GlobalContext.GetTableName<NccPostDetails>();
             keyword = keyword.Trim();
             string descriptionField = "MetaDescription";
             string languageField = "'/',`Language`,";
@@ -114,49 +115,49 @@ namespace NetCoreCMS.Framework.Core.Repository
             }
             keywordsOr += ") ";
             int rank = 1;
-            var baseQuery = @"SELECT Title, Url, IFNULL(Description,'') as Description, MIN(Rank) as Rank FROM ( 
-                                SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" AND Title LIKE '" + keyword + @"'
-                                UNION ALL SELECT Title, CONCAT(" + languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" AND Title LIKE '" + keyword + @"'
+            var baseQuery = $@"SELECT Title, Url, IFNULL(Description,'') as Description, MIN(Rank) as Rank FROM ( 
+                                SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Title LIKE '{keyword}'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Title LIKE '{keyword}'
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" AND Title LIKE '" + keyword + @"%'
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" AND Title LIKE '" + keyword + @"%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Title LIKE '{keyword}%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Title LIKE '{keyword}%'
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" AND Title LIKE '%" + keyword + @"%'
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" AND Title LIKE '%" + keyword + @"%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Title LIKE '%{keyword}%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Title LIKE '%{keyword}%'
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsAnd + @"
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsAnd + @"
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsAnd} 
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsAnd}
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsOr + @"
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsOr + @"
-
-
-
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" AND Slug LIKE '" + keyword + @"%'
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" AND Slug LIKE '" + keyword + @"%'
-
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" AND Slug LIKE '%" + keyword + @"%'
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" AND Slug LIKE '%" + keyword + @"%'
-
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsAnd.Replace("Title", "Slug") + @"
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsAnd.Replace("Title", "Slug") + @"
-
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsOr.Replace("Title", "Slug") + @"
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsOr.Replace("Title", "Slug") + @"
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsOr}
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsOr}
 
 
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" AND MetaDescription LIKE '" + keyword + @"%'
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" AND MetaDescription LIKE '" + keyword + @"%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Slug LIKE '{keyword}%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Slug LIKE '{keyword}%'
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" AND MetaDescription LIKE '%" + keyword + @"%'
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" AND MetaDescription LIKE '%" + keyword + @"%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Slug LIKE '%{keyword}%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND Slug LIKE '%{keyword}%'
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsAnd.Replace("Title", "MetaDescription") + @"
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsAnd.Replace("Title", "MetaDescription") + @"
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsAnd.Replace("Title", "Slug")}
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsAnd.Replace("Title", "Slug")}
 
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_page_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsOr.Replace("Title", "MetaDescription") + @"
-                                UNION ALL SELECT Title, CONCAT("+ languageField + @"'/Post/',slug) AS Url, " + descriptionField + @" AS Description, " + (rank++) + @" AS Rank FROM ncc_post_details WHERE `Status` = " + EntityStatus.Active + @" " + keywordsOr.Replace("Title", "MetaDescription") + @"
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsOr.Replace("Title", "Slug")}
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsOr.Replace("Title", "Slug")}
+
+
+
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND MetaDescription LIKE '{keyword}%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` ={EntityStatus.Active} AND MetaDescription LIKE '{keyword}%'
+
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND MetaDescription LIKE '%{keyword}%'
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} AND MetaDescription LIKE '%{keyword}%'
+
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsAnd.Replace("Title", "MetaDescription")}
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsAnd.Replace("Title", "MetaDescription")}
+
+                                UNION ALL SELECT Title, CONCAT({languageField}'/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {pageDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsOr.Replace("Title", "MetaDescription")}
+                                UNION ALL SELECT Title, CONCAT({languageField}'/Post/',slug) AS Url, {descriptionField} AS Description, {(rank++)} AS Rank FROM {postDetailsTableName} WHERE `Status` = {EntityStatus.Active} {keywordsOr.Replace("Title", "MetaDescription")}
 
                             ) AS a
                             GROUP BY Title, Url, Description

@@ -22,23 +22,24 @@ namespace NetCoreCMS.Framework.Modules.Widgets
     {
         /// <summary>
         /// Pass required information for writing your own module widget class.
-        /// </summary>
-        /// <param name="widgetId">Unique ID for your widget. Use GUID sothat it does not conflict with other modules widgets.</param>
+        /// </summary>        
         /// <param name="title">This text will show on widget title.</param>
         /// <param name="description">Description will show on admin panel widget section.</param>
         /// <param name="footer">Pass text for footer.</param>
-        /// <param name="isDefault">Use true for showing Name, Footer and Language field.</param>
-        public Widget(string widgetId, string title, string description, string footer, bool isDefault = true)
+        /// <param name="addDefaultConfig">Use true for showing Name, Footer and Language field.</param>
+        public Widget(string title, string description, string footer, bool addDefaultConfig = true)
         {
-            WidgetId = widgetId;
-            Title = title;
+            var type = GetType();
+            var moduleName = type.Assembly.ManifestModule.Name.Substring(0, type.Assembly.ManifestModule.Name.Length - 4);            
+            WidgetId = $"{moduleName}_{type.Namespace}.{type.Name}";
+            Title = string.IsNullOrWhiteSpace(title) ? type.Name : title.Trim();
             Description = description;
             Footer = footer;
             DisplayTitle = "";
-            IsDefault = isDefault;            
+            AddDefaultConfig = addDefaultConfig;            
         }
 
-        public bool IsDefault { get; }
+        public bool AddDefaultConfig { get; }
         public string WidgetId { get; }
         public string Title { get; }
         public string DisplayTitle { get; set; }
@@ -52,7 +53,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         public long WebSiteWidgetId { get; set; }
         public string ViewFileName { get; set; }
         public string ConfigViewFileName { get; set; } 
-        public abstract void Init(long websiteWidgetId);
+        public abstract void Init(long websiteWidgetId, bool renderConfig = false);
         public abstract string RenderBody();
         public string RenderConfig()
         {
@@ -70,7 +71,7 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                                         <input type = 'text' class='form-control' id='footer' name='footer' value='' placeholder='Enter Footer'>
                                     </div>
                                 </div>";
-            if (IsDefault == false)
+            if (AddDefaultConfig == false)
             {
                 titleInput = "";
                 footerInput = "";

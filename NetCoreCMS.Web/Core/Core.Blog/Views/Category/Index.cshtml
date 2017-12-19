@@ -1,0 +1,29 @@
+﻿@model List<NccCategory>
+@{
+    Layout = Constants.SiteLayoutName;
+    Title = _T["Category"];
+    SubTitle = "";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <h2>@_T["All Categories"]</h2>
+        <hr />
+        @foreach (var item in Model)
+        {
+            var details = item.CategoryDetails.Where(x => x.Language == ViewBag.CurrentLanguage).FirstOrDefault();
+            if (details == null)
+            {
+                details = item.CategoryDetails.FirstOrDefault();
+            }
+            if (details != null)
+            {
+                <div style="border: dashed 1px gray;padding:10px 10px;">
+                    <h3><a asp-controller="Category" asp-action="Index" asp-route-slug="@details.Slug">@details.Name </a></h3>
+                </div>
+                <br />
+            }
+        }
+    </div>
+</div>

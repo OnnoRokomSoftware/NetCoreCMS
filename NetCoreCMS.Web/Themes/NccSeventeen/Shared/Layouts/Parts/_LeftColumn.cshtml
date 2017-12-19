@@ -1,6 +1,6 @@
 ﻿@{
-    var menusLeft = ThemeHelper.GetMenus("LeftColumn", CurrentLanguage);
-    var zoneLeftWidgets = ThemeHelper.GetWebsiteWidgets(CurrentLayout, "LeftSidebar");
+    var menusLeft = GetMenus("LeftColumn", CurrentLanguage);
+    var zoneLeftWidgets = GetWebSiteWidgets(CurrentLayout, "LeftSidebar");
 
     if (menusLeft.Count > 0 || zoneLeftWidgets.Count > 0)
     {
@@ -46,38 +46,35 @@
             <div class="row">
                 @foreach (var item in zoneLeftWidgets)
                 {
-                    var widgets = ThemeHelper.GetWidgets(item.WidgetId);
-                    foreach (var widget in widgets)
+                    var widget = item.Widget;
+                    widget.Init(item.Id);
+                    if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage == widget.Language)
                     {
-                        widget.Init(item.Id);
-                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage == widget.Language)
+                        if (widget.DisplayTitle != "" || widget.Footer != "")
                         {
-                            if (widget.DisplayTitle != "" || widget.Footer != "")
-                            {
-                                <div class='panel panel-default'>
-                                    @if (widget.DisplayTitle != "")
-                                    {
-                                        <div class='panel-heading'>
-                                            @_T[widget.DisplayTitle]
-                                        </div>
-                                    }
-                                    <div class='panel-body'>
-                                        @Html.Raw(widget.RenderBody())
+                            <div class='panel panel-default'>
+                                @if (widget.DisplayTitle != "")
+                                {
+                                    <div class='panel-heading'>
+                                        @_T[widget.DisplayTitle]
                                     </div>
-                                    @if (widget.Footer != "")
-                                    {
-                                        <div class='panel-footer'>
-                                            @_T[widget.Footer]
-                                        </div>
-                                    }
-                                </div>
-                            }
-                            else
-                            {
-                                <div>
+                                }
+                                <div class='panel-body'>
                                     @Html.Raw(widget.RenderBody())
                                 </div>
-                            }
+                                @if (widget.Footer != "")
+                                {
+                                    <div class='panel-footer'>
+                                        @_T[widget.Footer]
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <div>
+                                @Html.Raw(widget.RenderBody())
+                            </div>
                         }
                     }
                 }

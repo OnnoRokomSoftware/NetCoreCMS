@@ -18,14 +18,14 @@ namespace NetCoreCMS.ImageSlider.Models.Entity
     public class NccImageSlider : BaseModel<long>
     {
         public NccImageSlider()
-        { 
+        {
             Interval = 6;
             ShowNav = true;
             ShowSideNav = true;
             ImageWidth = "100%";
             ImageItems = new List<NccImageSliderItem>();
         }
-          
+
         public string ContainerStyle { get; set; }
         //public int TotalSlide { get; set; }
         public int Interval { get; set; }
@@ -36,16 +36,17 @@ namespace NetCoreCMS.ImageSlider.Models.Entity
         public List<NccImageSliderItem> ImageItems { get; set; }
     }
 
-    public class NccImageSliderItem: BaseModel<long>
+    public class NccImageSliderItem : BaseModel<long>
     {
         public NccImageSliderItem()
         {
-            
+
         }
-          
+
         [Required]
         public string Path { get; set; }
         public string Description { get; set; }
         public int Order { get; set; }
+        public NccImageSlider NccImageSlider { get; set; }
     }
 }

@@ -27,13 +27,13 @@ namespace NetCoreCMS.ImageSlider.Controllers
     public class ImageSliderHomeController : NccController
     {
         #region Initialization
-        private NccSettingsService _nccSettingsService;
+        private INccSettingsService _nccSettingsService;
         private NccImageSliderService _nccImageSliderService;
 
         private NccImageSliderSettings nccImageSliderSettings;
         private List<NccImageSliderItem> nccImageSliderItemList = new List<NccImageSliderItem>();
 
-        public ImageSliderHomeController(NccSettingsService nccSettingsService, ILoggerFactory factory, NccImageSliderService nccImageSliderService)
+        public ImageSliderHomeController(INccSettingsService nccSettingsService, ILoggerFactory factory, NccImageSliderService nccImageSliderService)
         {
             _logger = factory.CreateLogger<ImageSliderHomeController>();
             nccImageSliderSettings = new NccImageSliderSettings();
@@ -45,14 +45,14 @@ namespace NetCoreCMS.ImageSlider.Controllers
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Slider Manage", Url = "/ImageSliderHome/Manage", IconCls = "", Order = 1, SubActions = new string[] { "Delete", "" })]
+        [AdminMenuItem(Name = "Slider Manage", IconCls = "", Order = 1, SubActions = new string[] { "Delete" })]
         public ActionResult Manage()
         {
             var itemList = _nccImageSliderService.LoadAll().OrderByDescending(x => x.Id).ToList(); ;
             return View(itemList);
         }
 
-        [AdminMenuItem(Name = "New Slider", Url = "/ImageSliderHome/CreateEdit", Order = 2)]
+        [AdminMenuItem(Name = "New Slider", Order = 2)]
         public ActionResult CreateEdit(long Id = 0)
         {
             NccImageSlider item = new NccImageSlider();

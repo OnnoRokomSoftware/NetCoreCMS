@@ -12,7 +12,7 @@
   "MaxNccVersion": "0.4.5",
   "Category": "Default",
   "PreviewImage": "screenshot.png",
-  "IsActive": true,
+  "IsActive": false,
   "MenuLocations": [
     "Top",
     "Navigation",
@@ -22,10 +22,11 @@
   ],
   "Layouts": [
     {
-      "Name": "SiteLayout",
-      "PreviewImage": "SiteLayoutScreenshot.png",
+      "Name": "HomeLayout",
+      "PreviewImage": "HomeLayoutScreenshot.png",
       "LayoutZones": [
         "TopBar",
+        "FullWidthSlider",
         "Featured",
         "LeftSidebar",
         "RightSidebar",
@@ -33,11 +34,10 @@
       ]
     },
     {
-      "Name": "HomeLayout",
-      "PreviewImage": "HomeLayoutScreenshot.png",
+      "Name": "SiteLayout",
+      "PreviewImage": "SiteLayoutScreenshot.png",
       "LayoutZones": [
         "TopBar",
-        "FullWidthSlider",
         "Featured",
         "LeftSidebar",
         "RightSidebar",
@@ -52,15 +52,6 @@
         "Featured",
         "LeftSidebar",
         "RightSidebar",
-        "Footer"
-      ]
-    },
-    {
-      "Name": "FullWidthLayout",
-      "PreviewImage": "FullWidthLayoutScreenshot.png",
-      "LayoutZones": [
-        "TopBar",
-        "Featured",
         "Footer"
       ]
     },
@@ -86,8 +77,8 @@
     }
   ],
   "Settings": {
-    "version": 7.7999999999999892,
-    "NccVersion": "0.4.1",
-    "style": "green-skin.css"
+    "version": 7.8999999999999888,
+    "style": "blue-skin.css",
+    "NccVersion": "0.4.1"
   }
 }

@@ -10,8 +10,10 @@
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
+using NetCoreCMS.Framework.Core.Mvc.Cache;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Services;
@@ -34,14 +36,14 @@ namespace NetCoreCMS.Modules.News.Controllers
     public class NeNewsController : NccController
     {
         #region Initialization
-        private NccSettingsService _nccSettingsService;
+        private INccSettingsService _nccSettingsService;
         private NeNewsService _neNewsService;
         private NeCategoryService _neCategoryService;
         private NccUserService _nccUserService;
-
+        private readonly IMemoryCache _cache;
         private NewsSettings nccNewsSettings;
 
-        public NeNewsController(NccSettingsService nccSettingsService, ILoggerFactory factory, NeNewsService neNewsService, NeCategoryService neCategoryService, NccUserService nccUserService)
+        public NeNewsController(INccSettingsService nccSettingsService, ILoggerFactory factory, NeNewsService neNewsService, NeCategoryService neCategoryService, NccUserService nccUserService, IMemoryCache memoryCache)
         {
             _logger = factory.CreateLogger<NeNewsController>();
             nccNewsSettings = new NewsSettings();
@@ -50,12 +52,13 @@ namespace NetCoreCMS.Modules.News.Controllers
             _neNewsService = neNewsService;
             _neCategoryService = neCategoryService;
             _nccUserService = nccUserService;
+            _cache = memoryCache;
             nccNewsSettings = _nccSettingsService.GetByKey<NewsSettings>() ?? new NewsSettings();
         }
         #endregion
 
         #region Admin Panel
-        [AdminMenuItem(Name = "Manage News", Url = "/NeNews/Manage", IconCls = "", SubActions = new string[] { "ManageAjax", "StatusUpdate", "Delete", }, Order = 1)]
+        [AdminMenuItem(Name = "Manage News", IconCls = "", SubActions = new string[] { "ManageAjax", "StatusUpdate", "Delete", }, Order = 1)]
         public ActionResult Manage()
         {
             return View();
@@ -127,11 +130,11 @@ namespace NetCoreCMS.Modules.News.Controllers
 
                     if (item.CreateBy == item.ModifyBy)
                     {
-                        str.Add(_nccUserService.Get(item.CreateBy)?.UserName);
+                        str.Add(_cache.GetNccUser(item.CreateBy)?.UserName);
                     }
                     else
                     {
-                        str.Add("<b>Cr:</b> " + _nccUserService.Get(item.CreateBy)?.UserName + "<br /><b>Mo:</b> " + _nccUserService.Get(item.ModifyBy)?.UserName);
+                        str.Add("<b>Cr:</b> " + _cache.GetNccUser(item.CreateBy)?.UserName + "<br /><b>Mo:</b> " + _cache.GetNccUser(item.ModifyBy)?.UserName);
                     }
 
                     if (item.CreationDate == item.ModificationDate)
@@ -171,7 +174,7 @@ namespace NetCoreCMS.Modules.News.Controllers
             });
         }
 
-        [AdminMenuItem(Name = "New News", Url = "/NeNews/CreateEdit", IconCls = "fa-plus", Order = 2)]
+        [AdminMenuItem(Name = "New News", IconCls = "fa-plus", Order = 2)]
         public ActionResult CreateEdit(long Id = 0)
         {
             NeNews item = new NeNews();
@@ -354,7 +357,7 @@ namespace NetCoreCMS.Modules.News.Controllers
 
         #region User Panel
         [AllowAnonymous]
-        [SiteMenuItem(Name = "News", Url = "/NeNews", IconCls = "", Order = 1)]
+        [SiteMenuItem(Name = "News", IconCls = "", Order = 1)]
         public ActionResult Index(string category = "", int page = 0, int count = 10)
         {
             List<NeNews> itemList = new List<NeNews>();

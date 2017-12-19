@@ -1,5 +1,5 @@
 language: csharp
-solution: NetCoreCMS.sln
+solution: NetCoreCMS.Git.sln
 sudo: required
 dist: trusty
 dotnet: 2.0.0
@@ -20,4 +20,4 @@ before_script:
   - dotnet restore
 
 script:
-  - dotnet build ./NetCoreCMS.sln
+  - dotnet build ./NetCoreCMS.Git.sln

@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Loader;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,9 +26,7 @@ using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.Core.Mvc.Repository;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.IoC;
-using Microsoft.AspNetCore.Mvc.Filters;
-using NetCoreCMS.Framework.Core.Mvc.FIlters;
-using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Core.Mvc.Filters;
 using System.Threading.Tasks;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
@@ -56,9 +53,9 @@ namespace NetCoreCMS.Framework.Modules
             instantiatedModuleList = new List<IModule>();
         }
 
-        public List<IModule> LoadModules(IDirectoryContents moduleRootFolder)
+        public void LoadModules(IDirectoryContents moduleRootFolder)
         {   
-            foreach (var moduleFolder in moduleRootFolder.Where(x => x.IsDirectory))
+            foreach (var moduleFolder in moduleRootFolder.Where(x => x.IsDirectory).ToList())
             {
                 try
                 {
@@ -88,32 +85,26 @@ namespace NetCoreCMS.Framework.Modules
                         {
                             if(modules.Count(x=>x.Folder == moduleFolder.Name && x.Path == moduleFolder.PhysicalPath) == 0)
                             {
-                                modules.Add(new Module { Folder = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
+                                modules.Add(new Module { ExecutionOrder = 100, ModuleName = moduleFolder.Name, Folder = moduleFolder.Name, Assembly = assembly, Path = moduleFolder.PhysicalPath });
                             }
                         }
                         else
                         {
                             DependencyContextLoader.Default.Load(assembly);
                         }                        
-                    }
-
-                    LoadModuleDependencies(moduleFolder);
+                    }                    
                 }
                 catch (Exception ex)
                 {
                     throw new Exception("Could not load module from " + moduleFolder);
                 }
             }
-
-            GlobalContext.SetModuleDependencies(_moduleDependencies);
-
-            return modules;
         }
 
-        private void LoadModuleDependencies(IFileInfo moduleFolder)
+        private void LoadModuleDependencies(string modulePath, string moduleName)
         {
 
-            var moduleDependencyFolder = new DirectoryInfo(Path.Combine(moduleFolder.PhysicalPath, Constants.ModuleDepencencyFolder, "Module"));
+            var moduleDependencyFolder = new DirectoryInfo(Path.Combine(modulePath, Constants.ModuleDepencencyFolder, "Module"));
             if (moduleDependencyFolder.Exists)
             {
                 foreach (var file in moduleDependencyFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories))
@@ -136,7 +127,7 @@ namespace NetCoreCMS.Framework.Modules
             }
 
 
-            var viewFolder = new DirectoryInfo(Path.Combine(moduleFolder.PhysicalPath, Constants.ModuleDepencencyFolder,"View"));
+            var viewFolder = new DirectoryInfo(Path.Combine(modulePath, Constants.ModuleDepencencyFolder,"View"));
             if (viewFolder.Exists)
             {
                 foreach (var file in viewFolder.GetFileSystemInfos("*.dll", SearchOption.AllDirectories))
@@ -145,13 +136,13 @@ namespace NetCoreCMS.Framework.Modules
                     try
                     {
                         var moduleDependency = new ModuleDependedLibrary();
-                        if (_moduleDependencies.ContainsKey(moduleFolder.Name))
+                        if (_moduleDependencies.ContainsKey(moduleName))
                         {
-                            moduleDependency = (ModuleDependedLibrary)_moduleDependencies[moduleFolder.Name];
+                            moduleDependency = (ModuleDependedLibrary)_moduleDependencies[moduleName];
                         }
                         else
                         {
-                            _moduleDependencies.Add(moduleFolder.Name, moduleDependency);
+                            _moduleDependencies.Add(moduleName, moduleDependency);
                         }
                         
                         if (moduleDependency.AssemblyPaths.Contains(Path.Combine(file.FullName)) == false)
@@ -159,8 +150,7 @@ namespace NetCoreCMS.Framework.Modules
                             assembly = NccAssemblyLoader.LoadFromFileName(file.FullName);
                             DependencyContextLoader.Default.Load(assembly);
                             moduleDependency.AssemblyPaths.Add(file.FullName);
-
-                            _moduleDependencies[moduleFolder.Name] = moduleDependency;
+                            _moduleDependencies[moduleName] = moduleDependency;
                         }
                     }
                     catch (FileLoadException ex)
@@ -176,7 +166,8 @@ namespace NetCoreCMS.Framework.Modules
         }
 
         public List<IModule> AddModulesAsApplicationPart(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
-        {  
+        {
+            var nccSettingsService = serviceProvider.GetService<INccSettingsService>();
 
             foreach (var module in modules)
             {
@@ -195,7 +186,10 @@ namespace NetCoreCMS.Framework.Modules
                         if (moduleStatus == NccModule.NccModuleStatus.Active)
                         {                            
                             // Register controller from modules
-                            mvcBuilder.AddApplicationPart(module.Assembly);                            
+                            mvcBuilder.AddApplicationPart(module.Assembly);
+                            // Register dependency in modules
+                            LoadModuleDependencies(module.Path, module.Folder);
+                            moduleInstance.Init(services, nccSettingsService);
                         }
                         else if (moduleStatus == NccModule.NccModuleStatus.Duplicate)
                         {
@@ -212,11 +206,9 @@ namespace NetCoreCMS.Framework.Modules
                             );
                             continue;
                         }                        
-                        
-                        // Register dependency in modules                            
-                        moduleInstance.Init(services);                        
+                                                                       
                         instantiatedModuleList.Add(moduleInstance);
-                        GlobalContext.Modules.Add(moduleInstance);
+                        GlobalContext.Modules.Add(moduleInstance);                        
                     }
                 }
                 catch(ReflectionTypeLoadException rtle)
@@ -236,20 +228,22 @@ namespace NetCoreCMS.Framework.Modules
                     );
                 }
             }
-            
+
+            GlobalContext.SetModuleDependencies(_moduleDependencies);
+
             services.Configure<RazorViewEngineOptions>(options =>
             {
                 options.ViewLocationExpanders.Add(new ModuleViewLocationExpendar());
             });
-
+            
             mvcBuilder.AddRazorOptions(o =>
             {
-                foreach (var module in modules)
+                foreach (var module in instantiatedModuleList.Where(x=>x.ModuleStatus == (int) NccModule.NccModuleStatus.Active).ToList())
                 {
                     o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Assembly.Location));
                 }
             });
-
+            
             return instantiatedModuleList;
         }
 
@@ -277,13 +271,13 @@ namespace NetCoreCMS.Framework.Modules
         private NccModule.NccModuleStatus VerifyModuleInstallation(IModule module, IServiceProvider serviceProvider)
         {
             var moduleService = serviceProvider.GetService<NccModuleService>();
-            NccModule moduleEntity = moduleService.GetByModuleId(module.ModuleId);
+            NccModule moduleEntity = moduleService.GetByModuleName(module.ModuleName);
             if(moduleEntity == null)
             {
                 moduleEntity = CreateNccModuleEntity(module);
                 moduleService.Save(moduleEntity);
             }
-            else if(moduleEntity.ModuleId != module.ModuleId)
+            else if(moduleEntity.ModuleName != module.ModuleName)
             {
                 return NccModule.NccModuleStatus.Duplicate;
             }
@@ -301,33 +295,42 @@ namespace NetCoreCMS.Framework.Modules
 
         public List<Menu> LoadMenus(IModule module)
         {
-            var menuList = new List<Menu>();
+            var menuList = new List<Menu>();            
             var controllers =  module.Assembly.GetTypes().Where(x => typeof(NccController).IsAssignableFrom(x)).ToList();
             foreach (var item in controllers)
             {
                 var adminMenus = item.GetCustomAttributes<AdminMenu>();
-                var adminMenulist = MakeMenuList(module.ModuleId, adminMenus, item, Menu.MenuType.Admin);
+                var adminMenulist = MakeMenuList(module, adminMenus, item, Menu.MenuType.Admin);
                 menuList.AddRange(adminMenulist);
 
                 var siteMenus = item.GetCustomAttributes<SiteMenu>();
-                var siteMenulist = MakeMenuList(module.ModuleId, siteMenus, item, Menu.MenuType.WebSite);
+                var siteMenulist = MakeMenuList(module, siteMenus, item, Menu.MenuType.WebSite);
                 menuList.AddRange(siteMenulist);
             }
             
             return menuList;
         }
 
-        private List<Menu> MakeMenuList(string moduleId, IEnumerable<IMenu> moduleMenus, Type controllerType, Menu.MenuType menuType)
+        private List<Menu> MakeMenuList(IModule module, IEnumerable<IMenu> moduleMenus, Type controllerType, Menu.MenuType menuType)
         {
             var menuList = new List<Menu>();
             var hasAllowAnonymousOnController = false;
+            var hasAllowAuthenticatedOnController = false;
+
             var anonymous = controllerType.GetCustomAttributes<AllowAnonymousAttribute>();
 
             if(anonymous != null && anonymous.Count() > 0)
             {
                 hasAllowAnonymousOnController = true;
             }
-            
+
+            var allowAuthenticated = controllerType.GetCustomAttributes<AllowAuthenticated>();
+
+            if (allowAuthenticated != null && allowAuthenticated.Count() > 0)
+            {
+                hasAllowAuthenticatedOnController = true;
+            }
+
             foreach (IMenu menu in moduleMenus)
             {
                 var existingMenu = menuList.Where(x => x.DisplayName == menu.Name).FirstOrDefault();
@@ -336,18 +339,20 @@ namespace NetCoreCMS.Framework.Modules
                     existingMenu = new Menu();
                     menuList.Add(existingMenu);
                 }
-                
-                existingMenu.Action = controllerType.Name;
-                existingMenu.DisplayName = menu.Name;
-                existingMenu.ModuleId = moduleId;
+
+                existingMenu.Area = module.Area;
                 existingMenu.Controller = controllerType.Name;
+                existingMenu.Action = "Index";
+                existingMenu.DisplayName = menu.Name;
+                existingMenu.ModuleName = module.Folder;
+                
                 existingMenu.Type = menuType;
-                existingMenu.MenuItems = GetMenuItems(moduleId, controllerType, menuType, hasAllowAnonymousOnController); 
+                existingMenu.MenuItems = GetMenuItems(module, controllerType, menuType, hasAllowAnonymousOnController, hasAllowAuthenticatedOnController); 
             }
             return menuList;
         }
 
-        private List<MenuItem> GetMenuItems(string moduleId, Type controller, Menu.MenuType menuType, bool hasAllowAnonymousOnController)
+        private List<MenuItem> GetMenuItems(IModule module, Type controller, Menu.MenuType menuType, bool hasAllowAnonymousOnController, bool hasAllowAuthenticatedOnController)
         {
             var menuItemList = new List<MenuItem>();
             var actions = controller.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
@@ -356,26 +361,34 @@ namespace NetCoreCMS.Framework.Modules
                 if(menuType == Menu.MenuType.Admin)
                 {
                     var adminMenuAttributes = item.GetCustomAttributes<AdminMenuItem>();
-                    var amiList = MakeMenuItemList(moduleId, controller, item, adminMenuAttributes, hasAllowAnonymousOnController);
+                    var amiList = MakeMenuItemList(module, controller, item, adminMenuAttributes, hasAllowAnonymousOnController, hasAllowAuthenticatedOnController);
                     menuItemList.AddRange(amiList);
                 }
                 else if(menuType == Menu.MenuType.WebSite)
                 {
                     var siteMenuAttributes = item.GetCustomAttributes<SiteMenuItem>();
-                    var smiList = MakeMenuItemList(moduleId, controller, item, siteMenuAttributes, hasAllowAnonymousOnController);
+                    var smiList = MakeMenuItemList(module, controller, item, siteMenuAttributes, hasAllowAnonymousOnController, hasAllowAuthenticatedOnController);
                     menuItemList.AddRange(smiList);
                 }
             }
             return menuItemList;
         }
 
-        private List<MenuItem> MakeMenuItemList(string moduleId, Type controller, MethodInfo action, IEnumerable<IMenuItem> attributes, bool hasAllowAnonymousOnController)
+        private List<MenuItem> MakeMenuItemList(IModule module, Type controller, MethodInfo action, IEnumerable<IMenuItem> attributes, bool hasAllowAnonymousOnController, bool hasAllowAuthenticatedOnController)
         {
             var menuItemList = new List<MenuItem>();
             var actionHasAllowAnonymous = false;
-            if (hasAllowAnonymousOnController && ( action.GetCustomAttributes<NccAuthorize>().Count() == 0 || action.GetCustomAttributes<AllowAnonymousAttribute>().Count() > 0) )
+
+            if (hasAllowAnonymousOnController || action.GetCustomAttributes<AllowAnonymousAttribute>().Count() > 0)
             {
                 actionHasAllowAnonymous = true;
+            }
+
+            var actionHasAllowAuthenticated = false;
+
+            if (hasAllowAuthenticatedOnController || action.GetCustomAttributes<AllowAuthenticated>().Count() > 0)
+            {
+                actionHasAllowAuthenticated = true;
             }
 
             foreach (IMenuItem smi in attributes)
@@ -383,67 +396,101 @@ namespace NetCoreCMS.Framework.Modules
                 var ca = new MenuItem();                
                 ca.Name = action.Name;
                 ca.DisplayName = smi.Name;
+                ca.Area = module.Area;
                 ca.Controller = controller.Name.Substring(0, controller.Name.Length - 10);
                 ca.Action = action.Name;
                 ca.Url = smi.Url;
+                ca.HasAllowAnonymous = actionHasAllowAnonymous;
+                ca.HasAllowAuthenticated = actionHasAllowAuthenticated;
+
+                if (string.IsNullOrWhiteSpace(ca.Url))
+                {
+                    if (string.IsNullOrWhiteSpace(module.Area))
+                    {
+                        ca.Url = "/" + ca.Controller + "/" + ca.Action;
+                    }
+                    else
+                    {
+                        ca.Url = "/" + ca.Area + "/" + ca.Controller + "/" + ca.Action;
+                    }
+                }
+                                
                 ca.IconCls = smi.IconCls;
                 ca.Order = smi.Order;
+
                 ca.SubActions = string.Join(",", smi.SubActions);
-                ca.HasAllowAnonymous = actionHasAllowAnonymous;
+                
                 menuItemList.Add(ca);
 
                 var controllerAction = new ControllerAction();
+
+                controllerAction.MainArea = ca.Area;
                 controllerAction.MainAction = ca.Action;
                 controllerAction.MainController = ca.Controller;
                 controllerAction.MainMenuName = ca.DisplayName;
-                controllerAction.ModuleId = moduleId;
+                controllerAction.ModuleName = module.Folder;
+
+                controllerAction.SubArea = ca.Area;
                 controllerAction.SubController = ca.Controller;
                 controllerAction.SubAction = ca.Action;
-                
+
+                controllerAction.HasAllowAnonymous = actionHasAllowAnonymous;
+                controllerAction.HasAllowAuthenticated = actionHasAllowAuthenticated;
+
                 ControllerActionCache.ControllerActions.Add(controllerAction);
 
                 foreach (var item in smi.SubActions)
                 {
                     var controllerActionForSub = new ControllerAction();
+                    controllerActionForSub.MainArea = ca.Area;
                     controllerActionForSub.MainAction = ca.Action;
                     controllerActionForSub.MainController = ca.Controller;
                     controllerActionForSub.MainMenuName = ca.DisplayName;
-                    controllerActionForSub.ModuleId = moduleId;
-                    (controllerActionForSub.SubController, controllerActionForSub.SubAction) = GetControllerActionFromUrl(ca.Controller, item);                    
+                    controllerActionForSub.ModuleName = module.Folder;
+
+                    (controllerActionForSub.SubArea, controllerActionForSub.SubController, controllerActionForSub.SubAction) = GetControllerActionFromSubActionUrl(ca.Area, ca.Controller, ca.Action, item);
+
                     ControllerActionCache.ControllerActions.Add(controllerActionForSub);
                 }
             }
+
             return menuItemList;
         }
 
-        private (string Controller, string Action) GetControllerActionFromUrl(string mainController, string subAction)
+        private (string Area, string Controller, string Action) GetControllerActionFromSubActionUrl(string mainArea, string mainController, string mainAction, string subAction)
         {
             if(string.IsNullOrEmpty(subAction) == false)
             {
-                string controller = "", action = "";
+                string area = "", controller = "", action = "";
+                var parts = subAction.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
 
-                if (subAction.StartsWith('/'))
-                {
-                    var parts = subAction.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-                    if (parts.Length > 1)
+                if (parts.Length > 0)
+                {                    
+                    if (parts.Length > 2)
+                    {
+                        area = parts[0];
+                        controller = parts[1];
+                        action = parts[2];
+                    }
+                    else if (parts.Length > 1)
                     {
                         controller = parts[0];
                         action = parts[1];
                     }
-                    else if (parts.Length == 1)
+                    else if (parts.Length > 0)
                     {
-                        controller = parts[0];
-                        action = "Index";
+                        controller = mainController;
+                        action = parts[0];
                     }
 
-                    return (controller, action);
+                    return (area, controller, action);
                 }
                 else
                 {
-                    return (mainController, subAction);
+                    return (mainArea, mainController, mainAction);
                 }
             }
-            return ("","");
+            return ("", "","");
         }
 
         public void AddModuleServices(IServiceCollection services)
@@ -535,7 +582,7 @@ namespace NetCoreCMS.Framework.Modules
                     var shortCodeTypeList = module.Assembly.GetTypes().Where(x => typeof(IShortCode).IsAssignableFrom(x)).ToList();
                     foreach (var item in shortCodeTypeList)
                     {
-                        services.AddTransient(item);
+                        services.AddScoped(item);
                     }
                 }
                 catch (Exception ex)
@@ -557,10 +604,10 @@ namespace NetCoreCMS.Framework.Modules
         public void AddModuleFilters(IServiceCollection services)
         {
             services.AddScoped<NccAuthFilter>();
-            services.AddTransient<NccLoggerFilter>();
-            services.AddTransient<NccLanguageFilter>();
-            services.AddTransient<NccGlobalExceptionFilter>();
-
+            services.AddScoped<NccLoggerFilter>();
+            services.AddScoped<NccLanguageFilter>();
+            services.AddScoped<NccGlobalExceptionFilter>();
+            
             var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
             foreach (var module in activeModules)
             {
@@ -597,8 +644,8 @@ namespace NetCoreCMS.Framework.Modules
                     module.Widgets = new List<Widget>();
                     var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
                     foreach (var widgetType in widgetTypeList)
-                    {
-                        services.AddTransient(widgetType);
+                    {                        
+                        services.AddScoped(widgetType);
                     }
                 }
                 catch (Exception ex)
@@ -666,6 +713,7 @@ namespace NetCoreCMS.Framework.Modules
                             module.Widgets.Add(widgetInstance);
                             widgetList.Add(widgetInstance);
                             GlobalContext.Widgets.Add(widgetInstance);
+                            GlobalContext.WidgetTypes.Add(widgetInstance.WidgetId, widgetType);
                         }
                     }
                 }
@@ -693,7 +741,7 @@ namespace NetCoreCMS.Framework.Modules
                 option.Filters.Add(serviceProvider.GetService<NccAuthFilter>());                       
                 option.Filters.Add(serviceProvider.GetService<NccDataAuthFilter>());
                 option.Filters.Add(serviceProvider.GetService<NccLanguageFilter>());
-                option.Filters.Add(serviceProvider.GetService<NccLoggerFilter>());
+                option.Filters.Add(serviceProvider.GetService<NccLoggerFilter>());                
             });
 
             var actionFilterList = new List<INccActionFilter>();
@@ -728,31 +776,52 @@ namespace NetCoreCMS.Framework.Modules
             GlobalContext.ShortCodes = _nccShortCodeProvider.RegisterShortCodes(GlobalContext.Modules);
         }
         
-        public void LoadModuleInfo(IModule module, IModule moduleInfo)
+        public void LoadModuleInfo(IModule module, IModule moduleAssembly)
         {
-            var moduleConfigFile = Path.Combine(moduleInfo.Path, Constants.ModuleConfigFileName);
+            var moduleConfigFile = Path.Combine(moduleAssembly.Path, Constants.ModuleConfigFileName);
             if (File.Exists(moduleConfigFile))
             {                
                 var moduleInfoFileJson = File.ReadAllText(moduleConfigFile);
-                var loadedModule = JsonConvert.DeserializeObject<Module>(moduleInfoFileJson);
-                module.ModuleId = loadedModule.ModuleId;
-                module.AntiForgery = loadedModule.AntiForgery;
-                module.Author = loadedModule.Author;
-                module.Category = loadedModule.Category;
-                module.Dependencies = loadedModule.Dependencies;
-                module.Description = loadedModule.Description;
-                module.ModuleId = loadedModule.ModuleId;
-                module.TablePrefix = loadedModule.TablePrefix;
-                module.ModuleTitle = loadedModule.ModuleTitle;
-                module.MinNccVersion = loadedModule.MinNccVersion;
-                module.MaxNccVersion = loadedModule.MaxNccVersion;
-                module.SortName = loadedModule.SortName;
-                module.Version = loadedModule.Version;
-                module.Website = loadedModule.Website;
-                module.Assembly = moduleInfo.Assembly;
-                module.Path = moduleInfo.Path;
-                module.ModuleStatus = moduleInfo.ModuleStatus;
-                module.Folder = moduleInfo.Folder;
+                var loadedModuleInfo = JsonConvert.DeserializeObject<Module>(moduleInfoFileJson);
+                //module.ModuleName = loadedModule.ModuleName;                
+                module.AntiForgery = loadedModuleInfo.AntiForgery;
+                module.Author = loadedModuleInfo.Author;
+                module.Category = loadedModuleInfo.Category;
+                module.Dependencies = loadedModuleInfo.Dependencies;
+                module.Description = loadedModuleInfo.Description;
+                //module.ModuleName = loadedModule.ModuleName;
+                module.TablePrefix = loadedModuleInfo.TablePrefix;
+                module.ModuleTitle = loadedModuleInfo.ModuleTitle;
+                module.NccVersion = loadedModuleInfo.NccVersion;                
+                module.SortName = loadedModuleInfo.SortName;
+                module.Version = loadedModuleInfo.Version;
+                module.Website = loadedModuleInfo.Website;
+                module.Assembly = moduleAssembly.Assembly;
+                module.Path = moduleAssembly.Path;
+                module.ModuleStatus = moduleAssembly.ModuleStatus;
+                module.Folder = moduleAssembly.Folder;
+                module.ModuleName = moduleAssembly.ModuleName;
+                module.ExecutionOrder = moduleAssembly.ExecutionOrder;
+
+                //moduleInfo.ModuleName = loadedModule.ModuleName;                
+                moduleAssembly.AntiForgery = loadedModuleInfo.AntiForgery;
+                moduleAssembly.Author = loadedModuleInfo.Author;
+                moduleAssembly.Category = loadedModuleInfo.Category;
+                moduleAssembly.Dependencies = loadedModuleInfo.Dependencies;
+                moduleAssembly.Description = loadedModuleInfo.Description;
+                moduleAssembly.ModuleName = loadedModuleInfo.ModuleName;
+                moduleAssembly.TablePrefix = loadedModuleInfo.TablePrefix;
+                moduleAssembly.ModuleTitle = loadedModuleInfo.ModuleTitle;
+                moduleAssembly.NccVersion = loadedModuleInfo.NccVersion;                
+                moduleAssembly.SortName = loadedModuleInfo.SortName;
+                moduleAssembly.Version = loadedModuleInfo.Version;
+                moduleAssembly.Website = loadedModuleInfo.Website; 
+
+                if(loadedModuleInfo.ExecutionOrder != 0)
+                {
+                    module.ExecutionOrder = loadedModuleInfo.ExecutionOrder;
+                    moduleAssembly.ExecutionOrder = loadedModuleInfo.ExecutionOrder;
+                }
             }
             else
             {
@@ -774,10 +843,9 @@ namespace NetCoreCMS.Framework.Modules
             var nccModule = new NccModule();
             nccModule.Name = module.Folder;
             nccModule.AntiForgery = module.AntiForgery;
-            nccModule.ModuleId = module.ModuleId;
+            nccModule.ModuleName = module.ModuleName;
             nccModule.Dependencies = module.Dependencies;
-            nccModule.MinNccVersion = module.MinNccVersion;
-            nccModule.MaxNccVersion = module.MaxNccVersion;
+            nccModule.NccVersion = module.NccVersion;            
             nccModule.Path = module.Path;
             nccModule.Folder = module.Folder;
             nccModule.Version = module.Version;
@@ -787,6 +855,7 @@ namespace NetCoreCMS.Framework.Modules
             nccModule.WebSite = module.Website;
             nccModule.ModuleTitle = module.ModuleTitle;
             nccModule.Folder = module.Folder;
+            nccModule.ExecutionOrder = module.ExecutionOrder;
             
             var coreModuleDir = Directory.GetParent(nccModule.Path);
 

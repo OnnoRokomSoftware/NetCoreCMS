@@ -17,6 +17,8 @@ using NetCoreCMS.Framework.Core.Events.App;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.App
 {
@@ -31,7 +33,7 @@ namespace NetCoreCMS.Framework.Core.App
         public static IServiceProvider ServiceProvider { get; set; }
 
         private static bool _isShutdown = false;
-        private static int _heartBit = 2000;        
+        private static int _heartBitRate = 2000;        
         private static Thread _starterThread;
         
         public static void StartForerver(Thread starterThread, ParameterizedThreadStart webHostStarter, string currentDirectory, string[] args)
@@ -62,7 +64,7 @@ namespace NetCoreCMS.Framework.Core.App
                         Console.WriteLine(ex.Message);
                     }
 
-                    Thread.Sleep(_heartBit);
+                    Thread.Sleep(_heartBitRate);
                 }
             }
             catch (Exception ex)

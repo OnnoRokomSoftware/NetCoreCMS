@@ -17,6 +17,8 @@ using NetCoreCMS.Framework.Core.Repository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Caching.Memory;
+using NetCoreCMS.Framework.Core.Mvc.Cache;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
@@ -24,12 +26,14 @@ namespace NetCoreCMS.Framework.Core.Services
     {
         private readonly NccUserRepository _entityRepository;
         private readonly NccPermissionRepository _nccPermissionRepository;
+        private readonly IMemoryCache _cache;
         private readonly List<string> userRelations;
 
-        public NccUserService(NccUserRepository entityRepository, NccPermissionRepository nccPermissionRepository)
+        public NccUserService(NccUserRepository entityRepository, NccPermissionRepository nccPermissionRepository, IMemoryCache memoryCache)
         {
             _entityRepository = entityRepository;
             _nccPermissionRepository = nccPermissionRepository;
+            _cache = memoryCache;
             userRelations = new List<string>() {
                     "Roles",
                     "Roles.Role",
@@ -44,12 +48,17 @@ namespace NetCoreCMS.Framework.Core.Services
          
         public NccUser Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(
-                entityId,
-                isAsNoTracking,
-                userRelations
-                );
-
+            var user = _cache.GetNccUser(entityId);
+            if(user == null)
+            {
+                user = _entityRepository.Get(
+                           entityId,
+                           isAsNoTracking,
+                           userRelations
+                       );
+                _cache.SetNccUser(user);
+            }
+            return user;
         }
 
         public List<NccUser> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)

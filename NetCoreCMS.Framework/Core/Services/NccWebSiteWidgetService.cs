@@ -15,25 +15,31 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using System;
+using Microsoft.Extensions.Caching.Memory;
+using NetCoreCMS.Framework.Core.Mvc.Cache;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     public class NccWebSiteWidgetService : IBaseService<NccWebSiteWidget>
     {
         private readonly NccWebSiteWidgetRepository _entityRepository;
+        private readonly IMemoryCache _cache;
 
-        public NccWebSiteWidgetService()
-        {
-        }
-
-        public NccWebSiteWidgetService(NccWebSiteWidgetRepository entityRepository)
+        public NccWebSiteWidgetService(NccWebSiteWidgetRepository entityRepository, IMemoryCache memoryCache)
         {
             _entityRepository = entityRepository;
+            _cache = memoryCache;
         }
 
         public NccWebSiteWidget Get(long entityId, bool isAsNoTracking = false)
         {
-            return _entityRepository.Get(entityId, isAsNoTracking);
+            var widget = _cache.GetNccWebSiteWidget(entityId);
+            if(widget == null)
+            {
+                widget = _entityRepository.Get(entityId, isAsNoTracking);
+                _cache.SetNccWebSiteWidget(widget);
+            }
+            return widget;
         }
 
         public List<NccWebSiteWidget> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
@@ -65,10 +71,10 @@ namespace NetCoreCMS.Framework.Core.Services
             return entity;
         }
 
-        public void RemoveByModuleThemeLayoutZoneWidget(string module, string theme, string layout, string zone, string widget)
+        public void RemoveByModuleThemeLayoutZoneWidget(string moduleName, string theme, string layout, string zone, string widget)
         {
             var entity = _entityRepository.Query().FirstOrDefault(
-                x => x.ModuleId == module
+                x => x.ModuleName == moduleName
                 && x.ThemeId == theme
                 && x.LayoutName == layout
                 && x.Zone == zone
@@ -144,7 +150,7 @@ namespace NetCoreCMS.Framework.Core.Services
             }
 
             var widgetOrder = entity.WidgetOrder;                        
-            var upEntityList = GetNext(entity.ModuleId, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
+            var upEntityList = GetNext(entity.ModuleName, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
             entity.WidgetOrder += 1;
 
             foreach (var item in upEntityList)
@@ -173,7 +179,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
             var widgetOrder = entity.WidgetOrder;            
             entity.WidgetOrder -= 1;
-            var upEntityList = GetPrevious(entity.ModuleId, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
+            var upEntityList = GetPrevious(entity.ModuleName, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
             foreach (var item in upEntityList)
             {
                 if (item.WidgetOrder == entity.WidgetOrder)
@@ -194,10 +200,10 @@ namespace NetCoreCMS.Framework.Core.Services
             return "Success: update successful";
         }
 
-        public NccWebSiteWidget Get(string module, string theme, string layout, string zone, string widget)
+        public NccWebSiteWidget Get(string moduleName, string theme, string layout, string zone, string widget)
         {
             var entity = _entityRepository.Query().OrderBy(x=>x.WidgetOrder).FirstOrDefault(
-                x => x.ModuleId == module
+                x => x.ModuleName == moduleName
                 && x.ThemeId == theme
                 && x.LayoutName == layout
                 && x.Zone == zone
@@ -209,7 +215,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<NccWebSiteWidget> GetNext(string module, string theme, string layout, string zone, int order)
         {
             var entityList = _entityRepository.Query().OrderBy(x => x.WidgetOrder).Where(
-                x => x.ModuleId == module
+                x => x.ModuleName == module
                 && x.ThemeId == theme
                 && x.LayoutName == layout
                 && x.Zone == zone
@@ -218,10 +224,10 @@ namespace NetCoreCMS.Framework.Core.Services
             return entityList;            
         }
 
-        public List<NccWebSiteWidget> GetPrevious(string module, string theme, string layout, string zone, int order)
+        public List<NccWebSiteWidget> GetPrevious(string moduleName, string theme, string layout, string zone, int order)
         {
             var entityList = _entityRepository.Query().OrderByDescending(x => x.WidgetOrder).Where(
-                x => x.ModuleId == module
+                x => x.ModuleName == moduleName
                 && x.ThemeId == theme
                 && x.LayoutName == layout
                 && x.Zone == zone

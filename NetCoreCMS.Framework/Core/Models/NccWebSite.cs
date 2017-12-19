@@ -21,8 +21,7 @@ namespace NetCoreCMS.Framework.Core.Models
         {
             WebSiteInfos = new List<NccWebSiteInfo>();
             WebSitePageSize = 10;
-            AdminPageSize = 10;
-            TablePrefix = "ncc_";
+            AdminPageSize = 10;            
         }
         
         public string DomainName { get; set; }

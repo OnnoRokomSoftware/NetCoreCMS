@@ -23,6 +23,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NetCoreCMS.Framework.i18n;
 using Microsoft.Extensions.Logging;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -52,6 +53,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         
         public async Task<string> RenderToStringAsync<T>(string viewName, object model)
         {
+            var errorMessage = "";
             try
             {
                 var httpContext = _httpContextAccessor.HttpContext; //new DefaultHttpContext { RequestServices = _serviceProvider };            
@@ -127,9 +129,17 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
             catch (Exception ex)
             {
                 _logger.LogError(ex.Message,ex);
+                if (GlobalContext.HostingEnvironment.EnvironmentName.Contains("Development"))
+                {
+                    errorMessage = $"<p style='color:red;'> {ex.Message}</p>"; ;
+                }
+                else
+                {
+                    errorMessage = $"<p style='color:red;'> Error in widget {viewName}</p>"; ;
+                }
             }
 
-            return string.Empty;
+            return errorMessage;
         }
     }
 }

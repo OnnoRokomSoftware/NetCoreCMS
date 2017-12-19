@@ -226,7 +226,7 @@ namespace NetCoreCMS.Framework.Setup
             return true;
         }
 
-        public static async Task SaveBasicData(NccUser nccUser, NccDbContext nccDbConetxt, UserManager<NccUser> userManager, RoleManager<NccRole> roleManager, NccSignInManager<NccUser> signInManager, WebSiteInfo setupInfo/*, NccWebSiteWidgetService nccWebSiteWidgetService, NccWebSiteService nccWebSiteService*/)
+        public static async Task SaveBasicData(NccUser nccUser, NccDbContext nccDbConetxt, UserManager<NccUser> userManager, RoleManager<NccRole> roleManager, NccSignInManager<NccUser> signInManager, WebSiteInfo setupInfo)
         {
             string enDemoTitle = "";
             string enDemoSlug = "";
@@ -608,12 +608,16 @@ namespace NetCoreCMS.Framework.Setup
                 EnableCache = webSiteInfo.EnableCache
             };
 
-            if (webSiteInfo.TablePrefix?.Trim() != "")
+            if (string.IsNullOrEmpty(webSiteInfo.TablePrefix) == false)
             {
                 if (webSiteInfo.TablePrefix.EndsWith("_"))
                     webSite.TablePrefix = webSiteInfo.TablePrefix.Trim();
                 else
                     webSite.TablePrefix = webSiteInfo.TablePrefix.Trim() + "_";
+            }
+            else
+            {
+                webSite.TablePrefix = "";
             }
 
             webSite.WebSiteInfos = new List<NccWebSiteInfo>();
@@ -658,8 +662,13 @@ namespace NetCoreCMS.Framework.Setup
                     break;
             }
             
-            GlobalContext.Services.AddCustomizedIdentity();
-            
+        }
+
+        internal static string GetCoreModuleTablePrefix()
+        {
+            var siteTablePrefix = TablePrefix ?? "Ncc_";
+            var tablePrefix = siteTablePrefix + "core";
+            return tablePrefix;
         }
     }
 }

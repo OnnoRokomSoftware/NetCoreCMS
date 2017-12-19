@@ -1,0 +1,42 @@
+﻿@using NetCoreCMS.Framework.Core.Mvc.Models
+
+@{
+    var i = 0;
+    //_T = (INccTranslator) ViewData["_T"];
+    //CurrentLanguage = (string) ViewData["CurrentLanguage"];
+}
+@model CategoryViewModel
+
+@foreach (var item in Model.CategoryList)
+{
+    if (Model.ShowCategoryHasPost == true && item.Posts.Count <= 0)
+    {
+        continue;
+    }
+    var itemDetails = item.CategoryDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+    if (itemDetails == null)
+    {
+        itemDetails = item.CategoryDetails.FirstOrDefault();
+    }
+    if (itemDetails != null)
+    {
+        if (i == 0)
+        {
+            i = 1;
+        }
+        else
+        {
+            <hr style="margin:0px;" />
+        }
+        <p>
+            <a href="/Category/@itemDetails.Slug">
+                @Html.Raw(itemDetails.Title)
+                @if (Model.ShowPostCount)
+                {
+                    <span>(@item.Posts.Count)</span>
+                }
+            </a>
+        </p>
+    }
+}
+    

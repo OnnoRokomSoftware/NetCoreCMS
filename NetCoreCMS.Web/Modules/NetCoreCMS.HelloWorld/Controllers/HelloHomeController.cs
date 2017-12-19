@@ -15,27 +15,32 @@ using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using PaulMiami.AspNetCore.Mvc.Recaptcha;
 using Microsoft.AspNetCore.Authorization;
+using NetCoreCMS.Framework.Core.Services;
 
 namespace NetCoreCMS.HelloWorld.Controllers
 {
     [AdminMenu(Name = "Hello Module", Order = 100)]
-    [SiteMenu(Name = "Hello Module Site Menu", Order = 100)]
+    [SiteMenu(Name = "Hello Module Site Menu", Url = "/HelloHome/Index", Order = 100)]
     public class HelloHomeController : NccController
     {
-        public HelloHomeController(ILoggerFactory loggerFactory)
+        private readonly INccSettingsService _nccSettingsService;
+
+        public HelloHomeController(ILoggerFactory loggerFactory, INccSettingsService nccSettingsService)
         {
             _logger = loggerFactory.CreateLogger<HelloHomeController>();
+            _nccSettingsService = nccSettingsService;
         }
 
-        [AdminMenuItem(Name = "Index", Url = "/HelloHome/Index", Order = 1)]
-        [SiteMenuItem(Name = "Hello world Home", Url = "/HelloHome/Index", Order = 1)]
+        [AdminMenuItem(Name = "Index", Order = 1)]
+        [SiteMenuItem(Name = "Hello world Home", Order = 1)]
         public ActionResult Index()
         {
             var nccTranslator = new NccTranslator(CurrentLanguage);
             return View();
         }
 
-        [SiteMenuItem(Name = "Role Home", Url = "/HelloHome/RoleHome", Order = 2)]
+        [SiteMenuItem(Name = "Role Home", Order = 2)]
+        [AllowAuthenticated]
         public ActionResult RoleHome()
         {
             return View();

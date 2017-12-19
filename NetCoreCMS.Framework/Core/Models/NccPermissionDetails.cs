@@ -24,7 +24,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public virtual NccUser DenyUser { get; set; }
         public virtual NccUser AllowUser { get; set; }
 
-        public string ModuleId { get; set; }
+        public string ModuleName { get; set; }
         public string MenuType { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }

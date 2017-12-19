@@ -1,0 +1,75 @@
+﻿@{
+    Layout = Constants.AdminLayoutName;
+    Title = "Menu Management";
+    SubTitle = "Manage menus";
+    var createMenu = "active";
+    var manageMenu = "";
+
+    if (ViewBag.IsManage)
+    {
+        createMenu = "";
+        manageMenu = "active";
+    }
+}
+
+
+@*<ol class="breadcrumb">
+    <li><a asp-controller="Settings" asp-action="Index">Settings</a></li>
+    <li><a href="#">Appearance</a></li>
+    <li><a asp-controller="CmsMenu" asp-action="Index">Menu</a></li>
+</ol>*@
+<div class="row">
+    <div class="col-lg-12">
+        <ul class="nav nav-tabs">
+            <li class="@createMenu">
+                <a href="#createMenu" data-toggle="tab">Create Menu</a>
+            </li>
+            <li class="@manageMenu">
+                <a href="#manageMenu" data-toggle="tab">Manage</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+                <div id="createMenu" class="tab-pane fade in @createMenu">
+                    <div class="panel panel-default" style="border-top:none">
+                        <div class="panel-body">
+                            @await Html.PartialAsync("Partial/_MenuSelectionPanel")
+                            @await Html.PartialAsync("Partial/_MenuSelectionTree")
+                        </div>
+                    </div>
+                </div>
+                <div id="manageMenu" class="tab-pane fade in @manageMenu">
+                    <div class="panel panel-default" style="border-top:none">
+                        <div class="panel-body">
+                            @await Html.PartialAsync("Partial/_ManageMenu")
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+@*<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#createMenu">Create Menu</a></li>
+    <li><a data-toggle="tab" href="#manageMenu">Manage</a></li>
+</ul>*@
+
+@*<div class="tab-content">
+    <div id="manageMenu" class="tab-pane fade" style="padding: 10px 10px;">
+        @await  Html.PartialAsync("Partial/_ManageMenu")
+    </div>
+    <div id="createMenu" class="tab-pane fade in active" style="padding: 10px 10px;">
+        <div class="row">
+            @await Html.PartialAsync("Partial/_MenuSelectionPanel")
+            @await Html.PartialAsync("Partial/_MenuSelectionTree")
+        </div>
+    </div> 
+</div>*@
+
+@section Scripts{
+
+    <script src="~/lib/jquery-ui/jquery-ui.js"></script> 
+    <script src="~/lib/jquery-sortable/source/js/jquery-sortable-min.js"></script>
+    <link href="/Core.Cms/css/nastedDragDrop.css" rel="stylesheet" />
+    <script src="/Core.Cms/js/nestedDragDrop.js"></script>
+    <link href="/Core.Cms/css/menu.css" rel="stylesheet" />
+    <script src="/Core.Cms/js/menu.js"></script>
+}

@@ -200,7 +200,7 @@ namespace NetCoreCMS.Framework.Core.Services
             return pages;
         }
 
-        public List<ArchiveItemViewModel> LoadAtchive(bool decendingOrder = true)
+        public List<ArchiveItemViewModel> LoadArchive(bool decendingOrder = true)
         {
             return _entityRepository.LoadArchive(decendingOrder);
         }

@@ -22,7 +22,8 @@ namespace NetCoreCMS.Framework.Core.Models
             Dependencies = new List<NccModuleDependency>();
         }
 
-        public string ModuleId { get; set; }
+        public int ExecutionOrder { get; set; }
+        public string ModuleName { get; set; }
         public bool IsCore { get; set; }
         public string ModuleTitle { get; set; }
         public string Description { get; set; }
@@ -32,8 +33,7 @@ namespace NetCoreCMS.Framework.Core.Models
         
         public bool AntiForgery { get; set; }
         public string Version { get; set; }
-        public string MinNccVersion { get; set; }
-        public string MaxNccVersion { get; set; }        
+        public string NccVersion { get; set; }        
         public string Path { get; set; }
         public string Folder { get; set; }
 

@@ -1,0 +1,37 @@
+﻿@using NetCoreCMS.Framework.Core.Mvc.Models
+
+@{
+    var i = 0;
+    //_T = (INccTranslator) ViewData["_T"];
+    //CurrentLanguage = (string) ViewData["CurrentLanguage"];
+}
+@model RecentPostViewModel
+
+@foreach (var item in Model.PostList)
+{
+    var postDetails = item.PostDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+    if (postDetails == null)
+    {
+        postDetails = item.PostDetails.FirstOrDefault();
+    }
+    if (postDetails != null)
+    {
+        if (i == 0)
+        {
+            i = 1;
+        }
+        else
+        {
+            <hr />
+        }
+        <p>
+            <a href="/Post/@postDetails.Slug">@Html.Raw(postDetails.Title)</a>
+            @if (Model.IsDateShow)
+            {
+                <br />
+                <span style="font-size:11px; color:#615d5d;">@_T["Published Date"]: @item.PublishDate.ToString("dd MMM, yyyy")</span>
+            }
+        </p>
+    }
+}
+    

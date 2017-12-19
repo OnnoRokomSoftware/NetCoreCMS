@@ -10,7 +10,7 @@
  
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using NetCoreCMS.Framework.Core.Mvc.FIlters;
+using NetCoreCMS.Framework.Core.Mvc.Filters;
 using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
@@ -40,8 +40,17 @@ namespace NetCoreCMS.Framework.Core.Mvc.Controllers
             }
         }
 
-        public string ShowMessage(string message, MessageType messageType, bool appendMessage = false, bool showAfterRedirect = false)
+        public string ShowMessage(string message, MessageType messageType, bool appendMessage = false, bool showAfterRedirect = false, int durationSecond = 5, bool showCloseButton = true)
         {
+            ViewBag.MessageDuration = durationSecond;
+            ViewBag.MessageShowCloseButton = showCloseButton;
+
+            if (showAfterRedirect)
+            {
+                TempData["MessageDuration"] = durationSecond;
+                TempData["MessageShowCloseButton"] = showCloseButton;
+            }
+
             switch (messageType)
             {
                 case MessageType.Success:

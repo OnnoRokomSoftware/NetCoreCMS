@@ -24,18 +24,18 @@ namespace NetCoreCMS.Framework.Core.Middleware
         private readonly ILogger _logger;
         private readonly IMediator _mediator;
         
-        public RequestTrackerMiddleware(RequestDelegate next, IMediator mediator, ILogger<MaintenanceMiddleware> logger)
+        public RequestTrackerMiddleware(RequestDelegate next, IMediator mediator, ILoggerFactory loggerFactory)
         {
             _next = next;
-            _logger = logger;
+            _logger = loggerFactory.CreateLogger<RequestTrackerMiddleware>();
             _mediator = mediator;            
         }
 
         public async Task Invoke(HttpContext context)
-        {
+        {             
             FireEvent(AppActivity.Type.RequestStart, context);
             await _next.Invoke(context);
-            FireEvent(AppActivity.Type.RequestEnd, context);
+            FireEvent(AppActivity.Type.RequestEnd, context); 
         }
 
         private void FireEvent(AppActivity.Type type, HttpContext context)

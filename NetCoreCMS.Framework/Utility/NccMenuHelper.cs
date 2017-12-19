@@ -34,42 +34,50 @@ namespace NetCoreCMS.Framework.Utility
         { 
             Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic = new Dictionary<AdminMenu, List<AdminMenuItem>>();
 
-            foreach (var module in GlobalContext.Modules)
+            foreach (var module in GlobalContext.GetActiveModules())
             {
-                if (module.ModuleStatus == (int) NccModule.NccModuleStatus.Active)
+                var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
+                foreach (var controller in controllers)
                 {
-                    var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
-                    foreach (var controller in controllers)
+                    try
                     {
-                        try
+                        var atrib = controller.GetTypeInfo().GetCustomAttribute<AdminMenu>();
+                        if (atrib != null && atrib.IsVisible)
                         {
-                            var atrib = controller.GetTypeInfo().GetCustomAttribute<AdminMenu>();
-                            if (atrib != null && atrib.IsVisible)
-                            {
-                                var key = adminMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
+                            var key = adminMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
-                                if (key == null)
+                            if (key == null)
+                            {
+                                adminMenuDic.Add(atrib, new List<AdminMenuItem>());
+                                key = atrib;
+                            }
+                            var actions = controller.GetMethods();
+                            foreach (var item in actions)
+                            {
+                                var menuItem = item.GetCustomAttribute<AdminMenuItem>();
+                                if (menuItem != null && menuItem.IsVisible)
                                 {
-                                    adminMenuDic.Add(atrib, new List<AdminMenuItem>());
-                                    key = atrib;
-                                }
-                                var actions = controller.GetMethods();
-                                foreach (var item in actions)
-                                {
-                                    var menuItem = item.GetCustomAttribute<AdminMenuItem>();
-                                    if (menuItem != null && menuItem.IsVisible)
+                                    menuItem.Module = module.ModuleName;
+                                    menuItem.Area = module.Area;
+                                    menuItem.Controller = controller.Name.Substring( 0, controller.Name.Length - 10 );
+                                    menuItem.Action = item.Name;
+                                    adminMenuDic[key].Add(menuItem);
+
+                                    if (string.IsNullOrWhiteSpace(module.Area))
                                     {
-                                        menuItem.Controller = controller.Name.Substring(0, controller.Name.Length-10);
-                                        menuItem.Action = item.Name;
-                                        adminMenuDic[key].Add(menuItem);
+                                        menuItem.Url = "/" + menuItem.Controller + "/" + menuItem.Action;
+                                    }
+                                    else
+                                    {
+                                        menuItem.Url = "/" + module.Area + "/" + menuItem.Controller + "/" + menuItem.Action;
                                     }
                                 }
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            GlobalMessageRegistry.RegisterMessage(new GlobalMessage() {For = GlobalMessage.MessageFor.Admin, Registrater="MenuHelper", Text = ex.Message, Type = GlobalMessage.MessageType.Error }, new TimeSpan(0, 1, 0));
-                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        GlobalMessageRegistry.RegisterMessage(new GlobalMessage() {For = GlobalMessage.MessageFor.Admin, Registrater="MenuHelper", Text = ex.Message, Type = GlobalMessage.MessageType.Error }, new TimeSpan(0, 1, 0));
                     }
                 }
             }
@@ -84,48 +92,56 @@ namespace NetCoreCMS.Framework.Utility
         {
             Dictionary<SiteMenu, List<SiteMenuItem>> siteMenuDic = new Dictionary<SiteMenu, List<SiteMenuItem>>();
 
-            foreach (var module in GlobalContext.Modules)
+            foreach (var module in GlobalContext.GetActiveModules())
             {
-                if (module.ModuleStatus == (int)NccModule.NccModuleStatus.Active)
+                var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
+                foreach (var controller in controllers)
                 {
-                    var controllers = module.Assembly.DefinedTypes.Select(t => t.AsType()).Where(x => typeof(NccController).IsAssignableFrom(x));
-                    foreach (var controller in controllers)
+                    try
                     {
-                        try
+                        var atrib = controller.GetTypeInfo().GetCustomAttribute<SiteMenu>();
+                        if (atrib != null && atrib.IsVisible)
                         {
-                            var atrib = controller.GetTypeInfo().GetCustomAttribute<SiteMenu>();
-                            if (atrib != null && atrib.IsVisible)
-                            {
-                                var key = siteMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
+                            var key = siteMenuDic.Keys.Where(x => x.Name == atrib.Name).FirstOrDefault();
 
-                                if (key == null)
+                            if (key == null)
+                            {
+                                siteMenuDic.Add(atrib, new List<SiteMenuItem>());
+                                key = atrib;
+                            }
+
+                            var actions = controller.GetMethods();
+                            foreach (var item in actions)
+                            {
+                                var menuItem = item.GetCustomAttribute<SiteMenuItem>();
+                                if (menuItem != null && menuItem.IsVisible)
                                 {
-                                    siteMenuDic.Add(atrib, new List<SiteMenuItem>());
-                                    key = atrib;
-                                }
-                                var actions = controller.GetMethods();
-                                foreach (var item in actions)
-                                {
-                                    var menuItem = item.GetCustomAttribute<SiteMenuItem>();
-                                    if (menuItem != null && menuItem.IsVisible)
+                                    menuItem.Module = module.ModuleName;
+                                    if (string.IsNullOrEmpty(menuItem.Url))
                                     {
-                                        if (string.IsNullOrEmpty(menuItem.Url))
+                                        menuItem.Area = module.Area;
+                                        menuItem.Controller = controller.Name.Substring(0, controller.Name.Length - 10);
+                                        menuItem.Action = item.Name;
+
+                                        if (string.IsNullOrWhiteSpace(module.Area))
                                         {
-                                            menuItem.Controller = controller.Name.Substring(0, controller.Name.Length - 10);
-                                            menuItem.Action = item.Name;
                                             menuItem.Url = "/" + menuItem.Controller + "/" + menuItem.Action;
                                         }
-                                        siteMenuDic[key].Add(menuItem);
-                                    }
+                                        else
+                                        {
+                                            menuItem.Url = "/" + module.Area + "/" + menuItem.Controller + "/" + menuItem.Action;
+                                        }                                        
+                                    }                                    
+                                    siteMenuDic[key].Add(menuItem);
                                 }
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            GlobalMessageRegistry.RegisterMessage(new GlobalMessage() { For = GlobalMessage.MessageFor.Admin, Registrater = "MenuHelper", Text = ex.Message, Type = GlobalMessage.MessageType.Error }, new TimeSpan(0, 1, 0));
-                        }
                     }
-                }
+                    catch (Exception ex)
+                    {
+                        GlobalMessageRegistry.RegisterMessage(new GlobalMessage() { For = GlobalMessage.MessageFor.Admin, Registrater = "MenuHelper", Text = ex.Message, Type = GlobalMessage.MessageType.Error }, new TimeSpan(0, 1, 0));
+                    }
+                }                 
             }
 
             return siteMenuDic;
@@ -168,7 +184,23 @@ namespace NetCoreCMS.Framework.Utility
 
                     if(string.IsNullOrEmpty(subItem.Url) == true)
                     {
-                        subItem.Url = "/" + subItem.Controller + "/" + subItem.Action;
+                        if(string.IsNullOrWhiteSpace(subItem.Area))
+                        {
+                            subItem.Url = "/" + subItem.Controller + "/" + subItem.Action;
+                        }
+                        else
+                        {
+                            subItem.Url = "/" + subItem.Area + "/" + subItem.Controller + "/" + subItem.Action;
+                        }                        
+                    }
+                    else
+                    {
+                        var parts = subItem.Url.Split("/".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+                        if(parts.Length < 3 && string.IsNullOrEmpty(subItem.Area) == false)
+                        {
+                            subItem.Url = "/" + subItem.Area + "/" + subItem.Url;
+                            subItem.Url = subItem.Url.Replace("//", "/");
+                        }
                     }
                     
                     var icon = "fa-arrow-right";
