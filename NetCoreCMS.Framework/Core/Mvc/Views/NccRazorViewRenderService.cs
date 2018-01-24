@@ -7,7 +7,7 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
 using System;
 using System.IO;
 using System.Reflection;
@@ -24,12 +24,14 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using NetCoreCMS.Framework.i18n;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Utility;
+using System.Linq;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
     public interface IViewRenderService
     {
         Task<string> RenderToStringAsync<T>(string viewName, object model);
+        string RenderToString(Type defaultControllerType, string viewName, object model);
     }
 
     public class NccRazorViewRenderService : IViewRenderService
@@ -52,6 +54,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         }
         
         public async Task<string> RenderToStringAsync<T>(string viewName, object model)
+        {
+            return RenderToString(typeof(T), viewName, model);
+        }
+
+        public string RenderToString(Type controllerType, string viewName, object model)
         {
             var errorMessage = "";
             try
@@ -93,10 +100,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     httpContext.Items.Add("NCC_RAZOR_PAGE_PROPERTY_LOGGER", _logger);
                 }
 
-                var typeInfo = typeof(T).GetTypeInfo();
-                //actionContext.ActionDescriptor.ActionName = "Index";
-                //actionContext.ActionDescriptor.ControllerName = "Home";
-                actionContext.ActionDescriptor.DisplayName = typeInfo.Module.Name;
+                var typeInfo = controllerType.GetTypeInfo();
+                var actionName = typeInfo.DeclaredMethods?.FirstOrDefault()?.Name ?? "Index";
+                actionContext.ActionDescriptor.ActionName = actionName;
+                actionContext.ActionDescriptor.ControllerName = typeInfo.Name;
+                actionContext.ActionDescriptor.DisplayName = actionName;
                 actionContext.ActionDescriptor.ControllerTypeInfo = typeInfo;
 
                 using (var sw = new StringWriter())
@@ -122,13 +130,16 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                         new HtmlHelperOptions()
                     );
 
-                    await viewResult.View.RenderAsync(viewContext);
-                    return sw.ToString();
+                    viewResult.View.RenderAsync(viewContext).Wait();
+                    var viewContent = sw.ToString();
+                    //For showing which view file finally used for rendering.
+                    viewContent += $"<!-- View: {viewResult.View.Path}-->";
+                    return viewContent;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex.Message,ex);
+                _logger.LogError(ex.Message, ex);
                 if (GlobalContext.HostingEnvironment.EnvironmentName.Contains("Development"))
                 {
                     errorMessage = $"<p style='color:red;'> {ex.Message}</p>"; ;
@@ -141,5 +152,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
 
             return errorMessage;
         }
+
     }
 }

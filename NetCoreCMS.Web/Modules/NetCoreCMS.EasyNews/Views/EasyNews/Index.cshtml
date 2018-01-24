@@ -1,0 +1,33 @@
+﻿@model List<News>
+
+@{
+    Layout = Constants.SiteLayoutName;
+    Title = "News";
+    SubTitle = "";
+    MetaDescription = "News of the website";
+    MetaKeyword = "News, breaking news, information, current news";
+}
+    
+<div class="row">
+    @foreach (var item in Model)
+    {
+        var details = item.Details.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+        if (details == null)
+        {
+            details = item.Details.FirstOrDefault();
+        }
+        if (details != null)
+        {
+            <div class="col-lg-12">
+                <p>
+                    <a href="/NeNews/Details?newsId=@item.Id" >@details.Name</a>
+                    <hr />
+                </p>
+            </div>
+        }
+    }
+</div>
+
+@section Scripts{
+    
+}

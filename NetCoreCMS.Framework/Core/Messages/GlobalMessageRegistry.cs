@@ -43,18 +43,16 @@ namespace NetCoreCMS.Framework.Core.Messages
 
                 try
                 {
-                    var messages = JsonConvert.SerializeObject(_messageCache, Formatting.Indented);
                     var messageDbFilePath = GetMessageDbFilePath();
+
+                    if(File.Exists(messageDbFilePath) == false)
+                    {
+                        using (File.Open(messageDbFilePath, FileMode.CreateNew, FileAccess.ReadWrite, FileShare.ReadWrite)) { }
+                    }
 
                     if (_messageCache.Count > 0)
                     {
-                        using (var originalFileStream = File.Open(messageDbFilePath, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite))
-                        {
-                            using (var sw = new StreamWriter(originalFileStream))
-                            {
-                                sw.WriteLine(messages);
-                            }
-                        }
+                        NccFileHelper.WriteObject(messageDbFilePath, _messageCache);
                     }
                     else
                     {
@@ -77,29 +75,16 @@ namespace NetCoreCMS.Framework.Core.Messages
             {
                 var messageDbFilePath = GetMessageDbFilePath();
                 if (File.Exists(messageDbFilePath))
-                {
-                    var msgJson = "";
-                    using (var originalFileStream = File.Open(messageDbFilePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+                {  
+                    var msgs = NccFileHelper.LoadObject<Dictionary<string, GlobalMessageEntry>>(messageDbFilePath);
+                    if (msgs != null)
                     {
-                        using (var sw = new StreamReader(originalFileStream))
+                        foreach (var item in msgs)
                         {
-                            msgJson = sw.ReadToEndAsync().Result;
-                        }
-                    }
-
-                    if (string.IsNullOrEmpty(msgJson) == false)
-                    {
-                        var msgs = JsonConvert.DeserializeObject<Dictionary<string, GlobalMessageEntry>>(msgJson);
-                        if (msgs != null)
-                        {
-                            foreach (var item in msgs)
+                            _messageCache.AddOrUpdate(item.Key, item.Value, (key, val) =>
                             {
-                                _messageCache.AddOrUpdate(item.Key, item.Value, (key, val) =>
-                                {
-                                    return item.Value;
-                                });
-                            }
-
+                                return item.Value;
+                            });
                         }
                     }
                 }
@@ -127,8 +112,7 @@ namespace NetCoreCMS.Framework.Core.Messages
         {
             if (_messageCache.ContainsKey(messageId) )
             {
-                GlobalMessageEntry msg;
-                return _messageCache.TryRemove(messageId, out msg);
+                return _messageCache.TryRemove(messageId, out GlobalMessageEntry msg);
             }
             return false;
         }

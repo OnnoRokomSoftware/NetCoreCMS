@@ -1,0 +1,230 @@
+﻿@model BlogPostSliderViewModel
+
+<style>
+    .carousel-inner .item.left.active {
+        transform: translateX(-33%);
+    }
+
+    .carousel-inner .item.right.active {
+        transform: translateX(33%);
+    }
+
+    .carousel-inner .item.next {
+        transform: translateX(33%)
+    }
+
+    .carousel-inner .item.prev {
+        transform: translateX(-33%)
+    }
+
+    .carousel-inner .item.right,
+    .carousel-inner .item.left {
+        transform: translateX(0);
+    }
+
+
+    .carousel-control.left, .carousel-control.right {
+        background-image: none;
+    }
+</style>
+<div>
+    @if (Model != null)
+    {
+        var interval = Model.Interval * 1000;
+        if (Model.IsAutoScroll == false)
+        {
+            interval = 0;
+        }
+        if (string.IsNullOrWhiteSpace(Model.HeaderText) == false)
+        {
+            <h2 style="margin-left:auto; margin-right:auto; text-align:center; padding-top:20px;">@Model.HeaderText</h2>
+            <hr style="margin-top:0px; margin-bottom:5px;" />
+        }
+
+        if (Model.DisplayPost == 1)
+        {
+            <div id="nccImageSlider" class="carousel slide" data-ride="carousel" data-interval="@interval">
+                @if (Model.ShowBottomNav == true)
+                {
+                    <ol class="carousel-indicators">
+                        @{var i = 0; }
+                        @foreach (var item in Model.PostList)
+                        {
+                            if (i == 0)
+                            {
+                                <li data-target="#nccImageSlider" data-slide-to="@i" class="active"></li>
+                            }
+                            else
+                            {
+                                <li data-target="#nccImageSlider" data-slide-to="@i"></li>
+                            }
+                            i++;
+                        }
+                    </ol>
+                }
+                <div class="carousel-inner" role="listbox">
+                    @{var activeClass = "active"; }
+                    @foreach (var item in Model.PostList)
+                    {
+                        var postDetails = item.PostDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+                        if (postDetails == null)
+                        {
+                            postDetails = item.PostDetails.FirstOrDefault();
+                        }
+                        if (postDetails != null)
+                        {
+                            <div class="item @activeClass">
+                                <img src="@item.ThumImage" alt="Ncc Slider Image" class="img-responsive" width="100%" style="margin:0 auto;">
+                                <div class="carousel-caption" role="option">
+                                    <h2>@Html.Raw(postDetails.Title)</h2>
+                                    <p>@Html.Raw(postDetails.MetaDescription)</p>
+                                    <a href="/Post/@postDetails.Slug" class="btn btn-primary">@_T["Read More"]</a>
+                                </div>
+                            </div>
+                        }
+                        activeClass = "";
+                    }
+                </div>
+                @if (Model.ShowSideNav == true)
+                {
+                    <a class="left carousel-control" href="#nccImageSlider" role="button" data-slide="prev">
+                        <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="right carousel-control" href="#nccImageSlider" role="button" data-slide="next">
+                        <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                }
+            </div>
+        }
+        else if (Model.DisplayPost > 1)
+        {
+            @*<div style="height:400px; overflow:hidden;">
+                    <div class="ccParent" id="ccParrent">
+                        @{var i = 1;}
+                        @foreach (var item in Model.PostList)
+                        {
+                            var postDetails = item.PostDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+
+                            if (postDetails == null)
+                            {
+                                postDetails = item.PostDetails.FirstOrDefault();
+                            }
+                            if (postDetails != null)
+                            {
+                                <div class="ccChild" id="ccChild_@i">
+                                    <div style="text-align:center; margin-left:5px; margin-right:5px; padding-bottom:10px; box-shadow: 5px 5px #EEE;">
+                                        <img src="@item.ThumImage" width="100%" height="200px" />
+                                        <h4 style="height:20px; overflow:hidden;"><strong>@Html.Raw(postDetails.Title)</strong></h4>
+                                        <hr style="margin-top:0px;margin-bottom:5px;" />
+                                        <p style="height:80px; overflow:hidden;">@Html.Raw(postDetails.MetaDescription)</p>
+                                        <a href="/Post/@postDetails.Slug" class="btn btn-primary">@_T["Read More"]</a>
+                                    </div>
+                                </div>
+                            }
+                            i++;
+                        }
+                    </div>
+                    @if (Model.ShowSideNav == true)
+                    {
+                        <a class="left carousel-control" href="#nccImageSlider" role="button" data-slide="prev">
+                            <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                            <span class="sr-only">Previous</span>
+                        </a>
+                        <a class="right carousel-control" href="#nccImageSlider" role="button" data-slide="next">
+                            <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                            <span class="sr-only">Next</span>
+                        </a>
+                    }
+                </div>*@
+            <div class="container">
+                <div class="carousel slide" id="nccMultiCarousel">
+                    <div class="carousel-inner">
+                        @{var activeClass = "active"; var i = 1;}
+                        @foreach (var item in Model.PostList)
+                        {
+                            var postDetails = item.PostDetails.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+
+                            if (postDetails == null)
+                            {
+                                postDetails = item.PostDetails.FirstOrDefault();
+                            }
+                            if (postDetails != null)
+                            {
+
+                                <div class="item @activeClass">
+                                    <div class="col-md-4" style="padding:3px;">
+                                        <div style="text-align: center; border:solid 1px #EEE; margin-bottom: 5px;">
+                                            <img src="@item.ThumImage" class="img-responsive">
+                                            <div style="padding:5px;">
+                                                <h4 style="height:20px; overflow:hidden;"><strong>@Html.Raw(postDetails.Title)</strong></h4>
+                                                <hr style="margin-top:0px;margin-bottom:5px;" />
+                                                <p style="height:80px; overflow:hidden;">@Html.Raw(postDetails.MetaDescription)</p>
+                                                <a href="/Post/@postDetails.Slug" class="btn btn-primary">@_T["Read More"]</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            activeClass = "";
+                            i++;
+                        }
+                    </div>
+                    @if (Model.ShowSideNav == true)
+                    {
+                        <a class="left carousel-control" href="#nccMultiCarousel" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+                        <a class="right carousel-control" href="#nccMultiCarousel" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+                    }
+                </div>
+            </div>
+
+            <script>
+                $('#nccMultiCarousel').carousel({
+                    interval: @(Model.Interval*1000)
+                })
+
+                $('.carousel .item').each(function () {
+                    var next = $(this).next();
+                    if (!next.length) {
+                        next = $(this).siblings(':first');
+                    }
+                    next.children(':first-child').clone().appendTo($(this));
+
+                    if (next.next().length > 0) {
+                        next.next().children(':first-child').clone().appendTo($(this));
+                    }
+                    else {
+                        $(this).siblings(':first').children(':first-child').clone().appendTo($(this));
+                    }
+                });
+            </script>
+        }
+
+    }
+</div>
+@*<script>
+    var cci = 1;
+    var myVar = setInterval(myTimer, 3000);
+
+    function myTimer() {
+        console.log("ccChild_" + cci);
+        var parrent = document.getElementById("ccParrent");
+        var myNode = document.getElementById("ccChild_" + cci);
+        var temp = myNode;
+        myNode.remove();
+        //$("#ccChild_" + cci).slideUp(1000,function () {
+        //    $(this).animate({ "margin-right": '+=200' });
+        //    $(this).remove();
+        //});
+        parrent.appendChild(temp);
+        cci++;
+        if (cci >@Model.TotalPost)
+        {
+            cci = 1;
+        }
+    }
+    $(document).ready(function () {
+
+    });
+</script>*@

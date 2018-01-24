@@ -23,11 +23,16 @@ using NetCoreCMS.Framework.Core.Mvc.Models;
 
 namespace NetCoreCMS.Framework.Modules
 {
-    public class Module : IModule
+    public class Module : BaseModule, IModule
+    {
+                
+    }
+
+    public abstract class BaseModule : IModule
     {
         List<Widget> _widgets;
 
-        public int ExecutionOrder { get; set; }
+        public virtual int ExecutionOrder { get; set; }
         public string Id { get; set; }
         public string ModuleName { get; set; }
         public bool IsCore { get; set; }
@@ -36,63 +41,89 @@ namespace NetCoreCMS.Framework.Modules
         public string Email { get; set; }
         public string Website { get; set; }
         public string DemoUrl { get; set; }
-        public string ManualUrl { get; set; }
-        public bool AntiForgery { get; set; } 
+        public bool AntiForgery { get; set; }
         public string Version { get; set; }
-        public string NccVersion { get; set; }        
-        public string Description { get; set; }        
+        public string NccVersion { get; set; }
+        public string Description { get; set; }
         public string Category { get; set; }
         public List<NccModuleDependency> Dependencies { get; set; }
         public Assembly Assembly { get; set; }
         public string SortName { get; set; }
         public string Path { get; set; }
-        public string Folder{ get; set; }
+        public string Folder { get; set; }
         public string TablePrefix { get; set; }
         public string AssemblyPath { get; set; }
-        public int ModuleStatus { get; set; } 
+        public int ModuleStatus { get; set; }
         public List<Widget> Widgets { get { return _widgets; } set { _widgets = value; } }
         public List<Menu> Menus { get; set; }
-        public string Area { get; set; }
+        public virtual string Area { get { return ""; } }
 
-        public Module()
+        public virtual bool IsMultilangual { get { return true; } }
+        public virtual List<SupportedDatabases> Databases
+        {
+            get
+            {
+                return new List<SupportedDatabases>() {
+                    SupportedDatabases.InMemory,
+                    SupportedDatabases.MSSQL,
+                    SupportedDatabases.MsSqlLocalStorage,
+                    SupportedDatabases.MySql,
+                    SupportedDatabases.PgSql,
+                    SupportedDatabases.SqLite };
+            }
+        }
+
+        public BaseModule()
         {
             Menus = new List<Menu>();
-            _widgets = new List<Widget>();            
+            _widgets = new List<Widget>();
         }
 
-        public bool Activate()
+        public virtual bool Activate()
         {
             return true;
         }
 
-        public bool Inactivate()
+        public virtual bool Inactivate()
         {
             return true;
         }
 
-        public void Init(IServiceCollection services, INccSettingsService nccSettingsService)
+        public virtual void Init(IServiceCollection services, INccSettingsService nccSettingsService)
         {
             //Initilize the module here
         }
-  
-        public void RegisterRoute(IRouteBuilder routes)
-        {
-            
-        }
 
-        public bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
+        public virtual void RegisterRoute(IRouteBuilder routes)
+        {
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="settingsService"></param>
+        /// <param name="executeQuery"></param>
+        /// <param name="createUpdateTable">arg1=typeof(model), arg2=DeleteUnusedColumns</param>
+        /// <returns></returns>
+        public virtual bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, bool, int> createUpdateTable)
         {
             return true;
         }
 
-        public bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable)
+        public virtual bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, bool, int> createUpdateTable)
         {
             return true;
         }
 
-        public bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable)
-        {            
+        public virtual bool RemoveTables(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable)
+        {
             return true;
         }
+
+        public virtual bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery)
+        {
+            return true;
+        }
+
     }
 }

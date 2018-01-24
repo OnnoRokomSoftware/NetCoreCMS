@@ -11,25 +11,37 @@
 using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Caching.Memory;
 using NetCoreCMS.Framework.Core.Mvc.Cache;
+using NetCoreCMS.Framework.Utility;
+using NetCoreCMS.Framework.Core.Mvc.Service;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccUserService : IBaseService<NccUser>
+    public interface INccUserService
+    {
+        void DeletePermanently(long entityId);
+        NccUser Get(long entityId, bool isAsNoTracking = false, bool withDeleted = false);
+        NccUser GetByUserName(string userName);
+        NccUser GetNccUser(long entityId);
+        List<NccUser> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, bool withDeleted = false);
+        void Remove(long entityId);
+        NccUser Save(NccUser entity);
+        List<NccUser> Search(string searchKey);
+        NccUser Update(NccUser entity);
+        List<(bool IsSuccess, string Message)> UpdateUsersPermission(List<long> userIds, long[] roles, string roleOperation);
+    }
+
+    public class NccUserService : BaseService<NccUser>, INccUserService
     {
         private readonly NccUserRepository _entityRepository;
         private readonly NccPermissionRepository _nccPermissionRepository;
         private readonly IMemoryCache _cache;
         private readonly List<string> userRelations;
 
-        public NccUserService(NccUserRepository entityRepository, NccPermissionRepository nccPermissionRepository, IMemoryCache memoryCache)
+        public NccUserService(NccUserRepository entityRepository, NccPermissionRepository nccPermissionRepository, IMemoryCache memoryCache) : base(entityRepository)
         {
             _entityRepository = entityRepository;
             _nccPermissionRepository = nccPermissionRepository;
@@ -45,30 +57,39 @@ namespace NetCoreCMS.Framework.Core.Services
                     "Permissions.User"
                 };
         }
-         
-        public NccUser Get(long entityId, bool isAsNoTracking = false)
+
+        #region Method Override
+        public override NccUser Get(long entityId, bool isAsNoTracking = false, bool withDeleted = false)
         {
-            var user = _cache.GetNccUser(entityId);
-            if(user == null)
+            NccUser user = null;
+            if (GlobalContext.WebSite.EnableCache)
             {
-                user = _entityRepository.Get(
-                           entityId,
-                           isAsNoTracking,
-                           userRelations
-                       );
-                _cache.SetNccUser(user);
+                user = GlobalContext.GlobalCache.GetNccUser(entityId);
+                if (user == null)
+                {
+                    user = _entityRepository.Get(entityId, isAsNoTracking, userRelations);
+                    GlobalContext.GlobalCache.SetNccUser(user);
+                }
             }
+            else
+            {
+                user = _entityRepository.Get(entityId, isAsNoTracking, userRelations);
+            }
+
             return user;
         }
+        #endregion
 
-        public List<NccUser> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        #region New Method
+        public NccUser GetNccUser(long entityId)
         {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
+            var user = _entityRepository.Get(entityId, false, userRelations);
+            return user;
         }
 
         public NccUser GetByUserName(string userName)
         {
-            var query =  _entityRepository.Query();
+            var query = _entityRepository.Query();
             foreach (var item in userRelations)
             {
                 query = query.Include(item);
@@ -76,133 +97,63 @@ namespace NetCoreCMS.Framework.Core.Services
             return query.FirstOrDefault(x => x.UserName == userName);
         }
 
-        public NccUser Save(NccUser entity)
-        {
-            _entityRepository.Add(entity);
-            _entityRepository.SaveChange();
-            return entity;
-        }
-
-        public NccUser Update(NccUser entity)
-        {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if(oldEntity != null)
-            {
-                using (var txn = _entityRepository.BeginTransaction())
-                {
-                    CopyNewData(oldEntity, entity);
-                    _entityRepository.Edit(oldEntity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-            }
-            
-            return entity;
-        }
-        
-        public void Remove(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId );
-            if (entity != null)
-            {
-                entity.Status = EntityStatus.Deleted;
-                _entityRepository.Edit(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public void DeletePermanently(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                _entityRepository.Remove(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        private void CopyNewData(NccUser oldEntity, NccUser entity)
-        { 
-            oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.ModifyBy = entity.ModifyBy;
-            oldEntity.Name = entity.Name; 
-            oldEntity.Status = entity.Status; 
-            oldEntity.CreateBy = entity.CreateBy;
-            oldEntity.CreationDate = entity.CreationDate;  
-            
-            oldEntity.Status = entity.Status; 
-            oldEntity.VersionNumber = entity.VersionNumber;
-            oldEntity.AccessFailedCount = entity.AccessFailedCount;
-            
-            oldEntity.ConcurrencyStamp = entity.ConcurrencyStamp;
-            oldEntity.Email = entity.Email;
-            oldEntity.EmailConfirmed = entity.EmailConfirmed;
-            oldEntity.FullName = entity.FullName;
-            oldEntity.LockoutEnabled = entity.LockoutEnabled;
-            oldEntity.LockoutEnd = entity.LockoutEnd;
-            
-            oldEntity.Mobile = entity.Mobile;
-            oldEntity.NormalizedEmail = entity.NormalizedEmail;
-            oldEntity.NormalizedUserName = entity.NormalizedUserName;
-            oldEntity.PasswordHash = entity.PasswordHash;
-            oldEntity.PhoneNumber = entity.PhoneNumber;
-            oldEntity.PhoneNumberConfirmed = entity.PhoneNumberConfirmed;
-            oldEntity.SecurityStamp = entity.SecurityStamp;
-            oldEntity.Slug = entity.Slug;
-            oldEntity.Status = entity.Status;
-            oldEntity.TwoFactorEnabled = entity.TwoFactorEnabled;
-            oldEntity.UserName = entity.UserName;
-            oldEntity.Metadata = entity.Metadata;
-        }
-
         public List<NccUser> Search(string searchKey)
         {
             return _entityRepository.Search(searchKey);
         }
 
-        public List<(bool IsSuccess,string Message)> UpdateUsersPermission(List<long> userIds, long[] roles)
+        public List<(bool IsSuccess, string Message)> UpdateUsersPermission(List<long> userIds, long[] roles, string roleOperation)
         {
-            var response = new List<(bool,string)>();
+            var response = new List<(bool, string)>();
             using (var txn = _entityRepository.BeginTransaction())
             {
                 foreach (var userId in userIds)
                 {
-                    var user = Get(userId);
-                    if(user != null)
-                    {                        
-                        //_entityRepository.RemoveUserPermission(user.Permissions);
-                        user.Permissions.RemoveAll(x=>x.UserId == user.Id);
-                        _entityRepository.Edit(user);
-                        _entityRepository.SaveChange();
-
-                        user = Get(userId);
-
-                        foreach (var item in roles)
+                    var user = GetNccUser(userId);
+                    if (user != null)
+                    {
+                        if (roleOperation.Equals("Add"))
                         {
-                            var permission = _nccPermissionRepository.Get(item);
-                            if(permission != null)
+                            foreach (var item in roles)
                             {
-                                user.Permissions.Add(new NccUserPermission() { Permission = permission, User = user });
+                                if (user.Permissions.Where(x => x.PermissionId == item).Count() == 0)
+                                {
+                                    var permission = _nccPermissionRepository.Get(item);
+                                    if (permission != null)
+                                    {
+                                        user.Permissions.Add(new NccUserPermission() { Permission = permission, User = user });
+                                    }
+                                }
                             }
-                            else
-                            {
-                                response.Add((false, "Roles not found."));
-                            }
+                            var result = _entityRepository.Edit(user);
+                            response.Add((true, "Roles have been successfully assigned into user " + user.UserName + ". Please refresh page to see update."));
                         }
+                        else if (roleOperation.Equals("Remove"))
+                        {
+                            foreach (var item in roles)
+                            {
+                                var permission = user.Permissions.Where(x => x.PermissionId == item).FirstOrDefault();
+                                if (permission != null)
+                                {
+                                    user.Permissions.RemoveAt(user.Permissions.IndexOf(permission));
+                                }
+                            }
 
-                        var result = _entityRepository.Edit(user);                        
-                        response.Add((true,"Roles have been successfully assigned into user " + user.UserName + ". Please refresh page to see update."));
+                            var result = _entityRepository.Edit(user);
+                            response.Add((true, "Roles have been successfully assigned into user " + user.UserName + ". Please refresh page to see update."));
+                        }
                     }
                     else
                     {
-                        response.Add((false,"User not found."));
-                    }                    
+                        response.Add((false, "User not found."));
+                    }
                 }
 
                 _entityRepository.SaveChange();
-                txn.Commit();                
+                txn.Commit();
             }
             return response;
         }
+        #endregion
     }
 }

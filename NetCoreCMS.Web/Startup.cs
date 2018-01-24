@@ -31,7 +31,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.Extensions.Localization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 
-using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Resources;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Setup;
@@ -44,7 +44,7 @@ using NetCoreCMS.Framework.Core.App;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Resources;
+using NetCoreCMS.Framework.Modules;
 using NetCoreCMS.Framework.Core.Services.Auth;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.CodeAnalysis;
@@ -88,12 +88,16 @@ namespace NetCoreCMS.Web
 
                 var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");
                 ConfigurationRoot = builder.Build();
-                ResetGlobalContext(configuration, env);
+                ResetGlobalContext(configuration, env); 
                 
                 _moduleManager = new ModuleManager();
                 _themeManager = new ThemeManager();
+
                 _startup = new NetCoreStartup();
                 _setupConfig = SetupHelper.LoadSetup();
+
+                GlobalContext.HostingEnvironment = env;
+
                 AddLogger();
             }
             catch (Exception ex)
@@ -112,8 +116,8 @@ namespace NetCoreCMS.Web
             {
                 _services = services;
 
-                _services.AddTransient<IEmailSender, AuthMessageSender>();
-                _services.AddTransient<ISmsSender, AuthMessageSender>();
+                _services.AddScoped<IEmailSender, AuthMessageSender>();
+                _services.AddScoped<ISmsSender, AuthMessageSender>();
                 _services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
                 _services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
 
@@ -171,8 +175,11 @@ namespace NetCoreCMS.Web
                 _themeManager.ScanThemeDirectory(themeFolder);
                 _themeManager.RegisterThemes(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
 
-                _moduleManager.LoadModules(coreModuleFolder);
-                _moduleManager.LoadModules(moduleFolder);
+                var loggerFactory = _serviceProvider.GetService<ILoggerFactory>();
+                var logger = loggerFactory.CreateLogger<Startup>();
+
+                _moduleManager.LoadModules(coreModuleFolder, logger);
+                _moduleManager.LoadModules(moduleFolder, logger);
 
                 _services.AddModuleDependencies(_mvcBuilder);
 
@@ -180,23 +187,18 @@ namespace NetCoreCMS.Web
                 {
                     _startup.SelectDatabase(_services);
                     _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-                    _moduleManager.AddModulesAsApplicationPart(_mvcBuilder, _services, _serviceProvider);
+                    _moduleManager.AddModulesAsApplicationPart(_mvcBuilder, _services, _serviceProvider, logger);
 
-                    _moduleManager.AddModuleServices(_services);
-                    _moduleManager.AddModuleFilters(_services);
-                    _moduleManager.AddShortcodes(_services);
-                    _moduleManager.AddModuleWidgets(_services);
-                    _moduleManager.AddModuleAuthorizationHandlers(_services);
+                    _moduleManager.AddModuleServices(_services, logger);
+                    _moduleManager.AddModuleFilters(_services, logger);
+                    _moduleManager.AddShortcodes(_services, logger);
+                    _moduleManager.AddModuleWidgets(_services, logger);
+                    _moduleManager.AddModuleAuthorizationHandlers(_services, logger);
 
                     _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
-
-                    _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
-                    _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider);
-                    _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider);
-                    _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);
-
+                    
                     _services.AddCustomizedIdentity(_serviceProvider.GetService<INccSettingsService>());                    
-                    _moduleManager.LoadModuleMenus();
+                    _moduleManager.LoadModuleMenus(logger);
                 }
 
                 var defaultCulture = new RequestCulture("en");
@@ -207,7 +209,7 @@ namespace NetCoreCMS.Web
                     defaultCulture = new RequestCulture(GlobalContext.SetupConfig.Language);                    
                 }
 
-                services.Configure<RouteOptions>(options =>
+                _services.Configure<RouteOptions>(options =>
                 {
                     options.ConstraintMap.Add("lang", typeof(LanguageRouteConstraint));
                 });
@@ -228,7 +230,7 @@ namespace NetCoreCMS.Web
                     }
                 );
 
-                services.Configure<ClassLibraryLocalizationOptions>(
+                _services.Configure<ClassLibraryLocalizationOptions>(
                     options => options.ResourcePaths = new Dictionary<string, string>
                     {
                     { "NetCoreCMS.Framework", "i18n/Resources" },
@@ -238,7 +240,15 @@ namespace NetCoreCMS.Web
 
                 _serviceProvider = _services.Build(ConfigurationRoot, _hostingEnvironment);
                 _serviceProvider = _services.BuildModules(ConfigurationRoot, _hostingEnvironment);
-                
+
+                if (SetupHelper.IsDbCreateComplete)
+                {
+                    _themeManager.RegisterThemeWidgets(_mvcBuilder, _services, _serviceProvider, themesDirectoryContents);
+                    _moduleManager.RegisterModuleWidgets(_mvcBuilder, _services, _serviceProvider, logger);
+                    _moduleManager.RegisterModuleFilters(_mvcBuilder, _serviceProvider, logger);
+                    _moduleManager.RegisterModuleShortCodes(_mvcBuilder, _serviceProvider);
+                }
+
                 GlobalContext.ServiceProvider = _serviceProvider;
                 GlobalContext.Services = _services;
                 NetCoreCmsHost.Mediator = _serviceProvider.GetService<IMediator>();
@@ -285,9 +295,16 @@ namespace NetCoreCMS.Web
 
             foreach (var item in _exceptions)
             {
-                foreach (var ex in item.Value)
+                try
                 {
-                    log.LogError(ex.Message, ex);
+                    foreach (var ex in item.Value)
+                    {
+                        log.LogError(ex.Message, ex);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    //:(
                 }
             }
 

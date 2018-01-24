@@ -2,7 +2,6 @@
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace NetCoreCMS.Framework.Core.Network
@@ -27,7 +26,15 @@ namespace NetCoreCMS.Framework.Core.Network
 
             return default(ResponseT);
         }
-        
+
+        public static byte[] Download(string url, string path = "", List<KeyValuePair<string, string>> paramiters = null, List<KeyValuePair<string, string>> headers = null)
+        {
+            (RestClient client, RestRequest request) = GetRestClientAndRequest(url, path, Method.GET, paramiters, headers);
+            var response = new RestResponse();            
+            var data = client.DownloadData(request);
+            return data;
+        }
+
         public static string Get(string url, string path = "", List<KeyValuePair<string, string>> paramiters = null, List<KeyValuePair<string, string>> headers = null)
         {
             (RestClient client, RestRequest request) = GetRestClientAndRequest(url, path, Method.GET, paramiters, headers);
@@ -70,6 +77,28 @@ namespace NetCoreCMS.Framework.Core.Network
             }).Wait();
 
             return response.Content;
+        }
+        
+        public static ResponseT PostJson<ResponseT>(string url, string path = "", object data = null, List<KeyValuePair<string, string>> headers = null)
+        {
+            (RestClient client, RestRequest request) = GetRestClientAndRequest(url, path, Method.POST, null, headers);
+
+            request.AddJsonBody(data);
+
+            var response = new RestResponse();
+
+            Task.Run(async () => {
+                response = await GetResponseAsync(client, request) as RestResponse;
+            }).Wait();
+
+            var jsonResponse = JsonConvert.DeserializeObject<ResponseT>(response.Content);
+
+            if (jsonResponse != null)
+            {
+                return jsonResponse;
+            }
+
+            return default(ResponseT);
         }
 
         #region Private Methods

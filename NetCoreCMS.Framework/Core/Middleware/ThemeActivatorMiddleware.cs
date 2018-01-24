@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Logging;
-using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Resources;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using System;

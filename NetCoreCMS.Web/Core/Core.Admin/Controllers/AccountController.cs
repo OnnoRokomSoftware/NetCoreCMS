@@ -13,30 +13,34 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+
+using MediatR;
+
 using NetCoreCMS.Framework.Core.Models;
 using NetCoreCMS.Framework.Core.Services.Auth;
 using Core.Admin.Models.AccountViewModels;
 using Core.Cms.Lib;
+
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Utility;
-using MediatR;
+
 using NetCoreCMS.Framework.Core.Events.App;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
-using Microsoft.Extensions.Caching.Memory;
 using NetCoreCMS.Framework.Core.Mvc.Cache;
+using NetCoreCMS.Framework.Core.Mvc.Views;
 
 namespace Core.Admin.Controllers
 {
+    [AdminMenu(Name = "Settings", IconCls = "fa-cogs", Order = 100)]
     public class AccountController : NccController
     {
         private readonly UserManager<NccUser> _userManager;
@@ -44,31 +48,26 @@ namespace Core.Admin.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IMediator _mediator;        
         private readonly NccStartupService _startupService;
-        private readonly NccPermissionService _nccPermissionService;
-        private readonly NccUserService _nccUserService;
-        private readonly IMemoryCache _memoryCache;
+        private readonly NccPermissionService _nccPermissionService;        
+        private readonly ILogger _logger;
 
         public AccountController(
             UserManager<NccUser> userManager,
             SignInManager<NccUser> signInManager,
             IEmailSender emailSender,
             IMediator mediator,
-            ILogger<AccountController> logger,
+            ILoggerFactory factory,
              NccStartupService startupService,
-             NccPermissionService nccPermissionService,
-             NccUserService nccUserService,
-             IMemoryCache  memoryCache
+             NccPermissionService nccPermissionService                          
             )
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _mediator = mediator;
-            _logger = logger;
+            _logger = factory.CreateLogger<AccountController>();
             _startupService = startupService;
-            _nccPermissionService = nccPermissionService;
-            _nccUserService = nccUserService;
-            _memoryCache = memoryCache;
+            _nccPermissionService = nccPermissionService;            
         }
 
         [TempData]
@@ -80,7 +79,7 @@ namespace Core.Admin.Controllers
         {
             // Clear the existing external cookie to ensure a clean login process
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
-
+            
             ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
@@ -106,10 +105,16 @@ namespace Core.Admin.Controllers
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User logged in.");
-                    var user = _nccUserService.GetByUserName(model.Email);
-                    _memoryCache.SetNccUser(user);
-                    var roles = _nccPermissionService.LoadAll();
-                    var rsp = FireEvent(UserActivity.Type.Logedin, model.Email, user, roles.Select(x=>x.Name).ToList(), returnUrl);
+                    var user = UserService.GetByUserName(model.Email);
+                    if (user.IsRequireLogin)
+                    {
+                        user.IsRequireLogin = false;
+                        UserService.Update(user);
+                    }
+
+                    GlobalContext.GlobalCache.SetNccUser(user);
+                    //var roles = _nccPermissionService.LoadAll();
+                    var rsp = FireEvent(UserActivity.Type.Logedin, model.Email, user, user.Permissions.Select(x=>x.Permission.Name).ToList(), returnUrl);
 
                     if(rsp != null)
                     {
@@ -197,6 +202,7 @@ namespace Core.Admin.Controllers
 
             if (result.Succeeded)
             {
+                GlobalContext.GlobalCache.SetNccUser(user);
                 _logger.LogInformation("User with ID {UserId} logged in with 2fa.", user.Id);
                 return RedirectToLocal(returnUrl);
             }
@@ -251,6 +257,7 @@ namespace Core.Admin.Controllers
 
             if (result.Succeeded)
             {
+                GlobalContext.GlobalCache.SetNccUser(user);
                 _logger.LogInformation("User with ID {UserId} logged in with a recovery code.", user.Id);
                 return RedirectToLocal(returnUrl);
             }
@@ -310,7 +317,7 @@ namespace Core.Admin.Controllers
                 {
                     var subscriber = _nccPermissionService.Get(GlobalContext.WebSite.NewUserRole);
                     user.Permissions.Add(new NccUserPermission() { Permission = subscriber, User = user});
-                    _nccUserService.Update(user);                    
+                    UserService.Update(user);                    
                     _logger.LogInformation("User created a new account with password."); 
 
                     var rsp = FireEvent(UserActivity.Type.Registered, model.Email, user, new List<string>() { GlobalContext.WebSite.NewUserRole }, "");
@@ -348,7 +355,7 @@ namespace Core.Admin.Controllers
             var user = await _userManager.FindByNameAsync(User.Identity.Name);
             await _signInManager.SignOutAsync();
             _logger.LogInformation("User logged out.");
-
+            GlobalContext.GlobalCache.RemoveNccUserFromCache(user.Id);
             var roles = await _userManager.GetRolesAsync(user);            
             var returnUrl = NccUrlHelper.AddLanguageToUrl(CurrentLanguage, "/CmsHome");
             var rsp = FireEvent(UserActivity.Type.Logedout, user.Email, user, roles, NccUrlHelper.AddLanguageToUrl(CurrentLanguage, "/CmsHome"));
@@ -373,33 +380,46 @@ namespace Core.Admin.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public async Task<IActionResult> ExternalLoginCallback(string returnUrl = null, string remoteError = null)
+        public IActionResult ExternalLoginCallback(string returnUrl = null, string remoteError = null)
         {
+            if(returnUrl == null)
+            {
+                returnUrl = "/";
+            }
+
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
+                ShowMessage(ErrorMessage, MessageType.Error, false, true);
                 return RedirectToAction(nameof(Login));
             }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+
+            var info = _signInManager.GetExternalLoginInfoAsync().Result;
             if (info == null)
             {
+                _logger.LogWarning("Did not found user info with {Name}.", info.LoginProvider);
+                ShowMessage($"Did not found user information. Please clear browser cache and login again.", MessageType.Error, false, true);
                 return RedirectToAction(nameof(Login));
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true).Result;
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in with {Name} provider.", info.LoginProvider);
-                return RedirectToLocal(returnUrl);
+                return Redirect(returnUrl);
             }
+
             if (result.IsLockedOut)
             {
+                _logger.LogWarning("User logged in with {Name} is locked.", info.LoginProvider);
+                ShowMessage($"User logged in with { info.LoginProvider } is locked.", MessageType.Error, false, true);
                 return RedirectToAction(nameof(Lockout));
             }
             else
             {
                 // If the user does not have an account, then ask the user to create an account.
+                _logger.LogInformation("Asking for creating account with {Name}. provider.", info.LoginProvider);
                 ViewData["ReturnUrl"] = returnUrl;
                 ViewData["LoginProvider"] = info.LoginProvider;
                 var email = info.Principal.FindFirstValue(ClaimTypes.Email);
@@ -412,6 +432,11 @@ namespace Core.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginViewModel model, string returnUrl = null)
         {
+            if (returnUrl == null)
+            {
+                returnUrl = "/";
+            }
+
             if (ModelState.IsValid)
             {
                 // Get the information about the user from the external login provider
@@ -427,9 +452,14 @@ namespace Core.Admin.Controllers
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
+                        var defaultSignupRole = _nccPermissionService.Get(GlobalContext.WebSite.NewUserRole);
+                        user.Permissions.Add(new NccUserPermission() { Permission = defaultSignupRole, User = user });
+                        UserService.Update(user);
+
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-                        return RedirectToLocal(returnUrl);
+                        GlobalContext.GlobalCache.SetNccUser(user);
+                        return Register(returnUrl);
                     }
                 }
                 AddErrors(result);
@@ -570,6 +600,25 @@ namespace Core.Admin.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+        [AdminMenuItem(Name = "External Login", Order = 8)]
+        public IActionResult ExternalLoginSettings()
+        {
+            var model = Settings.GetByKey<OpenIdSettings>();
+            if(model == null)
+            {
+                model = new OpenIdSettings();
+            }            
+            return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult ExternalLoginSettings(OpenIdSettings model)
+        {
+            Settings.SetByKey(model);
+            ShowMessage("Settings save successful", MessageType.Success);
+            return View(model);
         }
 
         #region Helpers

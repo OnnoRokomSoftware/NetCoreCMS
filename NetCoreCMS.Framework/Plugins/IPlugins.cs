@@ -15,7 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Models;
 
 
-namespace NetCoreCMS.Framework.Modules
+namespace NetCoreCMS.Framework.Resources
 {
     public interface IPlugins
     {

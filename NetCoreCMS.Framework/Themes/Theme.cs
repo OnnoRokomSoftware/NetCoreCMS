@@ -13,7 +13,6 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.IO;
 
 namespace NetCoreCMS.Framework.Themes
@@ -32,24 +31,20 @@ namespace NetCoreCMS.Framework.Themes
             Widgets = new List<Widget>();
             Layouts = new List<Layout>();
             MenuLocations = new List<string>();
-            Settings = new Hashtable();
-            Type = ThemeType.WebSite;
-            Settings.Add("NccVersion", NccInfo.Version);
+            Settings = new Hashtable();            
+            //Settings.Add("NccVersion", NccInfo.Version);
         }
 
         public string ThemeId { get; set; }
-        public string ThemeName { get; set; }
-        public string Type { get; set; }
+        public string ThemeName { get; set; }        
         public string Author { get; set; }
         public string Email { get; set; }
         public string Website { get; set; }
         public string DemoUrl { get; set; }
         public string Description { get; set; }
-        public string Version { get; set; }
-        public string MinNccVersion { get; set; }
-        public string MaxNccVersion { get; set; }
-        public string Category { get; set; }
-        public string PreviewImage { get; set; }
+        public string Version { get; set; }        
+        public string NccVersion { get; set; }
+        public string Category { get; set; }        
         public bool IsActive { get; set; }
 
         public List<string> MenuLocations { get; set; }
@@ -79,11 +74,5 @@ namespace NetCoreCMS.Framework.Themes
                 File.WriteAllText(ConfigFilePath, themeJson);
             }
         }
-    }
-
-    public static class ThemeType
-    {
-        public static string WebSite { get { return "WebSite"; } }
-        public static string Admin { get { return "Admin"; } }
     }
 }

@@ -8,11 +8,19 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using MediatR;
-using Microsoft.AspNetCore.Authorization;
+using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.IO.Compression;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
 using NetCoreCMS.Framework.Core;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Core.Events.Modules;
@@ -22,19 +30,13 @@ using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules;
-using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
+
+using MediatR;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+
 using Core.Admin.Models.ViewModels;
+using Core.Admin.Models.Dto;
 
 namespace Core.Admin.Controllers
 {
@@ -50,6 +52,7 @@ namespace Core.Admin.Controllers
         //List<IModule> _publicModules;
         IHostingEnvironment _hostingEnvironment;
         private readonly IMediator _mediator;
+        private readonly ILogger _logger;
         private readonly string _modulePath = "Modules\\";
 
         public CmsModuleController(
@@ -71,7 +74,8 @@ namespace Core.Admin.Controllers
         }
         #endregion
 
-        [AdminMenuItem(Name = "Manage", Url = "/CmsModule", IconCls = "fa-th-list", Order = 1)]
+        #region ModuleManagement
+        [AdminMenuItem(Name = "Manage", IconCls = "fa-th-list", Order = 1)]
         public ActionResult Index()
         {
             var publicModuleFolder = _hostingEnvironment.ContentRootFileProvider.GetDirectoryContents(NccInfo.ModuleFolder);
@@ -161,23 +165,24 @@ namespace Core.Admin.Controllers
         public ActionResult InstallModule(string id)
         {
 
-            var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
+            var entity = _moduleService.Get(long.Parse(id));
             //var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.Active);
             if (entity != null)
             {
                 var module = GlobalContext.Modules.Where(x => x.ModuleName == entity.ModuleName).FirstOrDefault();
                 var retVal = module.Install(_settingsService, ExecuteQuery, CreateOrUpdateTable);
-                if(retVal)
+                if (retVal)
                 {
                     module.ModuleStatus = (int)NccModule.NccModuleStatus.Installed;
                     FireEvent(ModuleActivity.Type.Installed, module);
                     TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
+                    UpdateModuleStatus(id, NccModule.NccModuleStatus.Installed);
                 }
                 else
                 {
                     TempData["ErrorMessage"] = "Error. Module install failed.";
                 }
-                
+
             }
             else
             {
@@ -186,14 +191,14 @@ namespace Core.Admin.Controllers
 
             return RedirectToAction("Index");
         }
-        
+
         public ActionResult UninstallModule(string id)
         {
-            var entity = UpdateModuleStatus(id, NccModule.NccModuleStatus.UnInstalled);
+            var entity = _moduleService.Get(long.Parse(id));
             var module = GlobalContext.Modules.Where(x => x.ModuleName == entity.ModuleName).FirstOrDefault();
             if (module != null)
             {
-                module.Uninstall(_settingsService, ExecuteQuery, DeleteTable);
+                module.RemoveTables(_settingsService, ExecuteQuery, DeleteTable);
                 module.ModuleStatus = (int)NccModule.NccModuleStatus.UnInstalled;
             }
 
@@ -202,6 +207,7 @@ namespace Core.Admin.Controllers
                 _moduleService.DeletePermanently(entity.Id);
                 FireEvent(ModuleActivity.Type.Uninstalled, module);
                 TempData["ModuleSuccessMessage"] = "Operation Successful. Restart Site";
+                UpdateModuleStatus(id, NccModule.NccModuleStatus.UnInstalled);
             }
             else
             {
@@ -209,7 +215,7 @@ namespace Core.Admin.Controllers
             }
             return RedirectToAction("Index");
         }
-        
+
         public ActionResult RemoveModule(string id)
         {
             var nId = long.Parse(id);
@@ -219,48 +225,53 @@ namespace Core.Admin.Controllers
             return RedirectToAction("Index");
         }
 
+        #endregion
+
         #region Online Gallery
-        public async Task<JsonResult> GetMatGalleryModules()
+        public async Task<JsonResult> LoadNccStoreModules()
         {
             ApiResponse resp = new ApiResponse();
-            resp.IsSuccess = true;
+            resp.IsSuccess = false;
             resp.Message = "";
             try
             {
-                using (var client = new HttpClient())
+                try
                 {
-                    try
-                    {
-                        client.BaseAddress = new Uri("https://gallery.osl.one/MatGalleryApi/Modules");
-                        var response = await client.GetAsync("?key=abc");
-                        response.EnsureSuccessStatusCode(); // Throw in not success
-
-                        var stringResponse = await response.Content.ReadAsStringAsync();
-                        resp.Data = JsonConvert.DeserializeObject<IEnumerable<NccModuleViewModel>>(stringResponse);
-
-                        resp.IsSuccess = true;
-                        resp.Message = "Success";
-                    }
-                    catch (HttpRequestException e)
-                    {
-                        Console.WriteLine($"Request exception: {e.Message}");
-                    }
+                    var settings = Settings.GetByKey<StoreSettings>();
+                    resp.Data = NccRestClient.Get<List<NccModuleViewModel>>(settings.StoreBaseUrl, "NccStore/Api/Modules",new List<KeyValuePair<string, string>>() {
+                        new KeyValuePair<string, string>("nccVersion",NccInfo.Version.ToString(4)),
+                        new KeyValuePair<string, string>("key",settings.SecretKey),
+                        new KeyValuePair<string, string>("domain", GlobalContext.WebSite.DomainName)
+                    });
+                    resp.IsSuccess = true;
+                    resp.Message = "Success";
+                }
+                catch (HttpRequestException e)
+                {
+                    _logger.LogError($"Request exception: {e.Message}", e);
                 }
             }
             catch (Exception) { }
             return Json(resp);
         }
 
-        public async Task<JsonResult> DownloadModule(string key = "", string moduleId = "", string moduleName = "")
+        public async Task<JsonResult> DownloadModule(string moduleName, string version)
         {
             ApiResponse resp = new ApiResponse();
             resp.IsSuccess = true;
             resp.Message = "";
-            if (moduleId.Trim() != "")
+            if (moduleName.Trim() != "")
             {
                 try
                 {
-                    string url = "https://gallery.osl.one/MatGalleryApi/DownloadModule?moduleId=" + moduleId;
+                    var settings = Settings.GetByKey<StoreSettings>();
+                    var data = NccRestClient.Download(settings.StoreBaseUrl, "NccStore/Api/DownloadModule", new List<KeyValuePair<string, string>>() {
+                        new KeyValuePair<string, string>("moduleName", moduleName),
+                        new KeyValuePair<string, string>("version", version),
+                        new KeyValuePair<string, string>("key",settings.SecretKey),
+                        new KeyValuePair<string, string>("domain", GlobalContext.WebSite.DomainName)
+                    });
+
                     #region Download in temp folder
                     var tempFullFilepath = Path.Combine(_env.ContentRootPath, _modulePath + "\\_temp");
                     try
@@ -271,15 +282,10 @@ namespace Core.Admin.Controllers
                             {
                                 Directory.CreateDirectory(tempFullFilepath);
                             }
-                            using (var client = new HttpClient())
+
+                            using (var stream = new FileStream(_modulePath + "\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
                             {
-                                using (var request = new HttpRequestMessage(HttpMethod.Get, url))
-                                {
-                                    using (Stream contentStream = await (await client.SendAsync(request)).Content.ReadAsStreamAsync(), stream = new FileStream(_modulePath + "\\_temp\\" + moduleName + ".zip", FileMode.Create, FileAccess.Write))
-                                    {
-                                        await contentStream.CopyToAsync(stream);
-                                    }
-                                }
+                                stream.Write(data, 0, data.Length);
                             }
                         }
                     }
@@ -377,7 +383,7 @@ namespace Core.Admin.Controllers
                 resp.Message = "Module downloaded and restored successfully";
             }
             return Json(resp);
-        } 
+        }
         #endregion
 
         #region PrivetMethods
@@ -385,7 +391,8 @@ namespace Core.Admin.Controllers
         {
             try
             {
-                var rsp = _mediator.SendAll(new OnModuleActivity(new ModuleActivity() {
+                var rsp = _mediator.SendAll(new OnModuleActivity(new ModuleActivity()
+                {
                     ActivityType = type,
                     Module = module
                 })).Result;
@@ -433,9 +440,9 @@ namespace Core.Admin.Controllers
             return _moduleService.DeleteTable(modelType);
         }
 
-        private int CreateOrUpdateTable(Type modelType)
+        private int CreateOrUpdateTable(Type modelType, bool DeleteUnusedColumns = true)
         {
-            return _moduleService.CreateOrUpdateTable(modelType);
+            return _moduleService.CreateOrUpdateTable(modelType, DeleteUnusedColumns);
         }
 
         #endregion

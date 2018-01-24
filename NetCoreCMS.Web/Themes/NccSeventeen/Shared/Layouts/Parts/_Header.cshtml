@@ -37,7 +37,10 @@
                 }
                 else
                 {
-                    <a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a><span> | </span>
+                    if (GlobalContext.WebSite.AllowRegistration == true)
+                    {
+                        <a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a><span> | </span>
+                    }
                     <a asp-area="" asp-controller="Account" asp-action="Login">@_T["Log in"]</a>
                 }
             }

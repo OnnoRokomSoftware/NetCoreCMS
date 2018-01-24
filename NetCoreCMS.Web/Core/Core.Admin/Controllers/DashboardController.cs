@@ -37,6 +37,7 @@ namespace Core.Admin.Controllers
         IHostingEnvironment _hostingEnvironment;
         IConfiguration _configuration;
         NccModuleService _moduleService;
+        private ILogger<AdminController> _logger;
 
         public DashboardController(NccWebSiteService nccWebSiteService, NccPageService pageService, NccPostService postService, NccCategoryService categoryService, INccSettingsService settingsService, RoleManager<NccRole> roleManager, UserManager<NccUser> userManager, NccStartupService startupService, IConfiguration configuration, IHostingEnvironment hostingEnv,
         NccModuleService moduleService, ILoggerFactory loggarFactory)

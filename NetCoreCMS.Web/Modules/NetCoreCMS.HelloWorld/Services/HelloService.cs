@@ -8,44 +8,18 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
 using NetCoreCMS.Framework.Core.IoC;
-using NetCoreCMS.Framework.Core.Mvc.Services;
-using System.Collections.Generic;
 using NetCoreCMS.HelloWorld.Models.Entity;
+using NetCoreCMS.Framework.Core.Mvc.Service;
+using NetCoreCMS.HelloWorld.Repositories;
 
 namespace NetCoreCMS.HelloWorld.Services
 {
-    public class HelloService : IBaseService<HelloModel>, ISingleton
+    public class HelloService : BaseService<HelloModel>, ISingleton
     {
-        public void DeletePermanently(long entityId)
+        public HelloService(HelloRepository entityRepository) : base(entityRepository)
         {
-            throw new NotImplementedException();
-        }
 
-        public HelloModel Get(long entityId, bool isAsNoTracking = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public List<HelloModel> LoadAll(bool isActive = true, int status = 0, string name = "", bool isLikeSearch = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Remove(long entityId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public HelloModel Save(HelloModel model)
-        {
-            throw new NotImplementedException();
-        }
-
-        public HelloModel Update(HelloModel model)
-        {
-            throw new NotImplementedException();
         }
     }
 }

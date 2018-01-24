@@ -7,10 +7,9 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
 using Microsoft.AspNetCore.Mvc.Razor;
 using NetCoreCMS.Framework.Themes;
-using NetCoreCMS.Framework.Utility;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,12 +28,15 @@ namespace NetCoreCMS.Framework.Modules
                 {
                     var moduleViewLocations = new string[]
                     {
-                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/{1}/{0}.cshtml",
-                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/{0}.cshtml",
-                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/" + module + "/{0}.cshtml",
-                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Views/" + module + "/{1}/{0}.cshtml", 
-                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/{0}.cshtml",
-                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeName +"/Shared/Layouts/{0}.cshtml",
+                        "/Themes/ChildThemes/"+ ThemeHelper.ActiveTheme.ThemeId +"/" + module + "/Views/{0}.cshtml",
+                        "/Themes/ChildThemes/"+ ThemeHelper.ActiveTheme.ThemeId +"/" + module + "/Views/{1}/{0}.cshtml",
+
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/{1}/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/" + module + "/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Views/" + module + "/{1}/{0}.cshtml", 
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Shared/{0}.cshtml",
+                        "/Themes/"+ ThemeHelper.ActiveTheme.ThemeId +"/Shared/Layouts/{0}.cshtml",
                         
                         "/Modules/" + module + "/Views/{1}/{0}.cshtml",
                         "/Modules/" + module + "/Views/Shared/{0}.cshtml",

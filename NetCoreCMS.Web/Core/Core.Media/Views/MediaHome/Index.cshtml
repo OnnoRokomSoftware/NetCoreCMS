@@ -15,12 +15,12 @@
 
     var class1 = "";
     if (ViewBag.InputId == "") {
-        class1 = "row";
+        class1 = "";
     }
 }
 
 @section Styles{
-    <link href="~/lib/lightbox2/dist/css/lightbox.min.css" rel="stylesheet" />
+    <link href="~/lib/lightbox2/src/css/lightbox.css" rel="stylesheet" />
 }  
 <style>
     .mediaBox {
@@ -48,7 +48,7 @@
                 {
                     if (item.IsDir)
                     {
-                        <a asp-controller="MediaHome" asp-action="Index" asp-route-sq="@item.FullPath" asp-route-isFile="@ViewBag.IsFile" asp-route-inputId="@ViewBag.InputId">
+                        <a asp-controller="MediaHome" asp-action="Index" asp-route-sq="@item.FullPath" asp-route-isFile="@ViewBag.IsFile" asp-route-inputId="@ViewBag.InputId" asp-route-CKEditorFuncNum="@ViewBag.CKEditorFuncNum">
                             <div class="mediaBox">
                                 <span style="vertical-align:middle;  display: table-cell;">
                                     <strong>@item.FileName</strong> <br />
@@ -92,7 +92,7 @@
                             @*<a asp-controller="CmsMedia" asp-action="Rename" asp-route-fullPath="@item.FullPath" asp-route-parrentDir="@item.ParrentDir" class="btn btn-xs btn-outline btn-primary">Rename</a>*@
                             @if (!string.IsNullOrEmpty(ViewBag.InputId))
                             {
-                                <input type="button" onclick="selectFile('@item.FullPath', '@ViewBag.InputId')" value="Select" class="btn btn-xs btn-success" data-imageurl="@item.FullPath" />
+                                <input type="button" onclick="selectFile('@item.FullPath', '@ViewBag.InputId', '@ViewBag.CKEditorFuncNum')" value="Select" class="btn btn-xs btn-success" data-imageurl="@item.FullPath" />
                             }                         
                             <a asp-controller="MediaHome" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" asp-route-isFile="@ViewBag.IsFile" asp-route-inputId="@ViewBag.InputId" class="btn btn-xs btn-outline btn-danger">Delete</a>
                         </div>
@@ -120,7 +120,7 @@
                             
                             @if (!string.IsNullOrEmpty(ViewBag.InputId))
                             {
-                                <input type="button" onclick="selectFile('@item.FullPath', '@ViewBag.InputId')" value="Select" class="btn btn-xs btn-success" data-imageurl="@item.FullPath" />
+                                <input type="button" onclick="selectFile('@item.FullPath', '@ViewBag.InputId', '@ViewBag.CKEditorFuncNum')" value="Select" class="btn btn-xs btn-success" data-imageurl="@item.FullPath" />
                             }     
                             <a asp-controller="MediaHome" asp-action="Delete" asp-route-fullPath="@item.FullPath.Replace("/","\\")" asp-route-parrentDir="@item.ParrentDir" asp-route-isFile="@ViewBag.IsFile" asp-route-inputId="@ViewBag.InputId" class="btn btn-xs btn-outline btn-danger">Delete</a>
                         </div>
@@ -142,14 +142,13 @@
 
 
 @section Scripts{
-    <script src="~/lib/lightbox2/dist/js/lightbox.min.js"></script>
+    <script src="~/lib/lightbox2/src/js/lightbox.js"></script>
     <script>
-        function selectFile(fileUrl, inputId) {
+        function selectFile(fileUrl, inputId, CKEditorFuncNum) {
             //console.log(fileUrl);
             //console.log(inputId);
             if (inputId == "ckeditor") {
-                var funcNum = 1;
-                window.opener.CKEDITOR.tools.callFunction(funcNum, fileUrl);
+                window.opener.CKEDITOR.tools.callFunction(CKEditorFuncNum, fileUrl);
             }
             else {
                 window.opener.document.getElementById(inputId).value = fileUrl;

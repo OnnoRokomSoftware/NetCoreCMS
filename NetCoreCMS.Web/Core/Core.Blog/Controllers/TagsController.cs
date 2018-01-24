@@ -35,10 +35,10 @@ namespace Core.Blog.Controllers
     {
         NccTagService _nccTagService;
         NccPostService _nccPostService;
-        NccUserService _nccUserService;
+        INccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
 
-        public TagsController(NccTagService nccTagService,NccPostService nccPostService, NccUserService nccUserService, ILoggerFactory loggerFactory)
+        public TagsController(NccTagService nccTagService,NccPostService nccPostService, INccUserService nccUserService, ILoggerFactory loggerFactory)
         {
             _nccTagService = nccTagService;
             _nccPostService = nccPostService;

@@ -1,7 +1,7 @@
 ﻿@using NetCoreCMS.Framework.Utility
 @{
     Layout = Constants.AdminLayoutName;
-    ViewData["Title"] = "Maintenance Mode Settings";
+    Title = "Maintenance Mode Settings";
     
     var checkedTxt = "";
 
@@ -11,12 +11,12 @@
     }
 }
 
-<h2>@ViewData["Title"].</h2>
+@*<h2>@ViewData["Title"].</h2>*@
 <h3>@ViewData["Message"]</h3>
 
 <div class="row">
     <div class="col-sm-12">
-        <form class="form-horizontal" asp-controller="Admin" asp-action="MaintenanceMode" method="post">
+        <form class="form-horizontal" asp-controller="@ControllerName" asp-action="MaintenanceMode" method="post">
             <div class="form-group">
                 <div asp-validation-summary="All" class="text-danger"></div>
             </div>

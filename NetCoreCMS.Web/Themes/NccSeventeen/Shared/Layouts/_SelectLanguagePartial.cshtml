@@ -1,25 +1,12 @@
-﻿@using Microsoft.AspNetCore.Builder
-@using Microsoft.AspNetCore.Localization
-@using Microsoft.Extensions.Options
-
-@inject IOptions<RequestLocalizationOptions> LocOptions
-
-@{  
-    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
-    var cultureItems = LocOptions.Value.SupportedUICultures
-        .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName.Split(" ").FirstOrDefault()})
+﻿@using System.Net;
+@{
+    var cultureItems = SupportedCultures.Cultures
+        .Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName.Split(" ").FirstOrDefault() })
         .ToList();
-    //var selectList = new SelectList(cultureItems, "Value", "Text", CurrentLanguage);
-    var cl = LocOptions.Value.SupportedUICultures.Where(x => x.TwoLetterISOLanguageName.ToLower() == CurrentLanguage).Select(c => new { Value = c.TwoLetterISOLanguageName.ToLower(), Text = c.NativeName.Split(" ").FirstOrDefault() });
-}
-@*<form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@Context.Request.Path" method="post" class="form-inline selectLanguage" role="form" style="display:inline;">
-    <div class="form-group">
-        <label for="exampleInputName2">@_T["Language"]</label>
-        <select class="btn" name="culture" id="culture" onchange="this.form.submit();" asp-items="selectList"></select>
-    </div>
-</form>
-<span>|</span>*@
 
+    var selectList = new SelectList(cultureItems, "Value", "Text", CurrentLanguage);
+
+}
 
 <style>
     .dropbtn {
@@ -47,7 +34,7 @@
 
         .dropdown-content a {
             /*color: black;*/
-            padding: 4px 4px;
+            padding: 8px 8px;
             text-decoration: none;
             display: block;
         }
@@ -64,13 +51,14 @@
         /*background-color: #3f51b5;*/
     }
 </style>
+
 <label for="exampleInputName2">@_T["Language"]</label>
 <div class="dropdown">
-    <button class="dropbtn">@cl.FirstOrDefault().Text <span class="glyphicon glyphicon-triangle-bottom"></span> </button>
+    <button class="dropbtn">@CurrentLanguageText<span class="glyphicon glyphicon-triangle-bottom"></span> </button>
     <div class="dropdown-content">
         @foreach (var item in cultureItems)
         {
-            <a href="/Home/SetLanguage/?culture=@item.Value&returnUrl=@Context.Request.Path">@item.Text</a>
+            <a href="/Home/SetLanguage/?culture=@item.Value&returnUrl=@WebUtility.UrlEncode(PageUrl)">@item.Text</a>
         }
     </div>
 </div>

@@ -11,7 +11,7 @@
 using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.ImageSlider.Models.Entity;
+using NetCoreCMS.ImageSlider.Models.Entities;
 
 namespace NetCoreCMS.ImageSlider.Models
 {

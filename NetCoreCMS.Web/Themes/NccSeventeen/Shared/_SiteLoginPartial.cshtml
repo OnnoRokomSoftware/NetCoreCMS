@@ -15,7 +15,10 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li><a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a></li>
+        @if (GlobalContext.WebSite.AllowRegistration == true)
+        {
+            <li><a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a></li>
+        }        
         <li><a asp-area="" asp-controller="Account" asp-action="Login">@_T["Log in"]</a></li>
     </ul>
 }

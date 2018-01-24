@@ -26,7 +26,7 @@ namespace NetCoreCMS.Framework.Themes
 {
     public static class ThemeHelper
     {
-        private static volatile ConcurrentDictionary<string, NccResource> _nccResources = new ConcurrentDictionary<string,NccResource>();
+        private static volatile ConcurrentDictionary<string, NccResource> _nccResources = new ConcurrentDictionary<string, NccResource>();
         public static Theme ActiveTheme { get; set; }
         public static NccWebSite WebSite { get; set; }
         public static string GetCurrentLanguage()
@@ -38,7 +38,7 @@ namespace NetCoreCMS.Framework.Themes
 
         public static void RegisterCss(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
         {
-            RegisterNccResource(NccResource.ResourceType.CssFile, resourcePath, position, version, order, minify);            
+            RegisterNccResource(NccResource.ResourceType.CssFile, resourcePath, position, version, order, minify);
         }
 
         public static void RegisterJs(string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
@@ -48,12 +48,12 @@ namespace NetCoreCMS.Framework.Themes
 
         public static void UnRegisterResource(NccResource.ResourceType type, string resourcePath)
         {
-            UnRegisterNccResource(type,resourcePath);
+            UnRegisterNccResource(type, resourcePath);
         }
 
         public static void RegisterResource(string resourceLibName)
         {
-            if(resourceLibName == NccResource.JQuery)
+            if (resourceLibName == NccResource.JQuery)
             {
                 RegisterNccResource(NccResource.ResourceType.JsFile, "/lib/jquery/jquery.min.js", NccResource.IncludePosition.Header, "2.3.3", 1, false);
             }
@@ -92,7 +92,7 @@ namespace NetCoreCMS.Framework.Themes
                 RegisterNccResource(NccResource.ResourceType.CssFile, "/lib/font-awesome/css/font-awesome.min.css", NccResource.IncludePosition.Header, "", 5, false);
             }
         }
-       
+
         private static void RegisterNccResource(NccResource.ResourceType type, string resourcePath, NccResource.IncludePosition position = NccResource.IncludePosition.Footer, string version = "", int order = 1000, bool minify = true)
         {
             var nccResource = new NccResource()
@@ -104,14 +104,14 @@ namespace NetCoreCMS.Framework.Themes
                 UseMinify = minify,
                 Version = version
             };
-            
+
             if (_nccResources.ContainsKey(resourcePath))
             {
                 var old = _nccResources[resourcePath];
-                if(old.Version != version)
+                if (old.Version != version)
                 {
                     _nccResources[resourcePath] = nccResource;
-                }                
+                }
             }
             else
             {
@@ -130,335 +130,336 @@ namespace NetCoreCMS.Framework.Themes
 
         public static List<NccResource> GetAllResources(NccResource.ResourceType type, NccResource.IncludePosition position)
         {
-            return _nccResources.Where(x=>x.Value.Type == type && x.Value.Position == position).OrderBy(x=>x.Value.Order).Select(x=> x.Value).ToList();
+            return _nccResources.Where(x => x.Value.Type == type && x.Value.Position == position).OrderBy(x => x.Value.Order).Select(x => x.Value).ToList();
         }
 
         #region Website Informations
-         
-        public static string GetWebSiteName()
-        {
-            var ret = "";
-            if (WebSite != null)
-            {
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.Name;
-                }
-            }
-            return ret;
-        }
 
-        public static string GetWebSiteTitle()
-        {
-            var ret = "";
-            if (WebSite != null)
-            { 
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.SiteTitle;
-                } 
-            }
-            return ret;
-        }
+        //public static string GetWebSiteName()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.Name;
+        //        }
+        //    }
+        //    return ret;
+        //}
 
-        public static string GetWebSiteTagline()
-        {
-            var ret = "";
-            if (WebSite != null)
-            { 
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.Tagline;
-                } 
-            }
-            return ret;
-        }
+        //public static string GetWebSiteTitle()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.SiteTitle;
+        //        }
+        //    }
+        //    return ret;
+        //}
 
-        public static string GetWebSiteFaviconUrl()
-        {
-            var ret = "";
-            if (WebSite != null)
-            { 
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.FaviconUrl;
-                } 
-            }
-            return ret;
-        }
+        //public static string GetWebSiteTagline()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.Tagline;
+        //        }
+        //    }
+        //    return ret;
+        //}
 
-        public static string GetWebSiteLogoUrl()
-        {
-            var ret = "";
-            if (WebSite != null)
-            {
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.SiteLogoUrl;
-                } 
-            }
-            return ret;
-        }
+        //public static string GetWebSiteFaviconUrl()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.FaviconUrl;
+        //        }
+        //    }
+        //    return ret;
+        //}
 
-        public static string GetWebSiteCopyright()
-        {
-            var ret = "";
-            if (WebSite != null)
-            { 
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.Copyrights;
-                } 
-            }
-            return ret;
-        }
+        //public static string GetWebSiteLogoUrl()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.SiteLogoUrl;
+        //        }
+        //    }
+        //    return ret;
+        //}
 
-        public static string GetWebSitePrivacyPolicyUrl()
-        {
-            var ret = "";
-            if (WebSite != null)
-            { 
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.PrivacyPolicyUrl;
-                } 
-            }
-            return ret;
-        }
+        //public static string GetWebSiteCopyright()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.Copyrights;
+        //        }
+        //    }
+        //    return ret;
+        //}
 
-        public static string GetWebSiteTermsAndConditionsUrl()
-        {
-            var ret = "";
-            if (WebSite != null)
-            { 
-                var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
-                if (webInfo != null)
-                {
-                    ret = webInfo.TermsAndConditionsUrl;
-                } 
-            }
-            return ret;
-        }
+        //public static string GetWebSitePrivacyPolicyUrl()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.PrivacyPolicyUrl;
+        //        }
+        //    }
+        //    return ret;
+        //}
+
+        //public static string GetWebSiteTermsAndConditionsUrl()
+        //{
+        //    var ret = "";
+        //    if (WebSite != null)
+        //    {
+        //        var webInfo = WebSite.WebSiteInfos.Where(x => x.Language.ToLower() == GetCurrentLanguage()).FirstOrDefault();
+        //        if (webInfo != null)
+        //        {
+        //            ret = webInfo.TermsAndConditionsUrl;
+        //        }
+        //    }
+        //    return ret;
+        //}
         #endregion
 
         #region Menu
-        public static List<NccMenu> GetMenus(string menuLocation, string language)
-        {
-            return GlobalContext.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || string.IsNullOrEmpty(x.MenuLanguage))).ToList();
-        }
+        //public static List<NccMenu> GetMenus(string menuLocation, string language)
+        //{
+        //    return GlobalContext.Menus.Where(x => x.Position == menuLocation && (x.MenuLanguage == language || string.IsNullOrEmpty(x.MenuLanguage))).ToList();
+        //}
 
-        public static string PrepareMenuHtml(string position)
-        {
-            var menus = GlobalContext.Menus.Where(x => x.Position == position).OrderBy(x => x.MenuOrder).ToList();
-            var menuTxt = "";
+        //public static string PrepareMenuHtml(string position)
+        //{
+        //    var menus = GlobalContext.Menus.Where(x => x.Position == position).OrderBy(x => x.MenuOrder).ToList();
+        //    var menuTxt = "";
 
-            foreach (var item in menus)
-            {
-                menuTxt += "<div class=\"ncc-main-menu\">";
-                menuTxt += PrepareMenu(item.MenuItems, "");
-                menuTxt += "</div>";
-            }
+        //    foreach (var item in menus)
+        //    {
+        //        menuTxt += "<div class=\"ncc-main-menu\">";
+        //        menuTxt += PrepareMenu(item.MenuItems, "");
+        //        menuTxt += "</div>";
+        //    }
 
-            return menuTxt;
-        }
+        //    return menuTxt;
+        //}
 
-        public static string PrepareMenuHtml(string position, string currentLanguage)
-        {
-            var menus = GlobalContext.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();            
-            var menuTxt = "";
+        //public static string PrepareMenuHtml(string position, string currentLanguage)
+        //{
+        //    var menus = GlobalContext.Menus.Where(x => x.Position == position && (string.IsNullOrEmpty(x.MenuLanguage) || x.MenuLanguage.ToLower() == currentLanguage.ToLower())).OrderBy(x => x.MenuOrder).ToList();
+        //    var menuTxt = "";
 
-            foreach (var item in menus)
-            {
-                menuTxt += "<div class=\"ncc-main-menu\">";
-                menuTxt += PrepareMenu(item.MenuItems, currentLanguage);
-                menuTxt += "</div>";
-            }
+        //    foreach (var item in menus)
+        //    {
+        //        menuTxt += "<div class=\"ncc-main-menu\">";
+        //        menuTxt += PrepareMenu(item.MenuItems, currentLanguage);
+        //        menuTxt += "</div>";
+        //    }
 
-            return menuTxt;
-        }
+        //    return menuTxt;
+        //}
 
-        public static string PrepareMenu(List<NccMenuItem> menuItem, string currentLanguage, string upperSubMenuCls = "nav navbar-nav", string menuItemCls = "")
-        {
-            var user = GlobalContext.GetCurrentUser();            
-            var subMenuText = "";
+        //public static string PrepareMenu(List<NccMenuItem> menuItem, string currentLanguage, string upperSubMenuCls = "nav navbar-nav", string menuItemCls = "")
+        //{
+        //    var user = GlobalContext.GetCurrentUser();
+        //    var subMenuText = "";
 
-            menuItem = menuItem.OrderBy(m => m.MenuOrder).ToList();
+        //    menuItem = menuItem.OrderBy(m => m.MenuOrder).ToList();
 
-            foreach (var item in menuItem)
-            {
-                var addItem = false;
+        //    foreach (var item in menuItem)
+        //    {
+        //        var addItem = false;
 
-                if (item.IsAnonymous)
-                {
-                    addItem = true;
-                }
-                else if (ControllerActionCache.ControllerActions.Where(x=>x.MainController == item.Controller && x.MainAction == item.Action && x.ModuleName == item.Module).Count() > 0) {
+        //        if (item.IsAnonymous)
+        //        {
+        //            addItem = true;
+        //        }
+        //        else if (ControllerActionCache.ControllerActions.Where(x => x.MainController == item.Controller && x.MainAction == item.Action && x.ModuleName == item.Module).Count() > 0)
+        //        {
 
-                    if (user != null)
-                    {
-                        if (item.IsAllowAuthenticated || user.Roles.Where(x => x.Role.Name.Equals(NccCmsRoles.SuperAdmin)).Count() > 0)
-                        {
-                            addItem = true;
-                        }
-                        else
-                        {
-                            if (string.IsNullOrEmpty(item.Module))
-                            {
-                                if (user.ExtraDenies.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
-                                {
-                                    if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => string.IsNullOrEmpty(y.ModuleName) && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
-                                    {
-                                        addItem = true;
-                                    }
-                                    else if (user.ExtraPermissions.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
-                                    {
-                                        addItem = true;
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (user.ExtraDenies.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
-                                {
-                                    if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == item.Module && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
-                                    {
-                                        addItem = true;
-                                    }
-                                    else if (user.ExtraPermissions.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
-                                    {
-                                        addItem = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    addItem = true;
-                }
+        //            if (user != null)
+        //            {
+        //                if (item.IsAllowAuthenticated || user.Roles.Where(x => x.Role.Name.Equals(NccCmsRoles.SuperAdmin)).Count() > 0)
+        //                {
+        //                    addItem = true;
+        //                }
+        //                else
+        //                {
+        //                    if (string.IsNullOrEmpty(item.Module))
+        //                    {
+        //                        if (user.ExtraDenies.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
+        //                        {
+        //                            if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => string.IsNullOrEmpty(y.ModuleName) && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
+        //                            {
+        //                                addItem = true;
+        //                            }
+        //                            else if (user.ExtraPermissions.Where(x => string.IsNullOrEmpty(x.ModuleName) && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
+        //                            {
+        //                                addItem = true;
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        if (user.ExtraDenies.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() == 0)
+        //                        {
+        //                            if (user.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == item.Module && y.Controller == item.Controller && y.Action == item.Action).Count() > 0).Count() > 0)
+        //                            {
+        //                                addItem = true;
+        //                            }
+        //                            else if (user.ExtraPermissions.Where(x => x.ModuleName == item.Module && x.Controller == item.Controller && x.Action == item.Action).Count() > 0)
+        //                            {
+        //                                addItem = true;
+        //                            }
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        else
+        //        {
+        //            addItem = true;
+        //        }
 
-                if (addItem)
-                {
-                    var hasChildren = item.Childrens.Count > 0;
-                    if (hasChildren)
-                    {
-                        subMenuText = "<li class=\"" + menuItemCls + "\">";
+        //        if (addItem)
+        //        {
+        //            var hasChildren = item.Childrens.Count > 0;
+        //            if (hasChildren)
+        //            {
+        //                subMenuText = "<li class=\"" + menuItemCls + "\">";
 
-                        if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
-                            subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
-                        else
-                            subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+        //                if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
+        //                    subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
+        //                else
+        //                    subMenuText += "<a href=\"" + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";
 
-                        subMenuText += PrepareMenu(item.Childrens, currentLanguage, "dropdown-menu multi-level", "dropdown-submenu");
-                        subMenuText += "</li>";
-                    }
-                    else
-                    {
-                        subMenuText += ListItemHtml(item, currentLanguage);
-                    }
-                }            
-            }
+        //                subMenuText += PrepareMenu(item.Childrens, currentLanguage, "dropdown-menu multi-level", "dropdown-submenu");
+        //                subMenuText += "</li>";
+        //            }
+        //            else
+        //            {
+        //                subMenuText += ListItemHtml(item, currentLanguage);
+        //            }
+        //        }
+        //    }
 
-            var menuTxt = "";
-            if(string.IsNullOrEmpty(subMenuText) == false)
-            {
-                menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
-                menuTxt += subMenuText;
-                menuTxt += "</ul>";
-            }
+        //    var menuTxt = "";
+        //    if (string.IsNullOrEmpty(subMenuText) == false)
+        //    {
+        //        menuTxt = "<ul class=\"" + upperSubMenuCls + "\">";
+        //        menuTxt += subMenuText;
+        //        menuTxt += "</ul>";
+        //    }
 
-            return menuTxt;
-        }
+        //    return menuTxt;
+        //}
 
-        private static string ListItemHtml(NccMenuItem item, string currentLanguage)
-        {
-            var url = "/";
-            var urlPrefix = "";
-            var data = "";
+        //private static string ListItemHtml(NccMenuItem item, string currentLanguage)
+        //{
+        //    var url = "/";
+        //    var urlPrefix = "";
+        //    var data = "";
 
-            if (item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
-            {
-                //urlPrefix = "/Category/";
-                url = item.Url;
-                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
-                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
-            }
-            else if (item.MenuActionType == NccMenuItem.ActionType.BlogPost)
-            {
-                url = item.Url;
-                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
-                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
-            }
-            else if (item.MenuActionType == NccMenuItem.ActionType.Module)
-            {
-                //urlPrefix = "/" + item.Controller + "/" + item.Action + "/";
-                url = item.Url;
-                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
-                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
-            }
-            else if (item.MenuActionType == NccMenuItem.ActionType.Page)
-            {
-                //urlPrefix = "";/*/CmsHome/CmsPage/View/*/
-                //item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
-                //item.Url = NccUrlHelper.AddLanguageToUrl(currentLanguage, item.Url);
-                //return "<li><a href=\"" + item.Url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
-                url = item.Url;
-                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
-                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
-            }
-            else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
-            {
-                url = item.Url;
-                url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
-                return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
-            }
-            else if (item.MenuActionType == NccMenuItem.ActionType.Url)
-            {
-                urlPrefix = "";
-            }
+        //    if (item.MenuActionType == NccMenuItem.ActionType.BlogCategory)
+        //    {
+        //        //urlPrefix = "/Category/";
+        //        url = item.Url;
+        //        url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+        //        return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+        //    }
+        //    else if (item.MenuActionType == NccMenuItem.ActionType.BlogPost)
+        //    {
+        //        url = item.Url;
+        //        url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+        //        return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+        //    }
+        //    else if (item.MenuActionType == NccMenuItem.ActionType.Module)
+        //    {
+        //        //urlPrefix = "/" + item.Controller + "/" + item.Action + "/";
+        //        url = item.Url;
+        //        url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+        //        return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+        //    }
+        //    else if (item.MenuActionType == NccMenuItem.ActionType.Page)
+        //    {
+        //        //urlPrefix = "";/*/CmsHome/CmsPage/View/*/
+        //        //item.Url = item.Url.StartsWith("/") == true ? item.Url : "/" + item.Url;
+        //        //item.Url = NccUrlHelper.AddLanguageToUrl(currentLanguage, item.Url);
+        //        //return "<li><a href=\"" + item.Url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+        //        url = item.Url;
+        //        url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+        //        return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+        //    }
+        //    else if (item.MenuActionType == NccMenuItem.ActionType.Tag)
+        //    {
+        //        url = item.Url;
+        //        url = NccUrlHelper.AddLanguageToUrl(currentLanguage, url);
+        //        return "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "</a></li>";
+        //    }
+        //    else if (item.MenuActionType == NccMenuItem.ActionType.Url)
+        //    {
+        //        urlPrefix = "";
+        //    }
 
-            if (!string.IsNullOrEmpty(item.Data))
-            {
-                data = "?slug=" + item.Data;
-            }
+        //    if (!string.IsNullOrEmpty(item.Data))
+        //    {
+        //        data = "?slug=" + item.Data;
+        //    }
 
-            url = urlPrefix + item.Url + data;
-            if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(url))
-            {
-                url = "/" + currentLanguage + url;
-            }
+        //    url = urlPrefix + item.Url + data;
+        //    if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(url))
+        //    {
+        //        url = "/" + currentLanguage + url;
+        //    }
 
-            var li = "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
-            return li;
-        }
+        //    var li = "<li><a href=\"" + url + "\" target=\"" + item.Target + "\">" + item.Name + "  </a></li>";
+        //    return li;
+        //}
 
-        private static bool IsExternalUrl(string url)
-        {
-            string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
-            Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
-            return reg.IsMatch(url);
-        }
+        //private static bool IsExternalUrl(string url)
+        //{
+        //    string pattern = @"^(http|https|ftp|)\://|[a-zA-Z0-9\-\.]+\.[a-zA-Z](:[a-zA-Z0-9]*)?/?([a-zA-Z0-9\-\._\?\,\'/\\\+&amp;%\$#\=~])*[^\.\,\)\(\s]$";
+        //    Regex reg = new Regex(pattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
+        //    return reg.IsMatch(url);
+        //}
 
         #endregion
 
         #region Widgets
-        public static List<NccWebSiteWidget> GetWebsiteWidgets(string layout, string zone)
-        {
-            return GlobalContext.WebSiteWidgets.Where(x => x.LayoutName == layout && x.Zone == zone).ToList();
-        }
+        //public static List<NccWebSiteWidget> GetWebsiteWidgets(string layout, string zone)
+        //{
+        //    return GlobalContext.WebSiteWidgets.Where(x => x.LayoutName == layout && x.Zone == zone).OrderBy(x => x.WidgetOrder).ToList();
+        //}
 
-        public static List<Widget> GetWidgets(string widgetId)
-        {
-            return GlobalContext.Widgets.Where(x => x.WidgetId == widgetId).ToList();
-        }
+        //public static List<Widget> GetWidgets(string widgetId)
+        //{
+        //    return GlobalContext.Widgets.Where(x => x.WidgetId == widgetId).ToList();
+        //}
 
         #endregion
 
@@ -552,7 +553,7 @@ namespace NetCoreCMS.Framework.Themes
             public static string StyleHeader { get { return "StyleHeader"; } }
             public static string StyleFooter { get { return "StyleFooter"; } }
             public static string ScriptHeader { get { return "ScriptHeader"; } }
-            public static string ScriptFooter { get { return "ScriptFooter"; } }            
+            public static string ScriptFooter { get { return "ScriptFooter"; } }
         }
     }
 }

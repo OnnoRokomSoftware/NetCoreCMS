@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Identity
 @using NetCoreCMS.Framework.Utility
 @using NetCoreCMS.Framework.Modules
+@using NetCoreCMS.Framework.Resources
 @using NetCoreCMS.Framework.Modules.Widgets
 @using NetCoreCMS.Framework.Core.Models
 @using NetCoreCMS.Framework.Themes
@@ -13,8 +14,6 @@
 @using Microsoft.Extensions.Localization
 @using NetCoreCMS.Framework.i18n
 
-@using NccSeventeen.Lib
-
 @addTagHelper *, NetCoreCMS.Framework
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
@@ -22,6 +21,5 @@
 @inject SignInManager<NccUser> SignInManager
 @inject UserManager<NccUser> UserManager
 @inject NccLanguageDetector LanguageDetector
-
 
 

@@ -12,32 +12,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
-using NetCoreCMS.Framework.Core.IoC;
 using NetCoreCMS.Framework.Core.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using NetCoreCMS.Framework.Core.Mvc.Service;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
     /// <summary>
     /// Service for user authorization policy. 
     /// </summary>
-    public class NccPermissionService : IBaseService<NccPermission>
+    public class NccPermissionService : BaseService<NccPermission>
     {
         private readonly NccPermissionRepository _entityRepository;
+        private readonly NccPermissionDetailsRepository _permissionDetailsRepository;
 
-        public NccPermissionService(NccPermissionRepository entityRepository)
+        public NccPermissionService(NccPermissionRepository entityRepository, NccPermissionDetailsRepository nccPermissionDetailsRepository) : base(entityRepository, new List<string>() { "Users", "PermissionDetails" })
         {
             _entityRepository = entityRepository;
+            _permissionDetailsRepository = nccPermissionDetailsRepository;
         }
 
-        public NccPermission Get(long entityId, bool isAsNoTracking = false)
-        {
-            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "Users", "PermissionDetails" });
-        }
-
+        #region New Method
         public NccPermission Get(string permissionName)
         {
             var query = _entityRepository.Query()
@@ -47,85 +43,22 @@ namespace NetCoreCMS.Framework.Core.Services
             return query.FirstOrDefault();
         }
 
-        public List<NccPermission> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
-        {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "Users", "PermissionDetails" });
-        } 
-
-        public NccPermission Save(NccPermission entity)
-        {
-            _entityRepository.Add(entity);
-            _entityRepository.SaveChange();
-            return entity;
-        }
-
         public List<NccPermission> Save(List<NccPermission> entities)
         {
-            using(var txn = _entityRepository.BeginTransaction())
+            using (var txn = _entityRepository.BeginTransaction())
             {
                 foreach (var entity in entities)
                 {
-                    _entityRepository.Add(entity);                    
+                    _entityRepository.Add(entity);
                 }
                 _entityRepository.SaveChange();
                 txn.Commit();
             }
-            
+
             return entities;
         }
 
-        public NccPermission Update(NccPermission entity)
-        {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if (oldEntity != null)
-            {
-                using (var txn = _entityRepository.BeginTransaction())
-                {
-                    CopyNewData(entity, oldEntity);
-                    _entityRepository.Edit(oldEntity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-            }
-
-            return entity;
-        }
-
-        public void Remove(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                entity.Status = EntityStatus.Deleted;
-                _entityRepository.Edit(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public void DeletePermanently(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                _entityRepository.Remove(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        private void CopyNewData(NccPermission copyFrom, NccPermission copyTo)
-        {
-            copyTo.ModificationDate = copyFrom.ModificationDate;
-            copyTo.ModifyBy = copyFrom.ModifyBy;
-            copyTo.Name = copyFrom.Name;
-            copyTo.Status = copyFrom.Status;
-            copyTo.VersionNumber = copyFrom.VersionNumber;
-            copyTo.Metadata = copyFrom.Metadata;
-
-            copyTo.Group = copyFrom.Group;
-            copyTo.Description = copyFrom.Description;
-        }
-
-        public (bool,string) SaveOrUpdate(NccPermission permission, List<long> removePermissionDetailsIdList)
+        public (bool, string) SaveOrUpdate(NccPermission permission, List<NccPermissionDetails> addedPermissionDetails, List<long> removePermissionDetailsIdList)
         {
             try
             {
@@ -141,23 +74,22 @@ namespace NetCoreCMS.Framework.Core.Services
                         _entityRepository.Add(permission);
                     }
 
-                    if (removePermissionDetailsIdList.Count > 0)
+                    foreach (var item in addedPermissionDetails)
                     {
-                        var count = _entityRepository.RemoveById(removePermissionDetailsIdList);
-                        if (count != removePermissionDetailsIdList.Count) {
-                            txn.Rollback();
-                            return (false, "Could not remove all disselected menus.");
-                        }
+                        _permissionDetailsRepository.Add(item);
                     }
 
+                    _permissionDetailsRepository.RemoveByIds(removePermissionDetailsIdList);
+                    _permissionDetailsRepository.SaveChange();
                     _entityRepository.SaveChange();
+
                     txn.Commit();
+
                     return (true, "Save successful");
                 }
             }
             catch (Exception ex)
             {
-
                 return (false, ex.Message);
             }
         }
@@ -172,6 +104,22 @@ namespace NetCoreCMS.Framework.Core.Services
                     throw new DuplicateRecordException("Name already exist. Please use different name.");
                 }
             }
+        }
+
+        public void DeletePermission(long id)
+        {
+            var permission = _entityRepository.Get(id, false, new List<string>() { "PermissionDetails" });
+            if (permission != null)
+            {
+                foreach (var item in permission.PermissionDetails)
+                {
+                    _permissionDetailsRepository.DeletePermanently(item);
+                }
+                _permissionDetailsRepository.SaveChange();
+                _entityRepository.DeletePermanently(permission);
+                _entityRepository.SaveChange();
+            }
         } 
+        #endregion
     }
 }

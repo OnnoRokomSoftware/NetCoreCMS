@@ -134,11 +134,11 @@
         <span>@totalPage</span>*@
     @if (Model.PageNumber > 0)
     {
-        <div class="pull-left"><a href="/CmsHome/?pageNumber=@(Model.PageNumber-1)">< @_T["Previous"]</a></div>
+        <div class="pull-left"><a href="/@ControllerName/?pageNumber=@(Model.PageNumber-1)">< @_T["Previous"]</a></div>
     }
     @if (Model.PageNumber < totalPage)
     {
-        <div class="pull-right"><a href="/CmsHome/?pageNumber=@(Model.PageNumber+1)">@_T["Next"] ></a></div>
+        <div class="pull-right"><a href="/@ControllerName/?pageNumber=@(Model.PageNumber+1)">@_T["Next"] ></a></div>
     }
 </div>
 

@@ -7,12 +7,11 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
 using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
 using System.Collections.Generic;
 
 using NetCoreCMS.Framework.Core;
@@ -23,8 +22,6 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.DependencyInjection;
-
-using Newtonsoft.Json;
 using NetCoreCMS.Framework.Modules.Loader;
 
 namespace NetCoreCMS.Framework.Themes
@@ -43,43 +40,60 @@ namespace NetCoreCMS.Framework.Themes
         {
             var themes = new List<Theme>();
             var directoryInfo = new DirectoryInfo(path);
+            bool isThemeActivated = false;
+
             foreach (var themeDir in directoryInfo.EnumerateDirectories())
             {
                 try
                 {
+                    if (themeDir.Name == "ChildThemes")
+                    {
+                        continue;
+                    }
+
                     var configFileLocation = Path.Combine(themeDir.FullName, ThemeInfoFileName);
                     if (File.Exists(configFileLocation))
                     {
-                        var themeInfoFileContent = File.ReadAllText(configFileLocation);
-                        var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
+                        var theme = NccFileHelper.LoadObject<Theme>(configFileLocation);
+
+                        theme.ThemeId = themeDir.Name;
                         theme.Folder = themeDir.Name;
                         theme.ConfigFilePath = configFileLocation;
                         
                         if (Directory.Exists(themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0"))
                         {
                             theme.ResourceFolder    = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
-                            theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
+                            theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Debug\\netcoreapp2.0\\" + theme.ThemeId + ".dll";
                         }
                         else if(Directory.Exists(themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0"))
                         {
-                            theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\" + theme.ThemeName + ".dll";
+                            theme.AssemblyPath      = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\" + theme.ThemeId + ".dll";
                             theme.ResourceFolder    = themeDir.FullName + "\\Bin\\Release\\netcoreapp2.0\\Resources";
                         }
                         
                         if (string.IsNullOrEmpty(theme.AssemblyPath) == false && File.Exists(theme.AssemblyPath))
                         {                            
-                            var themeAssembly = Assembly.LoadFile(theme.AssemblyPath);
+                            var themeAssembly = Assembly.LoadFile(theme.AssemblyPath);                            
                             themes.Add(theme);
-                            if (theme.IsActive)
+                            if (isThemeActivated  == false && theme.IsActive)
                             {
+                                isThemeActivated = true;
                                 ThemeHelper.ActiveTheme     = theme;                                
+                            }
+                            else
+                            {
+                                if (theme.IsActive)
+                                {
+                                    theme.IsActive = false;
+                                    NccFileHelper.WriteObject<Theme>(configFileLocation, theme);                                    
+                                }
                             }
                             GlobalContext.Themes.Add(theme);
                         }
                     }
                     else
                     {
-                        RegisterErrorMessage("Theme config file Theme.json not found");
+                        //RegisterErrorMessage("Theme config file Theme.json not found");
                     }                    
 
                 }
@@ -98,29 +112,30 @@ namespace NetCoreCMS.Framework.Themes
             return themes;
         }
 
-        public bool ActivateTheme(string themeName)
+        public bool ActivateTheme(string themeId)
         {
             try
             {
-                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, themeName,ThemeInfoFileName);
+                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, themeId,ThemeInfoFileName);
                 if (File.Exists(infoFileLocation))
                 {
-                    var themeInfoFileContent = File.ReadAllText(infoFileLocation);
-                    var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
-                    
+                    var theme = NccFileHelper.LoadObject<Theme>(infoFileLocation);                    
                     if (theme.IsActive == false)
                     {
-                        if (InactivateTheme(ThemeHelper.ActiveTheme.ThemeName))
+                        if (InactivateTheme(ThemeHelper.ActiveTheme.ThemeId))
                         {
-                            theme.IsActive = true;                           
-                            var themeJson = JsonConvert.SerializeObject(theme,Formatting.Indented);
-                            File.WriteAllText(infoFileLocation, themeJson);                            
+                            theme.IsActive = true;
+                            NccFileHelper.WriteObject<Theme>(infoFileLocation, theme);
                             ThemeHelper.ActiveTheme     = theme;
                         }
                         else
                         {
                             RegisterErrorMessage("Previous theme inactivation failed.");
                         } 
+                    }
+                    else
+                    {
+                        ThemeHelper.ActiveTheme = theme;
                     }
 
                     return true;
@@ -139,22 +154,19 @@ namespace NetCoreCMS.Framework.Themes
             return false;
         }
         
-        public bool InactivateTheme(string themeName)
+        public bool InactivateTheme(string themeId)
         {
             try
             {
-                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, themeName, ThemeInfoFileName);
+                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, themeId, ThemeInfoFileName);
                 if (File.Exists(infoFileLocation))
                 {
-                    var themeInfoFileContent = File.ReadAllText(infoFileLocation);
-                    var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
+                    var theme = NccFileHelper.LoadObject<Theme>(infoFileLocation);
 
                     if (theme.IsActive == true)
                     {
-                        theme.IsActive = false;
-                        //GlobalConfig.ActiveTheme = theme;
-                        var themeJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
-                        File.WriteAllText(infoFileLocation, themeJson);
+                        theme.IsActive = false;                        
+                        NccFileHelper.WriteObject<Theme>(infoFileLocation, theme);
                     }
 
                     return true;
@@ -167,7 +179,7 @@ namespace NetCoreCMS.Framework.Themes
             }
             catch (Exception ex)
             {
-                throw ex;
+                return false;
             }
             return false;
         }
@@ -176,14 +188,18 @@ namespace NetCoreCMS.Framework.Themes
         {
             try
             {
-                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, "Default", ThemeInfoFileName);
+                var infoFileLocation = Path.Combine(GlobalContext.ContentRootPath, NccInfo.ThemeFolder, Constants.DefaultThemeId, ThemeInfoFileName);
                 if (File.Exists(infoFileLocation))
                 {
-                    var themeInfoFileContent = File.ReadAllText(infoFileLocation);
-                    var theme = JsonConvert.DeserializeObject<Theme>(themeInfoFileContent);
-                    theme.IsActive = true;                    
-                    var themeJson = JsonConvert.SerializeObject(theme, Formatting.Indented);
-                    File.WriteAllText(infoFileLocation, themeJson);                    
+                    var theme = NccFileHelper.LoadObject<Theme>(infoFileLocation);
+                    theme.ThemeId = Constants.DefaultThemeId;
+                    theme.IsActive = true;
+                    NccFileHelper.WriteObject<Theme>(infoFileLocation, theme);
+                    var defaultTheme = GlobalContext.Themes.Where(x => x.ThemeId == Constants.DefaultThemeId).FirstOrDefault();
+                    if(defaultTheme != null)
+                    {
+                        defaultTheme.IsActive = true;
+                    }
                     ThemeHelper.ActiveTheme     = theme;
                     return true;
                 }
@@ -233,13 +249,13 @@ namespace NetCoreCMS.Framework.Themes
                         if (assembly.FullName.Contains(themeFolder.Name))
                         {
                             _themeDlls.Add(assembly);
-                            if (ThemeHelper.ActiveTheme.Folder == themeFolder.Name)
+                            if (ThemeHelper.ActiveTheme.ThemeId == themeFolder.Name)
                             {
                                 mvcBuilder.AddApplicationPart(assembly);
                                 var widgetTypeList = assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
                                 foreach (var widgetType in widgetTypeList)
                                 {         
-                                    services.AddScoped(widgetType);                                    
+                                    services.AddTransient(widgetType);                                    
                                 }
                             }
                         }
@@ -247,7 +263,7 @@ namespace NetCoreCMS.Framework.Themes
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Could not load theme from " + themeFolder);
+                    RegisterErrorMessage("Could not load theme from " + themeFolder);
                 }
             } 
             
@@ -257,7 +273,7 @@ namespace NetCoreCMS.Framework.Themes
                 {
                     var themeFolder = theme.GetName().Name;
 
-                    if (themeFolder == ThemeHelper.ActiveTheme.Folder)
+                    if (themeFolder == ThemeHelper.ActiveTheme.ThemeId)
                     {
                         o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(theme.Location));
                     }
@@ -271,7 +287,7 @@ namespace NetCoreCMS.Framework.Themes
 
             foreach (var themeFolder in themes.Where(x => x.IsDirectory))
             {
-                if (ThemeHelper.ActiveTheme.Folder == themeFolder.Name)
+                if (ThemeHelper.ActiveTheme.ThemeId == themeFolder.Name)
                 {
                     var assembly = _themeDlls.Where(x => x.ManifestModule.Name == themeFolder.Name+".dll").FirstOrDefault();
                     if(assembly != null)

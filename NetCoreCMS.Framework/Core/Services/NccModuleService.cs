@@ -22,26 +22,17 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
+using NetCoreCMS.Framework.Core.Mvc.Service;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccModuleService : IBaseService<NccModule>
+    public class NccModuleService : BaseService<NccModule>
     {
         private readonly NccModuleRepository _entityRepository;
 
-        public NccModuleService(NccModuleRepository entityRepository)
+        public NccModuleService(NccModuleRepository entityRepository) : base(entityRepository, new List<string>() { "Dependencies" })
         {
             _entityRepository = entityRepository;
-        }
-
-        public NccModule Get(long entityId, bool isAsNoTracking = false)
-        {
-            return _entityRepository.Get(entityId);
-        }
-
-        public List<NccModule> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
-        {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
         }
 
         internal NccModule GetByModuleName(string moduleName)
@@ -49,78 +40,9 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Query().FirstOrDefault(x => x.ModuleName == moduleName);
         }
 
-        public NccModule Save(NccModule entity)
-        {
-            _entityRepository.Add(entity);
-            _entityRepository.SaveChange();
-            return entity;
-        }
-
-        public NccModule Update(NccModule entity)
-        {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if (oldEntity != null)
-            {
-                using (var txn = _entityRepository.BeginTransaction())
-                {
-                    CopyNewData(oldEntity, entity);
-                    _entityRepository.Edit(oldEntity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-            }
-
-            return entity;
-        }
-
-        public void Remove(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                entity.Status = EntityStatus.Deleted;
-                _entityRepository.Edit(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
         public List<NccModule> LoadByModuleStatus(NccModule.NccModuleStatus active)
         {
             return _entityRepository.LoadByModuleStatus(active);
-        }
-
-        public void DeletePermanently(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId, false, new List<string>() { "Dependencies" });
-
-            if (entity != null)
-            {
-                _entityRepository.Remove(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        private void CopyNewData(NccModule oldEntity, NccModule entity)
-        {
-            oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.ModifyBy = entity.ModifyBy;
-            oldEntity.Name = entity.Name;
-            oldEntity.Status = entity.Status;
-
-            oldEntity.AntiForgery = entity.AntiForgery;
-            oldEntity.ModuleName = entity.ModuleName;
-            oldEntity.CreateBy = entity.CreateBy;
-            oldEntity.CreationDate = entity.CreationDate;
-            oldEntity.Dependencies = entity.Dependencies;
-
-            oldEntity.ModuleStatus = entity.ModuleStatus;
-            oldEntity.NccVersion = entity.NccVersion;
-            oldEntity.Path = entity.Path;
-            oldEntity.Folder = entity.Folder;
-            oldEntity.Status = entity.Status;
-            oldEntity.Version = entity.Version;
-            oldEntity.VersionNumber = entity.VersionNumber;
-            oldEntity.Metadata = entity.Metadata;
         }
 
         /// <summary>
@@ -152,8 +74,9 @@ namespace NetCoreCMS.Framework.Core.Services
         /// Generate Database table using Entity Model
         /// </summary>
         /// <param name="modelType">Entity Type [typeof(ModelT)]</param>
+        /// <param name="DeleteUnusedColumns"></param>
         /// <returns></returns>
-        public int CreateOrUpdateTable(Type modelType)
+        public int CreateOrUpdateTable(Type modelType, bool DeleteUnusedColumns = true)
         {
             NccDbQueryText query = new NccDbQueryText();
             string currentTableName = GlobalContext.GetTableName(modelType);
@@ -163,7 +86,7 @@ namespace NetCoreCMS.Framework.Core.Services
             {
                 if (currentColumnList.FirstOrDefault().ColumnComment == assemblyname)
                 {
-                    return UpdateTable(modelType, false);
+                    return UpdateTable(modelType, DeleteUnusedColumns);
                 }
 
                 throw new Exception($"{currentTableName} Table already exists in module {currentColumnList.FirstOrDefault().ColumnComment}.");
@@ -209,7 +132,7 @@ namespace NetCoreCMS.Framework.Core.Services
                     }
                     if (qBody.Trim() != "" && qBody.Trim().EndsWith(",") == false) qBody += ", ";
 
-                    if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(Int16))
+                    if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(Int16) || prop.PropertyType == typeof(int?) || prop.PropertyType == typeof(Int16?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -223,7 +146,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(long))
+                    else if (prop.PropertyType == typeof(long) || prop.PropertyType == typeof(long))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -237,7 +160,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(float))
+                    else if (prop.PropertyType == typeof(float) || prop.PropertyType == typeof(float))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -251,7 +174,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(double))
+                    else if (prop.PropertyType == typeof(double) || prop.PropertyType == typeof(double))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -265,7 +188,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(decimal))
+                    else if (prop.PropertyType == typeof(decimal) || prop.PropertyType == typeof(decimal))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -279,7 +202,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(string))
+                    else if (prop.PropertyType == typeof(string) || prop.PropertyType == typeof(String))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -317,12 +240,12 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(bool))
+                    else if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
                     {
                         qBody += $"{Environment.NewLine}    `{prop.Name}` bit(1) NOT NULL COMMENT '{assemblyname}' ";
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(DateTime))
+                    else if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -409,9 +332,11 @@ namespace NetCoreCMS.Framework.Core.Services
         /// Update Database table using Entity Model
         /// </summary>
         /// <param name="modelType">Entity Type [typeof(ModelT)]</param>
+        /// <param name="DeleteUnusedColumns"></param>
         /// <returns></returns>
         public int UpdateTable(Type modelType, bool DeleteUnusedColumns = true)
         {
+            int retVal = 0;
             NccDbQueryText query = new NccDbQueryText();
             string currentTableName = GlobalContext.GetTableName(modelType);
             string assemblyname = modelType.Assembly.GetName().Name;
@@ -458,6 +383,7 @@ namespace NetCoreCMS.Framework.Core.Services
             else if (SetupHelper.SelectedDatabase == "MySql")
             {
                 List<string> columnList = new List<string>();
+                query.MySql_QueryText = "";
                 string qIndexkey = "";
                 string qForeginkey = "";
                 foreach (var item in newCloumnList)
@@ -479,7 +405,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         continue;
                     }
 
-                    if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(Int16))
+                    if (prop.PropertyType == typeof(int) || prop.PropertyType == typeof(Int16) || prop.PropertyType == typeof(int?) || prop.PropertyType == typeof(Int16?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -491,7 +417,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(long))
+                    else if (prop.PropertyType == typeof(long) || prop.PropertyType == typeof(long?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -503,7 +429,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(float))
+                    else if (prop.PropertyType == typeof(float) || prop.PropertyType == typeof(float?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -515,7 +441,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(double))
+                    else if (prop.PropertyType == typeof(double) || prop.PropertyType == typeof(double?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -527,7 +453,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(decimal))
+                    else if (prop.PropertyType == typeof(decimal) || prop.PropertyType == typeof(decimal?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -539,7 +465,7 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(string))
+                    else if (prop.PropertyType == typeof(string) || prop.PropertyType == typeof(String))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -575,12 +501,12 @@ namespace NetCoreCMS.Framework.Core.Services
                         }
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(bool))
+                    else if (prop.PropertyType == typeof(bool) || prop.PropertyType == typeof(bool?))
                     {
                         query.MySql_QueryText += $"{Environment.NewLine}ALTER TABLE `{currentTableName}` ADD `{prop.Name}` bit(1) NOT NULL COMMENT '{assemblyname}';";
                         columnList.Add(prop.Name);
                     }
-                    else if (prop.PropertyType == typeof(DateTime))
+                    else if (prop.PropertyType == typeof(DateTime) || prop.PropertyType == typeof(DateTime?))
                     {
                         if (propInfo.GetCustomAttributes(true).Where(x => x is KeyAttribute).Count() > 0)
                         {
@@ -658,7 +584,12 @@ namespace NetCoreCMS.Framework.Core.Services
             {
                 throw new System.Exception("No supported database found.");
             }
-            return _entityRepository.ExecuteSqlCommand(query); //from base repository
+
+            if (string.IsNullOrWhiteSpace(query.SQLite_QueryText) == false || string.IsNullOrWhiteSpace(query.MSSql_QueryText) == false || string.IsNullOrWhiteSpace(query.MySql_QueryText) == false)
+            {
+                retVal = _entityRepository.ExecuteSqlCommand(query); //from base repository
+            }
+            return retVal;
         }
 
         /// <summary>

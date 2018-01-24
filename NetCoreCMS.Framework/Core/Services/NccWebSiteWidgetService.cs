@@ -11,66 +11,24 @@
 using System.Linq;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
-using System;
 using Microsoft.Extensions.Caching.Memory;
-using NetCoreCMS.Framework.Core.Mvc.Cache;
+using NetCoreCMS.Framework.Core.Mvc.Service;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccWebSiteWidgetService : IBaseService<NccWebSiteWidget>
+    public class NccWebSiteWidgetService : BaseService<NccWebSiteWidget>
     {
         private readonly NccWebSiteWidgetRepository _entityRepository;
         private readonly IMemoryCache _cache;
 
-        public NccWebSiteWidgetService(NccWebSiteWidgetRepository entityRepository, IMemoryCache memoryCache)
+        public NccWebSiteWidgetService(NccWebSiteWidgetRepository entityRepository, IMemoryCache memoryCache) : base(entityRepository)
         {
             _entityRepository = entityRepository;
             _cache = memoryCache;
         }
 
-        public NccWebSiteWidget Get(long entityId, bool isAsNoTracking = false)
-        {
-            var widget = _cache.GetNccWebSiteWidget(entityId);
-            if(widget == null)
-            {
-                widget = _entityRepository.Get(entityId, isAsNoTracking);
-                _cache.SetNccWebSiteWidget(widget);
-            }
-            return widget;
-        }
-
-        public List<NccWebSiteWidget> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
-        {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch);
-        }
-
-        public NccWebSiteWidget Save(NccWebSiteWidget entity)
-        {
-            _entityRepository.Add(entity);
-            _entityRepository.SaveChange();
-            return entity;
-        }
-
-        public NccWebSiteWidget Update(NccWebSiteWidget entity)
-        {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if (oldEntity != null)
-            {
-                using (var txn = _entityRepository.BeginTransaction())
-                {
-                    CopyNewData(oldEntity, entity);
-                    _entityRepository.Edit(oldEntity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-            }
-
-            return entity;
-        }
-
+        #region New Method
         public void RemoveByModuleThemeLayoutZoneWidget(string moduleName, string theme, string layout, string zone, string widget)
         {
             var entity = _entityRepository.Query().FirstOrDefault(
@@ -91,54 +49,13 @@ namespace NetCoreCMS.Framework.Core.Services
         public string RemoveByZoneWidgetId(long zoneWidget)
         {
             var entity = _entityRepository.Get(zoneWidget);
-            if(entity == null)
+            if (entity == null)
             {
                 return "Error: No zone widget found";
             }
             _entityRepository.DeletePermanently(entity);
             _entityRepository.SaveChange();
             return "Success: Removed Successfully";
-        }
-
-        public void Remove(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                entity.Status = EntityStatus.Deleted;
-                _entityRepository.Edit(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public void DeletePermanently(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                _entityRepository.Remove(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        private void CopyNewData(NccWebSiteWidget oldEntity, NccWebSiteWidget entity)
-        {
-            oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.ModifyBy = entity.ModifyBy;
-            oldEntity.Name = entity.Name;
-            oldEntity.Status = entity.Status;
-            oldEntity.CreateBy = entity.CreateBy;
-            oldEntity.LayoutName = entity.LayoutName;
-            oldEntity.ModificationDate = entity.ModificationDate;
-            oldEntity.Name = entity.Name;
-            oldEntity.Status = entity.Status;
-            oldEntity.WebSite = entity.WebSite;
-            oldEntity.WidgetConfigJson = entity.WidgetConfigJson;
-            oldEntity.WidgetData = entity.WidgetData;
-            oldEntity.WidgetId = entity.WidgetId;
-            oldEntity.WidgetOrder = entity.WidgetOrder;
-            oldEntity.Zone = oldEntity.Zone;
-            oldEntity.Metadata = entity.Metadata;
         }
 
         public string DownOrder(long zoneWidgetId, int oldOrder)
@@ -149,21 +66,30 @@ namespace NetCoreCMS.Framework.Core.Services
                 return "Error: No zone widget found";
             }
 
-            var widgetOrder = entity.WidgetOrder;                        
-            var upEntityList = GetNext(entity.ModuleName, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
-            entity.WidgetOrder += 1;
+            var widgetOrder = entity.WidgetOrder;
 
+            var upEntityList = Load(entity.ThemeId, entity.LayoutName, entity.Zone);
             foreach (var item in upEntityList)
             {
-                //Skip entity new order number
-                if (widgetOrder == entity.WidgetOrder)
+                if (item.WidgetOrder == widgetOrder + 1)
                 {
-                    widgetOrder++;
+                    item.WidgetOrder -= 1;
+                    _entityRepository.Edit(item);
                 }
-                item.WidgetOrder = widgetOrder++;
-                _entityRepository.Edit(item);
             }
-            
+            entity.WidgetOrder += 1;
+            //var upEntityList = LoadNext(entity.ModuleName, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
+            //foreach (var item in upEntityList)
+            //{
+            //    //Skip entity new order number
+            //    if (widgetOrder == entity.WidgetOrder)
+            //    {
+            //        widgetOrder++;
+            //    }
+            //    item.WidgetOrder = widgetOrder++;
+            //    _entityRepository.Edit(item);
+            //}
+
             _entityRepository.Edit(entity);
             _entityRepository.SaveChange();
             return "Success: update successful";
@@ -177,24 +103,34 @@ namespace NetCoreCMS.Framework.Core.Services
                 return "Error: No zone widget found";
             }
 
-            var widgetOrder = entity.WidgetOrder;            
-            entity.WidgetOrder -= 1;
-            var upEntityList = GetPrevious(entity.ModuleName, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
+            var widgetOrder = entity.WidgetOrder;
+            var upEntityList = Load(entity.ThemeId, entity.LayoutName, entity.Zone);
+
             foreach (var item in upEntityList)
             {
-                if (item.WidgetOrder == entity.WidgetOrder)
+                if (item.WidgetOrder == widgetOrder - 1)
                 {
                     item.WidgetOrder += 1;
                     _entityRepository.Edit(item);
                 }
-                //if(widgetOrder == entity.WidgetOrder)
-                //{
-                //    widgetOrder--;
-                //}
-                //item.WidgetOrder = widgetOrder--;
-                //_entityRepository.Edit(item);
             }
-            
+            entity.WidgetOrder -= 1;
+            //var upEntityList = LoadPrevious(entity.ModuleName, entity.ThemeId, entity.LayoutName, entity.Zone, widgetOrder);
+            //foreach (var item in upEntityList)
+            //{
+            //    if (item.WidgetOrder == entity.WidgetOrder)
+            //    {
+            //        item.WidgetOrder += 1;
+            //        _entityRepository.Edit(item);
+            //    }
+            //    //if(widgetOrder == entity.WidgetOrder)
+            //    //{
+            //    //    widgetOrder--;
+            //    //}
+            //    //item.WidgetOrder = widgetOrder--;
+            //    //_entityRepository.Edit(item);
+            //}
+
             _entityRepository.Edit(entity);
             _entityRepository.SaveChange();
             return "Success: update successful";
@@ -202,7 +138,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
         public NccWebSiteWidget Get(string moduleName, string theme, string layout, string zone, string widget)
         {
-            var entity = _entityRepository.Query().OrderBy(x=>x.WidgetOrder).FirstOrDefault(
+            var entity = _entityRepository.Query().OrderBy(x => x.WidgetOrder).FirstOrDefault(
                 x => x.ModuleName == moduleName
                 && x.ThemeId == theme
                 && x.LayoutName == layout
@@ -212,28 +148,39 @@ namespace NetCoreCMS.Framework.Core.Services
             return entity;
         }
 
-        public List<NccWebSiteWidget> GetNext(string module, string theme, string layout, string zone, int order)
+        public List<NccWebSiteWidget> Load(string theme, string layout, string zone)
         {
-            var entityList = _entityRepository.Query().OrderBy(x => x.WidgetOrder).Where(
+            var entityList = _entityRepository.Query().Where(
+                x => x.ThemeId == theme
+                && x.LayoutName == layout
+                && x.Zone == zone
+            ).OrderBy(x => x.WidgetOrder).ToList();
+            return entityList;
+        }
+
+        public List<NccWebSiteWidget> LoadNext(string module, string theme, string layout, string zone, int order)
+        {
+            var entityList = _entityRepository.Query().Where(
                 x => x.ModuleName == module
                 && x.ThemeId == theme
                 && x.LayoutName == layout
                 && x.Zone == zone
                 && x.WidgetOrder > order
-            ).ToList();
-            return entityList;            
+            ).OrderBy(x => x.WidgetOrder).ToList();
+            return entityList;
         }
 
-        public List<NccWebSiteWidget> GetPrevious(string moduleName, string theme, string layout, string zone, int order)
+        public List<NccWebSiteWidget> LoadPrevious(string moduleName, string theme, string layout, string zone, int order)
         {
-            var entityList = _entityRepository.Query().OrderByDescending(x => x.WidgetOrder).Where(
+            var entityList = _entityRepository.Query().Where(
                 x => x.ModuleName == moduleName
                 && x.ThemeId == theme
                 && x.LayoutName == layout
                 && x.Zone == zone
                 && x.WidgetOrder < order
-            ).ToList();
-            return entityList;            
-        }
+            ).OrderByDescending(x => x.WidgetOrder).ToList();
+            return entityList;
+        } 
+        #endregion
     }
 }

@@ -11,68 +11,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using System;
-using Microsoft.EntityFrameworkCore;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
+using NetCoreCMS.Framework.Core.Mvc.Service;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccPostService : IBaseService<NccPost>
+    public class NccPostService : BaseService<NccPost>
     {
         private readonly NccPostRepository _entityRepository;
         private readonly NccPostDetailsRepository _nccPostDetailsRepository;
 
         public NccPostService(NccPostRepository entityRepository, NccPostDetailsRepository nccPostDetailsRepository)
+            :base(entityRepository, new List<string>() { "Parent", "PostDetails", "Categories", "Tags", "Tags.Tag" })
         {
             _entityRepository = entityRepository;
             _nccPostDetailsRepository = nccPostDetailsRepository;
         }
 
-        public NccPost Get(long entityId, bool isAsNoTracking = false)
-        {
-            return _entityRepository.Get(entityId, isAsNoTracking, new List<string> { "Parent", "PostDetails", "Categories", "Tags", "Tags.Tag" });
-        }
-
-        public NccPost GetBySlug(string slug)
-        {
-            return _nccPostDetailsRepository.Get(slug)?.Post;
-        }
-
-        public List<NccPost> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
-        {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string> { "Parent", "PostDetails", "Categories", "Tags", "Tags.Tag" });
-        }
-
-        public List<NccPost> LoadSpecialPosts(bool isSticky, bool isFeatured)
-        {
-            return _entityRepository.LoadPosts(isSticky, isFeatured);
-        }
-
-        public NccPost Save(NccPost entity)
-        {
-            using (var txn = _entityRepository.BeginTransaction())
-            {
-                try
-                {
-                    _entityRepository.Add(entity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-                catch (Exception ex)
-                {
-                    txn.Rollback();
-                    throw ex;
-                }
-
-                return entity;
-            }
-        }
-
-        public NccPost Update(NccPost entity)
+        #region Method Override
+        public override NccPost Update(NccPost entity)
         {
             RemoveChieldsForUpdate(entity);
             var oldEntity = _entityRepository.Get(entity.Id, false, new List<string> { "Parent", "PostDetails", "Categories", "Tags" });
@@ -92,50 +52,7 @@ namespace NetCoreCMS.Framework.Core.Services
             return entity;
         }
 
-        private void RemoveChieldsForUpdate(NccPost entity)
-        {
-            //remove categories
-            var temp = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories", "Tags" });
-            var count = temp.Categories.Count();
-            for (int i = 0; i < count; i++)
-            {
-                var tempEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories" });
-                tempEntity.Categories.RemoveAt(0);
-                _entityRepository.SaveChange();
-            }
-
-            count = temp.Tags.Count();
-            for (int i = 0; i < count; i++)
-            {
-                var tempEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Tags" });
-                tempEntity.Tags.RemoveAt(0);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public void Remove(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                entity.PostStatus = NccPost.NccPostStatus.UnPublished;
-                entity.Status = EntityStatus.Deleted;
-                _entityRepository.Edit(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public void DeletePermanently(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                _entityRepository.Remove(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public NccPost CopyNewData(NccPost copyFrom, NccPost copyTo)
+        public override void CopyNewData(NccPost copyFrom, NccPost copyTo)
         {
             copyTo.ModificationDate = copyFrom.ModificationDate;
             copyTo.ModifyBy = GlobalContext.GetCurrentUserId();
@@ -191,7 +108,19 @@ namespace NetCoreCMS.Framework.Core.Services
                 }
             }
 
-            return copyTo;
+            //return copyTo;
+        } 
+        #endregion
+
+        #region New Method
+        public NccPost GetBySlug(string slug)
+        {
+            return _nccPostDetailsRepository.Get(slug)?.Post;
+        }
+
+        public List<NccPost> LoadSpecialPosts(bool isSticky, bool isFeatured)
+        {
+            return _entityRepository.LoadPosts(isSticky, isFeatured);
         }
 
         public List<NccPost> LoadRecentPages(int count)
@@ -245,6 +174,30 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<NccPost> Load(int from, int total, bool isActive, bool isPublished, bool withSticky = true, bool withFeatured = true, DateTime? dateFrom = null, DateTime? dateTo = null, long categoryId = 0, long tagId = 0, long createBy = 0, string keyword = "", string orderBy = "", string orderDir = "")
         {
             return _entityRepository.Load(from, total, isActive, isPublished, withSticky, withFeatured, dateFrom, dateTo, categoryId, tagId, createBy, keyword, orderBy, orderDir);
+        } 
+        #endregion
+
+        #region Helper
+        private void RemoveChieldsForUpdate(NccPost entity)
+        {
+            //remove categories
+            var temp = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories", "Tags" });
+            var count = temp.Categories.Count();
+            for (int i = 0; i < count; i++)
+            {
+                var tempEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Categories" });
+                tempEntity.Categories.RemoveAt(0);
+                _entityRepository.SaveChange();
+            }
+
+            count = temp.Tags.Count();
+            for (int i = 0; i < count; i++)
+            {
+                var tempEntity = _entityRepository.Get(entity.Id, false, new List<string>() { "Tags" });
+                tempEntity.Tags.RemoveAt(0);
+                _entityRepository.SaveChange();
+            }
         }
+        #endregion
     }
 }

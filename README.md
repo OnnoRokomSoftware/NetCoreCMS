@@ -54,6 +54,12 @@ and check the `master` branch.
 - If make any mistake at installation period and project does not run then delete setup.json from root directory and run project again.
 - After install/uninstall any module or theme restart project.
 
+## Resources
+Books
+- [GitBook](https://www.gitbook.com/@onnorokomsoftware)
+
+Chat
+- [Gitter](https://gitter.im/NetCoreCMS)
  
 ## Creators
 

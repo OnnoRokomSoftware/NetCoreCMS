@@ -24,6 +24,7 @@ namespace NetCoreCMS.Framework.Core.Events.App
         public IServiceCollection Services { get; set; }
         public IServiceProvider ServiceProvider { get; set; }
         public Type ActivityType { get; set; }
+        public long ResponseTime { get; set; }
 
         public enum Type
         {

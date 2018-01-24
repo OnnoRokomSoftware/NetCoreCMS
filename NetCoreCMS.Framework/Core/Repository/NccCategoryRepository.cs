@@ -26,9 +26,11 @@ namespace NetCoreCMS.Framework.Core.Repository
         {
         }
 
-        public List<NccCategory> LoadByParrentId(long parrentId, bool isActive)
+        public NccCategory GetBySlug(string slug)
         {
-            return DbSet.Where(x => x.Parent.Id == parrentId).ToList();
+            return DbSet.Include("CategoryDetails")
+                .Where(x => x.CategoryDetails.Any(d => d.Slug == slug))
+                .FirstOrDefault();
         }
 
         public NccCategory GetWithPost(string slug)
@@ -38,11 +40,9 @@ namespace NetCoreCMS.Framework.Core.Repository
                 .FirstOrDefault();
         }
 
-        public NccCategory GetBySlug(string slug)
+        public List<NccCategory> LoadByParrentId(long parrentId, bool isActive)
         {
-            return DbSet.Include("CategoryDetails")
-                .Where(x => x.CategoryDetails.Any(d => d.Slug == slug))
-                .FirstOrDefault();
+            return DbSet.Where(x => x.Parent.Id == parrentId).ToList();
         }
 
         /// <summary>
@@ -80,8 +80,6 @@ namespace NetCoreCMS.Framework.Core.Repository
             query = query.OrderByDescending(x => x.CreationDate);
             return query.Skip(from).Take(total).ToList();
         }
-
-
 
         #region Helper
         private IQueryable<NccCategory> GetBaseQuery(bool isActive, string keyword)

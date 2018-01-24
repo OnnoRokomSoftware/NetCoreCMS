@@ -1074,6 +1074,8 @@ namespace NetCoreCMS.Framework.Migrations
                     b.Property<string>("Metadata");
 
                     b.Property<string>("Mobile");
+                    
+                    b.Property<bool>("IsRequireLogin");
 
                     b.Property<DateTime>("ModificationDate");
 

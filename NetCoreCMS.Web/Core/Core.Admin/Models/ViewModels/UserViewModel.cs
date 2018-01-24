@@ -47,8 +47,13 @@ namespace Core.Admin.Models.ViewModels
         public List<ModuleViewModel> DenyModules { get; set; }
         public List<ModuleViewModel> AllowModules { get; set; }
         public string RoleNames { get; set; }
+
+        public string Status { get; set; }
+
         private readonly NccPermission _permission;
         private readonly NccUser _nccUser;
+
+
         public UserViewModel()
         {
             DenyModules = new List<ModuleViewModel>();

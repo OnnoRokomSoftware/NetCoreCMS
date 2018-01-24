@@ -37,11 +37,11 @@ namespace Core.Blog.Controllers
         NccCategoryService _nccCategoryService;
         NccCategoryDetailsService _nccCategoryDetailsService;
         NccPostService _nccPostService;
-        NccUserService _nccUserService;
+        INccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
         private readonly IMemoryCache _cache;
 
-        public CategoryController(NccCategoryService nccCategoryService, NccCategoryDetailsService nccCategoryDetailsService, NccPostService nccPostService, NccUserService nccUserService, ILoggerFactory loggerFactory, IMemoryCache memoryCache)
+        public CategoryController(NccCategoryService nccCategoryService, NccCategoryDetailsService nccCategoryDetailsService, NccPostService nccPostService, INccUserService nccUserService, ILoggerFactory loggerFactory, IMemoryCache memoryCache)
         {
             _nccCategoryService = nccCategoryService;
             _nccCategoryDetailsService = nccCategoryDetailsService;

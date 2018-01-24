@@ -21,8 +21,8 @@ namespace Core.Admin.Controllers
         private readonly UserManager<NccUser> _userManager;
         private readonly RoleManager<NccRole> _roleManager;
         private readonly NccPermissionService _nccPermissionService;
-        private readonly NccPermissionDetailsService _nccPermissionDetailsService;        
-        
+        private readonly NccPermissionDetailsService _nccPermissionDetailsService;
+
         public UserAuthController(
             UserManager<NccUser> userManager, 
             RoleManager<NccRole> roleManager, 
@@ -37,7 +37,7 @@ namespace Core.Admin.Controllers
             _logger = loggerFactory.CreateLogger<UserAuthController>();
         }
 
-        [AdminMenuItem(Name = "Manage User Roles", SubActions = new string[] { "ExtraPermissions", "CreateEditRoles", "UserPermissions" }, Order = 4)]
+        [AdminMenuItem(Name = "Manage User Roles", SubActions = new string[] { "ExtraPermissions", "CreateEditRoles", "UserPermissions", "DeleteRole", "DeleteRoleConfirmed" }, Order = 4)]
         public ActionResult ManageUserRoles()
         {
             var permissions = _nccPermissionService.LoadAll();
@@ -99,6 +99,7 @@ namespace Core.Admin.Controllers
             permission.Id = model.Id;
 
             var removePermissionDetailsIdList = new List<long>();
+            var addedPermissionDetails = new List<NccPermissionDetails>();
 
             foreach (var item in model.Modules)
             {
@@ -114,9 +115,14 @@ namespace Core.Admin.Controllers
                                 ModuleName = item.ModuleName,
                                 Name = am.Name,
                                 Action = mi.Action,
-                                Controller = mi.Controller
+                                Controller = mi.Controller,
+                                PermissionId = permission.Id
                             };
                             permission.PermissionDetails.Add(permissionDetails);
+                            if (permission.Id > 0 && permissionDetails.Id == 0)
+                            {
+                                addedPermissionDetails.Add(permissionDetails);
+                            }
                         }
                         else
                         {
@@ -140,9 +146,14 @@ namespace Core.Admin.Controllers
                                 ModuleName = item.ModuleName,
                                 Name = sm.Name,
                                 Action = mi.Action,
-                                Controller = mi.Controller
+                                Controller = mi.Controller,
+                                PermissionId = permission.Id
                             };
                             permission.PermissionDetails.Add(permissionDetails);
+                            if(permission.Id > 0 && permissionDetails.Id == 0)
+                            {
+                                addedPermissionDetails.Add(permissionDetails);
+                            }                            
                         }
                         else
                         {
@@ -155,7 +166,7 @@ namespace Core.Admin.Controllers
                 }
             }
 
-            var (res,message) = _nccPermissionService.SaveOrUpdate(permission, removePermissionDetailsIdList);
+            var (res,message) = _nccPermissionService.SaveOrUpdate(permission, addedPermissionDetails, removePermissionDetailsIdList);
 
             if (res)
             {
@@ -252,6 +263,24 @@ namespace Core.Admin.Controllers
                     }
                 }
             }
+        }
+
+        public ActionResult DeleteRoleConfirm(long roleId)
+        {
+            var permission = _nccPermissionService.Get(roleId);
+            if(permission == null)
+            {
+                ShowMessage("Permission did not found.", NetCoreCMS.Framework.Core.Mvc.Views.MessageType.Error, showCloseButton: true);
+            }
+            return View(permission??new NccPermission());
+        }
+
+        [HttpPost]
+        public ActionResult DeleteRole(NccPermission model)
+        {
+            _nccPermissionService.DeletePermission(model.Id);            
+            ShowMessage($"Role {model.Name} delete successfull.", NetCoreCMS.Framework.Core.Mvc.Views.MessageType.Success, showAfterRedirect:true, showCloseButton: true);
+            return RedirectToAction("ManageUserRoles");
         }
     }
 }

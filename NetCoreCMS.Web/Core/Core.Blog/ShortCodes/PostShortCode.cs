@@ -8,42 +8,27 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 using Core.Blog.Controllers;
-using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.Core.Services;
-using NetCoreCMS.Framework.Core.ShotCodes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using NetCoreCMS.Framework.Modules.ShortCode;
 
 namespace Core.Blog.ShortCodes
 {
-    public class PostShortCode : IShortCode
+    public class PostShortCode : BaseShortCode
     {
         NccPostService _nccPostService;
-        IViewRenderService _viewRenderService;
-        string ViewFileName = "Widgets/PostRender";
-
-        public PostShortCode(NccPostService nccPostService, IViewRenderService viewRenderService)
+        public PostShortCode(NccPostService nccPostService) : base(
+            typeof(BlogController),
+            "Post",
+            "ShortCodes/PostRender")
         {
             _nccPostService = nccPostService;
-            _viewRenderService = viewRenderService;
         }
-        public string ShortCodeName { get { return "Post"; } }
 
-        public string Render(params object[] paramiters)
+        public override object PrepareViewModel(params object[] paramiters)
         {
-            var content = "";
-            try
-            {
-                var id = paramiters[0].ToString().Trim();
-                var slider = _nccPostService.Get(long.Parse(id));
-                if (slider != null)
-                {
-                    content = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, slider).Result;
-                }
-            }
-            catch (Exception ex) { }
-            return content;
+            var id = paramiters[0].ToString().Trim();
+            var post = _nccPostService.Get(long.Parse(id));
+            return post;
         }
     }
 }

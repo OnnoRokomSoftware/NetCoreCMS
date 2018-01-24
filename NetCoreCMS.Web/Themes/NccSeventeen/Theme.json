@@ -1,17 +1,14 @@
 {
-  "ThemeId": "com.NetCoreCMS.themes.NccSeventeen",
+  "ThemeId": "NccSeventeen",
   "ThemeName": "NccSeventeen",
-  "Type": "Site",
   "Author": "NetCoreCMS",
   "Email": "netcorecms@gmail.com",
   "Website": "http://DotNetCoreCMS.com",
   "DemoUrl": "http://demo.dotnetcorecms.com",
   "Description": "Advanced Site Theme for NCC Content Management System.",
-  "Version": "0.1.2",
-  "MinNccVersion": "0.1.1",
-  "MaxNccVersion": "0.4.5",
+  "Version": "0.0.1",
+  "NccVersion": "0.4.5",
   "Category": "Default",
-  "PreviewImage": "screenshot.png",
   "IsActive": false,
   "MenuLocations": [
     "Top",
@@ -77,8 +74,15 @@
     }
   ],
   "Settings": {
-    "version": 7.8999999999999888,
-    "style": "blue-skin.css",
-    "NccVersion": "0.4.1"
+    "NccVersion": {
+      "Major": 0,
+      "Minor": 4,
+      "Build": 6,
+      "Revision": -1,
+      "MajorRevision": -1,
+      "MinorRevision": -1
+    },
+    "version": 1.2000000000000002,
+    "style": "green-skin.css"
   }
 }

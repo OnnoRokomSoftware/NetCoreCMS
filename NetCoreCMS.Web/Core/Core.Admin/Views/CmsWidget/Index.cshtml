@@ -4,6 +4,7 @@
 
 @{
     Layout = Constants.AdminLayoutName;
+    var ControllerName = "CmsWidget";
 }
 
 <style>
@@ -49,7 +50,7 @@
 
 </style>
 
-<div class="row">
+<div class="">
 
     <div class="row">
         <div class="col-lg-7">
@@ -137,7 +138,8 @@
                                 var tabName = "#tab_" + layout.Name.Replace(' ', '_');
 
                                     <li class="@active">
-                                        <a href="@tabName" data-toggle="tab" @ariaExpanded> @layout.Name.Replace("Layout", "") </a>
+                                        @*<a href="@tabName" data-toggle="tab" @ariaExpanded> @layout.Name.Replace("Layout", "") </a>*@
+                                        <a asp-controller="@ControllerName" asp-action="Index" asp-route-sLayout="@layout.Name" @ariaExpanded> @layout.Name.Replace("Layout", "") </a>
                                     </li>
 
                                 active = "";
@@ -243,7 +245,6 @@
 <div id="ncc-widget-treash" style="width:1px;height:1px;"></div>
 
 <script>
-
     function allowDrop(ev) {
         ev.preventDefault();
     }
@@ -254,7 +255,7 @@
 
     function drop(ev) {
 
-        console.log("Drop");
+        //console.log("Drop");
         ev.preventDefault();
         var targetDiv = ev.target;
 
@@ -298,20 +299,38 @@
             }
         });
     }
-
-    function removeWidget(moduleId, theme, layout, zone, widgetId) {
-        NccPageMask.ShowLoadingMask();
+     
+    function UpWebSiteZoneWidget(websiteWidgetId, oldOrder, layout) {
         $.ajax({
             method: 'POST',
-            url: '/CmsWidget/RemoveZoneWidget',
-            data: { module: moduleId, theme: theme, layout: layout, zone: zone, widget: widgetId },
-            success: function (rsp) {
-                NccPageMask.HideLoadingMask();
-                console.log(rsp);
+            url: '/CmsWidget/UpdateWebsiteWidgetOrder',
+            data: { webSiteWidgetId: websiteWidgetId, oldOrder: oldOrder , operation:'up'},
+            success: function (rsp) {       
                 NccGlobalAlert.ShowSuccess(rsp.message);
+                //setTimeout(function () {
+                //    //window.location.reload(1);
+                //    //window.location.href = window.location.pathname + "?sLayout=" + layout;
+                //}, 500);
             },
             error: function (rsp) {
-                NccPageMask.HideLoadingMask();
+                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
+            }
+        });
+    }
+
+    function DownWebSiteZoneWidget(websiteWidgetId, oldOrder, layout) {
+        $.ajax({
+            method: 'POST',
+            url: '/CmsWidget/UpdateWebsiteWidgetOrder',
+            data: { webSiteWidgetId: websiteWidgetId, oldOrder: oldOrder, operation: 'down' },
+            success: function (rsp) {
+                NccGlobalAlert.ShowSuccess(rsp.message);
+                //setTimeout(function () {
+                //    //window.location.reload(1);
+                //    //window.location.href = window.location.pathname + "?sLayout=" + layout;
+                //}, 300);
+            },
+            error: function (rsp) {
                 NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
             }
         });
@@ -327,7 +346,7 @@
             data: { zoneWidgetId: wZoneId },
             success: function (rsp) {
                 NccPageMask.HideLoadingMask();
-                console.log(rsp);
+                //console.log(rsp);
                 NccGlobalAlert.ShowSuccess(rsp.message);
                 $("#" + panelId).remove();
             },
@@ -338,35 +357,19 @@
         });
     }
 
-    function UpWebSiteZoneWidget(websiteWidgetId, oldOrder, layout) {
+    function removeWidget(moduleId, theme, layout, zone, widgetId) {
+        NccPageMask.ShowLoadingMask();
         $.ajax({
             method: 'POST',
-            url: '/CmsWidget/UpdateWebsiteWidgetOrder',
-            data: { webSiteWidgetId: websiteWidgetId, oldOrder: oldOrder , operation:'up'},
-            success: function (rsp) {                
-                setTimeout(function () {
-                    //window.location.reload(1);
-                    window.location.href = window.location.pathname + "?sLayout=" + layout;
-                }, 300);
-            },
-            error: function (rsp) {
-                NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
-            }
-        });
-    }
-
-    function DownWebSiteZoneWidget(websiteWidgetId, oldOrder, layout) {
-        $.ajax({
-            method: 'POST',
-            url: '/CmsWidget/UpdateWebsiteWidgetOrder',
-            data: { webSiteWidgetId: websiteWidgetId, oldOrder: oldOrder, operation: 'down' },
+            url: '/CmsWidget/RemoveZoneWidget',
+            data: { module: moduleId, theme: theme, layout: layout, zone: zone, widget: widgetId },
             success: function (rsp) {
-                setTimeout(function () {
-                    //window.location.reload(1);
-                    window.location.href = window.location.pathname + "?sLayout=" + layout;
-                }, 300);
+                NccPageMask.HideLoadingMask();
+                console.log(rsp);
+                NccGlobalAlert.ShowSuccess(rsp.message);
             },
             error: function (rsp) {
+                NccPageMask.HideLoadingMask();
                 NccGlobalAlert.ShowError("Error occoured. Please try again after refresh the page.");
             }
         });

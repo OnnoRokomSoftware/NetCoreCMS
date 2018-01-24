@@ -19,8 +19,9 @@
                         <select id="dd_bulk_operation_list" class="form-control">
                             <option value="">Select bulk operation</option>
                             <option value="Block">Block</option>
-                            <option value="UnBlock">UnBlock</option>                            
+                            <option value="UnBlock">UnBlock</option>
                             <option value="ResetPassword">Reset Password</option>
+                            <option value="LogoutAll">LogOut All</option>
                         </select>
                     </div>
                     <div class="col-sm-6">
@@ -28,7 +29,7 @@
                     </div>        
                 </div>
                 <div class="col-lg-6 pull-right" >
-                    <form method="post" action="/Users/Index" >
+                    <form method="get" action="/Users/Index" >
                         <div class="col-sm-8">
                             @if (ViewBag.SearchKey != null)
                             {
@@ -45,14 +46,38 @@
             </div>
             <br/>
             <table class="table table-striped">
-                <tr><th>Id</th><th>User Name</th><th>Full Name</th><th>Email</th><th>Mobile</th><th>Roles</th><th>Action</th></tr>
+                <tr><th>Id</th><th>User Name</th><th>Full Name</th><th>Email</th><th>Mobile</th><th>Roles</th><th>Status</th><th>Action</th></tr>
                 @foreach(var user in Model){
-                    <tr> <td class="cls_user_chk"> <input type="checkbox" id="chk_@user.Id"  data-user-id="@user.Id" /> @user.Id</td><td>@user.UserName</td><td>@user.FullName</td><td>@user.Email</td><td>@user.Mobile</td><td>@user.RoleNames</td><td><a href="~/Users/CreateEdit/?userName=@user.UserName">Update</a></td></tr>
+
+                    var logout = "";
+                    if(user.Status == "Online") { logout = "| <a href=\"/Users/ForceLgout/?userId="+user.Id+"&searchKey="+searchKey+"\">Logout</a>"; }
+                    var status = "";
+
+                    if (user.Status == "Online") {
+                        status = "<span class=\"label  label-success\" >Online</span>";
+                    }
+                    else if (user.Status == "Offline") {
+                        status = "<span class=\"label  label-default\">Offline</span>";
+                    }
+                    else if (user.Status == "Blocked")
+                    {
+                        status = "<span class=\"label label-danger\">Blocked</span>";
+                    }
+                    else if (user.Status == "RequireLogin")
+                    {
+                        status = "<span class=\"label label-warning\">Require Login</span>";
+                    }
+                    <tr> <td class="cls_user_chk"> <input type="checkbox" id="chk_@user.Id"  data-user-id="@user.Id" /> @user.Id</td><td>@user.UserName</td><td>@user.FullName</td><td>@user.Email</td><td>@user.Mobile</td><td>@user.RoleNames</td><td>@Html.Raw(status)</td><td><a href="~/Users/CreateEdit/?userName=@user.UserName">Update</a> @Html.Raw(logout) </td></tr>
                 }
             </table>
             
             <div class="row">
                 <div class="col-sm-3">
+                    <select id="dd_role_operation" class="form-control" style="margin-bottom:20px;">
+                        <option value="">Select operation</option>
+                        <option value="Add">Add Selected Role to User</option>
+                        <option value="Remove">Remove Selected Role from User</option>
+                    </select>
                     <select id="dd_user_roles" asp-items="@ViewBag.RoleList" multiple="multiple" class="form-control"> 
                     </select>
                 </div>

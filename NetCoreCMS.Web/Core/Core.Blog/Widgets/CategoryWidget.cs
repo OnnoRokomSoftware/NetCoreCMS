@@ -8,96 +8,66 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Core.Blog.Controllers;
-using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using Core.Blog.Models;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NetCoreCMS.Framework.Core.Serialization;
+using Core.Blog.Controllers;
 
 namespace Core.Blog.Widgets
 {
     public class CategoryWidget : Widget
     {
         NccCategoryService _nccCategoryService;
-        IViewRenderService _viewRenderService;
-        NccWebSiteWidgetService _websiteWidgetService;
+        
         bool ShowCategoryHasPost = false;
         bool ShowPostCount = false;
         bool ShowHierarchy = false;
         bool DisplayAsDropdown = false;
 
-        public CategoryWidget(
-            IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService,
-            NccCategoryService nccCategoryService) : base(                
+        public CategoryWidget(        
+            NccCategoryService nccCategoryService) : base(
+                typeof(BlogController),
                 "Category",
                 "This is a widget to display category.",
                 "",
+                "Widgets/Category",
+                "Widgets/CategoryConfig",
                 true
             )
         {
-            _viewRenderService = viewRenderService;
-            _websiteWidgetService = websiteWidgetService;
             _nccCategoryService = nccCategoryService;
         }
 
-        public override void Init(long websiteWidgetId, bool renderConfig = false)
+        public override void InitConfig(dynamic config)
         {
-            WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/Category";
-
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
-            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
+            try
             {
-                var configJson = webSiteWidget.WidgetConfigJson;
-                var config = JsonHelper.Deserilize<dynamic>(configJson);
-                DisplayTitle = config.title;
-                Footer = config.footer;
-                Language = config.language;
+                string temp = config.showCategoryHasPost;
+                ShowCategoryHasPost = (temp == "on") ? true : false;
 
-                try
-                {
-                    string temp = config.showCategoryHasPost;
-                    ShowCategoryHasPost = (temp == "on") ? true : false;
+                temp = config.showPostCount;
+                ShowPostCount = (temp == "on") ? true : false;
 
-                    temp = config.showPostCount;
-                    ShowPostCount = (temp == "on") ? true : false;
+                temp = config.showHierarchy;
+                ShowHierarchy = (temp == "on") ? true : false;
 
-                    temp = config.showHierarchy;
-                    ShowHierarchy = (temp == "on") ? true : false;
-
-                    temp = config.displayAsDropdown;
-                    DisplayAsDropdown = (temp == "on") ? true : false;
-                }
-                catch (Exception) { }
+                temp = config.displayAsDropdown;
+                DisplayAsDropdown = (temp == "on") ? true : false;
             }
-
-            if (renderConfig)
-            {
-                ConfigViewFileName = "Widgets/CategoryConfig";
-                ConfigHtml = _viewRenderService.RenderToStringAsync<BlogController>(ConfigViewFileName, webSiteWidget).Result;
-            }
+            catch (Exception) { }
         }
-
-        public override string RenderBody()
+        
+        public override object PrepareViewModel()
         {
             var categoryList = _nccCategoryService.LoadAllWithPost();
-            CategoryViewModel item = new CategoryViewModel();
-            item.ShowCategoryHasPost = ShowCategoryHasPost;
-            item.ShowPostCount = ShowPostCount;
-            item.ShowHierarchy = ShowHierarchy;
-            item.DisplayAsDropdown = DisplayAsDropdown;
-            item.CategoryList = categoryList;
-            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, item).Result;
-            return body;
+            CategoryViewModel model = new CategoryViewModel();
+            model.ShowCategoryHasPost = ShowCategoryHasPost;
+            model.ShowPostCount = ShowPostCount;
+            model.ShowHierarchy = ShowHierarchy;
+            model.DisplayAsDropdown = DisplayAsDropdown;
+            model.CategoryList = categoryList;
+            return model;
         }
     }
 }

@@ -1,0 +1,95 @@
+﻿<div class="container-fluid topHeader">
+    <div class="container">
+        <div class="topLogo">
+            @if (string.IsNullOrEmpty(GetWebSiteLogoUrl()))
+            {
+                <a href="/"><h1>@GetWebSiteName()</h1></a>
+                        <h4>@GetWebSiteTagline()</h4>
+            }
+            else
+            {
+                <a href="/">
+                    <img src="@GetWebSiteLogoUrl()" alt="@GetWebSiteName()" title="@GetWebSiteTagline()" width="200px" />
+                </a>
+                <h4 style="margin-top:-25px; margin-bottom:0px;">@GetWebSiteTagline()</h4>
+            }
+        </div>
+
+        <!-- Zone TOP Start-->
+        <div id="topMenu" class="topMenu pull-right">
+            @if (GlobalContext.WebSite.IsMultiLangual == true)
+            {
+                @await Html.PartialAsync("_SelectLanguagePartial")
+            }
+            @{
+                var menus = GetMenus(ThemeResources.MenuLocation.Top, CurrentLanguage);
+                foreach (var item in menus)
+                {
+                    foreach (var menuItem in item.MenuItems)
+                    {
+                        <a href="@NccUrlHelper.AddLanguageToUrl(CurrentLanguage, menuItem.Url) ">@menuItem.Name</a><span> | </span>
+                    }
+                }
+                if ( User.Identity.IsAuthenticated )
+                {
+                    <a asp-area="" asp-controller="Admin" asp-action="Index">@_T["Admin"]</a><span> | </span>
+                            <a asp-area="" asp-controller="Manage" asp-action="ChangePassword" title="Manage">@_T["Hello"] @GetCurrentUserName()!</a><span> | </span>
+                            <a asp-area="" asp-controller="Account" asp-action="Logout">@_T["Log out"]</a>
+                }
+                else
+                {
+                    if (GlobalContext.WebSite.AllowRegistration == true)
+                    {
+                        <a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a><span> | </span>
+                    }
+                    <a asp-area="" asp-controller="Account" asp-action="Login">@_T["Log in"]</a>
+                }
+            }
+        </div>
+        <div class="topWidgetZone">
+            @{
+                var zoneTopWidgets = GetWebSiteWidgets(CurrentLayout, ThemeResources.Zones.TopBar);
+                if (zoneTopWidgets != null && zoneTopWidgets.Count > 0)
+                {
+                    <div style="width:100%;">
+                        @foreach (var item in zoneTopWidgets)
+                        {
+                            var widget = item.Widget;                            
+                            widget.Init(item.Id);
+
+                            if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language)
+                            {
+                                if (widget.DisplayTitle != "" || widget.Footer != "")
+                                {
+                                    <div class='panel panel-default'>
+                                        @if (widget.DisplayTitle != "")
+                                        {
+                                            <div class='panel-heading'>
+                                                @Html.Raw(_T[widget.DisplayTitle])
+                                            </div>
+                                        }
+                                        <div class='panel-body'>
+                                            @Html.Raw(widget.RenderBody())
+                                        </div>
+                                        @if (widget.Footer != "")
+                                        {
+                                            <div class='panel-footer'>
+                                                @Html.Raw(_T[widget.Footer])
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        @Html.Raw(widget.RenderBody())
+                                    </div>
+                                }
+                            }                             
+                        }
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>

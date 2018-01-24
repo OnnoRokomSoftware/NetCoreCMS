@@ -330,6 +330,7 @@ namespace NetCoreCMS.Framework.Migrations
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     Metadata = table.Column<string>(nullable: true),
                     Mobile = table.Column<string>(nullable: true),
+                    IsRequireLogin = table.Column<bool>(nullable: false, defaultValue:false),
                     ModificationDate = table.Column<DateTime>(nullable: false),
                     ModifyBy = table.Column<long>(nullable: false),
                     Name = table.Column<string>(nullable: true),
@@ -729,7 +730,7 @@ namespace NetCoreCMS.Framework.Migrations
                         column: x => x.PermissionId,
                         principalTable: NccPermission,
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -791,13 +792,16 @@ namespace NetCoreCMS.Framework.Migrations
                         column: x => x.PermissionId,
                         principalTable: NccPermission,
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade,
+                        onUpdate: ReferentialAction.Cascade
+                        );
                     table.ForeignKey(
                         name: $"FK_{NccUserPermission}_{NccUser}_UserId",
                         column: x => x.UserId,
                         principalTable: NccUser,
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Cascade,
+                        onUpdate:ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

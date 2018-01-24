@@ -1,0 +1,24 @@
+﻿@model NccPermission
+@{ 
+    Title = "Delete Role";
+}
+<form method="post" asp-action="DeleteRole" asp-controller="UserAuth">
+    <input type="hidden" asp-for="@Model.Id"/>
+    <table>
+        <tr>
+            <td>Name</td>
+            <td>:</td>
+            <td>@Model.Name</td>
+        </tr>
+        <tr>
+            <td>Assigned Users</td>
+            <td>:</td>
+            <td>@Model.Users.Count</td>
+        </tr>
+        <tr>
+            <td><input id="deleteBtn" class="btn btn-primary" type="submit" value="Delete" /></td>
+            <td></td>
+            <td><a href="ManageUserRoles" class="btn btn-default" >Back</a></td>
+        </tr>
+    </table>
+</form>

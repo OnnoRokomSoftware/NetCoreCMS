@@ -22,22 +22,25 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Models;
 using Microsoft.Extensions.Caching.Memory;
 using NetCoreCMS.Framework.Core.Mvc.Cache;
+using System.Collections.Generic;
+using NetCoreCMS.Framework.Utility;
+using Microsoft.AspNetCore.Identity;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Filters
 {
     public class NccAuthFilter : IAuthorizationFilter
     {
-        private IMemoryCache _cache;
+        //private IMemoryCache _cache;
         private readonly ILogger _logger;
-        private readonly NccUserService _nccUserService;
-
+        private readonly INccUserService _nccUserService;
+        
         public int Order { get { return 100; } }
 
-        public NccAuthFilter(NccUserService nccUserService, IMemoryCache memoryCache, ILoggerFactory loggerFactory)
+        public NccAuthFilter(INccUserService nccUserService, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<NccGlobalExceptionFilter>();
-            _nccUserService = nccUserService;
-            _cache = memoryCache;
+            _nccUserService = nccUserService;            
+            //_cache = memoryCache;
         }
 
         public void OnAuthorization(AuthorizationFilterContext context)
@@ -57,7 +60,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Filters
 
             if (controllerAttributes.Where(x => x is AllowAnonymousAttribute).Count() > 0)
             {
-                if (actionAttributes.Where(x => x is NccAuthorize).Count() == 0)
+                if (
+                    actionAttributes.Where(x => x is NccAuthorize).Count() == 0 
+                    && actionAttributes.Where(x => x is AdminMenuItem).Count() == 0 
+                    && actionAttributes.Where(x => x is SiteMenuItem).Count() == 0 
+                    && actionAttributes.Where(x => x is SubActionOf).Count() == 0 )
                 {
                     return;
                 }
@@ -72,15 +79,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Filters
                 return;
             }
 
-            var nccUser = _cache.GetNccUser(user.GetUserId());
-            if (nccUser == null)
-            {
-                nccUser = _nccUserService.Get(user.GetUserId());
-                if(nccUser != null)
-                {
-                    _cache.SetNccUser(nccUser);
-                }
-            }
+            var nccUser = _nccUserService.Get(user.GetUserId());
 
             if (nccUser == null)
             {
@@ -90,11 +89,23 @@ namespace NetCoreCMS.Framework.Core.Mvc.Filters
                 return;
             }
 
+            if (nccUser.IsRequireLogin)
+            {
+                SignInManager<NccUser> signInManager = (SignInManager<NccUser>) context.HttpContext.RequestServices.GetService(typeof(SignInManager<NccUser>));
+                signInManager.SignOutAsync().Wait();
+                context.HttpContext.SignOutAsync().Wait();
+                GlobalContext.GlobalCache.RemoveNccUserFromCache(nccUser.Id);
+                context.Result = new ChallengeResult(new AuthenticationProperties());
+                context.HttpContext.Items["ErrorMessage"] = "You do not have enought permission.";
+                context.HttpContext.Response.Redirect("/Account/Login");
+                return;
+            }
+
             if (user.IsInRole(NccCmsRoles.SuperAdmin))
             {
                 return;
             }
-
+            
             //Allow logged users which action has AllowAuthenticated attribute.
             if (actionAttributes.Where(x => x is AllowAuthenticated).Count() > 0)
             {
@@ -144,6 +155,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Filters
                 context.Result = new ChallengeResult(new AuthenticationProperties());
                 context.HttpContext.Items["ErrorMessage"] = "You do not have enought permission.";                
                 context.HttpContext.Response.Redirect("/Home/NotAuthorized");
+                return;
             }
         }
 
@@ -152,40 +164,68 @@ namespace NetCoreCMS.Framework.Core.Mvc.Filters
             bool isAuthorized = false;
             string menuName = "";
 
-            (menuName, controllerName, actionName) = GetControllerActionForThisRequest(controllerName, actionName);
+            (List<ControllerAction> caList, bool isMainAction) = GetControllerActionForThisRequest(controllerName, actionName);
 
-            if (string.IsNullOrEmpty(menuName) == true || string.IsNullOrEmpty(controllerName) == true || string.IsNullOrEmpty(actionName) == true)
+            if (isMainAction)
             {
-                return (true, true, false);
-            }
+                foreach (var item in caList)
+                {
+                    if (string.IsNullOrEmpty(item.MainMenuName) == true || string.IsNullOrEmpty(item.MainController) == true || string.IsNullOrEmpty(item.MainAction) == true)
+                    {
+                        return (true, true, false);
+                    }
 
-            if (nccUser.ExtraDenies.Where(x => x.ModuleName == moduleName  &&  x.Action == actionName && x.Controller == controllerName).Count() > 0)
-            {
-                return (false, true, false);
+                    if (nccUser.ExtraDenies.Where(x => x.ModuleName == item.ModuleName && x.Action == item.MainAction && x.Controller == item.MainController).Count() > 0)
+                    {
+                        return (false, true, false);
+                    }
+                    else
+                    {
+                        if (nccUser.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == item.ModuleName && y.Action == item.MainAction && y.Controller == item.MainController).Count() > 0).Count() > 0)
+                        {
+                            isAuthorized = true;
+                        }
+                        else
+                        {
+                            isAuthorized = nccUser.ExtraPermissions.Where(x => x.ModuleName == item.ModuleName && x.Action == item.MainAction && x.Controller == item.MainController).Count() > 0;
+                        }
+                    }
+                }
             }
             else
             {
-                if (nccUser.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == moduleName && y.Action == actionName && y.Controller == controllerName).Count() > 0).Count() > 0)
+                foreach (var item in caList)
                 {
-                    isAuthorized = true;
-                }
-                else
-                {
-                    isAuthorized = nccUser.ExtraPermissions.Where(x => x.ModuleName == moduleName && x.Action == actionName && x.Controller == controllerName).Count() > 0;
+                    
+                    if (nccUser.Permissions.Where(x => x.Permission.PermissionDetails.Where(y => y.ModuleName == item.ModuleName && y.Action == item.MainAction && y.Controller == item.MainController).Count() > 0).Count() > 0)
+                    {
+                        isAuthorized = true;
+                    }
+                    
+                    if(isAuthorized == false)
+                    {
+                        isAuthorized = nccUser.ExtraPermissions.Where(x => x.ModuleName == item.ModuleName && x.Action == item.MainAction && x.Controller == item.MainController).Count() > 0;
+                    }
+
+                    if (isAuthorized)
+                    {
+                        break;
+                    }
                 }
             }
-
+                        
             return (false, false, isAuthorized);
         }
 
-        private (string Menu, string Controller, string Action) GetControllerActionForThisRequest(string controllerName, string actionName)
+        private (List<ControllerAction> controllerActions, bool isMainAction) GetControllerActionForThisRequest(string controllerName, string actionName)
         {
-            var ca = ControllerActionCache.ControllerActions.Where(x => x.SubAction == actionName && x.SubController == controllerName).FirstOrDefault();
-            if (ca != null)
+            bool isMainAction = ControllerActionCache.ControllerActions.Where(x => x.MainAction == actionName && x.MainAction == controllerName).Count() > 0;
+            var caList = ControllerActionCache.ControllerActions.Where(x => x.SubAction == actionName && x.SubController == controllerName).ToList();
+            if (caList != null && caList.Count > 0)
             {
-                return (ca.MainMenuName, ca.MainController, ca.MainAction);
+                return (caList, isMainAction);
             }
-            return ("", "", "");
+            return (new List<ControllerAction>(), isMainAction);
         }
         
         //private string GetModuleId(TypeInfo type)

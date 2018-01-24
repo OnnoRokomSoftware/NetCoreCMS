@@ -155,8 +155,8 @@ namespace NetCoreCMS.Framework.Utility
         /// <returns>Menu HTML text</returns>
         public static string GetAdminMenuHtml(Dictionary<AdminMenu, List<AdminMenuItem>> adminMenuDic, long userId)
         {
-            var userService = (NccUserService)GlobalContext.ServiceProvider.GetService(typeof(NccUserService));
-            var user = userService.Get(userId, true);
+            var userService = (INccUserService)GlobalContext.ServiceProvider.GetService(typeof(INccUserService));
+            var user = userService.Get(userId);
 
             var menuStr = "";
             var orderdMenu = adminMenuDic.OrderBy(x => x.Key.Order);

@@ -26,7 +26,8 @@ namespace NetCoreCMS.Framework.i18n
                 return false;
             }
             var lang = values["lang"].ToString().ToLower();
-            return lang == "en" || lang == "bn";
+            //return lang == "en" || lang == "bn";
+            return SupportedCultures.Cultures.Where(x=>x.TwoLetterISOLanguageName == lang).Count() > 0;
         }
     }
 }

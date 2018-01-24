@@ -23,6 +23,15 @@ namespace NetCoreCMS.Framework.Core.Repository
     {
         public NccPermissionDetailsRepository(NccDbContext context) : base(context)
         {
-        } 
+        }
+
+        public void RemoveByIds(List<long> removePermissionDetailsIdList)
+        {
+            var entities = DbSet.Where(x => removePermissionDetailsIdList.Contains(x.Id)).ToList();
+            if (entities.Count > 0)
+            {
+                DbSet.RemoveRange(entities);
+            }
+        }
     }
 }

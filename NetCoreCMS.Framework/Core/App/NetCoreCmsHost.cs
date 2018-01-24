@@ -17,8 +17,6 @@ using NetCoreCMS.Framework.Core.Events.App;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using NetCoreCMS.Framework.Setup;
-using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.App
 {

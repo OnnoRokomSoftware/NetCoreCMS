@@ -18,7 +18,7 @@
             </div>*@
             <div class="panel-body">
                 <div class="row">
-                    <form id="pageEditForm" class="form-horizontal" asp-controller="CmsPage" asp-action="Delete" method="post">
+                    <form id="pageEditForm" class="form-horizontal" asp-controller="@ControllerName" asp-action="Delete" method="post">
 
                         <div class="col-sm-8 pull-left">
                             <h3>Are you sure you want to delete <strong>@Model.Name</strong> ?</h3>

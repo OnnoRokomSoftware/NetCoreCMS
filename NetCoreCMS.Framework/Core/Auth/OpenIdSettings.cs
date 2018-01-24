@@ -11,5 +11,11 @@ namespace NetCoreCMS.Framework.Core.Auth
         public string FacebookAppSecret { get; set; }
         public string GoogleClientId { get; set; }
         public string GoogleClientSecret { get; set; }
+
+        public string MicrosoftAppId { get; set; }
+        public string MicrosoftAppPassword { get; set; }
+
+        public string TwitterConsumerKey { get; set; }
+        public string TwitterCustomerSecret { get; set; }
     }
 }

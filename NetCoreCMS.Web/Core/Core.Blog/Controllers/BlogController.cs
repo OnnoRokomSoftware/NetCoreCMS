@@ -30,10 +30,10 @@ namespace Core.Blog.Controllers
     public class BlogController : NccController
     {
         NccPostService _nccPostService;
-        NccUserService _nccUserService;
+        INccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
 
-        public BlogController(NccPostService nccPostService, NccUserService nccUserService, ILoggerFactory loggerFactory)
+        public BlogController(NccPostService nccPostService, INccUserService nccUserService, ILoggerFactory loggerFactory)
         {
             _nccPostService = nccPostService;
             _loggerFactory = loggerFactory;

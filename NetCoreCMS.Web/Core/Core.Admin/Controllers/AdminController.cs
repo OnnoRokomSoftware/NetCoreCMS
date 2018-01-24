@@ -51,11 +51,12 @@ namespace Core.Admin.Controllers
         IHostingEnvironment _hostingEnvironment;
         IConfiguration _configuration;
         NccModuleService _moduleService;
-        private readonly NccUserService _nccUserService;
+        private readonly INccUserService _nccUserService;
         private readonly NccPermissionService _nccPermissionService;
+        private readonly ILogger _logger;
 
         public AdminController(NccWebSiteService nccWebSiteService, NccPageService pageService, NccPostService postService, NccCategoryService categoryService, INccSettingsService settingsService, RoleManager<NccRole> roleManager, UserManager<NccUser> userManager, NccStartupService startupService, IConfiguration configuration, IHostingEnvironment hostingEnv,
-        NccModuleService moduleService, ILoggerFactory loggarFactory, NccUserService nccUserService, NccPermissionService nccPermissionService)
+        NccModuleService moduleService, ILoggerFactory loggarFactory, INccUserService nccUserService, NccPermissionService nccPermissionService)
         {
             _webSiteService = nccWebSiteService;
             _pageService = pageService;
@@ -81,7 +82,7 @@ namespace Core.Admin.Controllers
 
         #region Settings
 
-        [AdminMenuItem(Name = "General", Url = "/Admin/Settings", IconCls = "fa-gear", Order = 2)]
+        [AdminMenuItem(Name = "General", Url = "/Admin/Settings", IconCls = "fa-gear", Order = 3)]
         public ActionResult Settings()
         {
             NccWebSite webSite = _webSiteService.LoadAll().FirstOrDefault();
@@ -174,9 +175,11 @@ namespace Core.Admin.Controllers
                     {
                         if (string.IsNullOrEmpty(prevWebSite.TablePrefix) == false)
                             website.TablePrefix = prevWebSite.TablePrefix;
+
                         website.WebSitePageSize = prevWebSite.WebSitePageSize;
                         website.AdminPageSize = prevWebSite.AdminPageSize;
                         website.IsShowFullPost = prevWebSite.IsShowFullPost;
+
                     }
                     _webSiteService.Update(website);
                     GlobalContext.WebSite = website;
@@ -227,14 +230,14 @@ namespace Core.Admin.Controllers
             return View(website);
         }
 
-        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", IconCls = "fa-random", Order = 3)]
+        [AdminMenuItem(Name = "Startup", Url = "/Admin/Startup", IconCls = "fa-random", Order = 5)]
         public ActionResult Startup()
         {
             var model = PrepareStartupViewData();
             return View(model);
         }
 
-        [AdminMenuItem(Name = "Email", Url = "/Admin/EmailSettings", IconCls = "fa-envelope", Order = 4)]
+        [AdminMenuItem(Name = "Email", Url = "/Admin/EmailSettings", IconCls = "fa-envelope", Order = 7)]
         public ActionResult EmailSettings()
         {
             var model = _settingsService.GetByKey<SmtpSettings>();
@@ -255,7 +258,7 @@ namespace Core.Admin.Controllers
             return View(model);
         }
 
-        [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file-text-o", Order = 5)]
+        [AdminMenuItem(Name = "Logging", Url = "/Admin/Logging", IconCls = "fa-file-text-o", Order = 20)]
         public ActionResult Logging()
         {
             PrepareLogViewData();
@@ -549,7 +552,7 @@ namespace Core.Admin.Controllers
             return View();
         }
 
-        [AdminMenuItem(Name = "Maintenance Mode", Url = "/Admin/MaintenanceMode", IconCls = "fa-gavel", Order = 10)]
+        [AdminMenuItem(Name = "Maintenance Mode", Url = "/Admin/MaintenanceMode", IconCls = "fa-gavel", Order = 9)]
         public IActionResult MaintenanceMode()
         {
             ViewBag.SetupConfig = SetupHelper.LoadSetup();

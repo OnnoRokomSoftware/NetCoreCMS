@@ -23,11 +23,12 @@ namespace Core.Admin.Controllers
     public class StoreSettingsController : NccController
     {
         INccSettingsService _nccSettingsService;
+        private ILogger<StoreSettingsController> _logger;
         StoreSettings storeSettings;
         public StoreSettingsController(INccSettingsService nccSettingsService, ILoggerFactory factory)
         {
             _nccSettingsService = nccSettingsService;
-            _logger = factory.CreateLogger<CmsThemeController>();
+            _logger = factory.CreateLogger<StoreSettingsController>();
             storeSettings = _nccSettingsService.GetByKey<StoreSettings>() ?? new StoreSettings();
         }
 

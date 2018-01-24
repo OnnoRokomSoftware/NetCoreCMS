@@ -39,10 +39,10 @@ namespace Core.Blog.Controllers
         NccShortCodeProvider _nccShortCodeProvider;
 
         IMediator _mediator;
-        NccUserService _nccUserService;
+        INccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
 
-        public PostAuthorController(NccPostService nccPostService, NccPostDetailsService nccPostDetailsService, NccCategoryService nccCategoryService, NccTagService nccTagService, NccUserService nccUserService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, ILoggerFactory loggerFactory)
+        public PostAuthorController(NccPostService nccPostService, NccPostDetailsService nccPostDetailsService, NccCategoryService nccCategoryService, NccTagService nccTagService, INccUserService nccUserService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, ILoggerFactory loggerFactory)
         {
             _nccPostService = nccPostService;
             _nccPostDetailsService = nccPostDetailsService;
@@ -151,7 +151,9 @@ namespace Core.Blog.Controllers
                     str.Add(temp);
                     #endregion
 
-                    str.Add(item.PostStatus == NccPost.NccPostStatus.Published ? NccPost.NccPostStatus.Published.ToString() + ": " + item.PublishDate.ToString("yyyy-MM-dd hh:mm tt") : "Update: " + item.ModificationDate.ToString("yyyy-MM-dd hh:mm tt"));
+                    str.Add(item.PostStatus == NccPost.NccPostStatus.Published ? "<span class='btn btn-xs btn-success btn-outline'>" + NccPost.NccPostStatus.Published.ToString() + "</span>" : "<span class='btn btn-xs btn-info btn-outline'>" + item.PostStatus.ToString() + "</span>");
+
+                    str.Add(item.PostStatus == NccPost.NccPostStatus.Published ? item.PublishDate.ToString("yyyy-MM-dd hh:mm tt") : item.ModificationDate.ToString("yyyy-MM-dd hh:mm tt"));
 
                     str.Add(item.Layout);
                     str.Add(item.PostType.ToString());

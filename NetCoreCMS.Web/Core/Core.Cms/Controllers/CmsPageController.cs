@@ -39,10 +39,10 @@ namespace Core.Cms.Controllers
         NccPageService _pageService;
         NccPageDetailsService _pageDetailsService;
         NccShortCodeProvider _nccShortCodeProvider;
-        private NccUserService _nccUserService;
+        private INccUserService _nccUserService;
         IMediator _mediator;
 
-        public CmsPageController(NccPageService pageService, NccPageDetailsService nccPageDetailsService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, NccUserService nccUserService, ILoggerFactory factory)
+        public CmsPageController(NccPageService pageService, NccPageDetailsService nccPageDetailsService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, INccUserService nccUserService, ILoggerFactory factory)
         {
             _pageService = pageService;
             _pageDetailsService = nccPageDetailsService;

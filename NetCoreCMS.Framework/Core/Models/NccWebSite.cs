@@ -21,7 +21,8 @@ namespace NetCoreCMS.Framework.Core.Models
         {
             WebSiteInfos = new List<NccWebSiteInfo>();
             WebSitePageSize = 10;
-            AdminPageSize = 10;            
+            AdminPageSize = 10;
+            EnableCache = false;
         }
         
         public string DomainName { get; set; }

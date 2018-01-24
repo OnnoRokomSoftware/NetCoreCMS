@@ -11,108 +11,27 @@
 using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using System;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
+using NetCoreCMS.Framework.Core.Mvc.Service;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccPageService : IBaseService<NccPage>
+    public class NccPageService : BaseService<NccPage>
     {
         private readonly NccPageRepository _entityRepository;
         private readonly NccPageDetailsRepository _nccPageDetailsRepository;
 
-        public NccPageService(NccPageRepository entityRepository, NccPageDetailsRepository nccPageDetailsRepository)
+        public NccPageService(NccPageRepository entityRepository, NccPageDetailsRepository nccPageDetailsRepository) : base(entityRepository, new List<string> { "Parent", "PageDetails" })
         {
             _entityRepository = entityRepository;
             _nccPageDetailsRepository = nccPageDetailsRepository;
         }
 
-        public NccPage Get(long entityId, bool isAsNoTracking = false)
-        {
-            return _entityRepository.Get(entityId, false, new List<string> { "Parent", "PageDetails" });
-        }
-
-        public NccPage GetBySlug(string slug)
-        {
-            return _nccPageDetailsRepository.Get(slug)?.Page;
-        }
-
-        public List<NccPage> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
-        {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string> { "Parent", "PageDetails" });
-        }
-
-        public List<NccPage> LoadRecentPages(int count)
-        {
-            var pages = _entityRepository.LoadRecentPages(count);
-            return pages;
-        }
-
-        public NccPage Save(NccPage entity)
-        {
-            using (var txn = _entityRepository.BeginTransaction())
-            {
-                try
-                {
-                    _entityRepository.Add(entity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-                catch (Exception ex)
-                {
-                    txn.Rollback();
-                    throw ex;
-                }
-
-                return entity;
-            }
-        }
-
-        public NccPage Update(NccPage entity)
-        {
-            var oldEntity = _entityRepository.Get(entity.Id, false, new List<string> { "Parent", "PageDetails" });
-            if (oldEntity != null)
-            {
-                oldEntity.ModificationDate = DateTime.Now;
-                oldEntity.ModifyBy = GlobalContext.GetCurrentUserId();
-                using (var txn = _entityRepository.BeginTransaction())
-                {
-                    CopyNewData(entity, oldEntity);
-                    _entityRepository.Edit(oldEntity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-            }
-
-            return entity;
-        }
-
-        public void Remove(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                entity.Status = EntityStatus.Deleted;
-                _entityRepository.Edit(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public void DeletePermanently(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                _entityRepository.Remove(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public NccPage CopyNewData(NccPage copyFrom, NccPage copyTo)
+        #region Method Override
+        public override void CopyNewData(NccPage copyFrom, NccPage copyTo)
         {
             copyTo.ModificationDate = copyFrom.ModificationDate;
             copyTo.ModifyBy = GlobalContext.GetCurrentUserId();
@@ -159,14 +78,25 @@ namespace NetCoreCMS.Framework.Core.Services
             }
 
             //copyTo.PageDetails = copyFrom.PageDetails;
-            return copyTo;
+            //return copyTo;
+        }
+        #endregion
+
+        #region New Method
+        public NccPage GetBySlug(string slug)
+        {
+            return _nccPageDetailsRepository.Get(slug)?.Page;
         }
 
+        public List<NccPage> LoadRecentPages(int count)
+        {
+            var pages = _entityRepository.LoadRecentPages(count);
+            return pages;
+        }
         public List<NccPage> LoadAllByPageStatus(NccPage.NccPageStatus status)
         {
             return _entityRepository.Query().Where(x => x.PageStatus == status).ToList();
         }
-
 
         public long Count(bool isActive, string keyword)
         {
@@ -186,6 +116,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<NccSearchViewModel> SearchLoad(int from, int total, string keyword)
         {
             return _entityRepository.SearchLoad(from, total, keyword);
-        }
+        } 
+        #endregion
     }
 }

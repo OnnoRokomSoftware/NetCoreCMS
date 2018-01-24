@@ -67,13 +67,20 @@
                         <hr style="margin:0px;padding:0px;" />
                         @{
                             var content = postDetails.Content;
-                            content = Regex.Replace(content, "<[^>]*>", string.Empty);
-                            content = Regex.Replace(content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
-                            var len = content.Length;
-                            if (len > 200)
+                            if (string.IsNullOrWhiteSpace(content) == false)
                             {
-                                len = 200;
-                                content = content.Substring(0, len);
+                                content = Regex.Replace(content, "<[^>]*>", string.Empty);
+                                content = Regex.Replace(content, @"^\s*$\n", string.Empty, RegexOptions.Multiline);
+                                var len = content.Length;
+                                if (len > 200)
+                                {
+                                    len = 200;
+                                    content = content.Substring(0, len);
+                                }
+                            }
+                            else
+                            {
+                                content = "";
                             }
                             <p>@Html.Raw(content) ...<a href="/Post/@postDetails.Slug">@_T["More"]</a></p>
                         }

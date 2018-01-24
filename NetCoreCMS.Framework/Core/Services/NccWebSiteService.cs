@@ -32,15 +32,15 @@ namespace NetCoreCMS.Framework.Core.Services
             _entityRepository = entityRepository;
             _webSiteInfoRepository = nccWebSiteInfoRepository;
         }
-         
-        public NccWebSite Get(long entityId, bool isAsNoTracking = false)
+
+        public NccWebSite Get(long entityId, bool isAsNoTracking = false, bool withDeleted = false)
         {
             return _entityRepository.Get(entityId);
         }
 
-        public List<NccWebSite> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
+        public List<NccWebSite> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, bool withDeleted = false)
         {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch,new List<string>() {"WebSiteInfos" });
+            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "WebSiteInfos" });
         }
 
         public NccWebSite Save(NccWebSite entity)
@@ -66,7 +66,7 @@ namespace NetCoreCMS.Framework.Core.Services
 
             return entity;
         }
-        
+
         public void Remove(long entityId)
         {
             var entity = _entityRepository.Get(entityId);
@@ -92,38 +92,39 @@ namespace NetCoreCMS.Framework.Core.Services
         {
             var modificationDate = DateTime.Now;
 
-            oldEntity.AllowRegistration = entity.AllowRegistration;            
+            oldEntity.AllowRegistration = entity.AllowRegistration;
             oldEntity.DateFormat = entity.DateFormat;
             oldEntity.DomainName = entity.DomainName;
-            oldEntity.EmailAddress = entity.EmailAddress;            
+            oldEntity.EmailAddress = entity.EmailAddress;
             oldEntity.Language = entity.Language;
             oldEntity.ModificationDate = modificationDate;
             oldEntity.ModifyBy = entity.ModifyBy;
             oldEntity.Name = entity.Name;
-            oldEntity.NewUserRole = entity.NewUserRole;            
-            oldEntity.Status = entity.Status;            
+            oldEntity.NewUserRole = entity.NewUserRole;
+            oldEntity.Status = entity.Status;
             oldEntity.TimeFormat = entity.TimeFormat;
             oldEntity.TimeZone = entity.TimeZone;
             oldEntity.IsMultiLangual = entity.IsMultiLangual;
             oldEntity.VersionNumber += 1;
             oldEntity.Metadata = entity.Metadata;
+            oldEntity.EnableCache = entity.EnableCache;
 
             foreach (var item in entity.WebSiteInfos)
             {
                 var isNew = false;
                 var oldWsInfo = oldEntity.WebSiteInfos.Where(x => x.Language == item.Language).FirstOrDefault();
-                if(oldWsInfo == null)
+                if (oldWsInfo == null)
                 {
                     isNew = true;
                     oldWsInfo = new NccWebSiteInfo();
                     oldWsInfo.CreateBy = item.CreateBy;
-                    oldWsInfo.CreationDate = item.CreationDate;                    
+                    oldWsInfo.CreationDate = item.CreationDate;
                     oldWsInfo.VersionNumber = item.VersionNumber;
                     oldWsInfo.VersionNumber = 0;
                     oldWsInfo.Language = item.Language;
                 }
 
-                oldWsInfo.Copyrights = item.Copyrights;                
+                oldWsInfo.Copyrights = item.Copyrights;
                 oldWsInfo.FaviconUrl = item.FaviconUrl;
                 //oldWsInfo.Language = item.Language;
                 oldWsInfo.ModificationDate = modificationDate;
@@ -142,7 +143,7 @@ namespace NetCoreCMS.Framework.Core.Services
                 {
                     oldEntity.WebSiteInfos.Add(oldWsInfo);
                 }
-            } 
-        } 
+            }
+        }
     }
 }

@@ -7,36 +7,72 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
+
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Filters;
 using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Setup;
+using NetCoreCMS.Framework.Utility;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Controllers
 {
     [ServiceFilter(typeof(NccGlobalExceptionFilter))]
     public class NccController : Controller
     {
-        protected ILogger _logger;        
-        protected NccLanguageDetector _nccLanguageDetector;
+        protected ILogger _logger;
+        protected IHostingEnvironment Environment { get { return GlobalContext.HostingEnvironment; } }
+        
+        protected INccSettingsService Settings { get{
+                object val;
+                HttpContext.Items.TryGetValue("NCC_CONTROLLER_PROPERTY_SETTINGS", out val);
+                return (INccSettingsService)val;
+            }
+        }
+
+        protected INccUserService UserService
+        {
+            get
+            {
+                object val;
+                HttpContext.Items.TryGetValue("NCC_CONTROLLER_PROPERTY_USER_SERVICE", out val);
+                return (INccUserService)val;
+            }
+        }
+
+        protected INccTranslator _T { get {
+                object val;
+                HttpContext.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_TRANSLATOR", out val);
+                return (INccTranslator)val;                
+            }
+        }
+
+        protected IMemoryCache Cache
+        {
+            get
+            {
+                object val;
+                HttpContext.Items.TryGetValue("NCC_CONTROLLER_PROPERTY_CACHE", out val);
+                return (IMemoryCache) val;
+            }
+        }
 
         public NccController()
         {
-            var language = SetupHelper.Language;            
+            
         }
 
         public string CurrentLanguage
         {
             get
             {
-                if(_nccLanguageDetector == null)
-                {
-                    _nccLanguageDetector = (NccLanguageDetector)HttpContext.RequestServices.GetService(typeof(NccLanguageDetector));
-                }                
-                return _nccLanguageDetector.GetCurrentLanguage();
+                object val;
+                HttpContext.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE", out val);
+                return (string)val ?? "";
             }
         }
 

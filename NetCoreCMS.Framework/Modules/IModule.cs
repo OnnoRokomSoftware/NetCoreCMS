@@ -44,8 +44,7 @@ namespace NetCoreCMS.Framework.Modules
         string Author { get; set; }
         string Email { get; set; }        
         string Website { get; set; }
-        string DemoUrl { get; set; }
-        string ManualUrl { get; set; }
+        string DemoUrl { get; set; }        
         bool AntiForgery { get; set; }
         string Description { get; set; }
         string Version { get; set; }
@@ -61,14 +60,18 @@ namespace NetCoreCMS.Framework.Modules
         List<Widget> Widgets { get; set; }
         List<Menu> Menus { get; set; }
         string Area { get;}
+        bool IsMultilangual { get; }
+        List<SupportedDatabases> Databases { get; }
 
         void Init(IServiceCollection services, INccSettingsService nccSettingsService);
         void RegisterRoute(IRouteBuilder routes);
         
-        bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable);
-        bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable);
-        bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> createUpdateTable);
+        bool Install(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, bool, int> createUpdateTable);
+        bool Update(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, bool, int> createUpdateTable);
         bool Activate();
         bool Inactivate();
+        bool RemoveTables(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery, Func<Type, int> deleteTable);
+        bool Uninstall(INccSettingsService settingsService, Func<NccDbQueryText, string> executeQuery);
+                
     }
 }

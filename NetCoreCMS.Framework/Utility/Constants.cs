@@ -55,7 +55,9 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// Modules dependend library location. Depelopers have to copy their dependend library or nuget packages into this folder containing inside module folder.
         /// </summary>
-        public static string ModuleDepencencyFolder { get { return "Dependency"; } } 
+        public static string ModuleDepencencyFolder { get { return "Dependency"; } }
+
+        public static string DefaultThemeId { get { return "DefaultTheme"; } }
 
         /// <summary>
         /// Email server config saving settings key

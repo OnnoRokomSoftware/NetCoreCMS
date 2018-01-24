@@ -24,16 +24,6 @@ namespace NetCoreCMS.Framework.Core.Repository
         {
         }
 
-        public NccCategoryDetails GetBySlug(string slug)
-        {
-            return DbSet.Where(x => x.Slug.ToLower() == slug.ToLower()).FirstOrDefault();
-        }
-
-        public List<NccCategoryDetails> LoadByParrentId(long parrentId, bool isActive)
-        {
-            return DbSet.Where(x => x.Category.Id == parrentId).ToList();
-        }
-
         public NccCategoryDetails Get(string slug, string language)
         {
             var query = Query().Include("Category").Include("Category.CategoryDetails").Where(x => x.Slug == slug);
@@ -44,6 +34,11 @@ namespace NetCoreCMS.Framework.Core.Repository
             return query.FirstOrDefault();
         }
 
+        public List<NccCategoryDetails> LoadByParrentId(long parrentId, bool isActive)
+        {
+            return DbSet.Where(x => x.Category.Id == parrentId).ToList();
+        }
+        
         public List<NccCategoryDetails> LoadRecentCategoryDetails(int count, string language = "")
         {
             var query = Query().Include("Category").Include("Category.CategoryDetails");

@@ -1,0 +1,25 @@
+﻿@inherits NccRazorPage<TModel>
+
+@using NetCoreCMS.Framework.Core
+@using NetCoreCMS.Framework.Core.Models
+@using NetCoreCMS.Framework.Core.Mvc.Views
+@using NetCoreCMS.Framework.Core.Mvc.Views.Extensions
+@using NetCoreCMS.Framework.Utility
+@using NetCoreCMS.Framework.Modules
+@using NetCoreCMS.Framework.Resources
+@using NetCoreCMS.Framework.Modules.Widgets
+@using NetCoreCMS.Framework.Themes
+@using DefaultTheme.Lib
+@using NetCoreCMS.Framework.i18n
+
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Localization
+
+@addTagHelper *, PaulMiami.AspNetCore.Mvc.Recaptcha
+@addTagHelper *, NetCoreCMS.Framework
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@inject Microsoft.ApplicationInsights.AspNetCore.JavaScriptSnippet JavaScriptSnippet
+@inject SignInManager<NccUser> SignInManager
+@inject UserManager<NccUser> UserManager
+@inject NccLanguageDetector LanguageDetector

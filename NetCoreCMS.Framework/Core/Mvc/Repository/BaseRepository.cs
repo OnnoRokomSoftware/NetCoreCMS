@@ -26,6 +26,8 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
 {
     public class BaseRepository<EntityT, IdT> : IBaseRepository<EntityT, IdT> where EntityT : class, IBaseModel<IdT>
     {
+        public List<string> DefaultIncludedRelationalProperties { get; set; }
+
         public BaseRepository(NccDbContext context)
         {
             Context = context;
@@ -47,32 +49,19 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
         {
             //entity.Status = EntityStatus.Modified;
             entity.ModificationDate = DateTime.Now;
+            entity.VersionNumber += 1;
             Context.Entry(entity).State = EntityState.Modified;
 
             return entity;
         }
 
-        public EntityT Get(IdT id, bool isAsNoTracking = false, List<string> includeRelationalProperties = null)
+        public EntityT Get(IdT id, bool isAsNoTracking = false, List<string> extraIncludeRelationalProperties = null, bool withDeleted = false)
         {
-            IQueryable<EntityT> tempDbSet = DbSet;
-
-            if (includeRelationalProperties != null)
-            {
-                foreach (var item in includeRelationalProperties)
-                {
-                    tempDbSet = tempDbSet.Include(item);
-                }
-            }
-
-            if (isAsNoTracking)
-                tempDbSet = tempDbSet.AsNoTracking().Where(x => x.Id.Equals(id));
-            else
-                tempDbSet = tempDbSet.Where(x => x.Id.Equals(id));
- 
-            return tempDbSet.FirstOrDefault(); 
+            IQueryable<EntityT> query = Query(null, true, extraIncludeRelationalProperties, isAsNoTracking, withDeleted);
+            return query.Where(x => x.Id.Equals(id)).FirstOrDefault();
         }
 
-        public EntityT Get(string name, bool isAsNoTracking = false, List<string> includeRelationalProperties = null)
+        public EntityT Get(string name, bool isAsNoTracking = false, List<string> includeRelationalProperties = null, bool withDeleted = false)
         {
             IQueryable<EntityT> tempDbSet = DbSet;
 
@@ -87,12 +76,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
             if (isAsNoTracking)
                 tempDbSet = tempDbSet.AsNoTracking().Where(x => x.Name.Equals(name));
             else
-                tempDbSet = tempDbSet.Where(x => x.Name.Equals(name)); 
-            
+                tempDbSet = tempDbSet.Where(x => x.Name.Equals(name));
+
+            if (withDeleted == false)
+                tempDbSet = tempDbSet.Where(x => x.Status != EntityStatus.Deleted);
+
             return tempDbSet.FirstOrDefault();  
         }
 
-        public List<EntityT> Load(string name, List<string> includeRelationalProperties = null)
+        public List<EntityT> Load(string name, List<string> includeRelationalProperties = null, bool withDeleted = false)
         {
             IQueryable<EntityT> tempDbSet = DbSet;
 
@@ -104,11 +96,15 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
                 }
             }
             
-            tempDbSet = tempDbSet.Where(x => x.Name.Contains(name)); 
+            tempDbSet = tempDbSet.Where(x => x.Name.Contains(name));
+
+            if (withDeleted == false)
+                tempDbSet = tempDbSet.Where(x => x.Status != EntityStatus.Deleted);
+
             return tempDbSet.ToList(); 
         }
 
-        public List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeRelationalProperties = null)
+        public List<EntityT> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false, List<string> includeRelationalProperties = null, bool withDeleted = false)
         {
             IQueryable<EntityT> tempDbSet = DbSet.Where(x => x.Status != EntityStatus.Deleted);
 
@@ -138,11 +134,14 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
                     tempDbSet = tempDbSet.Where(x => x.Name.ToLower() == name.ToLower());
             }
 
+            if (withDeleted == false)
+                tempDbSet = tempDbSet.Where(x => x.Status != EntityStatus.Deleted);
+
             /* :) 
              * 1. If you are installing newly then check setup.json is exists. Delete setup.json and start setup again.
              * 2. If you are here after installing then may be database tables are missing or databasae server is not running or models are changed have to update database. 
              */
-           
+
             return tempDbSet.ToList();  
         }
         
@@ -153,12 +152,55 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
 
         public void SaveChange()
         {
-            Context.SaveChanges();
+            var effectedChanges = Context.SaveChanges();
         }
 
-        public IQueryable<EntityT> Query()
+        public IQueryable<EntityT> Query( bool? isActive = null, bool includeDefaultRelationProperties = true, List<string> extraIncludeRelationalProperties = null, bool isAsNoTracking = false, bool withDeleted = false)
         {
-            return DbSet;
+            IQueryable<EntityT> query = DbSet;
+
+            if (isActive != null)
+            {
+                if (isActive.Value)
+                {
+                    query = query.Where(x => x.Status == EntityStatus.Active);
+                }
+                else
+                {
+                    query = query.Where(x => x.Status == EntityStatus.Inactive);
+                }
+            }
+
+            if (includeDefaultRelationProperties && DefaultIncludedRelationalProperties != null)
+            {
+                foreach (var item in DefaultIncludedRelationalProperties)
+                {
+                    query = query.Include(item);
+                }
+            }
+
+            if (extraIncludeRelationalProperties != null)
+            {
+                foreach (var item in extraIncludeRelationalProperties)
+                {
+                    if (DefaultIncludedRelationalProperties == null || DefaultIncludedRelationalProperties.Contains(item) == false)
+                    {
+                        query = query.Include(item);
+                    }
+                }
+            }
+
+            if (isAsNoTracking)
+            {
+                query = query.AsNoTracking();
+            }
+
+            if (withDeleted == false)
+            {
+                query = query.Where(x => x.Status != EntityStatus.Deleted);
+            }
+
+            return query;
         }
 
         public EntityEntry GetEntityEntry(EntityT T)
@@ -420,5 +462,6 @@ namespace NetCoreCMS.Framework.Core.Mvc.Repository
 
             return list;
         }
+        
     }
 }

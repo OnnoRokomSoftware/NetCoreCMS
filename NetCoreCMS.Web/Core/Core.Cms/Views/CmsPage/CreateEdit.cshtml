@@ -2,7 +2,7 @@
 
 @{
     Layout = Constants.AdminLayoutName;
-    var controllerName = "CmsPage";
+    //var controllerName = "CmsPage";
     Title = "Page Create";
     SubTitle = "Create a new page";
 
@@ -10,7 +10,7 @@
     {
         Title = "Page Edit";
         SubTitle = "Update information of a page";
-    }    
+    }
 }
 <style>
     .tabBorderDesign {
@@ -38,14 +38,14 @@
                         {
                             <a href="/@Model.PageDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug" class="btn btn-sm btn-info btn-outline btn-xs" target="_blank"><i class="fa fa-eye"> </i> @GlobalContext.WebSite.Language</a>
                         }
-                        <a asp-controller="@controllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>
+                        <a asp-controller="@ControllerName" asp-action="CreateEdit" asp-route-id="" class="btn btn-outline btn-success btn-xs">New Page</a>
                     }
-                    <a asp-controller="@controllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Page</a>
+                    <a asp-controller="@ControllerName" asp-action="Manage" class="btn btn-outline btn-primary btn-xs">Manage Page</a>
                 </div> 
             </div>
             <div class="panel-body">
                 <div class="row">
-                    <form id="pageCreateEditForm" class="form-horizontal" asp-controller="@controllerName" asp-action="CreateEdit" method="post">
+                    <form id="pageCreateEditForm" class="form-horizontal" asp-controller="@ControllerName" asp-action="CreateEdit" method="post">
                         <div class="col-sm-8 pull-left">
                             <span asp-validation-summary="ValidationSummary.All" class="text-danger"></span>
                             <input type="hidden" asp-for="Id" />
@@ -252,8 +252,10 @@
 
             var elements = document.getElementsByClassName('pageContent');
             for (var i = 0; i < elements.length; ++i) {
-                CKEDITOR.replace(elements[i], {
+                console.log(elements[i].name);
+                CKEDITOR.replace(elements[i].name, {
                     enterMode: CKEDITOR.ENTER_DIV,
+                    allowedContent: true,
                     filebrowserBrowseUrl: '/MediaHome/?isFile=true&inputId=ckeditor',
                     filebrowserImageBrowseUrl: '/MediaHome/?inputId=ckeditor',
                     //filebrowserUploadUrl: '/media/files',

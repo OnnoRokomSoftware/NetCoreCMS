@@ -7,21 +7,13 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Network;
-using NetCoreCMS.Framework.Core.Security;
-using NetCoreCMS.Framework.Themes;
-using NetCoreCMS.Framework.Utility;
-using Core.Admin.Lib;
-using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
+using NetCoreCMS.Framework.i18n;
 
 namespace Core.Admin.Controllers
 {
@@ -39,16 +31,19 @@ namespace Core.Admin.Controllers
             return Redirect("~/" + lang + Request.Path.Value);
         }
 
-        [AdminMenuItem(Name ="Translation", Order = 200, IconCls ="fa fa-language", SubActions = new[] { "EditTranslationFile"})]
+        [AdminMenuItem(Name ="Translation", Order = 6, IconCls ="fa fa-language", SubActions = new[] { "EditTranslationFile"})]
         public ActionResult TranslationFiles()
         {
-            var resourceFileList = LoadTranslationFiles();
+            var translator = new NccTranslator(CurrentLanguage);
+            translator.SaveTranslations();
+
+            var resourceFileList = TranslationFile.GetTranslationFiles();
             return View(resourceFileList);
         }
           
         public ActionResult EditTranslationFile(string id)
         {
-            var translationFiles = LoadTranslationFiles();
+            var translationFiles = TranslationFile.GetTranslationFiles();
             var selectedTranslationFile = translationFiles.Where(x => x.Id == id).FirstOrDefault();
 
             if(selectedTranslationFile == null)
@@ -65,7 +60,7 @@ namespace Core.Admin.Controllers
         [HttpPost]
         public JsonResult EditTranslationFile(string id, string contentJson)
         {
-            var translationFiles = LoadTranslationFiles();
+            var translationFiles = TranslationFile.GetTranslationFiles();
             var selectedTranslationFile = translationFiles.Where(x => x.Id == id).FirstOrDefault();
 
             if (selectedTranslationFile == null)
@@ -80,6 +75,7 @@ namespace Core.Admin.Controllers
             {
                 selectedTranslationFile.Content = contentJson;
                 selectedTranslationFile.Save();
+                NccTranslator.LoadTranslations();
 
                 return Json(new ApiResponse()
                 {
@@ -87,81 +83,6 @@ namespace Core.Admin.Controllers
                     Message = "Update successful"
                 });
             }
-        }        
-
-        #region Private Methods
-        private List<TranslationFile> LoadTranslationFiles()
-        {
-            var resourceFileList = new List<TranslationFile>();
-            var siteResources = GetSiteResources();
-            var moduleResources = GetModuleResources();
-            var themeResources = GetThemeResources();
-
-            resourceFileList.AddRange(siteResources);
-            resourceFileList.AddRange(moduleResources);
-            resourceFileList.AddRange(themeResources);
-            return resourceFileList;
-        }
-
-        private List<TranslationFile> GetThemeResources()
-        {
-            var translationFileList = new List<TranslationFile>();
-            var activeTheme = ThemeHelper.ActiveTheme;
-            translationFileList = GetTranslationFiles(activeTheme.ThemeName, activeTheme.ResourceFolder);
-            return translationFileList;
-        }
-
-        private List<TranslationFile> GetModuleResources()
-        {
-            var list = new List<TranslationFile>();
-            foreach (var item in GlobalContext.GetActiveModules())
-            {
-                var resourceFolder = "\\Bin\\Release\\netcoreapp2.0\\Resources";
-                if (GlobalContext.HostingEnvironment.EnvironmentName.Equals("Development"))
-                {
-                    resourceFolder = "\\Bin\\Debug\\netcoreapp2.0\\Resources";
-                }
-                var tfList = GetTranslationFiles(item.ModuleTitle, item.Path + resourceFolder);
-                list.AddRange(tfList);
-            }
-            return list;
-        }
-
-        private List<TranslationFile> GetSiteResources()
-        {
-            var resourceFolder = GlobalContext.ContentRootPath + "\\Bin\\Release\\netcoreapp2.0\\Resources";
-            if (GlobalContext.HostingEnvironment.EnvironmentName.Equals("Development"))
-            {
-                resourceFolder = GlobalContext.ContentRootPath + "\\Bin\\Debug\\netcoreapp2.0\\Resources";
-            }
-            var translationFileList = GetTranslationFiles("Website",resourceFolder);
-            return translationFileList;
-        }
-
-        private List<TranslationFile> GetTranslationFiles(string group, string resourceFolder)
-        {
-            var translationFileList = new List<TranslationFile>();
-            if (Directory.Exists(resourceFolder))
-            {
-                var files = Directory.GetFiles(resourceFolder, "*.lang");
-                foreach (var item in files)
-                {
-                    var fi = new FileInfo(item);
-                    var tf = new TranslationFile();
-                    tf.Content = System.IO.File.ReadAllText(item);
-                    tf.FileName = fi.Name;
-                    tf.FullPath = item;
-                    tf.Group = group;
-                    tf.Culture = TranslationFile.GetCultureFromFileName(fi.Name);
-                    tf.Id = Cryptography.GetHash(item);
-                    translationFileList.Add(tf);
-                }
-            }
-            
-            return translationFileList;
-        }
-        
-        #endregion
-
+        }   
     }
 }

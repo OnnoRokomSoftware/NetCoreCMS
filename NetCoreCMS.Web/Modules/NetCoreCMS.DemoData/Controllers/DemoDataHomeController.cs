@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using static NetCoreCMS.Framework.Core.Models.NccPost;
 using NetCoreCMS.Framework.Core.Data;
 using NetCoreCMS.Modules.DemoData;
+using System.Text.RegularExpressions;
 
 namespace NetCoreCMS.DemoData.Controllers
 {
@@ -35,11 +36,11 @@ namespace NetCoreCMS.DemoData.Controllers
     public class DemoDataHomeController : NccController
     {
         #region Initialization
-        private INccSettingsService _nccSettingsService;
+        //private INccSettingsService _nccSettingsService;
 
         RoleManager<NccRole> _roleManager;
         UserManager<NccUser> _userManager;
-        NccUserService _nccUserService;
+        //INccUserService _nccUserService;
         NccPermissionService _nccPermissionService;
 
         NccPageService _pageService;
@@ -51,14 +52,11 @@ namespace NetCoreCMS.DemoData.Controllers
 
         static readonly Random rnd = new Random();
 
-        public DemoDataHomeController(ILoggerFactory factory, INccSettingsService nccSettingsService, RoleManager<NccRole> roleManager, UserManager<NccUser> userManager, NccUserService nccUserService, NccPageService pageService, NccCategoryService categoryService, NccTagService tagService, NccPostService postService, NccCommentsService commentsService, NccPermissionService nccPermissionService)
+        public DemoDataHomeController(ILoggerFactory factory, RoleManager<NccRole> roleManager, UserManager<NccUser> userManager, NccPageService pageService, NccCategoryService categoryService, NccTagService tagService, NccPostService postService, NccCommentsService commentsService, NccPermissionService nccPermissionService)
         {
             _logger = factory.CreateLogger<DemoDataHomeController>();
-            _nccSettingsService = nccSettingsService;
-
             _roleManager = roleManager;
             _userManager = userManager;
-            _nccUserService = nccUserService;
             _nccPermissionService = nccPermissionService;
 
             _pageService = pageService;
@@ -462,6 +460,7 @@ Lorem Ipsum শুধু মুদ্রণ এবং typesetting শিল্�
                 post.CreateBy = post.ModifyBy = GetRandomUserId();
                 post.Name = itemName + (currentCount + i).ToString();
                 post.AllowComment = true;
+                post.ThumImage = $"/media/Images/2017/06/image-slider-{i % 4}.jpg";
 
                 //Create other languost details
                 foreach (var item in SupportedCultures.Cultures)
@@ -478,6 +477,9 @@ Lorem Ipsum শুধু মুদ্রণ এবং typesetting শিল্�
                             _nccPostDetails.Name = enDemoSlug + (currentCount + i).ToString();
                             _nccPostDetails.Content = "<h1 style=\"text-align:center\">" + enDemoTitle + (currentCount + i).ToString() + "</h1><hr />" + enDemoContent;
                             _nccPostDetails.MetaDescription = enDemoTitle + (currentCount + i).ToString() + " " + enDemoContent;
+                            _nccPostDetails.MetaDescription = Regex.Replace(_nccPostDetails.MetaDescription, "<[^>]*>", " ");
+                            _nccPostDetails.MetaDescription = Regex.Replace(_nccPostDetails.MetaDescription, @"^\s*$\n", " ", RegexOptions.Multiline);
+                            _nccPostDetails.MetaDescription = _nccPostDetails.MetaDescription.Replace("  ", " ");
                             _nccPostDetails.MetaDescription = _nccPostDetails.MetaDescription.Substring(0, 160);
                         }
                         else if (item.TwoLetterISOLanguageName == "bn")
@@ -487,6 +489,9 @@ Lorem Ipsum শুধু মুদ্রণ এবং typesetting শিল্�
                             _nccPostDetails.Name = bnDemoSlug + (currentCount + i).ToString();
                             _nccPostDetails.Content = "<h1 style=\"text-align:center\">" + bnDemoTitle + (currentCount + i).ToString() + "</h1><hr />" + bnDemoContent;
                             _nccPostDetails.MetaDescription = bnDemoTitle + (currentCount + i).ToString() + " " + bnDemoContent;
+                            _nccPostDetails.MetaDescription = Regex.Replace(_nccPostDetails.MetaDescription, "<[^>]*>", " ");
+                            _nccPostDetails.MetaDescription = Regex.Replace(_nccPostDetails.MetaDescription, @"^\s*$\n", " ", RegexOptions.Multiline);
+                            _nccPostDetails.MetaDescription = _nccPostDetails.MetaDescription.Replace("  ", " ");
                             _nccPostDetails.MetaDescription = _nccPostDetails.MetaDescription.Substring(0, 160);
                         }
                         post.PostDetails.Add(_nccPostDetails);
@@ -564,13 +569,13 @@ Lorem Ipsum শুধু মুদ্রণ এবং typesetting শিল্�
         }
         private long GetRandomUserId()
         {
-            var users = _nccUserService.LoadAll();
+            var users = UserService.LoadAll();
             int r = rnd.Next(users.Count);
             return users[r].Id;
         }
         private NccUser GetRandomUser()
         {
-            var users = _nccUserService.LoadAll();
+            var users = UserService.LoadAll();
             int r = rnd.Next(users.Count);
             return users[r];
         }

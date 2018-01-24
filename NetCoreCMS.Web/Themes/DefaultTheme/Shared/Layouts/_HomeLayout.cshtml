@@ -1,0 +1,113 @@
+﻿@{
+    BodyWidth = 12;
+    CurrentLayout = ThemeResources.Layouts.HomeLayout;       
+    ThemeResources.RegisterResources(CurrentLayout);
+}
+<!DOCTYPE html>
+<html lang="@CurrentLanguageCode">
+<head>
+    @NccRenderHead()
+    @Html.Raw(JavaScriptSnippet.FullScript)
+    @NccRenderHeaderCss()
+    @NccRenderHeaderScripts()
+
+    @RenderSection(ThemeHelper.Sections.StyleHeader, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptHeader, required: false)
+    @RenderSection("Styles", required: false)
+</head>
+<body id="body">
+    <!--MessageContainer-->
+    <div class="row">
+        @NccRenderMessages()
+    </div>
+    <!--GlobalMessages-->
+    <div class="row">
+        @NccRenderGlobalMessages()
+    </div>
+    <!--Loading-->
+    @NccRenderLoadingMaskContainer()
+    <!--ZoneTOPStart-->
+    <!--Header-->
+    @NccRenderHeader()
+
+    <!--Navbar-->
+    @NccRenderNavigation()
+    <!--ZoneTOPEnd-->
+    <!--FullWidthSliderStart-->
+    <div>
+        @{
+            var fullWidthSlider = GetWebSiteWidgets(CurrentLayout, ThemeResources.Zones.FullWidthSlider);
+            if (fullWidthSlider != null && fullWidthSlider.Count > 0)
+            {
+                <div class="fullWidthSlider">
+                    @foreach (var item in fullWidthSlider)
+                    {
+                        var widget = item.Widget;                        
+                        widget.Init(item.Id);
+
+                        if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language.ToLower())
+                        {
+                            if (widget.DisplayTitle != "" || widget.Footer != "")
+                            {
+                                <div class='panel panel-default'>
+                                    @if (widget.DisplayTitle != "")
+                                    {
+                                        <div class='panel-heading'>
+                                            @Html.Raw(widget.DisplayTitle)
+                                        </div>
+                                    }
+                                    <div class='panel-body'>
+                                        @Html.Raw(widget.RenderBody())
+                                    </div>
+                                    @if (widget.Footer != "")
+                                    {
+                                        <div class='panel-footer'>
+                                            @Html.Raw(widget.Footer)
+                                        </div>
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <div>
+                                    @Html.Raw(widget.RenderBody())
+                                </div>
+                            }
+                        }                         
+                    }
+                </div>
+            }
+        }
+    </div>
+    <!--FullWidthSliderEnd-->
+    <!--MainBodyStart-->
+    <div class="container mainBody">
+        <!--LeftColumnstart-->
+        @NccRenderLeftColumn()
+        <!--LeftColumnEnd-->
+        <!--RightColumnStart-->
+        @NccRenderRightColumn()
+        <!--RightColumnEnd-->
+        <!--MainContentStart-->
+        <div class="col-md-@BodyWidth">
+            <!--Featured-->
+            @NccRenderFeaturedSection() 
+            @NccRenderBody()
+        </div>
+        <!--MainContentEnd--> 
+    </div>
+    <!--MainBodyEnd-->
+
+    <!--FooterStart-->
+    @NccRenderFooter()
+    <!--FooterEnd-->
+
+    @NccRenderFooterCss()
+    @NccRenderFooterScripts()
+
+    @RenderSection(ThemeHelper.Sections.StyleFooter, required: false)
+    @RenderSection(ThemeHelper.Sections.ScriptFooter, required: false)
+    @RenderSection("Scripts", required: false)
+</body>
+</html>
+

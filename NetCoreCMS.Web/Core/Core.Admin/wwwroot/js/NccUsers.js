@@ -12,12 +12,18 @@
             selectedRoles.push($(this).val());
         });
 
+        var roleOperation = $("#dd_role_operation").val();
+        if (roleOperation == undefined || roleOperation == null || roleOperation == "") {
+            NccAlert.ShowError("Please select an operation.");
+            return;
+        }
+
         NccPageMask.ShowLoadingMask();
 
         $.ajax({
             url: '/Users/ChangeRole',
             method: 'POST',
-            data: { userIds: selectedUsers, roles: selectedRoles },
+            data: { userIds: selectedUsers, roles: selectedRoles, roleOperation: roleOperation },
             success: function (rsp) {
                 NccPageMask.HideLoadingMask();
                 console.log(rsp);

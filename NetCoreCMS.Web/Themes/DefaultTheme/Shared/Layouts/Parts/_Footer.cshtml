@@ -1,0 +1,97 @@
+﻿<footer>
+    <hr />
+    <div class="container">
+        <div class="row">
+            @{
+                var menusFooter = GetMenus(ThemeResources.MenuLocation.Footer, CurrentLanguage);
+                var zoneFooterWidgets = GetWebSiteWidgets(CurrentLayout, ThemeResources.Zones.Footer);
+
+                if ((menusFooter != null && menusFooter.Count > 0) || (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0))
+                {
+                    HasFooter = true;
+                }
+                <!-- Footer Menu Start -->
+                if (menusFooter != null && menusFooter.Count > 0)
+                {
+                    <div class="col-md-6">
+                        @foreach (var item in menusFooter)
+                        {
+                            foreach (var menuItem in item.MenuItems)
+                            {
+                                <a href="@menuItem.Url">@menuItem.Name</a><br />
+                                foreach (var mi2 in menuItem.Childrens)
+                                {
+                                    <span>&nbsp;&nbsp;--</span><a href="@mi2.Url">@mi2.Name</a><br />
+                                    foreach (var mi3 in mi2.Childrens)
+                                    {
+                                        <span>&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi3.Url">@mi3.Name</a><br />
+                                        foreach (var mi4 in mi3.Childrens)
+                                        {
+                                            <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;--</span><a href="@mi4.Url">@mi4.Name</a><br />
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    </div>
+                }
+                <!-- Footer Menu End -->
+
+                <!-- Footer Widgets Start -->
+                if (zoneFooterWidgets != null && zoneFooterWidgets.Count > 0)
+                {
+                    <div class="col-md-12">
+                        @foreach (var item in zoneFooterWidgets)
+                        {
+                            var widget = item.Widget;                            
+                            widget.Init(item.Id);
+
+                            if (string.IsNullOrEmpty(widget.Language) || string.IsNullOrEmpty(CurrentLanguage) || CurrentLanguage.ToLower() == widget.Language.ToLower())
+                            {
+                                if (widget.DisplayTitle != "" || widget.Footer != "")
+                                {
+                                    <div class='panel panel-default'>
+                                        @if (widget.DisplayTitle != "")
+                                        {
+                                            <div class='panel-heading'>
+                                                @Html.Raw(_T[widget.DisplayTitle])
+                                            </div>
+                                        }
+                                        <div class='panel-body'>
+                                            @Html.Raw(widget.RenderBody())
+                                        </div>
+                                        @if (widget.Footer != "")
+                                        {
+                                            <div class='panel-footer'>
+                                                @Html.Raw(_T[widget.Footer])
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div>
+                                        @Html.Raw(widget.RenderBody())
+                                    </div>
+                                }
+                            }                             
+                        }
+                    </div>
+                }
+                <!-- Footer Widgets End -->
+            }
+
+        </div>
+    </div>
+
+    @if (HasFooter)
+    {
+        <hr />
+    }
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 copyright"> @_T["Copyrights"] &copy; @Html.Raw(GetWebSiteCopyright()) @_T[DateTime.Now.Year.ToString()]</div>
+            <div class="col-md-6 poweredby"> @Html.Raw(string.Format(_T["Developed using {0}"].ToString(), "<a href=\"" + @NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
+        </div>
+    </div>
+</footer>

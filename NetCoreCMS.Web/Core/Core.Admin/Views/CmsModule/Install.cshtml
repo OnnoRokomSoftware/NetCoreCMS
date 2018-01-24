@@ -49,7 +49,7 @@
                                         <td>
                                             @if (theme.IsActive == false)
                                             {
-                                                <a asp-controller="CmsTheme" asp-action="Activate" asp-route-themeName="@theme.ThemeName">Activate</a>
+                                                <a asp-controller="CmsTheme" asp-action="Activate" asp-route-themeId="@theme.ThemeId">Activate</a>
                                             }
                                             else
                                             {

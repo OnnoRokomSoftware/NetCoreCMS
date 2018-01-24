@@ -24,7 +24,7 @@ using NetCoreCMS.Framework.Core.Services;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using NetCoreCMS.Framework.Core.Extensions;
-using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Resources;
 using NetCoreCMS.Framework.Core;
 using System.Linq;
 using NetCoreCMS.Framework.Resources;
@@ -47,7 +47,7 @@ namespace NetCoreCMS.Framework.Setup
         public static bool IsAdminCreateComplete { get; set; }
         public static string SelectedDatabase { get; set; }
         public static string ConnectionString { get; set; }
-        public static int LoggingLevel { get; set; } = (int) LogLevel.Warning;
+        public static int LoggingLevel { get; set; } = (int) LogLevel.Error;
         public static string Language { get; set; }
         public static string StartupType { get; set; } = StartupTypeText.Url;
         public static string StartupData { get; set; } = "/CmsHome";
@@ -175,7 +175,7 @@ namespace NetCoreCMS.Framework.Setup
         
         private static void CreateCmsDefaultRoles(NccDbContext nccDbContext, RoleManager<NccRole> roleManager)
         {
-            var nccPermissionService = new NccPermissionService(new NccPermissionRepository(nccDbContext));
+            var nccPermissionService = new NccPermissionService(new NccPermissionRepository(nccDbContext), new NccPermissionDetailsRepository(nccDbContext));
             var administrator = CreatePermissionObject("Administrator");
             var manager = CreatePermissionObject("Manager");
             var editor = CreatePermissionObject("Editor");
@@ -456,7 +456,7 @@ namespace NetCoreCMS.Framework.Setup
                         Data = "",
                         //Id = item.Id,
                         MenuActionType = NccMenuItem.ActionType.Url,
-                        MenuOrder = 1,
+                        MenuOrder = 2,
                         Module = "",
                         Name = "নমুনা পৃষ্ঠা",
                         Target = "_self",
@@ -469,7 +469,7 @@ namespace NetCoreCMS.Framework.Setup
                         Data = "",
                         //Id = item.Id,
                         MenuActionType = NccMenuItem.ActionType.Url,
-                        MenuOrder = 1,
+                        MenuOrder = 3,
                         Module = "",
                         Name = "ব্লগ পোস্ট",
                         Target = "_self",
@@ -482,7 +482,7 @@ namespace NetCoreCMS.Framework.Setup
                         Data = "",
                         //Id = item.Id,
                         MenuActionType = NccMenuItem.ActionType.Url,
-                        MenuOrder = 1,
+                        MenuOrder = 4,
                         Module = "",
                         Name = "ব্লগ বিভাগ",
                         Target = "_self",
@@ -511,7 +511,7 @@ namespace NetCoreCMS.Framework.Setup
                         Data = "",
                         //Id = item.Id,
                         MenuActionType = NccMenuItem.ActionType.Url,
-                        MenuOrder = 1,
+                        MenuOrder = 2,
                         Module = "",
                         Name = "Sample Page",
                         Target = "_self",
@@ -524,7 +524,7 @@ namespace NetCoreCMS.Framework.Setup
                         Data = "",
                         //Id = item.Id,
                         MenuActionType = NccMenuItem.ActionType.Url,
-                        MenuOrder = 1,
+                        MenuOrder = 3,
                         Module = "",
                         Name = "Blog Posts",
                         Target = "_self",
@@ -537,7 +537,7 @@ namespace NetCoreCMS.Framework.Setup
                         Data = "",
                         //Id = item.Id,
                         MenuActionType = NccMenuItem.ActionType.Url,
-                        MenuOrder = 1,
+                        MenuOrder = 4,
                         Module = "",
                         Name = "Blog Categories",
                         Target = "_self",

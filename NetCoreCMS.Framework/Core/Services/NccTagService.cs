@@ -8,31 +8,25 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Services;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.Models.ViewModels;
+using NetCoreCMS.Framework.Core.Mvc.Service;
 
 namespace NetCoreCMS.Framework.Core.Services
 {
-    public class NccTagService : IBaseService<NccTag>
+    public class NccTagService : BaseService<NccTag>
     {
         private readonly NccTagRepository _entityRepository;
 
-        public NccTagService(NccTagRepository entityRepository)
+        public NccTagService(NccTagRepository entityRepository) : base(entityRepository, new List<string>() { "Posts" })
         {
             _entityRepository = entityRepository;
         }
 
-        public NccTag Get(long entityId, bool isAsNoTracking = false)
-        {
-            return _entityRepository.Get(entityId, isAsNoTracking, new List<string>() { "Posts" });
-        }
-
+        #region New Method
         public NccTag Get(string name)
         {
             return _entityRepository.Get(name);
@@ -48,69 +42,9 @@ namespace NetCoreCMS.Framework.Core.Services
             return _entityRepository.Get(entityId, false, new List<string>() { "Posts", "Posts.Post", "Posts.Post.Author", "Posts.Post.PostDetails", "Posts.Post.Comments" });
         }
 
-        public List<NccTag> LoadAll(bool isActive = true, int status = -1, string name = "", bool isLikeSearch = false)
-        {
-            return _entityRepository.LoadAll(isActive, status, name, isLikeSearch, new List<string>() { "Posts" });
-        }
-
         public List<NccTag> LoadRecentTag(int count)
         {
             return _entityRepository.LoadRecentTag(count);
-        }
-
-        public NccTag Save(NccTag entity)
-        {
-            _entityRepository.Add(entity);
-            _entityRepository.SaveChange();
-            return entity;
-        }
-
-        public NccTag Update(NccTag entity)
-        {
-            var oldEntity = _entityRepository.Get(entity.Id);
-            if (oldEntity != null)
-            {
-                using (var txn = _entityRepository.BeginTransaction())
-                {
-                    CopyNewData(entity, oldEntity);
-                    _entityRepository.Edit(oldEntity);
-                    _entityRepository.SaveChange();
-                    txn.Commit();
-                }
-            }
-
-            return entity;
-        }
-
-        public void Remove(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                entity.Status = EntityStatus.Deleted;
-                _entityRepository.Edit(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        public void DeletePermanently(long entityId)
-        {
-            var entity = _entityRepository.Get(entityId);
-            if (entity != null)
-            {
-                _entityRepository.Remove(entity);
-                _entityRepository.SaveChange();
-            }
-        }
-
-        private void CopyNewData(NccTag copyFrom, NccTag copyTo)
-        {
-            copyTo.ModificationDate = copyFrom.ModificationDate;
-            copyTo.ModifyBy = copyFrom.ModifyBy;
-            copyTo.Name = copyFrom.Name;
-            copyTo.Status = copyFrom.Status;
-            copyTo.VersionNumber = copyFrom.VersionNumber;
-            copyTo.Metadata = copyFrom.Metadata;
         }
 
         public List<NccTag> Search(string name, int count = 20)
@@ -147,6 +81,7 @@ namespace NetCoreCMS.Framework.Core.Services
         public List<NccTag> Load(int from, int total, bool isActive, string keyword = "", string orderBy = "", string orderDir = "")
         {
             return _entityRepository.Load(from, total, isActive, keyword, orderBy, orderDir);
-        }
+        } 
+        #endregion
     }
 }

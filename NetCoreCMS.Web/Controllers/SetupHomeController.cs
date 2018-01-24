@@ -64,6 +64,15 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
         {
             if (ModelState.IsValid && !SetupHelper.IsDbCreateComplete)
             {
+                if (string.IsNullOrWhiteSpace(setup.TablePrefix))
+                {
+                    setup.TablePrefix = "ncc_";
+                }
+                setup.TablePrefix = setup.TablePrefix.Trim();
+                if (setup.TablePrefix.EndsWith("_") == false)
+                {
+                    setup.TablePrefix = setup.TablePrefix + "_";
+                }
                 SetupHelper.ConnectionString = DatabaseFactory.GetConnectionString(setup.Database, setup);
                 SetupHelper.SelectedDatabase = setup.Database.ToString();
                 SetupHelper.IsDbCreateComplete = SetupHelper.CreateDatabase(setup.Database, setup);
@@ -74,7 +83,7 @@ namespace NetCoreCMS.Core.Modules.Setup.Controllers
             }
             else
             {
-                ModelState.AddModelError("Database","Invalid Data");
+                ModelState.AddModelError("Database", "Invalid Data");
             }
 
             return View();

@@ -36,12 +36,12 @@ namespace Core.Blog.Controllers
         NccCommentsService _nccCommentsService;
         NccPostService _postService;
 
-        NccUserService _nccUserService;
+        INccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
 
         UserManager<NccUser> _userManager;
 
-        public CommentsController(NccCommentsService nccCommentsService, NccPostService postService, NccUserService nccUserService, ILoggerFactory loggerFactory, UserManager<NccUser> UserManager)
+        public CommentsController(NccCommentsService nccCommentsService, NccPostService postService, INccUserService nccUserService, ILoggerFactory loggerFactory, UserManager<NccUser> UserManager)
         {
             _nccCommentsService = nccCommentsService;
             _postService = postService;

@@ -8,43 +8,60 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
+using System.Linq;
+using System;
+
 using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Utility;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
+using NetCoreCMS.Framework.Core.Mvc.Views;
+using NetCoreCMS.Framework.Core.Serialization;
 
 namespace NetCoreCMS.Framework.Modules.Widgets
 {
     /// <summary>
     /// For creating module widget you have to implement Widget class.
     /// </summary>
+
     public abstract class Widget
     {
+        private string _htmlContent = "";
+        private DateTime _lastRenderTime;
+        private int _minCacheDuration = 10;
+        private IViewRenderService _viewRenderService;        
+        public Type ModuleController { get; set; }
+
         /// <summary>
         /// Pass required information for writing your own module widget class.
         /// </summary>        
         /// <param name="title">This text will show on widget title.</param>
         /// <param name="description">Description will show on admin panel widget section.</param>
         /// <param name="footer">Pass text for footer.</param>
+        /// <param name="viewFileName">Widget partial view file name. Ex: Widgets/_WidgetViewFile</param>
+        /// <param name="configViewFileName">Widget configuration partial view file name. Ex: Widgets/_Wi</param>
         /// <param name="addDefaultConfig">Use true for showing Name, Footer and Language field.</param>
-        public Widget(string title, string description, string footer, bool addDefaultConfig = true)
+        public Widget(Type moduleControllerType, string title, string description, string footer, string viewFileName, string configViewFileName = "", bool addDefaultConfig = true)
         {
+            ModuleController = moduleControllerType;
+
             var type = GetType();
             var moduleName = type.Assembly.ManifestModule.Name.Substring(0, type.Assembly.ManifestModule.Name.Length - 4);            
             WidgetId = $"{moduleName}_{type.Namespace}.{type.Name}";
-            Title = string.IsNullOrWhiteSpace(title) ? type.Name : title.Trim();
+            Title = string.IsNullOrWhiteSpace(title) ? type.Name : title.Trim();            
             Description = description;
             Footer = footer;
             DisplayTitle = "";
+            ViewFileName = viewFileName;
+            ConfigViewFileName = configViewFileName;
             AddDefaultConfig = addDefaultConfig;            
         }
-
-        public bool AddDefaultConfig { get; }
-        public string WidgetId { get; }
-        public string Title { get; }
+                
+        public bool AddDefaultConfig { get; set; }
+        public string WidgetId { get; set; }
+        public string Title { get; set; }
+        
         public string DisplayTitle { get; set; }
         public string Language { get; set; }
-        public string Description { get; }
+        public string Description { get; set; }
         public string Footer { get; set; }
         public string ConfigJson { get; }
         public string ConfigHtml { get; set; }
@@ -52,9 +69,68 @@ namespace NetCoreCMS.Framework.Modules.Widgets
         private string ConfigSuffix { get; set; }
         public long WebSiteWidgetId { get; set; }
         public string ViewFileName { get; set; }
-        public string ConfigViewFileName { get; set; } 
-        public abstract void Init(long websiteWidgetId, bool renderConfig = false);
-        public abstract string RenderBody();
+        public string ConfigViewFileName { get; set; }
+        public bool EnableCache { get; set; } = true;
+        public int CacheDuration { get; set; } = 30;
+
+        public void Init(long websiteWidgetId, bool renderConfig = false) {
+
+            WebSiteWidgetId = websiteWidgetId;
+            _viewRenderService = GlobalContext.GetViewRenerService();
+
+            var webSiteWidget = GlobalContext.WebSiteWidgets.Where(x => x.Id == websiteWidgetId).FirstOrDefault();
+            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
+            {
+                var configJson = webSiteWidget.WidgetConfigJson;
+                var config = JsonHelper.Deserilize<dynamic>(configJson);
+                DisplayTitle = config.title;
+                Footer = config.footer;
+                Language = config.language;
+                if (string.IsNullOrWhiteSpace(DisplayTitle)) { DisplayTitle = ""; }
+                if (string.IsNullOrWhiteSpace(Footer)) { Footer = ""; }
+                if (string.IsNullOrWhiteSpace(Language)) { Language = ""; }
+                InitConfig(config); //Calls for giving config object to user for getting their defined configuration.
+            }
+            else
+            {
+                DisplayTitle = Title;
+            }
+            
+            if (renderConfig && string.IsNullOrEmpty(ConfigViewFileName) == false)
+            {
+                var model = PrepareConfigModel();
+                ConfigHtml = _viewRenderService.RenderToString(ModuleController, ConfigViewFileName, model);
+            }
+        }
+
+        public virtual void InitConfig(dynamic config) {
+
+        }
+
+        public virtual object PrepareViewModel() {
+            return null;
+        }
+
+        public virtual object PrepareConfigModel()
+        {
+            return null;
+        }
+
+        public string RenderBody() {
+
+            if (
+                string.IsNullOrEmpty(_htmlContent) || (EnableCache == false || (_lastRenderTime - DateTime.Now >= new TimeSpan(0, 0, CacheDuration))) ||
+                (GlobalContext.WebSite.EnableCache == false && (_lastRenderTime - DateTime.Now >= new TimeSpan(0, 0, _minCacheDuration))) 
+            )
+            {
+                _lastRenderTime = DateTime.Now;
+                var model = PrepareViewModel();                
+                _htmlContent = _viewRenderService.RenderToString(ModuleController, ViewFileName, model);
+            }           
+
+            return _htmlContent;
+        }
+                
         public string RenderConfig()
         {
             string titleInput = @"
@@ -182,6 +258,6 @@ namespace NetCoreCMS.Framework.Modules.Widgets
                             ";
 
             return ConfigPrefix + titleInput + ConfigHtml + footerInput + ConfigSuffix;
-        }
+        }        
     }
 }

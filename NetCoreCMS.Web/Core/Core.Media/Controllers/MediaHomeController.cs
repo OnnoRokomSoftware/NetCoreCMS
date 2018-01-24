@@ -137,8 +137,9 @@ namespace Core.Media.Controllers
 
         #region Manage Operation
         [AdminMenuItem(Name = "Manage Gallary", Url = "/MediaHome/Index", IconCls = "fa-image", SubActions = new string[] { "Delete" }, Order = 1)]
-        public ActionResult Index(bool isFile = false, string inputId = "", string sq = "", string successMessage = "", string errorMessage = "")
+        public ActionResult Index(bool isFile = false, string inputId = "", string sq = "", string successMessage = "", string errorMessage = "", int CKEditorFuncNum = 1)
         {
+            ViewBag.CKEditorFuncNum = CKEditorFuncNum;
             ViewBag.IsFile = isFile;
             ViewBag.InputId = inputId;
             ViewBag.Layout = Constants.AdminLayoutName;

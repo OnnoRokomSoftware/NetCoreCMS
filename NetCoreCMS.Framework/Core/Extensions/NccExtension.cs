@@ -12,10 +12,8 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Auth;
@@ -25,16 +23,13 @@ using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.Core.Mvc.Views.TagHelpers;
 using NetCoreCMS.Framework.Core.Repository;
 using NetCoreCMS.Framework.Core.Services;
-using NetCoreCMS.Framework.Core.Services.Auth;
 using NetCoreCMS.Framework.Core.ShotCodes;
 using NetCoreCMS.Framework.i18n;
-using NetCoreCMS.Framework.Modules;
+using NetCoreCMS.Framework.Resources;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
 using NetCoreCMS.Framework.Core.Mvc.Filters;
-using NetCoreCMS.Framework.Modules.Loader;
-using Microsoft.Extensions.DependencyModel;
 using System.Collections;
 using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -43,6 +38,7 @@ using NetCoreCMS.Framework.Core.Mvc.Provider;
 using Microsoft.AspNetCore.ResponseCompression;
 using System.IO.Compression;
 using MediatR;
+using NetCoreCMS.Framework.Modules;
 
 namespace NetCoreCMS.Framework.Core.Extensions
 {
@@ -54,63 +50,66 @@ namespace NetCoreCMS.Framework.Core.Extensions
 
             services.AddScoped<SignInManager<NccUser>, NccSignInManager<NccUser>>();
             services.AddScoped<IViewRenderService, NccRazorViewRenderService>();
-            services.AddTransient<NccLanguageDetector>();
+            services.AddScoped<NccLanguageDetector>();
 
             services.AddSingleton<IMediator,Mediator>();
 
-            services.AddScoped<NccLanguageFilter>();
-            services.AddScoped<NccGlobalExceptionFilter>();
+            services.AddScoped<NccAuthFilter>();
+            services.AddScoped<NccControllerFilter>();
             services.AddScoped<NccDataAuthFilter>();
+            services.AddScoped<NccGlobalExceptionFilter>();
+            services.AddScoped<NccLanguageFilter>();
+            services.AddScoped<NccLoggerFilter>();
 
             services.AddScoped<LanguageEnabledAnchorTagHelper, LanguageEnabledAnchorTagHelper>();
             services.AddScoped<NccShortCodeProvider, NccShortCodeProvider>();
             services.AddScoped<ThemeManager, ThemeManager>();
             services.AddScoped<NccRazorViewRenderService, NccRazorViewRenderService>();
 
-            services.AddTransient<NccCategoryDetailsRepository>();
-            services.AddTransient<NccCategoryDetailsService>();
-            services.AddTransient<NccPageDetailsRepository>();
-            services.AddTransient<NccPageDetailsService>();
+            services.AddScoped<NccCategoryDetailsRepository>();
+            services.AddScoped<NccCategoryDetailsService>();
+            services.AddScoped<NccPageDetailsRepository>();
+            services.AddScoped<NccPageDetailsService>();
 
-            services.AddTransient<NccPageRepository>();
-            services.AddTransient<NccPageService>();
-            services.AddTransient<NccCategoryRepository>();
-            services.AddTransient<NccCategoryService>();
+            services.AddScoped<NccPageRepository>();
+            services.AddScoped<NccPageService>();
+            services.AddScoped<NccCategoryRepository>();
+            services.AddScoped<NccCategoryService>();
 
-            services.AddTransient<NccUserRepository>();
-            services.AddTransient<NccUserService>();
+            services.AddScoped<NccUserRepository>();
+            services.AddScoped<INccUserService, NccUserService>();
 
-            services.AddTransient<NccPostRepository>();
-            services.AddTransient<NccPostService>();
-            services.AddTransient<NccPostDetailsRepository>();
-            services.AddTransient<NccPostDetailsService>();
-            services.AddTransient<NccTagRepository>();
-            services.AddTransient<NccTagService>();
-            services.AddTransient<NccCommentsRepository>();
-            services.AddTransient<NccCommentsService>();
+            services.AddScoped<NccPostRepository>();
+            services.AddScoped<NccPostService>();
+            services.AddScoped<NccPostDetailsRepository>();
+            services.AddScoped<NccPostDetailsService>();
+            services.AddScoped<NccTagRepository>();
+            services.AddScoped<NccTagService>();
+            services.AddScoped<NccCommentsRepository>();
+            services.AddScoped<NccCommentsService>();
 
-            services.AddTransient<NccSettingsRepository>();
-            services.AddTransient<INccSettingsService, NccSettingsService>();
-            services.AddTransient<NccMenuRepository>();
-            services.AddTransient<NccMenuService>();
-            services.AddTransient<NccMenuRepository>();
-            services.AddTransient<NccMenuItemRepository>();
-            services.AddTransient<NccModuleRepository>();
-            services.AddTransient<NccModuleService>();
+            services.AddScoped<NccSettingsRepository>();
+            services.AddScoped<INccSettingsService, NccSettingsService>();
+            services.AddScoped<NccMenuRepository>();
+            services.AddScoped<NccMenuService>();
+            services.AddScoped<NccMenuRepository>();
+            services.AddScoped<NccMenuItemRepository>();
+            services.AddScoped<NccModuleRepository>();
+            services.AddScoped<NccModuleService>();
             
-            services.AddTransient<NccWebSiteWidgetRepository>();
-            services.AddTransient<NccWebSiteWidgetService>();
+            services.AddScoped<NccWebSiteWidgetRepository>();
+            services.AddScoped<NccWebSiteWidgetService>();
 
-            services.AddTransient<NccWebSiteRepository>();
-            services.AddTransient<NccWebSiteInfoRepository>();
-            services.AddTransient<NccWebSiteService>();
-            services.AddTransient<NccStartupRepository>();
-            services.AddTransient<NccStartupService>();
+            services.AddScoped<NccWebSiteRepository>();
+            services.AddScoped<NccWebSiteInfoRepository>();
+            services.AddScoped<NccWebSiteService>();
+            services.AddScoped<NccStartupRepository>();
+            services.AddScoped<NccStartupService>();
 
-            services.AddTransient<NccPermissionRepository>();
-            services.AddTransient<NccPermissionService>();
-            services.AddTransient<NccPermissionDetailsRepository>();
-            services.AddTransient<NccPermissionDetailsService>();
+            services.AddScoped<NccPermissionRepository>();
+            services.AddScoped<NccPermissionService>();
+            services.AddScoped<NccPermissionDetailsRepository>();
+            services.AddScoped<NccPermissionDetailsService>();
 
             services.TryAddEnumerable(ServiceDescriptor.Transient<IApplicationModelProvider, NccApplicationModelProvider>());
 
@@ -131,7 +130,7 @@ namespace NetCoreCMS.Framework.Core.Extensions
             if (SetupHelper.IsDbCreateComplete)
             {
                 app.UseAuthentication();
-
+                
                 NccWebSiteWidgetService nccWebsiteWidgetServices = serviceProvider.GetService<NccWebSiteWidgetService>();
                 NccWebSiteService nccWebsiteService = serviceProvider.GetService<NccWebSiteService>();
                 NccMenuService menuServic = serviceProvider.GetService<NccMenuService>();

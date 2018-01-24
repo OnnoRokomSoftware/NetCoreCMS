@@ -30,6 +30,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Core.Admin.Models.ViewModels.UserAuthViewModels;
 using NetCoreCMS.Framework.Core.Auth;
 using NetCoreCMS.Framework.Core.Mvc.Views;
+using Microsoft.Extensions.Caching.Memory;
+using NetCoreCMS.Framework.Core.Mvc.Cache;
 
 namespace Core.Admin.Controllers
 {
@@ -41,7 +43,8 @@ namespace Core.Admin.Controllers
         SignInManager<NccUser> _signInManager;
         NccPermissionService _nccPermissionService;
         NccPermissionDetailsService _nccPermissionDetailsService;
-        NccUserService _nccUserService;
+        INccUserService _nccUserService;
+        IMemoryCache _cache;
 
         //IOptions<IdentityCookieOptions> _identityCookieOptions;
         IEmailSender _emailSender;
@@ -58,7 +61,8 @@ namespace Core.Admin.Controllers
             IEmailSender emailSender,
             ISmsSender smsSender,
             NccStartupService startupService,
-            NccUserService nccUserService
+            INccUserService nccUserService,
+            IMemoryCache memoryCache
             )
         {
             _logger = loggerFactory.CreateLogger<UsersController>();
@@ -71,6 +75,19 @@ namespace Core.Admin.Controllers
             _smsSender = smsSender;
             _startupService = startupService;
             _nccUserService = nccUserService;
+            _cache = memoryCache;
+        }
+
+        [AdminMenuItem(Name = "Manage Users", Order = 2, IconCls = "fa-user")]        
+        public ActionResult Index(string searchKey="")
+        {
+            var permissions = _nccPermissionService.LoadAll();
+            ViewBag.RoleList = new SelectList(permissions, "Id", "Name");
+            searchKey = searchKey ?? "";
+            searchKey = searchKey.Trim();
+            var users = GetUsersViewModelList(searchKey);
+            ViewBag.SearchKey = searchKey;
+            return View(users);
         }
 
         [AdminMenuItem(Name = "New User", Order = 1, IconCls = "fa-user-plus")]
@@ -102,7 +119,7 @@ namespace Core.Admin.Controllers
             string returnMessage = "User Creation failed";
             if (user.Id > 0 && !string.IsNullOrEmpty(user.Email) && !string.IsNullOrEmpty(user.FullName) && !string.IsNullOrEmpty(user.Mobile))
             {
-                var oldUser = _nccUserService.Get(user.Id);
+                var oldUser = _nccUserService.GetNccUser(user.Id);
 
                 oldUser.FullName = user.FullName;
                 oldUser.Email = user.Email;
@@ -213,7 +230,7 @@ namespace Core.Admin.Controllers
                 }
 
                 isSuccess = true;
-                
+                GlobalContext.GlobalCache.SetNccUser(oldUser);
                 //return RedirectToAction("Index");
             }
             else if (ModelState.IsValid)
@@ -251,6 +268,7 @@ namespace Core.Admin.Controllers
                             }
                             else
                             {
+                                GlobalContext.GlobalCache.SetNccUser(createdUser);
                                 isSuccess = true;
                                 returnMessage = "User created successfully.";
                             }
@@ -347,26 +365,7 @@ namespace Core.Admin.Controllers
             
             return permissionDetailsList;
         }
-
-        [AdminMenuItem(Name = "Manage Users", Order = 2, IconCls = "fa-user")]
-        public ActionResult Index()
-        {
-            var users = GetUsersViewModelList("");
-            var permissions = _nccPermissionService.LoadAll();
-            ViewBag.RoleList = new SelectList(permissions, "Id", "Name");
-            return View(users);
-        }
-
-        [HttpPost]
-        public ActionResult Index(string searchKey)
-        {
-            if (string.IsNullOrEmpty(searchKey)){
-                searchKey = "";
-            }
-            var users = GetUsersViewModelList(searchKey.Trim());
-            ViewBag.SearchKey = searchKey;
-            return View(users);
-        }
+        
 
         private List<UserViewModel> GetUsersViewModelList(string searchKey)
         {
@@ -391,7 +390,35 @@ namespace Core.Admin.Controllers
             uvm.AllowModules = GetModules(user, true);
             uvm.DenyModules = GetModules(user, false);
             uvm.Roles = user.Permissions.Select(x => x.PermissionId).ToArray();
+            uvm.Status = GetUserStatus(user);
             return uvm;
+        }
+
+        private string GetUserStatus(NccUser user)
+        {
+            
+            if (user.LockoutEnabled)
+            {
+                if(user.LockoutEnd != null)
+                {
+                    if(user.LockoutEnd > DateTime.Now)
+                    {
+                        return "Blocked";
+                    }
+                }
+            }
+
+            if (user.IsRequireLogin)
+            {
+                return "RequireLogin";
+            }
+
+            if (GlobalContext.GlobalCache.GetNccUser(user.Id) != null)
+            {
+                return "Online";
+            }
+
+            return "Offline";
         }
 
         private List<ModuleViewModel> GetModules(NccUser user, bool isAllowModule)
@@ -514,6 +541,9 @@ namespace Core.Admin.Controllers
                 case "ResetPassword":
                     apiResponses = ResetPasswords(userIds);
                     break;
+                case "LogoutAll":
+                    apiResponses = LogOutAll(userIds);
+                    break;                    
                 default:
                     break;
             }
@@ -535,11 +565,21 @@ namespace Core.Admin.Controllers
 
                     if (result.Succeeded)
                     {
-                        var webSite = GlobalContext.WebSite.DomainName;
-                        if (!webSite.StartsWith("http")) {
-                            webSite = "http://" + webSite;
+                        GlobalContext.GlobalCache.RemoveNccUserFromCache(user.Id);
+                        user.IsRequireLogin = true;
+                        _nccUserService.Update(user);
+
+                        var domainName = GlobalContext.WebSite.DomainName;
+                        if (string.IsNullOrEmpty(domainName))
+                        {
+                            domainName = HttpContext.Request.Host.ToString();
                         }
-                        _emailSender.SendEmailAsync(user.Email, "Reset Password", $"Your password reset by Admin. Your new password is: " + newPassword + " <br/> For more info visit: " + webSite).Wait();
+
+                        if (!domainName.StartsWith("http")) {
+                            domainName = "http://" + domainName;
+                        }
+
+                        _emailSender.SendEmailAsync(user.Email, "Reset Password", $"Your password reset by Admin. Your new password is: " + newPassword + " <br/> For more info visit: " + domainName).Wait();
                         apiResponses.Add(new ApiResponse()
                         {
                             IsSuccess = true,
@@ -575,17 +615,38 @@ namespace Core.Admin.Controllers
                     if (block == false)
                     {
                         operation = "unblock";
-                        var rsp = _userManager.ResetAccessFailedCountAsync(user).Result;
-                    }
-                    var result = _userManager.SetLockoutEnabledAsync(user, block).Result;
-                    
-                    if (result.Succeeded)
-                    {
-                        apiResponses.Add(new ApiResponse()
+                        var res = _userManager.SetLockoutEnabledAsync(user, false).Result;
+                        if (res.Succeeded)
                         {
-                            IsSuccess = true,
-                            Message = "Successfully "+operation+" user " + user.UserName + ".",
-                        });
+                            var rsp = _userManager.ResetAccessFailedCountAsync(user).Result;
+                            GlobalContext.GlobalCache.RemoveNccUserFromCache(user.Id);
+                            apiResponses.Add(new ApiResponse()
+                            {
+                                IsSuccess = true,
+                                Message = "Successfully " + operation + " user " + user.UserName + ".",
+                            });
+                        }
+                        else
+                        {
+                            _logger.LogWarning("Failed" + operation + " user " + user.UserName + ".");
+                        }
+                    }
+                    else
+                    {
+                        var result = _userManager.SetLockoutEnabledAsync(user, true).Result;
+                        if (result.Succeeded)
+                        {
+                            _userManager.SetLockoutEndDateAsync(user, DateTime.Now.AddDays(365*200));
+                            user.IsRequireLogin = true;
+                            GlobalContext.GlobalCache.RemoveNccUserFromCache(user.Id);
+                            _nccUserService.Update(user);
+
+                            apiResponses.Add(new ApiResponse()
+                            {
+                                IsSuccess = true,
+                                Message = "Successfully " + operation + " user " + user.UserName + ".",
+                            }); 
+                        }
                     }
                 }
                 catch (Exception ex)
@@ -601,13 +662,45 @@ namespace Core.Admin.Controllers
             return apiResponses;
         }
 
+        private List<ApiResponse> LogOutAll(List<long> userIds)
+        {
+            var apiResponses = new List<ApiResponse>();
+
+            foreach (var userId in userIds)
+            {
+                try
+                {
+                    var user = _userManager.FindByIdAsync(userId.ToString()).Result;
+                    
+                        GlobalContext.GlobalCache.RemoveNccUserFromCache(user.Id);
+                        user.IsRequireLogin = true;
+                        _nccUserService.Update(user);                    
+                        apiResponses.Add(new ApiResponse()
+                        {
+                            IsSuccess = true,
+                            Message = "Logout successful for user " + user.UserName + ".",
+                        });                    
+                }
+                catch (Exception ex)
+                {
+                    apiResponses.Add(new ApiResponse()
+                    {
+                        IsSuccess = false,
+                        Message = "Logout failed for user ID: " + userId + ".",
+                    });
+                    _logger.LogError(ex.ToString());
+                }
+            }
+            return apiResponses;
+        }
+
         [HttpPost]
-        public ActionResult ChangeRole(List<long> userIds, long[] roles)
+        public ActionResult ChangeRole(List<long> userIds, long[] roles, string roleOperation)
         {
             var apiResponses = new List<ApiResponse>();            
             try
             {
-                var messages = _nccUserService.UpdateUsersPermission(userIds, roles);
+                var messages = _nccUserService.UpdateUsersPermission(userIds, roles, roleOperation);
                 foreach (var item in messages)
                 {
                     apiResponses.Add(new ApiResponse() { Message = item.Message, IsSuccess = item.IsSuccess});
@@ -631,6 +724,18 @@ namespace Core.Admin.Controllers
             }
             return View("CreateEdit", GetUserViewModel(user));
         }
- 
+
+        public ActionResult ForceLgout(long userId, string searchKey)
+        {
+            searchKey = searchKey ?? "";
+            var user = _nccUserService.GetNccUser(userId);
+            if(user != null) {
+                user.IsRequireLogin = true;
+                _nccUserService.Update(user);
+                GlobalContext.GlobalCache.RemoveNccUserFromCache(userId);
+            }
+            return RedirectToAction("Index", new { searchKey = searchKey.Trim() });
+        }
+
     }
 }

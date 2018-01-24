@@ -29,7 +29,7 @@ namespace Core.Cms.Controllers
     {
         private NccPageService _pageService;
         private NccPostService _postService;
-        
+
         public CmsHomeController(NccPageService pageService, NccPostService nccPostService, ILoggerFactory factory)
         {
             _pageService = pageService;

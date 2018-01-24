@@ -14,7 +14,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using NetCoreCMS.Framework.Core.Models;
 
-namespace NetCoreCMS.Framework.Modules
+namespace NetCoreCMS.Framework.Resources
 {
     public class Plugins : IPlugins
     {

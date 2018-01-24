@@ -32,11 +32,11 @@ namespace NetCoreCMS.Framework.Core.Mvc.Filters
     public class NccDataAuthFilter : INccActionFilter
     {
         private readonly ILogger _logger;
-        private readonly NccUserService _nccUserService;
+        private readonly INccUserService _nccUserService;
 
         public int Order { get { return 100; } }
 
-        public NccDataAuthFilter(NccUserService nccUserService, ILoggerFactory loggerFactory)
+        public NccDataAuthFilter(INccUserService nccUserService, ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<NccGlobalExceptionFilter>();
             _nccUserService = nccUserService;

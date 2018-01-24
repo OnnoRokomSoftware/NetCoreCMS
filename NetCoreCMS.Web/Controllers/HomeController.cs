@@ -23,7 +23,7 @@ using NetCoreCMS.Framework.i18n;
 using NetCoreCMS.Framework.Core.App;
 using NetCoreCMS.Framework.Setup;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
-
+using System.Linq;
 
 namespace NetCoreCMS.Web.Controllers
 {

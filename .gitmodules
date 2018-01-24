@@ -1,0 +1,57 @@
+[submodule "NetCoreCMS.Web/Modules/OSL.Geocoding"]
+	path = NetCoreCMS.Web/Modules/OSL.Geocoding
+	url = ../../NCC_Modules/OSL.Geocoding.git
+[submodule "NetCoreCMS.Web/Modules/OSL.Recaptcha"]
+	path = NetCoreCMS.Web/Modules/OSL.Recaptcha
+	url = ../../NCC_Modules_Common/OSL.Recaptcha.git
+[submodule "NetCoreCMS.Web/Themes/Unmesh"]
+	path = NetCoreCMS.Web/Themes/Unmesh
+	url = ../../NCC_Themes/Unmesh.git
+[submodule "NetCoreCMS.Web/Modules/OSL.BoardResult"]
+	path = NetCoreCMS.Web/Modules/OSL.BoardResult
+	url = ../../NCC_Modules/OSL.BoardResult.git
+[submodule "NetCoreCMS.Web/Modules/OSL.UniversityAdmission"]
+	path = NetCoreCMS.Web/Modules/OSL.UniversityAdmission
+	url = ../../NCC_Modules/OSL.UniversityAdmission.git	
+[submodule "NetCoreCMS.Web/Modules/UMS.PublicResult"]
+	path = NetCoreCMS.Web/Modules/UMS.PublicResult
+	url = ../../NCC_Modules_UMS/UMS.PublicResult.git
+[submodule "NetCoreCMS.Web/Modules/UMS.Redirect"]
+	path = NetCoreCMS.Web/Modules/UMS.Redirect
+	url = ../../NCC_Modules_UMS/UMS.Redirect.git
+[submodule "NetCoreCMS.Web/Modules/UMS.PublicAdmission"]
+	path = NetCoreCMS.Web/Modules/UMS.PublicAdmission
+	url = ../../NCC_Modules_UMS/UMS.PublicAdmission.git
+[submodule "NetCoreCMS.Web/Modules/UMS.PublicTeacherRegistration"]
+	path = NetCoreCMS.Web/Modules/UMS.PublicTeacherRegistration
+	url = ../../NCC_Modules_UMS/UMS.PublicTeacherRegistration.git	
+[submodule "NetCoreCMS.Web/Modules/OSL.SlickSlider"]
+	path = NetCoreCMS.Web/Modules/OSL.SlickSlider
+	url = ../../NCC_Modules_Common/OSL.SlickSlider.git
+[submodule "NetCoreCMS.Web/Modules/OSL.FacebookComments"]
+	path = NetCoreCMS.Web/Modules/OSL.FacebookComments
+	url = ../../NCC_Modules_Common/OSL.FacebookComments.git
+[submodule "NetCoreCMS.Web/Modules/OSL.Subscription"]
+	path = NetCoreCMS.Web/Modules/OSL.Subscription
+	url = ../../NCC_Modules_Common/OSL.Subscription.git
+[submodule "NetCoreCMS.Web/Modules/OSL.NccStore"]
+	path = NetCoreCMS.Web/Modules/OSL.NccStore
+	url = ../../NCC_Modules_Exp/OSL.NccStore.git
+[submodule "NetCoreCMS.Web/Modules/UMS.Branch"]
+	path = NetCoreCMS.Web/Modules/UMS.Branch
+	url = ../../NCC_Modules_UMS/UMS.Branch.git
+[submodule "NetCoreCMS.Web/Themes/Bsmrstu"]
+	path = NetCoreCMS.Web/Themes/Bsmrstu
+	url = ../../NCC_Themes/Bsmrstu.git
+[submodule "NetCoreCMS.Web/Modules/OSL.Analytics"]
+	path = NetCoreCMS.Web/Modules/OSL.Analytics
+	url = ../../NCC_Modules_Exp/OSL.Analytics.git
+[submodule "NetCoreCMS.Web/Modules/OSL.LinkShare"]
+	path = NetCoreCMS.Web/Modules/OSL.LinkShare
+	url = ../../NCC_Modules_Common/OSL.LinkShare.git
+[submodule "NetCoreCMS.Web/Modules/OSL.OnlineExam"]
+	path = NetCoreCMS.Web/Modules/OSL.OnlineExam
+	url = ../../NCC_Modules/OSL.OnlineExam.git
+[submodule "NetCoreCMS.Web/Modules/OSL.Office"]
+	path = NetCoreCMS.Web/Modules/OSL.Office
+	url = ../../NCC_Modules_Exp/OSL.Office.git

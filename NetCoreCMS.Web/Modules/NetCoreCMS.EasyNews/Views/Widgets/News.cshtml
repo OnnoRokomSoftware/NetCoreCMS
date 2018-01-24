@@ -1,0 +1,45 @@
+﻿@using NetCoreCMS.EasyNews.Models
+@using System.Collections
+@{
+    var i = 0;
+}
+@model NewsViewModel
+
+<div class="@Model.ColumnClass">
+    <div class='panel panel-default'>
+        @if (Model.HeaderTitle != "")
+        {
+            <div class='panel-heading' style="color:@Model.HeaderColor; background-color:@Model.HeaderBgColor;">
+                @_T[Model.HeaderTitle]
+            </div>
+        }
+        <div class='panel-body' style="color:@Model.ColumnColor; background-color:@Model.ColumnBgColor;">
+            @foreach (var item in Model.NewsList)
+            {
+                NewsDetails details = item.Details.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+                if (details == null)
+                {
+                    details = item.Details.FirstOrDefault();
+                }
+                if (details != null)
+                {
+                    if (i == 0)
+                    {
+                        i = 1;
+                    }
+                    else
+                    {
+                        <hr />
+                    }
+                    <p><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(details.Name)</font></a></p>
+                }
+            }
+        </div>
+        @if (Model.FooterTitle != "")
+        {
+            <div class='panel-footer' style="color:@Model.HeaderColor; background-color:@Model.HeaderBgColor;">
+                @_T[Model.FooterTitle]
+            </div>
+        }
+    </div>
+</div>

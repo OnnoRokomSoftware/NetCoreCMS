@@ -13,11 +13,8 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Mvc.Attributes;
 using NetCoreCMS.Framework.Core.Mvc.Controllers;
 using NetCoreCMS.Framework.Core.Services;
-using NetCoreCMS.Framework.Utility;
-using NetCoreCMS.ImageSlider.Models.Entity;
+using NetCoreCMS.ImageSlider.Models.Entities;
 using NetCoreCMS.ImageSlider.Services;
-using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,20 +24,12 @@ namespace NetCoreCMS.ImageSlider.Controllers
     public class ImageSliderHomeController : NccController
     {
         #region Initialization
-        private INccSettingsService _nccSettingsService;
-        private NccImageSliderService _nccImageSliderService;
-
-        private NccImageSliderSettings nccImageSliderSettings;
+        private NccImageSliderService _nccImageSliderService;      
         private List<NccImageSliderItem> nccImageSliderItemList = new List<NccImageSliderItem>();
-
         public ImageSliderHomeController(INccSettingsService nccSettingsService, ILoggerFactory factory, NccImageSliderService nccImageSliderService)
         {
             _logger = factory.CreateLogger<ImageSliderHomeController>();
-            nccImageSliderSettings = new NccImageSliderSettings();
-
-            _nccSettingsService = nccSettingsService;
             _nccImageSliderService = nccImageSliderService;
-            nccImageSliderSettings = _nccSettingsService.GetByKey<NccImageSliderSettings>() ?? new NccImageSliderSettings();
         }
         #endregion
 

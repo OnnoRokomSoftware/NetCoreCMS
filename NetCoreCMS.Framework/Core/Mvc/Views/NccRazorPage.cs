@@ -35,6 +35,7 @@ using NetCoreCMS.Framework.Modules.Widgets;
 using Microsoft.AspNetCore.Http;
 using NetCoreCMS.Framework.Core.Auth;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Hosting;
 
 namespace NetCoreCMS.Framework.Core.Mvc.Views
 {
@@ -153,6 +154,58 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                 Context.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_CODE"] = value;
             }
         }
+
+        public string CurrentLanguageText
+        {
+            get
+            {
+                object val;
+                Context.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_TEXT", out val);
+                return (string)val ?? "";
+            }
+            set
+            {
+                Context.Items["NCC_RAZOR_PAGE_PROPERTY_CURRENT_LANGUAGE_TEXT"] = value;
+            }
+        }
+
+        public string ControllerName
+        {
+            get
+            {
+                object val;
+                Context.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_CONTROLLER_NAME", out val);
+                return (string)val ?? "";
+            }
+            set
+            {
+                Context.Items["NCC_RAZOR_PAGE_PROPERTY_CONTROLLER_NAME"] = value;
+            }
+        }
+
+        public string BaseUrl
+        {
+            get
+            {
+                var val = Context.Request.IsHttps ? "https://" : "http://";
+                val += Context.Request.Host.Value;
+                return val ?? "";
+            }
+        }
+        public string PageUrl
+        {
+            get
+            {
+                object val;
+                Context.Items.TryGetValue("NCC_RAZOR_PAGE_PROPERTY_PAGE_URL", out val);
+                return (string)val ?? "";
+            }
+            set
+            {
+                Context.Items["NCC_RAZOR_PAGE_PROPERTY_PAGE_URL"] = value;
+            }
+        }
+
         public bool HasLeftColumn {
             get
             {
@@ -482,7 +535,9 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     );
                     viewContext.RouteData = ViewContext.RouteData;
                     viewResult.View.RenderAsync(viewContext).Wait();
-                    viewContent = sw.GetStringBuilder().ToString();
+                    viewContent = sw.GetStringBuilder().ToString();        
+                    //For showing which view file finally used for rendering.
+                    viewContent += $"<!-- View: {viewResult.View.Path}-->";                    
                 }
             }
             catch (Exception ex)
@@ -787,12 +842,30 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
         public List<NccWebSiteWidget> GetWebSiteWidgets(string layout, string zone)
         {
             var webSiteWidgetList = GlobalContext.WebSiteWidgets.Where(x => x.LayoutName == layout && x.Zone == zone).ToList();
-            
+
             foreach (var item in webSiteWidgetList)
             {
-                if (GlobalContext.WidgetTypes.ContainsKey(item.WidgetId))
+                if(item.Widget == null)
                 {
-                    item.Widget = (Widget) Context.RequestServices.GetService((Type)GlobalContext.WidgetTypes[item.WidgetId]);
+                    var wInstance  = GlobalContext.Widgets.Where(x => x.WidgetId == item.WidgetId).FirstOrDefault();
+                    
+                    var type = wInstance.GetType();
+                    var nWInstance = (Widget) GlobalContext.ServiceProvider.GetService(type);
+                    //nWInstance.AddDefaultConfig = wInstance.AddDefaultConfig;
+                    //nWInstance.CacheDuration = wInstance.CacheDuration;
+                    //nWInstance.ConfigHtml = wInstance.ConfigHtml;
+                    //nWInstance.ConfigViewFileName = wInstance.ConfigViewFileName;
+                    //nWInstance.Description = wInstance.Description;
+                    //nWInstance.DisplayTitle = wInstance.DisplayTitle;
+                    //nWInstance.EnableCache = wInstance.EnableCache;
+                    //nWInstance.Footer = wInstance.Footer;
+                    //nWInstance.Language = wInstance.Language;
+                    //nWInstance.ModuleController = wInstance.ModuleController;
+                    //nWInstance.Title = wInstance.Title;
+                    //nWInstance.ViewFileName = wInstance.ViewFileName;
+                    //nWInstance.WebSiteWidgetId = wInstance.WebSiteWidgetId;
+                    //nWInstance.WidgetId = wInstance.WidgetId;
+                    item.Widget = nWInstance;
                 }
             }
 
@@ -1009,7 +1082,7 @@ namespace NetCoreCMS.Framework.Core.Mvc.Views
                     var hasChildren = item.Childrens.Count > 0;
                     if (hasChildren)
                     {
-                        subMenuText = "<li class=\"" + menuItemCls + "\">";
+                        subMenuText += "<li class=\"" + menuItemCls + "\">";
 
                         if (!string.IsNullOrEmpty(currentLanguage) && GlobalContext.WebSite.IsMultiLangual && !IsExternalUrl(item.Url))
                             subMenuText += "<a href=\"/" + currentLanguage + item.Url + "\" class=\"dropdown-toggle\" data-toggle=\"dropdown\" > " + item.Name + "</a>";

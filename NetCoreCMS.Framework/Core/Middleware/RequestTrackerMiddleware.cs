@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Events.App;
 using System.Threading.Tasks;
 using System;
+using System.Diagnostics;
 
 namespace NetCoreCMS.Framework.Core.Middleware
 {
@@ -32,20 +33,27 @@ namespace NetCoreCMS.Framework.Core.Middleware
         }
 
         public async Task Invoke(HttpContext context)
-        {             
-            FireEvent(AppActivity.Type.RequestStart, context);
+        {
+            context.Request.HttpContext.Response.Headers["X-Framework"] =  NccInfo.Name;
+            context.Request.HttpContext.Response.Headers["X-Framework-Version"] = NccInfo.Version.ToString(4);
+            var sw = new Stopwatch();
+            sw.Start();
+            FireEvent(AppActivity.Type.RequestStart, context, 0);            
             await _next.Invoke(context);
-            FireEvent(AppActivity.Type.RequestEnd, context); 
+            sw.Stop();
+            FireEvent(AppActivity.Type.RequestEnd, context, sw.ElapsedMilliseconds);
+            _logger.LogInformation($"[Path:{context.Request.Path.Value} | Response Time: {sw.ElapsedMilliseconds} ms]");             
         }
 
-        private void FireEvent(AppActivity.Type type, HttpContext context)
+        private void FireEvent(AppActivity.Type type, HttpContext context, long responseTime)
         {
             try
             {
                 _mediator.SendAll(new OnAppActivity(new AppActivity()
                 {
                     ActivityType = type,
-                    Context = context
+                    Context = context,
+                    ResponseTime = responseTime,
                 }));
             }
             catch (Exception ex)

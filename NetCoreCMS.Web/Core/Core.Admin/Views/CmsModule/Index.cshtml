@@ -23,7 +23,7 @@
     }
 </style>
 
-<div class="row ModuleManage">
+<div class="ModuleManage">
     <ul class="nav nav-tabs">
         <li class="active">
             <a href="#modules" data-toggle="tab" aria-expanded="true"> Modules</a>
@@ -194,7 +194,7 @@
     <script>
         $.ajax({
             method: 'GET',
-            url: '/CmsModule/GetMatGalleryModules',
+            url: '/CmsModule/LoadNccStoreModules',
             data: { key: "" },
             success: function (rsp) {
                 //console.log(rsp);
@@ -207,7 +207,7 @@
                             "   <td>" + item.version + "</td>" +
                             "   <td>" + item.category + "</td>" +
                             "   <td><a href='" + item.website + "' target='_blank'>" + item.author + "</td>" +
-                            "   <td>" + "<input type='button' class='btn btn-success btn-xs btn-outline' value='Download' onclick='downloadModule(\"" + item.moduleId + "\",\"" + item.moduleName + "\")' />" + "</td>" +
+                            "   <td>" + "<input type='button' class='btn btn-success btn-xs btn-outline' value='Download' onclick='downloadModule(\"" + item.moduleName + "\",\"" + item.version+ "\")' />" + "</td>" +
                             "</tr >"
                         );
                     });
@@ -222,12 +222,12 @@
             }
         });
 
-        function downloadModule(moduleId, moduleName) {
+        function downloadModule(moduleId, version) {
             NccPageMask.ShowLoadingMask();
             $.ajax({
                 method: 'POST',
                 url: '/CmsModule/DownloadModule',
-                data: { moduleId: moduleId, moduleName: moduleName },
+                data: { moduleName: moduleId, version: version},
                 success: function (rsp) {
                     NccPageMask.HideLoadingMask();
                     console.log(rsp);

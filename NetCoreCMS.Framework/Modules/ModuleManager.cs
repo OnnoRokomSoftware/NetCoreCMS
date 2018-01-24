@@ -38,6 +38,7 @@ using NetCoreCMS.Framework.Core.Messages;
 using Microsoft.Extensions.DependencyModel;
 using NetCoreCMS.Framework.Modules.Loader;
 using System.Collections;
+using Microsoft.Extensions.Logging;
 
 namespace NetCoreCMS.Framework.Modules
 {
@@ -46,6 +47,7 @@ namespace NetCoreCMS.Framework.Modules
         List<IModule> modules;
         List<IModule> instantiatedModuleList;
         Hashtable _moduleDependencies = new Hashtable();
+        ILogger _logger;
 
         public ModuleManager()
         {
@@ -53,8 +55,9 @@ namespace NetCoreCMS.Framework.Modules
             instantiatedModuleList = new List<IModule>();
         }
 
-        public void LoadModules(IDirectoryContents moduleRootFolder)
-        {   
+        public void LoadModules(IDirectoryContents moduleRootFolder, ILogger logger)
+        {
+            _logger = logger;
             foreach (var moduleFolder in moduleRootFolder.Where(x => x.IsDirectory).ToList())
             {
                 try
@@ -74,10 +77,12 @@ namespace NetCoreCMS.Framework.Modules
                         }
                         catch (FileLoadException ex )
                         {
+                            _logger.LogWarning(ex.Message, ex);
                             continue;
                         }
                         catch(BadImageFormatException ex)
                         {
+                            _logger.LogWarning(ex.Message, ex);
                             continue;
                         }
 
@@ -96,7 +101,9 @@ namespace NetCoreCMS.Framework.Modules
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("Could not load module from " + moduleFolder);
+                    _logger.LogWarning("Could not load module from " + moduleFolder);
+                    _logger.LogError(ex.Message, ex);
+                    //throw new Exception("Could not load module from " + moduleFolder);
                 }
             }
         }
@@ -117,11 +124,17 @@ namespace NetCoreCMS.Framework.Modules
                     }
                     catch (FileLoadException ex)
                     {
+                        _logger.LogWarning(ex.Message, ex);
                         continue;
                     }
                     catch (BadImageFormatException ex)
                     {
+                        _logger.LogWarning(ex.Message, ex);
                         continue;
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.LogError(ex.Message, ex);
                     }
                 }
             }
@@ -155,18 +168,26 @@ namespace NetCoreCMS.Framework.Modules
                     }
                     catch (FileLoadException ex)
                     {
+                        _logger.LogWarning(ex.Message, ex);
                         continue;
                     }
                     catch (BadImageFormatException ex)
                     {
+                        _logger.LogWarning(ex.Message, ex);
                         continue;
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.LogError(ex.Message, ex);
                     }
                 }
             } 
         }
 
-        public List<IModule> AddModulesAsApplicationPart(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        public List<IModule> AddModulesAsApplicationPart(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider, ILogger logger)
         {
+            _logger = logger;
+
             var nccSettingsService = serviceProvider.GetService<INccSettingsService>();
 
             foreach (var module in modules)
@@ -213,10 +234,11 @@ namespace NetCoreCMS.Framework.Modules
                 }
                 catch(ReflectionTypeLoadException rtle)
                 {
-
+                    _logger.LogWarning(rtle.Message, rtle);
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, ex);
                     GlobalMessageRegistry.RegisterMessage(
                         new GlobalMessage() {
                             For = GlobalMessage.MessageFor.Admin,
@@ -240,7 +262,14 @@ namespace NetCoreCMS.Framework.Modules
             {
                 foreach (var module in instantiatedModuleList.Where(x=>x.ModuleStatus == (int) NccModule.NccModuleStatus.Active).ToList())
                 {
-                    o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Assembly.Location));
+                    try
+                    {
+                        o.AdditionalCompilationReferences.Add(MetadataReference.CreateFromFile(module.Assembly.Location));
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex.Message, ex);
+                    }
                 }
             });
             
@@ -285,11 +314,30 @@ namespace NetCoreCMS.Framework.Modules
             return moduleEntity.ModuleStatus;
         }  
 
-        public async Task LoadModuleMenus()
+        public async Task LoadModuleMenus(ILogger logger)
         {
-            foreach (var item in instantiatedModuleList)
+            _logger = logger;
+
+            foreach (var item in instantiatedModuleList.Where(x=>x.ModuleStatus == (int) NccModule.NccModuleStatus.Active).ToList())
             {
-                item.Menus = LoadMenus(item);
+                try
+                {
+                    item.Menus = LoadMenus(item);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.Message, ex);
+                    GlobalMessageRegistry.RegisterMessage(
+                       new GlobalMessage()
+                       {
+                           For = GlobalMessage.MessageFor.Admin,
+                           Registrater = "LoadMenus",
+                           Text = ex.Message,
+                           Type = GlobalMessage.MessageType.Error
+                       },
+                       new TimeSpan(0, 2, 0)
+                   );
+                }
             }            
         }
 
@@ -493,8 +541,10 @@ namespace NetCoreCMS.Framework.Modules
             return ("", "","");
         }
 
-        public void AddModuleServices(IServiceCollection services)
+        public void AddModuleServices(IServiceCollection services, ILogger logger)
         {
+            _logger = logger;
+
             foreach (var module in instantiatedModuleList)
             {
                 try
@@ -558,6 +608,7 @@ namespace NetCoreCMS.Framework.Modules
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, ex);
                     GlobalMessageRegistry.RegisterMessage(
                         new GlobalMessage()
                         {
@@ -572,8 +623,9 @@ namespace NetCoreCMS.Framework.Modules
             }            
         }       
 
-        public void AddShortcodes(IServiceCollection services)
+        public void AddShortcodes(IServiceCollection services, ILogger logger)
         {
+            _logger = logger;
             var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
             foreach (var module in activeModules)
             {
@@ -587,6 +639,7 @@ namespace NetCoreCMS.Framework.Modules
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, ex);
                     GlobalMessageRegistry.RegisterMessage(
                         new GlobalMessage()
                         {
@@ -601,13 +654,10 @@ namespace NetCoreCMS.Framework.Modules
             }
         }
 
-        public void AddModuleFilters(IServiceCollection services)
+        public void AddModuleFilters(IServiceCollection services, ILogger logger)
         {
-            services.AddScoped<NccAuthFilter>();
-            services.AddScoped<NccLoggerFilter>();
-            services.AddScoped<NccLanguageFilter>();
-            services.AddScoped<NccGlobalExceptionFilter>();
-            
+            _logger = logger;
+           
             var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
             foreach (var module in activeModules)
             {
@@ -621,6 +671,7 @@ namespace NetCoreCMS.Framework.Modules
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, ex);
                     GlobalMessageRegistry.RegisterMessage(
                         new GlobalMessage()
                         {
@@ -635,8 +686,9 @@ namespace NetCoreCMS.Framework.Modules
             }            
         } 
 
-        public void AddModuleWidgets( IServiceCollection services)
+        public void AddModuleWidgets( IServiceCollection services, ILogger logger)
         {
+            _logger = logger;
             foreach (var module in instantiatedModuleList)
             {
                 try
@@ -645,11 +697,12 @@ namespace NetCoreCMS.Framework.Modules
                     var widgetTypeList = module.Assembly.GetTypes().Where(x => typeof(Widget).IsAssignableFrom(x)).ToList();
                     foreach (var widgetType in widgetTypeList)
                     {                        
-                        services.AddScoped(widgetType);
+                        services.AddTransient(widgetType);
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, ex);
                     GlobalMessageRegistry.RegisterMessage(
                         new GlobalMessage()
                         {
@@ -664,8 +717,9 @@ namespace NetCoreCMS.Framework.Modules
             }            
         }
 
-        public void AddModuleAuthorizationHandlers(IServiceCollection services)
+        public void AddModuleAuthorizationHandlers(IServiceCollection services, ILogger logger)
         {
+            _logger = logger;
             services.AddScoped<NccAuthRequireHandler>();
             var activeModules = instantiatedModuleList.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList();
             foreach (var module in activeModules)
@@ -680,6 +734,7 @@ namespace NetCoreCMS.Framework.Modules
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, ex);
                     GlobalMessageRegistry.RegisterMessage(
                         new GlobalMessage()
                         {
@@ -694,8 +749,9 @@ namespace NetCoreCMS.Framework.Modules
             }
         }
 
-        public List<Widget> RegisterModuleWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider)
+        public List<Widget> RegisterModuleWidgets(IMvcBuilder mvcBuilder, IServiceCollection services, IServiceProvider serviceProvider, ILogger logger)
         {
+            _logger = logger;
             var widgetList = new List<Widget>();
             foreach (var module in instantiatedModuleList)
             {
@@ -713,12 +769,13 @@ namespace NetCoreCMS.Framework.Modules
                             module.Widgets.Add(widgetInstance);
                             widgetList.Add(widgetInstance);
                             GlobalContext.Widgets.Add(widgetInstance);
-                            GlobalContext.WidgetTypes.Add(widgetInstance.WidgetId, widgetType);
+                            //GlobalContext.WidgetTypes.Add(widgetInstance.WidgetId, widgetType);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
+                    _logger.LogError(ex.Message, ex);
                     GlobalMessageRegistry.RegisterMessage(
                         new GlobalMessage()
                         {
@@ -734,14 +791,17 @@ namespace NetCoreCMS.Framework.Modules
             return widgetList;
         }       
 
-        public void RegisterModuleFilters(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider)
+        public void RegisterModuleFilters(IMvcBuilder mvcBuilder, IServiceProvider serviceProvider, ILogger logger)
         {
+            _logger = logger;
             mvcBuilder.AddMvcOptions(option => {
                 option.Filters.Add(serviceProvider.GetService<NccGlobalExceptionFilter>());
                 option.Filters.Add(serviceProvider.GetService<NccAuthFilter>());                       
+                option.Filters.Add(serviceProvider.GetService<NccControllerFilter>());
                 option.Filters.Add(serviceProvider.GetService<NccDataAuthFilter>());
                 option.Filters.Add(serviceProvider.GetService<NccLanguageFilter>());
-                option.Filters.Add(serviceProvider.GetService<NccLoggerFilter>());                
+                option.Filters.Add(serviceProvider.GetService<NccLoggerFilter>());
+                option.Filters.Add(serviceProvider.GetService<NccControllerFilter>());
             });
 
             var actionFilterList = new List<INccActionFilter>();

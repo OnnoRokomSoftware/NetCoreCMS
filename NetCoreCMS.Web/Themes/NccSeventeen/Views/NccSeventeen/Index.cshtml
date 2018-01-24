@@ -1,0 +1,43 @@
+﻿@model Dictionary<string, string>;
+@{ 
+    Layout = Constants.AdminLayoutName;
+    Title = "Theme Settings";
+    SubTitle = "Set Theme Settings";        
+}
+<div class="row">
+    <div class="col-sm-12">
+        <form class="form-horizontal" asp-controller="NccSeventeen" asp-action="Index" method="post">
+            @if (TempData.Keys.Contains("ThemeSuccessMessage"))
+            {
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    @TempData["ThemeSuccessMessage"]
+                </div>
+            }
+            @*<div class="form-group">
+                <div asp-validation-summary="All" class="text-danger"></div>
+            </div>*@
+            @*@foreach (var item in GlobalConfig.ActiveTheme.Settings)
+            {
+
+            }*@
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right"><label>Style</label></div>
+                <div class="col-sm-5">
+                    <input type="hidden" name="key[0]" value="style" />
+                    <select name="value[0]" class="form-control" asp-items="@ViewBag.style">
+                        @*<option value="light">Light</option>
+                        <option value="dark">Dark</option>*@
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-3 text-right">  </div>
+                <input class="btn btn-primary" type="submit" value="Update" />
+            </div>
+
+        </form>
+    </div>
+</div>

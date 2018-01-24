@@ -34,6 +34,7 @@ namespace NetCoreCMS.Framework.Core.Models
         public string Slug { get; set; }
         public string FullName { get; set; }
         public string Mobile { get; set; }
+        public bool IsRequireLogin { get; set; }
         
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }

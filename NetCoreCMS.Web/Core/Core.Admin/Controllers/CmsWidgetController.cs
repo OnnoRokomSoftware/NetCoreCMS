@@ -7,8 +7,7 @@
  *        Copyright: OnnoRokom Software Ltd.                 *
  *          License: BSD-3-Clause                            *
  *************************************************************/
- 
-using Microsoft.AspNetCore.Authorization;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using NetCoreCMS.Framework.Core.Models;
@@ -18,10 +17,7 @@ using NetCoreCMS.Framework.Core.Network;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Themes;
 using NetCoreCMS.Framework.Utility;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Core.Admin.Controllers
 {
@@ -30,7 +26,8 @@ namespace Core.Admin.Controllers
     {
         NccWebSiteWidgetService _nccWebSiteWidgetService;
         NccWebSiteService _nccWebSiteService;
-        ILoggerFactory _loggerFactory;        
+        ILoggerFactory _loggerFactory;
+        private ILogger<CmsWidgetController> _logger;
 
         public CmsWidgetController(NccWebSiteWidgetService nccWebSiteWidgetService, NccWebSiteService nccWebSiteService, ILoggerFactory factory)
         {
@@ -57,29 +54,31 @@ namespace Core.Admin.Controllers
         [HttpPost]
         public JsonResult SaveZoneWidget(string module, string theme, string layout, string zone, string widget)
         {
+            int currentWidgetCount = _nccWebSiteWidgetService.Load(theme, layout, zone).Count() + 1;
             var currentWebsite = _nccWebSiteService.LoadAll().FirstOrDefault();
-            var nccWebSiteWidget = new NccWebSiteWidget() {
+            var nccWebSiteWidget = new NccWebSiteWidget()
+            {
                 LayoutName = layout,
                 WebSite = currentWebsite,
                 WidgetConfigJson = "",
                 WidgetData = "",
                 ThemeId = theme,
                 WidgetId = widget,
-                WidgetOrder = 1,
+                WidgetOrder = currentWidgetCount,
                 Zone = zone,
-                ModuleName = module,
+                ModuleName = module
             };
 
-            _nccWebSiteWidgetService.Save(nccWebSiteWidget);
+            _nccWebSiteWidgetService.Save(nccWebSiteWidget);            
             GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
 
-            return Json(new ApiResponse() { IsSuccess=true, Message="Save Successful.", Data = nccWebSiteWidget });
+            return Json(new ApiResponse() { IsSuccess = true, Message = "Save Successful.", Data = nccWebSiteWidget });
         }
         
         [HttpPost]
         public JsonResult RemoveZoneWidget(string module, string theme, string layout, string zone, string widget)
         {
-            _nccWebSiteWidgetService.RemoveByModuleThemeLayoutZoneWidget(module,theme,layout,zone,widget);
+            _nccWebSiteWidgetService.RemoveByModuleThemeLayoutZoneWidget(module,theme,layout,zone,widget);            
             GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
         }
@@ -91,7 +90,7 @@ namespace Core.Admin.Controllers
             if (rsp.StartsWith("Error:"))
             {
                 Json(new ApiResponse() { IsSuccess = false, Message = "Remove Failed." });
-            }
+            }            
             GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Remove Successful." });
         }
@@ -106,8 +105,7 @@ namespace Core.Admin.Controllers
             else
             {
                 _nccWebSiteWidgetService.DownOrder(webSiteWidgetId, oldOrder);
-            }
-            
+            }            
             GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x=>x.WidgetOrder).ToList();
             return Json(new ApiResponse() { IsSuccess = true, Message = "Order update Successful." });
         }
@@ -127,7 +125,8 @@ namespace Core.Admin.Controllers
                 webSiteWidget.WidgetConfigJson = data;
                 _nccWebSiteWidgetService.Update(webSiteWidget);
                 apiResponse.IsSuccess = true;
-                apiResponse.Message = "Config save successfully.";
+                apiResponse.Message = "Config save successfully.";                
+                GlobalContext.WebSiteWidgets = _nccWebSiteWidgetService.LoadAll().OrderBy(x => x.WidgetOrder).ToList();
             }
             return Json(apiResponse);
         }

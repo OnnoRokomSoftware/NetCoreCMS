@@ -91,7 +91,7 @@
     <div class="footer-bottom">
         <div class="container">
             <div class="row">
-                <div class="col-md-6 copyright"> @_T["Copyrights"] &copy; @Html.Raw(@ThemeHelper.GetWebSiteCopyright()) @_T[DateTime.Now.Year.ToString()]</div>
+                <div class="col-md-6 copyright"> @_T["Copyrights"] &copy; @Html.Raw(GetWebSiteCopyright()) @_T[DateTime.Now.Year.ToString()]</div>
                 <div class="col-md-6 poweredby"> @Html.Raw(string.Format(_T["Developed using {0}"].ToString(), "<a href=\"" + NccInfo.Website + "\" target=\"_blank\">NetCoreCMS" + " v" + NccInfo.Version + "</a>"))</div>
             </div>
         </div>
@@ -100,43 +100,70 @@
 <!--  Footer End -->
 
 <script type="text/javascript">
-$(document).ready(function () {
-    var didScroll = true;
+    $(document).ready(function () {
+        var didScroll = true;
 
-    $(window).scroll(function () {
-        didScroll = true;
-    });
-    setInterval(function () {
-        if (didScroll) {
-            didScroll = false;
-            var scroll = $(window).scrollTop();
-            //console.log(scroll);
-            //Same that all the if else statements
-            switch (true) {
-                case (scroll >= 200):
-                    $("#mainNavbar").addClass("navbar-fixed-top");
-                    $("#navbarWebsiteName").removeClass("navbar-brand-with-top-menu");
-                    break;
-                case (scroll <= 70):
-                    $("#mainNavbar").removeClass("navbar-fixed-top");
-                    $("#navbarWebsiteName").addClass("navbar-brand-with-top-menu");
-                    break;
-                default:
-                    break;
+        $(window).scroll(function () {
+            didScroll = true;
+        });
+        setInterval(function () {
+            if (didScroll) {
+                didScroll = false;
+                var scroll = $(window).scrollTop();
+                //console.log(scroll);
+                //Same that all the if else statements
+                switch (true) {
+                    case (scroll >= 200):
+                        $("#mainNavbar").addClass("navbar-fixed-top");
+                        $("#navbarWebsiteName").removeClass("navbar-brand-with-top-menu");
+                        break;
+                    case (scroll <= 70):
+                        $("#mainNavbar").removeClass("navbar-fixed-top");
+                        $("#navbarWebsiteName").addClass("navbar-brand-with-top-menu");
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
-    }, 50);
+        }, 50);
 
-    $('.ncc-main-menu').find('a').each(function () {
-        var pathname = decodeURI(window.location.pathname);
-        if (pathname == '/CmsHome')
-            pathname = "/";
-        if ($(this).attr('href') == pathname) {
-            $(this).parents("li").addClass('active');
+        var isMenuActive = false;
+        $('.ncc-main-menu').find('a').each(function () {
+            var pathname = decodeURI(window.location.pathname);
+            var pathnameLang = "/@CurrentLanguage" + pathname;
+
+            if (pathname == '/CmsHome') {
+                pathname = "/";
+                pathnameLang = "/@CurrentLanguage/";
+            }
+            if ($(this).attr('href') == pathname || $(this).attr('href') == pathnameLang) {
+                $(this).parents("li").addClass('active');
+                isMenuActive = true;
+            }
+            //console.log("href: " + $(this).attr('href'));
+            //console.log("path: " + pathname);
+            //console.log("lang: " + pathnameLang);
+        });
+
+        if (isMenuActive == false) {
+            $('.ncc-main-menu').find('a').each(function () {
+                var pathname = decodeURI(window.location.pathname) + "/Index";
+                var pathnameLang = "/@CurrentLanguage" + pathname + "/Index";
+
+                if ($(this).attr('href') == pathname || $(this).attr('href') == pathnameLang) {
+                    $(this).parents("li").addClass('active');
+                    isMenuActive = true;
+                }
+            });
         }
-        /*console.log($(this).attr('href'));
-        console.log(pathname);*/
+
+        //console.log(isMenuActive);
+        if (isMenuActive == false) {
+            $('.ncc-main-menu').find('a').each(function () {
+                if ($(this).attr('href') == "/" || $(this).attr('href') == "/@CurrentLanguage/") {
+                    $(this).parents("li").addClass('active');
+                }
+            });
+        }
     });
-
-});
 </script>

@@ -10,77 +10,46 @@
 
 using Core.Blog.Controllers;
 using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
-using Core.Blog.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NetCoreCMS.Framework.Core.Serialization;
 
 namespace Core.Blog.Widgets
 {
     public class RecentCommentsWidget : Widget
     {
-        NccCommentsService _nccCommentsService;
-        IViewRenderService _viewRenderService;
-        NccWebSiteWidgetService _websiteWidgetService;
+        NccCommentsService _nccCommentsService;        
         int CommentsCount = 5;
 
-        public RecentCommentsWidget(
-            IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService,
-            NccCommentsService nccCommentsService) : base(                
+        public RecentCommentsWidget(            
+            NccCommentsService nccCommentsService) : base(
+                typeof(BlogController),
                 "Recent Comments",
                 "This is a widget to display recent blog Comments.",
                 "",
+                "Widgets/RecentComments",
+                "Widgets/RecentCommentsConfig",
                 true
             )
         {
-            _viewRenderService = viewRenderService;
-            _websiteWidgetService = websiteWidgetService;
             _nccCommentsService = nccCommentsService;
         }
 
-        public override void Init(long websiteWidgetId, bool renderConfig = false)
+        public override void InitConfig(dynamic config)
         {
-            WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/RecentComments";
-
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
-            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
+            try
             {
-                var configJson = webSiteWidget.WidgetConfigJson;
-                var config = JsonHelper.Deserilize<dynamic>(configJson);
-                DisplayTitle = config.title;
-                Footer = config.footer;
-                Language = config.language;
-
-                try
-                {
-                    string cc = config.commentsCount;
-                    CommentsCount = string.IsNullOrEmpty(cc) ? 5 : Convert.ToInt32(cc);
-                }
-                catch (Exception) { CommentsCount = 5; }
-
+                string cc = config.commentsCount;
+                CommentsCount = string.IsNullOrEmpty(cc) ? 5 : Convert.ToInt32(cc);
             }
-
-            if (renderConfig)
-            {
-                ConfigViewFileName = "Widgets/RecentCommentsConfig";
-                ConfigHtml = _viewRenderService.RenderToStringAsync<BlogController>(ConfigViewFileName, webSiteWidget).Result;
-            } 
+            catch (Exception) { CommentsCount = 5; }
         }
 
-        public override string RenderBody()
+        public override object PrepareViewModel()
         {
-            List<NccComment> commentsList = _nccCommentsService.LoadRecentComments(CommentsCount);
-            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, commentsList).Result;
-            return body;
+            List<NccComment> commentsList = _nccCommentsService.LoadRecentComments(CommentsCount);            
+            return commentsList;
         }
     }
 }

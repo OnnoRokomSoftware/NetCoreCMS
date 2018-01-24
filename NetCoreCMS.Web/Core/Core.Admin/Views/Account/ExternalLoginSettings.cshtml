@@ -1,0 +1,41 @@
+﻿@using  NetCoreCMS.Framework.Core.Auth
+@model OpenIdSettings
+@{
+    Title = "External Login Settings";
+    Layout = Constants.AdminLayoutName;
+}
+<div>
+    <form method="post" asp-action="ExternalLoginSettings">
+        <table class="table">
+            <tr>
+                <td>Facebook</td>
+                <td><input class="form-control" asp-for="FacebookAppId" /></td>
+                <td>Facebook AppSecret</td>
+                <td><input class="form-control" asp-for="FacebookAppSecret" /></td>
+            </tr>
+            <tr>
+                <td>Google</td>
+                <td><input class="form-control" asp-for="GoogleClientId" /></td>
+                <td>Google Client Secret</td>
+                <td><input class="form-control" asp-for="GoogleClientSecret" /></td>
+            </tr>
+            <tr>
+                <td>Microsoft</td>
+                <td><input class="form-control" asp-for="MicrosoftAppId" /></td>
+                <td>Microsoft App Password</td>
+                <td><input class="form-control" asp-for="MicrosoftAppPassword" /></td>
+            </tr>
+            <tr>
+                <td>Twitter </td>
+                <td><input class="form-control" asp-for="TwitterConsumerKey" /></td>
+                <td>Google Client Secret</td>
+                <td><input class="form-control" asp-for="TwitterCustomerSecret" /></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><input class="btn btn-primary" type="submit" value="Save" /></td>
+            </tr>
+        </table>
+
+    </form>    
+</div>

@@ -1,0 +1,22 @@
+﻿@model News
+
+@{
+    Layout = Constants.SiteLayoutName;
+    Title = Model.Name;
+    SubTitle = "";
+    var details = Model.Details.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+    if (details == null)
+    {
+        details = Model.Details.FirstOrDefault();
+    }    
+}
+
+<div>
+    <h1>@Html.Raw(details.Name)</h1>
+    <hr />
+    @Html.Raw(details.Content)
+</div>
+
+@section Scripts{
+    
+}

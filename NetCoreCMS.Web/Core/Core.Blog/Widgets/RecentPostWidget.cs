@@ -8,87 +8,55 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using Core.Blog.Controllers;
-using NetCoreCMS.Framework.Core.Models;
-using NetCoreCMS.Framework.Core.Mvc.Models;
-using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.Core.Services;
 using NetCoreCMS.Framework.Modules.Widgets;
 using Core.Blog.Models;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NetCoreCMS.Framework.Core.Serialization;
+using Core.Blog.Controllers;
 
 namespace Core.Blog.Widgets
 {
     public class RecentPostWidget : Widget
     {
-        NccPostService _nccPostService;
-        IViewRenderService _viewRenderService;
-        NccWebSiteWidgetService _websiteWidgetService;
+        NccPostService _nccPostService;        
         int PostCount = 5;
         bool IsDateShow = false;
 
-        public RecentPostWidget(
-            IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService,
-            NccPostService nccPostService) : base(                
+        public RecentPostWidget(NccPostService nccPostService) : base(
+                typeof(BlogController),
                 "Recent Post",
                 "This is a widget to display recent blog posts.",
                 "",
-                true
-            )
+                "Widgets/RecentPost",
+                "Widgets/RecentPostConfig",
+                true )
         {
-            _viewRenderService = viewRenderService;
-            _websiteWidgetService = websiteWidgetService;
             _nccPostService = nccPostService;
         }
 
-        public override void Init(long websiteWidgetId, bool renderConfig = false)
+        public override void InitConfig(dynamic config)
         {
-            WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/RecentPost";
-
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
-            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
+            try
             {
-                var configJson = webSiteWidget.WidgetConfigJson;
-                var config = JsonHelper.Deserilize<dynamic>(configJson);
-                DisplayTitle = config.title;
-                Footer = config.footer;
-                Language = config.language;
-
-                try
-                {
-                    string pc = config.postCount;
-                    PostCount = string.IsNullOrEmpty(pc) ? 5 : Convert.ToInt32(pc);
-                    string ds = config.isDateShow;
-                    if (ds == "on")
-                        IsDateShow = true;
-                    else
-                        IsDateShow = false;
-                }
-                catch (Exception) { PostCount = 5; }
-
+                string pc = config.postCount;
+                PostCount = string.IsNullOrEmpty(pc) ? 5 : Convert.ToInt32(pc);
+                string ds = config.isDateShow;
+                if (ds == "on")
+                    IsDateShow = true;
+                else
+                    IsDateShow = false;
             }
-            if (renderConfig)
-            {
-                ConfigViewFileName = "Widgets/RecentPostConfig";
-                ConfigHtml = _viewRenderService.RenderToStringAsync<BlogController>(ConfigViewFileName, webSiteWidget).Result;
-            } 
+            catch (Exception) { PostCount = 5; }
+
         }
 
-        public override string RenderBody()
+        public override object PrepareViewModel()
         {
             var postList = _nccPostService.LoadRecentPages(PostCount);
-            RecentPostViewModel item = new RecentPostViewModel();
-            item.IsDateShow = IsDateShow;
-            item.PostList = postList;
-            var body = _viewRenderService.RenderToStringAsync<BlogController>(ViewFileName, item).Result;
-            return body;
+            RecentPostViewModel model = new RecentPostViewModel();
+            model.IsDateShow = IsDateShow;
+            model.PostList = postList;            
+            return model;
         }
     }
 }

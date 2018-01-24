@@ -16,7 +16,7 @@
 }
     @model NccPost
 <div class="" id="CommentsSection">
-    <h4>@_T["Comments"] (@Model.Comments.Where(x=>x.CommentStatus==NccComment.NccCommentStatus.Approved).Count())</h4>
+    <h4>@_T["Comments"] (@_T.T(Model.Comments.Where(x=>x.CommentStatus==NccComment.NccCommentStatus.Approved).Count().ToString()))</h4>
     <div id="PreviousComments">
         @*@foreach (var item in Model.Comments)
         {

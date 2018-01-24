@@ -49,7 +49,7 @@ namespace NetCoreCMS.Framework.Core.ShotCodes
 
         public Hashtable RegisterShortCodes(List<IModule> modules)
         {
-            foreach (var module in modules.Where(x=>x.ModuleStatus == (int) NccModule.NccModuleStatus.Active).ToList())
+            foreach (var module in modules.Where(x => x.ModuleStatus == (int)NccModule.NccModuleStatus.Active).ToList())
             {
                 try
                 {
@@ -83,73 +83,77 @@ namespace NetCoreCMS.Framework.Core.ShotCodes
             }
             return _shortCodes;
         }
-        
+
         private string GetRenderedContent(Type type, object[] paramiters)
-        {  
+        {
             var mi = type.GetMethod("Render");
             var obj = (IShortCode)_services.GetService(type);
             var ret = obj.Render(paramiters);
-            return ret == null ? "": ret.ToString(); 
+            return ret == null ? "" : ret.ToString();
         }
 
         public string ReplaceShortContent(string content)
         {
-            foreach (DictionaryEntry item in GlobalContext.ShortCodes)
+            if (string.IsNullOrEmpty(content) == false)
             {
-                var key = item.Key.ToString();
-                if (content.Contains(key))
+                foreach (DictionaryEntry item in GlobalContext.ShortCodes)
                 {
-                    var shortCode = GetShortCode(content, key);
-                    if (shortCode != null)
+                    var key = item.Key.ToString();
+                    if (content.Contains(key))
                     {
-                        var contentPrefix = content.Substring(0, shortCode.Start);
-                        var contentSuffix = content.Substring(shortCode.End + shortCode.Name.Length + 1);
-                        var renderedContent = GetRenderedContent((Type)item.Value, shortCode.Paramiters.ToArray());
-                        content = contentPrefix + renderedContent + contentSuffix;
+                        var shortCode = GetShortCode(content, key);
+                        if (shortCode != null)
+                        {
+                            var contentPrefix = content.Substring(0, shortCode.Start);
+                            var contentSuffix = content.Substring(shortCode.End + shortCode.Name.Length + 1);
+                            var renderedContent = GetRenderedContent((Type)item.Value, shortCode.Paramiters.ToArray());
+                            content = contentPrefix + renderedContent + contentSuffix;
+                        }
                     }
                 }
             }
-
             return content;
         }
 
         private ShortCode GetShortCode(string content, string code)
         {
-            ShortCode shortCode;
-            var start = content.IndexOf("[" + code);
-            var end = content.IndexOf(code + "]");
-
-            if (start > 0 && end > 0)
+            if (string.IsNullOrEmpty(content) == false)
             {
-                shortCode = new ShortCode();
+                ShortCode shortCode;
+                var start = content.IndexOf("[" + code);
+                var end = content.IndexOf(code + "]");
 
-                shortCode.Start = start;
-                shortCode.End = end;
-                shortCode.Name = code;
-
-                start = start + code.Length + 1;
-                end = end - 1;
-
-                var contentLength = end - start;
-                if(contentLength > 0)
+                if (start > 0 && end > 0)
                 {
-                    var shortCodeContent = content.Substring(start, contentLength);
-                    var paramsParts = shortCodeContent.Split(",".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+                    shortCode = new ShortCode();
 
-                    foreach (var item in paramsParts)
+                    shortCode.Start = start;
+                    shortCode.End = end;
+                    shortCode.Name = code;
+
+                    start = start + code.Length + 1;
+                    end = end - 1;
+
+                    var contentLength = end - start;
+                    if (contentLength > 0)
                     {
-                        var dItem = WebUtility.HtmlDecode(item);
-                        var keyValPart = dItem.Split("=".ToArray(), StringSplitOptions.RemoveEmptyEntries);
-                        if (keyValPart.Length >= 2)
+                        var shortCodeContent = content.Substring(start, contentLength);
+                        var paramsParts = shortCodeContent.Split(",".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+
+                        foreach (var item in paramsParts)
                         {
-                            var p = keyValPart[1].Replace('"', ' ').Trim();
-                            shortCode.Paramiters.Add(p);
+                            var dItem = WebUtility.HtmlDecode(item);
+                            var keyValPart = dItem.Split("=".ToArray(), StringSplitOptions.RemoveEmptyEntries);
+                            if (keyValPart.Length >= 2)
+                            {
+                                var p = keyValPart[1].Replace('"', ' ').Trim();
+                                shortCode.Paramiters.Add(p);
+                            }
                         }
                     }
-                }  
-                return shortCode;
+                    return shortCode;
+                }
             }
-
             return null;
         }
     }

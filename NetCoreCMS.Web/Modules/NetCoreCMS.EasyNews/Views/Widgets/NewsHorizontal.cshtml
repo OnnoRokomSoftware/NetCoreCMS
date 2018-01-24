@@ -1,0 +1,54 @@
+﻿@using NetCoreCMS.EasyNews.Models
+@using System.Collections
+@{
+    var i = 0;
+}
+@model NewsViewModel
+
+
+<div class="@Model.ColumnClass">
+    <table style="border:none;width:100%;">
+        <tr>
+            @if (Model.HeaderTitle != "")
+            {
+                <td style="background-color:@Model.HeaderBgColor; color:@Model.HeaderColor; padding:0px; height:@string.Concat(Model.Height,"px"); text-align:center;">
+                    @_T[Model.HeaderTitle]
+                </td>
+            }
+            <td style="height:@string.Concat(Model.Height,"px"); background-color:@Model.ColumnBgColor; color:@Model.ColumnColor;">
+                <marquee behavior="scroll" direction="left" scrollamount="@Model.Scrollamount">
+                    @foreach (var item in Model.NewsList)
+                    {
+                        NewsDetails details = item.Details.Where(x => x.Language == CurrentLanguage).FirstOrDefault();
+                        if (details == null)
+                        {
+                            details = item.Details.FirstOrDefault();
+                        }
+                        if (details != null)
+                        {
+                            if (i == 0)
+                            {
+                                i = 1;
+                            }
+                            else
+                            {
+                                <span>&nbsp;&nbsp;||</span>
+                            }
+                            <span><a href="/NeNews/Details?newsId=@item.Id"><font color="@Model.ColumnColor">@Html.Raw(details.Name)</font></a></span>
+                        }
+
+                    }
+                </marquee>
+            </td>
+            @if (Model.FooterTitle != "")
+            {
+                <td style="background-color:@Model.FooterBgColor; color:@Model.FooterColor; height:@string.Concat(Model.Height,"px"); text-align:center;">
+                    @_T[Model.FooterTitle]
+                </td>
+            }
+        </tr>
+    </table>
+</div>
+
+
+

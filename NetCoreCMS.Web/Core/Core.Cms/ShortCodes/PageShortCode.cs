@@ -8,43 +8,25 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 using Core.Cms.Controllers;
-using NetCoreCMS.Framework.Core.Mvc.Views;
 using NetCoreCMS.Framework.Core.Services;
-using NetCoreCMS.Framework.Core.ShotCodes;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using NetCoreCMS.Framework.Modules.ShortCode;
 
 namespace NetCoreCCore.Cms.ShortCodes
 {
-    public class PageShortCode : IShortCode
+    public class PageShortCode : BaseShortCode
     {
         NccPageService _nccPageService;
-        IViewRenderService _viewRenderService;
-        string ViewFileName = "Widgets/PageRender";
 
-        public PageShortCode(NccPageService nccPageService, IViewRenderService viewRenderService)
+        public PageShortCode(NccPageService nccPageService) : base(typeof(CmsPageController), "Page", "ShortCodes/PageRender")
         {
             _nccPageService = nccPageService;
-            _viewRenderService = viewRenderService;
         }
-        public string ShortCodeName { get { return "Page"; } }
 
-        public string Render(params object[] paramiters)
+        public override object PrepareViewModel(params object[] paramiters)
         {
-            var content = "";
-            try
-            {
-                var id = paramiters[0].ToString().Trim();
-                var slider = _nccPageService.Get(long.Parse(id));
-
-                if (slider != null)
-                {
-                    content = _viewRenderService.RenderToStringAsync<CmsHomeController>(ViewFileName, slider).Result;
-                }
-            }
-            catch (Exception ex) { }
-            return content;
+            var id = paramiters[0].ToString().Trim();
+            var model = _nccPageService.Get(long.Parse(id));
+            return model;
         }
     }
 }

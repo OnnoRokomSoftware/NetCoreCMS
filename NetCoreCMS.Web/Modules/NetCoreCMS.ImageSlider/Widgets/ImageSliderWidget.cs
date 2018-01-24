@@ -8,71 +8,45 @@
  *          License: BSD-3-Clause                            *
  *************************************************************/
 
-using NetCoreCMS.Framework.Core.Mvc.Views;
-using NetCoreCMS.Framework.Core.Services;
+using System.Linq;
 using NetCoreCMS.Framework.Modules.Widgets;
 using NetCoreCMS.ImageSlider.Controllers;
-using NetCoreCMS.ImageSlider.Models;
 using NetCoreCMS.ImageSlider.Services;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace NetCoreCMS.ImageSlider.Widgets
 {
     public class ImageSliderWidget : Widget
     {
-        NccImageSliderService _imageSliderService;
-        IViewRenderService _viewRenderService;
-        NccWebSiteWidgetService _websiteWidgetService;
+        NccImageSliderService _imageSliderService;        
         string selectedImageSliderName = "";
 
-        public ImageSliderWidget(
-            IViewRenderService viewRenderService,
-            NccWebSiteWidgetService websiteWidgetService,
-            NccImageSliderService imageSliderService) : base(               
-                "Image Slider",
-                "This is a widget to display responsive image slider.",
-                ""
-            )
+        public ImageSliderWidget(NccImageSliderService imageSliderService) : base(
+            typeof(ImageSliderHomeController),
+            "Image Slider",
+            "This is a widget to display responsive image slider.",
+            "", 
+            "Widgets/ImageSlider", 
+            "Widgets/ImageSliderConfig" )
         {
-            _viewRenderService = viewRenderService;
-            _websiteWidgetService = websiteWidgetService;
             _imageSliderService = imageSliderService;
         }
 
-        public override void Init(long websiteWidgetId, bool renderConfig = false)
-        {
-            WebSiteWidgetId = websiteWidgetId;
-            ViewFileName = "Widgets/ImageSlider";
-
-            var webSiteWidget = _websiteWidgetService.Get(websiteWidgetId, true);
-            if (webSiteWidget != null && !string.IsNullOrEmpty(webSiteWidget.WidgetConfigJson))
-            {
-                var configJson = webSiteWidget.WidgetConfigJson;
-                var config = JsonConvert.DeserializeObject<dynamic>(configJson);
-                Language = config.language;
-                DisplayTitle = config.title;
-                Footer = config.footer;
-                selectedImageSliderName = config.name;
-            }
-
-            if (renderConfig)
-            {
-                ConfigViewFileName = "Widgets/ImageSliderConfig";
-                var itemList = _imageSliderService.LoadAll(true).ToList();
-                ConfigHtml = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ConfigViewFileName, itemList /*webSiteWidget*/).Result;
-            } 
+        public override void InitConfig(dynamic config)
+        {   
+            selectedImageSliderName = config.name;
         }
 
-        public override string RenderBody()
+        public override object PrepareConfigModel()
         {
-            var itemList = _imageSliderService.LoadAll(true, -1, selectedImageSliderName).FirstOrDefault();
-            if (selectedImageSliderName.Trim() == "") { itemList = _imageSliderService.LoadAll().FirstOrDefault(); }
-            var body = _viewRenderService.RenderToStringAsync<ImageSliderWidgetController>(ViewFileName, itemList).Result;
-            return body;
+            var model = _imageSliderService.LoadAll(true);            
+            return model;
+        }
+
+        public override object PrepareViewModel()
+        {
+            var model = _imageSliderService.LoadAll(true, -1, selectedImageSliderName).FirstOrDefault();
+            if (selectedImageSliderName.Trim() == "") { model = _imageSliderService.LoadAll().FirstOrDefault(); }            
+            return model;
         }
     }
 }

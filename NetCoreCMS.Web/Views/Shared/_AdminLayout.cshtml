@@ -152,7 +152,7 @@
         <div id="page-wrapper">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12">
+                    <div class="row">
                         <div class="row">
                             <div class="row">
                                 <div class="row">
@@ -162,7 +162,7 @@
                             @*<div id="globalMessageContainer" class="ncc-global-message">
                             </div>*@                            
                         </div>
-                        <h1 class="page-header">@Title</h1> 
+                        <h2 class="page-header" style="margin-top:20px;">@Title</h2> 
                         @RenderBody()
                     </div>
                     <!-- /.col-lg-12 -->
@@ -201,12 +201,52 @@
     <!--Bootstrap DateTime Picker END-->
     @RenderSection("Scripts", required: false)
     <script>
-        $(document).ready(function () { 
-
+        $(document).ready(function () {
             $.notify.defaults({
                 "globalPosition": "top center"
             });
 
+            var isMenuActive = false;
+            $('.sidebar-nav').find('a').each(function () {
+                @*var pathname = decodeURI(window.location.pathname);
+                var pathnameLang = "/@CurrentLanguage" + pathname;
+
+                if ($(this).attr('href') == pathname || $(this).attr('href') == pathnameLang) {
+                    //$(this).addClass('active');
+                    isMenuActive = true;
+                }*@
+                if ($(this).hasClass('active')) {
+                    isMenuActive = true;
+                }
+                //console.log($(this).attr('href'));
+                //console.log(pathname);
+                //console.log(pathnameLang);
+                //console.log(pathname);
+            });
+
+            if (isMenuActive == false) {
+                var pathname = decodeURI(window.location.pathname);
+                if (pathname == "/Dashboard" || pathname == "/@CurrentLanguage/Dashboard") {
+                    $('.sidebar-nav').find('a').each(function () {
+                        if ($(this).attr('href') == "/Dashboard/Index" || $(this).attr('href') == "/@CurrentLanguage/Dashboard/Index") {
+                            //$(this).parent("li").parent("ul").addClass('active collapse in');
+                            $(this).addClass('active');
+                            isMenuActive = true;
+                            console.log($(this).attr('href'));
+                        }
+                    });
+                }
+            }
+
+            //console.log(isMenuActive);
+            if (isMenuActive == false) {
+                $('.sidebar-nav').find('a').each(function () {
+                    if ($(this).attr('href') == "/CmsTheme/Settings" || $(this).attr('href') == "/@CurrentLanguage/CmsTheme/Settings") {
+                        $(this).parent("li").parent("ul").addClass('active collapse in');
+                        $(this).addClass('active');
+                    }
+                });
+            }
         });
     </script>
 </body>

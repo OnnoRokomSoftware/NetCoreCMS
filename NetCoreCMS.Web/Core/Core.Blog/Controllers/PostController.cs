@@ -46,10 +46,9 @@ namespace Core.Blog.Controllers
         NccShortCodeProvider _nccShortCodeProvider;
 
         IMediator _mediator;
-        NccUserService _nccUserService;
         ILoggerFactory _loggerFactory;
 
-        public PostController(NccPostService nccPostService, NccPostDetailsService nccPostDetailsService, NccCategoryService nccCategoryService, NccTagService nccTagService, NccUserService nccUserService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, ILoggerFactory loggerFactory)
+        public PostController(NccPostService nccPostService, NccPostDetailsService nccPostDetailsService, NccCategoryService nccCategoryService, NccTagService nccTagService, NccShortCodeProvider nccShortCodeProvider, IMediator mediator, ILoggerFactory loggerFactory)
         {
             _nccPostService = nccPostService;
             _nccPostDetailsService = nccPostDetailsService;
@@ -57,7 +56,6 @@ namespace Core.Blog.Controllers
             _nccTagService = nccTagService;
             _nccShortCodeProvider = nccShortCodeProvider;
             _loggerFactory = loggerFactory;
-            _nccUserService = nccUserService;
             _mediator = mediator;
             _logger = _loggerFactory.CreateLogger<BlogController>();
         }
@@ -136,11 +134,11 @@ namespace Core.Blog.Controllers
 
                     if (item.CreateBy == item.ModifyBy)
                     {
-                        str.Add(_nccUserService.Get(item.CreateBy)?.UserName);
+                        str.Add(UserService.Get(item.CreateBy)?.UserName);
                     }
                     else
                     {
-                        str.Add("<b>Cr:</b> " + _nccUserService.Get(item.CreateBy)?.UserName + "<br /><b>Mo:</b> " + _nccUserService.Get(item.ModifyBy)?.UserName);
+                        str.Add("<b>Cr:</b> " + UserService.Get(item.CreateBy)?.UserName + "<br /><b>Mo:</b> " + UserService.Get(item.ModifyBy)?.UserName);
                     }
                     #region Categories
                     temp = "";
@@ -161,7 +159,9 @@ namespace Core.Blog.Controllers
                     str.Add(temp);
                     #endregion
 
-                    str.Add(item.PostStatus == NccPost.NccPostStatus.Published ? NccPost.NccPostStatus.Published.ToString() + ": " + item.PublishDate.ToString("yyyy-MM-dd hh:mm tt") : "Update: " + item.ModificationDate.ToString("yyyy-MM-dd hh:mm tt"));
+                    str.Add(item.PostStatus == NccPost.NccPostStatus.Published ? "<span class='btn btn-xs btn-success btn-outline'>" + NccPost.NccPostStatus.Published.ToString() + "</span>" : "<span class='btn btn-xs btn-info btn-outline'>" + item.PostStatus.ToString() + "</span>");
+
+                    str.Add(item.PostStatus == NccPost.NccPostStatus.Published ? item.PublishDate.ToString("yyyy-MM-dd hh:mm tt") : item.ModificationDate.ToString("yyyy-MM-dd hh:mm tt"));
 
                     str.Add(item.Layout);
                     str.Add(item.PostType.ToString());
@@ -185,6 +185,12 @@ namespace Core.Blog.Controllers
                     {
                         actionLink += " <a href='/Post/" + item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Slug + "'  target='_blank' class='btn btn-outline btn-info btn-xs'><i class='fa fa-eye'></i> " + item.PostDetails.Where(x => x.Language == GlobalContext.WebSite.Language).FirstOrDefault().Language + "</a> ";
                     }
+
+                    if (item.PostStatus != NccPost.NccPostStatus.Published)
+                    {
+                        actionLink = " <a href='" + Url.Action("PublishPost", controllerName, new { id = item.Id.ToString() }) + "' class='btn btn-xs btn-success'>Publish</a> " + actionLink;
+                    }
+
                     str.Add(actionLink);
                     data.Add(str);
                 }
@@ -445,6 +451,26 @@ namespace Core.Blog.Controllers
 
             SetPostViewData(model);
             return View(model);
+        }
+        
+        public ActionResult PublishPost(long Id = 0)
+        {
+            if (Id > 0)
+            {
+                var item = _nccPostService.Get(Id);
+                if (item.PostStatus != NccPost.NccPostStatus.Published)
+                {
+                    item.PostStatus = NccPost.NccPostStatus.Published;
+                    ShowMessage("Post Published Successfully", NetCoreCMS.Framework.Core.Mvc.Views.MessageType.Success, false, true);
+                }
+                else
+                {
+                    item.PostStatus = NccPost.NccPostStatus.Draft;
+                    ShowMessage("Post Save as dtaft", NetCoreCMS.Framework.Core.Mvc.Views.MessageType.Success, false, true);
+                }
+                _nccPostService.Update(item);
+            }
+            return RedirectToAction("Manage");
         }
 
         public ActionResult Delete(long Id)

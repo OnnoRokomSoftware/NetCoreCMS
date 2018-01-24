@@ -1,0 +1,35 @@
+﻿@using NetCoreCMS.Framework.Core.Models
+@using System.Collections.Generic
+@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Http.Authentication
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.Extensions.Localization
+@using NetCoreCMS.Framework.i18n
+
+@inject SignInManager<NccUser> SignInManager
+@inject UserManager<NccUser> UserManager
+
+@if (User.Identity.IsAuthenticated)
+{
+    <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" id="logoutForm" class="navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            <li><a asp-area="" asp-controller="Admin" asp-action="Index">@_T["Admin"]</a></li>
+            <li>
+                <a asp-area="" asp-controller="Manage" asp-action="ChangePassword" title="Manage">@_T["Hello"] @GetCurrentUserName()!</a>
+            </li>
+            <li>
+                <button type="submit" class="btn btn-link navbar-btn navbar-link">@_T["Log out"]</button>
+            </li>
+        </ul>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @if (GlobalContext.WebSite.AllowRegistration == true)
+        {
+            <li><a asp-area="" asp-controller="Account" asp-action="Register">@_T["Register"]</a></li>
+        }
+        <li><a asp-area="" asp-controller="Account" asp-action="Login">@_T["Log in"]</a></li>
+    </ul>
+}

@@ -45,6 +45,7 @@ namespace Core.Admin.Controllers
         private readonly IMediator _mediator;
 
         public INccSettingsService _nccSettingsService;
+        private ILogger<CmsThemeController> _logger;
 
         public CmsThemeController(ThemeManager themeManager, IMediator mediator, ILoggerFactory factory, INccSettingsService nccSettingsService)
         {
@@ -65,7 +66,7 @@ namespace Core.Admin.Controllers
         public ActionResult Settings()
         {
             var activeTheme = ThemeHelper.ActiveTheme;
-            return Redirect("/" + activeTheme.ThemeName + "Theme");
+            return Redirect("/" + activeTheme.ThemeId);
         }
 
         private void SetThemeViewData()
@@ -75,13 +76,13 @@ namespace Core.Admin.Controllers
             ViewBag.ThemePath = themePath;
         }
 
-        public ActionResult Activate(string themeName)
+        public ActionResult Activate(string themeId)
         {
-            _themeManager.ActivateTheme(themeName);
+            _themeManager.ActivateTheme(themeId);
             NetCoreCmsHost.IsRestartRequired = true;
-            string successMessage = "Theme " + themeName + " Activated Successfully.";
+            string successMessage = "Theme " + themeId + " Activated Successfully.";
             TempData["ThemeSuccessMessage"] = successMessage;
-            FireEvent(ThemeActivity.Type.Activated, GlobalContext.GetThemeByName(themeName));
+            FireEvent(ThemeActivity.Type.Activated, GlobalContext.GetThemeByThemeId(themeId));
             return RedirectToAction("Index");
         }
 

@@ -23,12 +23,9 @@ namespace NetCoreCMS.HelloWorld.Controllers
     [SiteMenu(Name = "Hello Module Site Menu", Url = "/HelloHome/Index", Order = 100)]
     public class HelloHomeController : NccController
     {
-        private readonly INccSettingsService _nccSettingsService;
-
-        public HelloHomeController(ILoggerFactory loggerFactory, INccSettingsService nccSettingsService)
+        public HelloHomeController(ILoggerFactory loggerFactory)
         {
             _logger = loggerFactory.CreateLogger<HelloHomeController>();
-            _nccSettingsService = nccSettingsService;
         }
 
         [AdminMenuItem(Name = "Index", Order = 1)]

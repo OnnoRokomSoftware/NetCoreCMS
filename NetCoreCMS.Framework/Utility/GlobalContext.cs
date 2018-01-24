@@ -31,6 +31,8 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Caching.Memory;
 using NetCoreCMS.Framework.Core.Mvc.Cache;
 using NetCoreCMS.Framework.Core.Services;
+using System.IO;
+using NetCoreCMS.Framework.Core.Mvc.Views;
 
 namespace NetCoreCMS.Framework.Utility
 {
@@ -39,6 +41,8 @@ namespace NetCoreCMS.Framework.Utility
     /// </summary>
     public class GlobalContext
     {
+        private static IViewRenderService _viewRenderService;
+        
         public static IMemoryCache GlobalCache { get; private set; }
         /// <summary>
         /// WebSite contains running website's basic information like Title, Slogan, Logo Image, Default Language etc.
@@ -89,6 +93,21 @@ namespace NetCoreCMS.Framework.Utility
                 }
             }
             return null;
+        }
+        
+        internal static IViewRenderService GetViewRenerService(bool newInstance = false)
+        {
+            if (newInstance)
+            {
+                return ServiceProvider.GetService<IViewRenderService>();
+            }
+             
+            if(_viewRenderService == null)
+            {
+                _viewRenderService = ServiceProvider.GetService<IViewRenderService>();
+            }
+
+            return _viewRenderService;
         }
 
         /// <summary>
@@ -199,14 +218,14 @@ namespace NetCoreCMS.Framework.Utility
             var user = GlobalCache.GetNccUser(userId.Value);
             if(user == null)
             {
-                var userService = hca.HttpContext.RequestServices.GetService<NccUserService>();
+                var userService = hca.HttpContext.RequestServices.GetService<INccUserService>();
                 if(userService != null)
                 {
                     user = userService.Get(userId.Value);
-                    if(user != null)
-                    {
-                        GlobalCache.SetNccUser(user);
-                    }
+                    //if(user != null)
+                    //{
+                    //    GlobalCache.SetNccUser(user);
+                    //}
                 }
             }
             return user;
@@ -228,11 +247,11 @@ namespace NetCoreCMS.Framework.Utility
         /// <summary>
         /// Method for getting theme by the name.
         /// </summary>
-        /// <param name="themeName"> Theme name which is same as folder name.</param>
+        /// <param name="themeId"> Theme name which is same as folder name.</param>
         /// <returns>Return the theme object.</returns>
-        public static Theme GetThemeByName(string themeName)
+        public static Theme GetThemeByThemeId(string themeId)
         {
-            return Themes.Where(x => x.ThemeName == themeName).FirstOrDefault();
+            return Themes.Where(x => x.ThemeId == themeId).FirstOrDefault();
         }
 
         /// <summary>
@@ -366,6 +385,16 @@ namespace NetCoreCMS.Framework.Utility
             {
                 GlobalCache = cache;
             }
+        }
+
+        public static string GetResourceFolder()
+        {
+            var path = Path.Combine(ContentRootPath, "Resources");
+            if (HostingEnvironment.IsDevelopment())
+            {
+                path = Path.Combine(ContentRootPath, "bin", "Debug", "netcoreapp2.0", "Resources");
+            }
+            return path;
         }
     }
 }

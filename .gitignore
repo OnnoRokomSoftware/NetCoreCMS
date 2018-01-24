@@ -18,6 +18,5 @@ __Logs
 node_modules
 /NetCoreCMS.Web/Data/GlobalMessages/global_message_db.json
 /NetCoreCMS.Web/npm-debug.log
-.gitmodules
-OSL.NccStore
-/NetCoreCMS.Git.gmnazmul.sln
+/NetCoreCMS_Nazmul.sln
+NccStore
