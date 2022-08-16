@@ -2,7 +2,7 @@
 
 ![NetCoreCMS](https://raw.githubusercontent.com/OnnorokomSoftware/NetCoreCMS/master/NetCoreCMS.Web/wwwroot/NetCoreCMS-full-logo.png)
 ## NetCoreCMS
-NetCoreCMS is a Content Management System developed using ASP.Net Core 2.0. It is usable as web application framework. This is a modular theme supported web application. NetCoreCMS also support multiple language. This time we have added language support for only English and Bangla.  
+NetCoreCMS is a Content Management System developed using ASP.Net Core 2.0. It is usable as a web application framework. This is a modular theme-supported web application. NetCoreCMS also supports multiple languages. This time we have added language support for only English and Bangla.  
 ## Screenshots
 Admin panel screenshots [Screenshot](https://github.com/OnnoRokomSoftware/NetCoreCMS/blob/master/Screenshots.md)
 
